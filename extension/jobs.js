@@ -683,7 +683,8 @@ async function SaveCurrentJobOnce(Job)
 	{
 		throw new LocalizedError('job_snapshot_unavailable');
 	}
-	const Item = Job.hls ? undefined : await GetBrowserDownload(Job.downloadId);
+	const LocalStream = Job.hls || Job.recording;
+	const Item = LocalStream ? undefined : await GetBrowserDownload(Job.downloadId);
 	const State = Item ? SummarizeJob(Job, Item).state : Job.state;
 	if (!['active', 'paused'].includes(State))
 	{
@@ -693,8 +694,8 @@ async function SaveCurrentJobOnce(Job)
 	{
 		throw new LocalizedError('job_snapshot_unavailable');
 	}
-	const Source = Job.hls ? undefined : await DirectSnapshotSource(Job, Item);
-	if (!Job.hls && !Source)
+	const Source = LocalStream ? undefined : await DirectSnapshotSource(Job, Item);
+	if ((!LocalStream && !Source) || Job.recording && !Job.snapshotAvailable)
 	{
 		throw new LocalizedError('job_snapshot_unavailable');
 	}

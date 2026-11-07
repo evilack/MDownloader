@@ -3,7 +3,7 @@ import {RuntimePolicy} from './runtime-policy.js';
 import {LocalizedError, SerializeError} from './i18n.js';
 
 /** 기존 오프스크린 문서에서 WebRTC 수신·저장 수명을 관리합니다. 팝업/관리자 수명과 무관합니다. */
-export function CreateWebRtcTransfers({extensionId, createStore, report, saveFile, release})
+export function CreateWebRtcTransfers({extensionId, createStore, report, saveFile, release, snapshots})
 {
 	const Entries = new Map(), Preparing = new Map();
 	function Report(Entry, Action, Fields)
@@ -42,6 +42,9 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 			{
 				// 강제 종료도 이미 시작한 쓰기가 끝난 후 이 작업 폴더만 정리합니다.
 				await Entry.sink.finish().catch(() => {});
+				// 별도 저장의 취소/완료 신호는 원본과 독립적입니다. 해당 읽기가 끝나기
+				// 전에는 원본 조각 폴더를 제거하지 않습니다.
+				await snapshots?.close(Id);
 				await release(Id).catch(() => {});
 				Entries.delete(Id);
 			}
@@ -64,6 +67,12 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 					const Entry = {job: Job, ...Job, store: Store, phase: 'recording', count: 0, controller: new AbortController(),
 						sink: CreateRecordingSink(Store, {maxBytes: RuntimePolicy.Transfer.MaxScratchBytes, maxChunkBytes: 192 * 1024})};
 					Entries.set(Job.requestId, Entry);
+					snapshots?.register(Job.requestId, () =>
+					{
+						if (Entry.phase !== 'recording' || !Entry.count || !Store.bytes) return null;
+						return {recording: {readFile: Store.snapshot(Job.mimeType),
+							format: Job.mimeType.startsWith('video/mp4') ? 'MP4' : 'WEBM'}};
+					});
 					if (Pending.canceled)
 					{
 						Entry.controller.abort();
@@ -86,7 +95,8 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 			{
 				const Result = await Entry.sink.append(Message.sequence, Message.data);
 				Entry.count = Result.count;
-				await Report(Entry, 'progress', {received: Result.bytes, finished: Result.count, live: true});
+				await Report(Entry, 'progress', {received: Result.bytes, finished: Result.count, live: true,
+					snapshotAvailable: !!snapshots && Entry.phase === 'recording'});
 				return {ok: true};
 			}
 			catch { return {ok: false}; }

@@ -268,7 +268,7 @@ export function CreateJobRow(Job, Tile, Context)
 	}
 	if (['active', 'paused'].includes(Job.state) && !Job.snapshot && Job.snapshotAvailable && !Job.muxing)
 	{
-		InlineActions.append(SetButtonIcon(Control('', 'snapshot', true), Translate(Job.hls ? 'view_action_snapshot' : 'view_action_snapshot_file'), 'download'));
+		InlineActions.append(SetButtonIcon(Control('', 'snapshot', true), Translate(Job.hls || Job.recording ? 'view_action_snapshot' : 'view_action_snapshot_file'), 'download'));
 	}
 	if (Job.state === 'active' && !Job.snapshot && !Job.muxing && (Job.hls || Job.live))
 	{

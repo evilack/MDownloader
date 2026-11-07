@@ -31,7 +31,7 @@ Job.playback ? SavePlayback(Job, Controller) : Download(Job, Controller, FinishS
 const DirectTransfers = new Map();
 const Snapshots = CreateTransferSnapshots(SavePartial);
 const RecordingRoot = async () => (await navigator.storage.getDirectory()).getDirectoryHandle('mdownloader-webrtc', {create: true});
-const Recordings = CreateWebRtcTransfers({extensionId: chrome.runtime.id, report: LocalReport,
+const Recordings = CreateWebRtcTransfers({extensionId: chrome.runtime.id, report: LocalReport, snapshots: Snapshots,
 	async createStore(Job) { return CreateRecordingStore(await (await RecordingRoot()).getDirectoryHandle(Job.requestId, {create: true})); },
 	async release(Id)
 	{
@@ -161,10 +161,16 @@ async function SavePartial(Job, Snapshot, Signal)
 	{
 		Output = await Workspaces.create(Id);
 		Trace = await StartHlsTrace(undefined, Id, Diagnostic => LocalReport(Id, 'diagnostic', {diagnostic: Diagnostic}));
-		if (Snapshot.direct)
+		if (Snapshot.direct || Snapshot.recording)
 		{
 			await Trace.begin('partial-read');
-			const Prefix = await ReadFilePrefix(Snapshot.direct, Output, Signal, Progress => LocalReport(Id, 'progress', Progress));
+			let Prefix;
+			if (Snapshot.recording)
+			{
+				const File = await Snapshot.recording.readFile();
+				Prefix = {file: File, total: File.size, partial: true};
+			}
+			else Prefix = await ReadFilePrefix(Snapshot.direct, Output, Signal, Progress => LocalReport(Id, 'progress', Progress));
 			await Trace.finish({received: Prefix.file.size});
 			await Trace.begin('partial-mux');
 			await LocalReport(Id, 'progress', {received: Prefix.file.size, count: 1, finished: 1, muxing: true});
@@ -173,7 +179,7 @@ async function SavePartial(Job, Snapshot, Signal)
 			let Format;
 			try
 			{
-				Format = await RemuxFilePrefix(Prefix, Snapshot.direct.format, Writer, Signal);
+				Format = await RemuxFilePrefix(Prefix, (Snapshot.recording || Snapshot.direct).format, Writer, Signal);
 			}
 			catch (ErrorValue)
 			{

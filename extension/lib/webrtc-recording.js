@@ -11,6 +11,18 @@ export function CreateRecordingStore(Directory)
 {
 	const Handles = [];
 	let Bytes = 0;
+	function Snapshot(MimeType)
+	{
+		// 클릭 시점에 이미 close된 핸들만 고정합니다. getFile을 기다리는 동안
+		// 수신한 새 조각은 이 읽기 경계나 별도 저장 파일에 들어가지 않습니다.
+		const Frozen = Handles.slice();
+		return async () =>
+		{
+			const Files = [];
+			for (const Handle of Frozen) Files.push(await Handle.getFile());
+			return new Blob(Files, {type: MimeType});
+		};
+	}
 	return {
 		get bytes() { return Bytes; },
 		async write(Data)
@@ -30,13 +42,8 @@ export function CreateRecordingStore(Directory)
 		},
 		async close() {},
 		async abort() {},
-		async file(MimeType)
-		{
-			// File 객체로 구성한 Blob은 전체 영상 바이트를 JS 배열로 복사하지 않습니다.
-			const Files = [];
-			for (const Handle of Handles) Files.push(await Handle.getFile());
-			return new Blob(Files, {type: MimeType});
-		},
+		snapshot: Snapshot,
+		file: MimeType => Snapshot(MimeType)(),
 	};
 }
 

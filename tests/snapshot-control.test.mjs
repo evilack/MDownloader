@@ -34,3 +34,24 @@ Test('native partial save freezes the current byte range without changing the pa
 	Assert.equal(Sent[0].job.snapshotParent, Id);
 	Assert.notEqual(Sent[0].job.requestId, Id);
 });
+
+Test('WebRTC current save uses the existing partial job without stopping or changing its parent', async T =>
+{
+	const Id = 'e9d72f54-eecd-407a-b297-be9b6d0f5ea7';
+	const Parent = {requestId: Id, filename: 'live.mp4', state: 'active', recording: true, live: true,
+		snapshotAvailable: true, finished: 5, bytesReceived: 10000, downloadFolder: 'media'};
+	const Data = {['job:' + Id]: Parent}, Sent = [];
+	globalThis.chrome = {storage: {local: {get: async Key => ({[Key]: Data[Key]}), set: async Values => Object.assign(Data, Values)}},
+		runtime: {id: 'owner', getURL: Value => 'chrome-extension://owner/' + Value, getContexts: async () => [{}],
+			async sendMessage(Message) { Sent.push(Message); return {ok: true}; }}};
+	T.after(() => delete globalThis.chrome);
+	await ControlJob(Id, 'snapshot');
+	Assert.equal(Sent.length, 1);
+	Assert.equal(Sent[0].type, 'hlsSnapshot');
+	Assert.equal(Sent[0].parentId, Id);
+	Assert.equal(Sent[0].source, undefined, 'WebRTC uses local committed chunks, never a guessed HTTP URL');
+	Assert.equal(Sent[0].job.snapshot, true);
+	Assert.equal(Sent[0].job.downloadFolder, 'media');
+	Assert.notEqual(Sent[0].job.requestId, Id);
+	Assert.deepEqual(Data['job:' + Id], Parent);
+});

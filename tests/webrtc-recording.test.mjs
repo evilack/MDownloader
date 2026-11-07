@@ -91,3 +91,24 @@ Test('each acknowledged recording chunk survives a later disk write failure', as
 	Assert.equal(Store.bytes, 3);
 	Assert.deepEqual([...new Uint8Array(await (await Store.file('video/mp4')).arrayBuffer())], [0, 1, 2]);
 });
+
+Test('a recording snapshot freezes committed handles while later writes continue', async () =>
+{
+	const Files = new Map();
+	const Directory = {async getFileHandle(Name)
+	{
+		return {async createWritable()
+		{
+			let Data;
+			return {async write(Bytes) { Data = Bytes; }, async close() { Files.set(Name, new Blob([Data])); }};
+		}, async getFile() { await new Promise(Resolve => setImmediate(Resolve)); return Files.get(Name); }};
+	}};
+	const Store = CreateRecordingStore(Directory);
+	await Store.write(new Uint8Array([1, 2]));
+	const Read = Store.snapshot('video/mp4');
+	await Store.write(new Uint8Array([3, 4]));
+	const File = await Read();
+	Assert.deepEqual([...new Uint8Array(await File.arrayBuffer())], [1, 2]);
+	Assert.equal(File.type, 'video/mp4');
+	Assert.equal((await Store.file('video/mp4')).size, 4);
+});
