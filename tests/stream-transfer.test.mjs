@@ -99,6 +99,139 @@ function Workspace()
 		} };
 }
 
+Test('stop/save seals a finite stream prefix without requesting the rest or canceling the output signal', async T =>
+{
+	const Stop = new AbortController();
+	const Controller = new AbortController();
+	const Ts = new Uint8Array(376);
+	Ts[0] = Ts[188] = 0x47;
+	const Requested = [];
+	T.mock.method(globalThis, 'fetch', async Url =>
+	{
+		Requested.push(Url);
+		return new Response(Ts);
+	});
+	const Target = Workspace();
+	const Parsed = ParseMediaPlaylist(Playlist(0, ...Array.from({length: 20}, (_, Index) => Index + '.ts')) + '#EXT-X-ENDLIST', Address);
+	const Result = await DownloadTracks([{playlist: Parsed}], {
+		workspace: Target, controller: Controller, finishSignal: Stop.signal, authorize: async () =>
+		{
+		}, progress: async State =>
+		{
+			if (State.finished > 0)
+			{
+				Stop.abort();
+			}
+		},
+	});
+	Assert.equal(Controller.signal.aborted, false);
+	Assert.equal(Result.partial, true);
+	Assert.ok(Requested.length <= 4);
+	Assert.equal(Result.progress.finished, Requested.length);
+	Assert.equal(Result.progress.count, Requested.length);
+	Assert.equal(Result.progress.received, Requested.length * Ts.length);
+	Assert.equal(Target.files.size, Requested.length);
+	Assert.match(Result.video, /#EXT-X-ENDLIST\n$/);
+});
+Test('separate audio starts alongside video so stop/save can keep a playable paired prefix', async T =>
+{
+	const Stop = new AbortController();
+	const Requested = [];
+	T.mock.method(globalThis, 'fetch', async Url =>
+	{
+		Requested.push(new URL(Url).pathname);
+		return new Response(new Uint8Array(32));
+	});
+	const Sources = ['video', 'audio'].map((Name, Index) => ({audio: Index === 1,
+		playlist: ParseMediaPlaylist(Playlist(0, ...Array.from({length: 20}, (_, Number) => Name + Number + '.m4s')).replace('#EXTINF', '#EXT-X-MAP:URI="' + Name + '-init.mp4"\n#EXTINF') + '#EXT-X-ENDLIST', Address)}));
+	const Result = await DownloadTracks(Sources, {workspace: Workspace(), controller: new AbortController(), finishSignal: Stop.signal,
+		authorize: async () =>
+		{
+		}, snapshot: () =>
+		{
+		}, progress: async State =>
+		{
+			if (State.snapshotAvailable)
+			{
+				Stop.abort();
+			}
+		}});
+	Assert.ok(Requested.indexOf('/audio0.m4s') < Requested.indexOf('/video4.m4s') || !Requested.includes('/video4.m4s'));
+	Assert.ok(Result.progress.finished < 40);
+	Assert.equal(Result.partial, true);
+	Assert.match(Result.video, /segment-0\.m4s/);
+	Assert.match(Result.audio, /segment-20\.m4s/);
+});
+Test('stop/save excludes completed later segments beyond a gap and never retries the unfinished segment', async T =>
+{
+	const Stop = new AbortController();
+	const Controller = new AbortController();
+	const Gap = Promise.withResolvers();
+	const Ts = new Uint8Array(376);
+	Ts[0] = Ts[188] = 0x47;
+	let Attempts = 0;
+	T.mock.method(globalThis, 'fetch', async Url =>
+	{
+		if (Url.endsWith('/1.ts'))
+		{
+			Attempts++;
+			await Gap.promise;
+			throw new TypeError('network');
+		}
+		return new Response(Ts);
+	});
+	const Parsed = ParseMediaPlaylist(Playlist(0, '0.ts', '1.ts', '2.ts', '3.ts', '4.ts') + '#EXT-X-ENDLIST', Address);
+	const Result = await DownloadTracks([{playlist: Parsed}], {workspace: Workspace(), controller: Controller, finishSignal: Stop.signal,
+		authorize: async () =>
+		{
+		}, progress: async State =>
+		{
+			if (State.finished > 0)
+			{
+				Stop.abort();
+				Gap.resolve();
+			}
+		}});
+	Assert.equal(Attempts, 1);
+	Assert.equal(Controller.signal.aborted, false);
+	Assert.equal(Result.progress.finished, 1);
+	Assert.equal(Result.progress.received, Ts.length);
+	Assert.match(Result.video, /segment-0\.ts/);
+	Assert.doesNotMatch(Result.video, /segment-[1-4]\.ts/);
+});
+Test('stop/save waits until short audio segments cover the first long video segment', async T =>
+{
+	const Stop = new AbortController();
+	T.mock.method(globalThis, 'fetch', async () => new Response(new Uint8Array(32)));
+	const Sources = ['video', 'audio'].map((Name, Index) =>
+	{
+		let Text = Playlist(0, ...Array.from({length: 20}, (_, Number) => Name + Number + '.m4s'));
+		if (Index === 0)
+		{
+			Text = Text.replaceAll('#EXTINF:1,', '#EXTINF:10,');
+		}
+		return {audio: Index === 1, playlist: ParseMediaPlaylist(Text.replace('#EXTINF', '#EXT-X-MAP:URI="' + Name + '-init.mp4"\n#EXTINF') + '#EXT-X-ENDLIST', Address)};
+	});
+	let Read;
+	const Result = await DownloadTracks(Sources, {workspace: Workspace(), controller: new AbortController(), finishSignal: Stop.signal,
+		authorize: async () =>
+		{
+		}, snapshot: Value =>
+		{
+			Read = Value;
+		}, progress: async State =>
+		{
+			if (State.snapshotAvailable)
+			{
+				Assert.ok(Read(), 'enabled stop/save must have a usable common prefix');
+				Stop.abort();
+			}
+		}});
+	Assert.equal(Result.partial, true);
+	Assert.ok(Result.progress.finished > 10);
+	Assert.match(Result.video, /segment-0\.m4s/);
+	Assert.match(Result.audio, /segment-20\.m4s/);
+});
 Test('records new live sequences once and seals a finite playlist on stop', async T =>
 {
 	const Requests = [];

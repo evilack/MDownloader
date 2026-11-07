@@ -64,7 +64,7 @@ export async function DownloadTracks(Sources, {
 	const { signal: Signal } = Controller;
 	const Decryptor = new HlsDecryptor((Resource, Limit) => ReadHlsBytes(Resource, Limit, Signal, ObservedContext));
 	const Tracks = Sources.map(Source => ({ ...Source, saved: [], next: undefined }));
-	// 라이브 저장을 누르면 재생목록 갱신만 중단합니다. 이미 대기 중인 조각은 쓰기를 완료할 수 있습니다.
+	// 중지 후 저장은 새 조각과 재생목록 요청을 막습니다. 이미 요청한 조각은 닫힌 파일로 확정한 뒤 연속 구간만 저장합니다.
 	const Stop = AbortSignal.any([Signal, FinishSignal]);
 	const Initialization = new Map();
 	const Live = Tracks.some(Track => !Track.playlist.ended);
@@ -75,6 +75,7 @@ export async function DownloadTracks(Sources, {
 	let Count = 0;
 	let FirstPreview;
 	let NextProgressAt = 0;
+	let bSnapshotAvailable = false;
 	const Committed = new Map();
 	RegisterSnapshot?.(() => ReadCommittedSnapshot(Tracks, Committed));
 	function PublishProgress()
@@ -82,11 +83,13 @@ export async function DownloadTracks(Sources, {
 		NextProgressAt = performance.now() + RuntimePolicy.Transfer.ProgressReportIntervalMs;
 		// 속도에는 현재 쓰고 있는 조각의 바이트도 포함합니다.
 		// 완료 개수는 파일 쓰기가 끝날 때만 올리고 실패한 시도의 바이트는 되돌립니다.
-		const SnapshotState = RegisterSnapshot ? {snapshotAvailable: Tracks.every(Track =>
-			{
-				const First = Track.saved[0];
-				return First && Committed.has(First.path) && (!First.init || Committed.has(First.init));
-			})} : {};
+		// 파일이 닫혔더라도 짧은 음성이 첫 영상 조각을 덮지 못하면 저장할 수 없습니다.
+		// 연속 구간은 이후 줄어들지 않으므로 준비된 뒤에는 재계산하지 않습니다.
+		if (RegisterSnapshot && !bSnapshotAvailable)
+		{
+			bSnapshotAvailable = !!ReadCommittedSnapshot(Tracks, Committed);
+		}
+		const SnapshotState = RegisterSnapshot ? {snapshotAvailable: bSnapshotAvailable} : {};
 		Writes = Writes.then(() => Progress({ live: Live, count: Count, received: Buffered, finished: Finished, ...SnapshotState }));
 		return Writes;
 	}
@@ -94,9 +97,11 @@ export async function DownloadTracks(Sources, {
 	for (; ; )
 	{
 		const BatchStarted = performance.now();
-		const Queue = [];
+		const TrackQueues = [];
 		for (const Track of Tracks)
 		{
+			const Queue = [];
+			TrackQueues.push(Queue);
 			const { segments: Segments } = Track.playlist;
 			// 파싱한 조각은 연속 시퀀스 번호를 사용합니다.
 			// 새 조각이 시작하는 위치를 바로 계산하여 이전 창과 겹치는 조각을 다시 탐색하지 않습니다.
@@ -128,6 +133,18 @@ export async function DownloadTracks(Sources, {
 				Queue.push({ ...Segment, path: Path, isMedia: true, checkTs: !Init && !Track.audio });
 				Track.saved.push({ duration: Segment.duration, discontinuity: Segment.discontinuity, init: Init, path: Path });
 				Track.next = Segment.sequence + 1;
+			}
+		}
+		// 분리 음성이 영상 전체 뒤로 밀리면 중간 저장 시 재생할 음성이 없습니다. 트랙별 요청을 번갈아 배정합니다.
+		const Queue = [];
+		for (let Index = 0; TrackQueues.some(Resources => Index < Resources.length); Index++)
+		{
+			for (const Resources of TrackQueues)
+			{
+				if (Index < Resources.length)
+				{
+					Queue.push(Resources[Index]);
+				}
 			}
 		}
 
@@ -196,7 +213,7 @@ export async function DownloadTracks(Sources, {
 					Preview(FirstPreview.playlist);
 				}
 				await PublishProgress();
-			}, ObservedContext ? RuntimePolicy.Transfer.ObservedRequestLanes : undefined);
+			}, ObservedContext ? RuntimePolicy.Transfer.ObservedRequestLanes : undefined, FinishSignal);
 		}
 
 		Signal.throwIfAborted();
@@ -235,6 +252,16 @@ export async function DownloadTracks(Sources, {
 		}
 	}
 
+	if (FinishSignal.aborted)
+	{
+		const Snapshot = ReadCommittedSnapshot(Tracks, Committed);
+		if (!Snapshot)
+		{
+			throw new LocalizedError('stream_no_segments');
+		}
+		return {video: LocalPlaylist(Snapshot.video), audio: Snapshot.audio && LocalPlaylist(Snapshot.audio),
+			progress: Snapshot.progress, partial: !Live && Snapshot.progress.finished < Count};
+	}
 	return { video: LocalPlaylist(Tracks[0].saved), audio: Tracks[1] && LocalPlaylist(Tracks[1].saved),
 		progress: { live: false, count: Count, received: Received, finished: Finished } };
 }

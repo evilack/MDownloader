@@ -14,7 +14,7 @@ export class RetryableTransferError extends LocalizedError
 	}
 }
 
-export async function TransferSegments(Resources, Controller, Transfer, Parallelism = RuntimePolicy.Transfer.MaxLanes)
+export async function TransferSegments(Resources, Controller, Transfer, Parallelism = RuntimePolicy.Transfer.MaxLanes, FinishSignal)
 {
 	const { signal: Signal } = Controller;
 	let Next = 0;
@@ -22,7 +22,7 @@ export async function TransferSegments(Resources, Controller, Transfer, Parallel
 	{
 		try
 		{
-			while (Next < Resources.length)
+			while (Next < Resources.length && !FinishSignal?.aborted)
 			{
 				Signal.throwIfAborted();
 				const Index = Next++;
@@ -36,6 +36,11 @@ export async function TransferSegments(Resources, Controller, Transfer, Parallel
 					}
 					catch (ErrorValue)
 					{
+						// 중지 후 저장에서는 진행 중이던 조각의 실패를 재시도하지 않고 확보된 연속 구간을 사용합니다.
+						if (FinishSignal?.aborted && !Signal.aborted)
+						{
+							return;
+						}
 						if (DebugLog.IsEnabled())
 						{
 							DebugLog.Record('SegmentRetry', () => ({ attempt: Attempt, status: ErrorValue.status, error: ErrorValue }));

@@ -21,6 +21,7 @@ import { DeleteJobPreview, PreviewSourceKey, SaveJobPreviewSource, SaveJobThumbn
 import { DownloadNamedFile } from './lib/browser-download.js';
 import { GetBrowserDownload, JobGroup, LoadBrowserDownloads, SummarizeJob } from './lib/browser-job-state.js';
 import {PartialFilename, PartialOutputFilename} from './lib/partial-naming.js';
+import {CanFinishJob} from './lib/job-actions.js';
 const Pending = new Map();
 const Removing = new Set();
 const PendingSnapshots = new Set();
@@ -305,6 +306,14 @@ export async function UpdateHls(Message)
 	}
 	switch (Message.action)
 	{
+		case 'streamPartial':
+		if (!Job.hls || Job.snapshot || Job.muxing)
+		{
+			throw new LocalizedError('job_state_changed');
+		}
+		const Filename = Job.partial ? Job.filename : PartialFilename(Job.filename);
+		await WriteJob(Key, {...Job, filename: Filename, partial: true});
+		return Filename;
 		case 'access': return RequireHlsHosts(Message.urls);
 		case 'requestHeaders':
 		await RequireHlsHosts(Message.urls);
@@ -553,7 +562,7 @@ export async function ControlJob(RequestId, Action)
 	{
 		return SaveCurrentJob(Job);
 	}
-	if (Job?.live && Job.state === 'active' && Action === 'finish' && await FinishLive(RequestId))
+	if (CanFinishJob(Job) && Action === 'finish' && await FinishLive(RequestId))
 	{
 		return;
 	}

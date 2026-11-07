@@ -56,3 +56,15 @@ Test('isolates partial saves and holds source cleanup until pending readers fini
 	Assert.deepEqual(Saves.ids(), []);
 	await Assert.rejects(Saves.save('parent', {requestId: 'later'}), {key: 'job_snapshot_unavailable'});
 });
+Test('waits for video/audio overlap when the audio timeline begins after the first video segment', () =>
+{
+	const Tracks = [{playlist: {presentationTimeOffset: 2}, saved: [{path: 'v0', duration: 1}, {path: 'v1', duration: 2}]},
+		{playlist: {}, audio: true, saved: [{path: 'a0', duration: 1}]}];
+	const Files = new Map([['v0', 10], ['a0', 10]]);
+	Assert.equal(ReadCommittedSnapshot(Tracks, Files), null);
+	Files.set('v1', 20);
+	const Snapshot = ReadCommittedSnapshot(Tracks, Files);
+	Assert.equal(Snapshot.audio.length, 1);
+	Assert.equal(Snapshot.video.length, 2);
+	Assert.equal(Snapshot.audioShift, 2);
+});

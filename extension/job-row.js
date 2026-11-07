@@ -7,6 +7,7 @@ import { GetDownloadMetrics, ProgressMax, SpeedSampleMs } from './lib/metrics.js
 import { CreateJobMeasure } from './lib/job-measure.js';
 import { CreateButton, CopyLink, CreateElement, SendRequest, SetButtonIcon } from './lib/ui.js';
 import { CreateLiveBadge } from './media-badges.js';
+import {CanFinishJob} from './lib/job-actions.js';
 
 /** 포인터와 키보드로 같은 도움말을 엽니다. 응답이 늦게 와도 이미 닫힌 도움말을 다시 표시하지 않습니다. */
 function AddTooltip(Wrapper, Trigger, Id, TextValue, LoadText)
@@ -265,13 +266,15 @@ export function CreateJobRow(Job, Tile, Context)
 	{
 		InlineActions.append(SetButtonIcon(Control('', 'cancel'), Translate('view_action_cancel'), 'cancel'));
 	}
+	if (Job.state === 'active' && !Job.snapshot && !Job.muxing && (Job.hls || Job.live))
+	{
+		const Finish = SetButtonIcon(Control('', 'finish', true), Translate('view_action_finish'), 'stop-save');
+		Finish.disabled = !CanFinishJob(Job);
+		InlineActions.append(Finish);
+	}
 	if (['active', 'paused'].includes(Job.state) && !Job.snapshot && Job.snapshotAvailable && !Job.muxing)
 	{
 		InlineActions.append(SetButtonIcon(Control('', 'snapshot', true), Translate(Job.hls ? 'view_action_snapshot' : 'view_action_snapshot_file'), 'download'));
-	}
-	if (Job.state === 'active' && Job.live && Job.finished > 0)
-	{
-		InlineActions.append(SetButtonIcon(Control('', 'finish', true), Translate('view_action_finish'), 'stop-save'));
 	}
 	if (Job.hasUrl)
 	{

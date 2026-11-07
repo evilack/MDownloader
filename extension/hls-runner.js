@@ -354,8 +354,9 @@ async function Download(Job, Controller, FinishSignal)
 			}),
 		});
 		await Trace.finish({ received: Result.progress.received, finished: Result.progress.finished });
+		const OutputJob = Result.partial ? {...Job, filename: await LocalReport(Id, 'streamPartial'), partial: true} : Job;
 		const AudioShift = (Tracks[0].playlist.presentationTimeOffset ?? 0) - (Tracks[1]?.playlist.presentationTimeOffset ?? 0);
-		await MuxAndSave(Job, Workspace, Result.video, Result.progress, Signal, Trace, Result.audio, AudioShift);
+		await MuxAndSave(OutputJob, Workspace, Result.video, Result.progress, Signal, Trace, Result.audio, AudioShift);
 	}
 	catch (ErrorValue)
 	{

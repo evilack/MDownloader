@@ -88,7 +88,7 @@ Quality controls appear only when multiple supported renditions are available. T
 
 ## Live and partial saves
 
-**Stop and save** finishes a supported live HLS job using the data already received. **Cancel** stops that job without completing its temporary stream output.
+**Stop and save** ends a supported HLS/DASH transfer and saves its received continuous portion as MP4. It is also available for ordinary finite HLS downloads. The button becomes available once a playable video/audio prefix is ready. It stops new segment requests, lets requests already in progress finish, and saves the continuous portion before the first missing segment. An incomplete finite download receives a partial-file suffix. **Cancel** stops that job without completing its temporary stream output.
 
 **Save received portion** creates a separate partial file and download record while the original job continues. Partial output has its own cancellation and does not replace the original file.
 

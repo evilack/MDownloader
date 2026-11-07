@@ -43,6 +43,10 @@ export function ReadCommittedSnapshot(Tracks, Files)
 			End += Segment.duration;
 			return Include;
 		});
+		if (!Ready[1].length)
+		{
+			return null;
+		}
 	}
 	const Paths = new Set(Ready.flat().flatMap(Segment => [Segment.path, Segment.init].filter(Boolean)));
 	const Count = Ready.reduce((Total, Segments) => Total + Segments.length, 0);
