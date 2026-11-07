@@ -12,7 +12,7 @@ node tools/checks/measure-debug-cost.mjs
 
 Generated results belong in Git-ignored `artifacts/<run>/`. Set `MDOWNLOADER_ARTIFACTS` to a run name to group reports. `MDOWNLOADER_WRITE_EVIDENCE=1` retains integration-test media there; normal test runs do not retain media. Generated downloads, old checkout copies, and previous reports can be removed without changing runtime resources or test fixtures.
 
-The documentation was reconciled on 2026-11-08 against local extension version **0.2.36**. The full suite passed **257 tests**, localization rendered **378 messages in each of 10 languages** with no missing references, project verification reported no failures and preserved all **73 cataloged files**, and the generated page policy matched. Detailed logging OFF checks reported zero lazy-detail evaluations, timers, messages, and storage writes. These are local verification results, not a claim of new installed-browser acceptance.
+The documentation was reconciled on 2026-11-08 against local extension version **0.2.37**. The full suite passed **257 tests**, localization rendered **378 messages in each of 10 languages** with no missing references, project verification reported no failures and preserved all **73 cataloged files**, and the generated page policy matched. Detailed logging OFF checks reported zero lazy-detail evaluations, timers, messages, and storage writes. These are local verification results, not a claim of new installed-browser acceptance.
 
 ## Automated coverage
 
@@ -55,6 +55,8 @@ The 0.2.34 manager component was rendered in a local Chromium fixture at 434px w
 Version 0.2.35 shares the popup's received-byte color token with manager measures. The same 434px fixture confirmed received bytes at `#b1d9ff` and speed at `#b9c2cf`, matching the popup's styles while retaining the layout and 8px bar. Canceled status text uses mint (`#76f5b6`) in both surfaces; the manager's canceled badge shares the popup's rounded border and padding, visually checked in the fixture.
 
 Version 0.2.36 places manager received bytes and speed in one rounded box, sharing the popup's border, 6px radius, and 2px/6px padding. A 434px Chromium fixture confirmed these computed styles and unclipped values.
+
+Version 0.2.37 shares the popup and manager metric font and width rules (11px and 12ch). The comparison fixture at 434px and 320px widths measured both boxes at 72.703125 × 32.375 CSS pixels, with identical 13.2px line height and 2px/6px padding, and no clipped metric text.
 
 ## Optional local checks
 

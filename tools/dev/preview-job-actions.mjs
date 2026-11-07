@@ -5,6 +5,7 @@ import {CreatePreviewServer} from '../../website/serve.mjs';
 import {ProjectPath} from '../lib/tool-config.mjs';
 const Fixture = String.raw`
 import {CreateJobRow, UpdateJobRowMetrics} from './job-row.js';
+import {CreateJobMeasure} from './lib/job-measure.js';
 import {InitializeLocale, LocalizePage} from './lib/i18n.js';
 globalThis.chrome = {runtime: {sendMessage: async Message =>
 {
@@ -16,6 +17,20 @@ LocalizePage();
 document.getElementById('empty').hidden = true;
 const Active = document.getElementById('active');
 Active.hidden = false;
+// 팝업과 같은 DOM/스타일로 수치 박스의 실제 크기를 나란히 비교합니다.
+const Reference = document.createElement('div');
+Reference.className = 'candidate';
+const ReferenceName = document.createElement('strong');
+ReferenceName.className = 'filename';
+ReferenceName.textContent = '팝업 수치 박스 비교';
+const ReferenceStatus = document.createElement('span');
+ReferenceStatus.className = 'candidate-job-status';
+ReferenceStatus.dataset.state = 'active';
+const ReferenceMeasure = CreateJobMeasure();
+ReferenceMeasure.update({progress: '10.7 MB', speed: '1.1 MB/s'});
+ReferenceStatus.append(ReferenceMeasure.node);
+Reference.append(ReferenceName, ReferenceStatus);
+Active.before(Reference);
 const Jobs = [
  {requestId: 'finite-ready', filename: '샘플 영상 — HLS 다운로드.mp4', hls: true, snapshotAvailable: true, finished: 500, bytesReceived: 10700000},
  {requestId: 'live-ready', filename: '샘플 라이브 — WebRTC 다운로드.mp4', recording: true, live: true, snapshotAvailable: true, finished: 4, bytesReceived: 10400000},
