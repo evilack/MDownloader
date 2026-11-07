@@ -10,10 +10,11 @@ function Fixture(Options = {})
 	{
 		listeners = new Map();
 		addEventListener(Name, Fn) { const List = this.listeners.get(Name) || []; List.push(Fn); this.listeners.set(Name, List); }
+		removeEventListener(Name, Fn) { this.listeners.set(Name, (this.listeners.get(Name) || []).filter(Item => Item !== Fn)); }
 		emit(Name, Fields = {}) { for (const Fn of this.listeners.get(Name) || []) Fn(Fields); this['on' + Name]?.(Fields); }
 	}
-	const Video = {kind: 'video', readyState: 'live', getSettings: () => ({width: 1920, height: 1080}), stop() { this.readyState = 'ended'; }};
-	const Audio = {kind: 'audio', readyState: 'live', stop() { this.readyState = 'ended'; }};
+	const Video = Object.assign(new Events(), {kind: 'video', muted: !!Options.mutedTracks, readyState: 'live', getSettings: () => ({width: 1920, height: 1080}), stop() { this.readyState = 'ended'; }});
+	const Audio = Object.assign(new Events(), {kind: 'audio', muted: !!Options.mutedTracks, readyState: 'live', stop() { this.readyState = 'ended'; }});
 	class Socket extends Events
 	{
 		constructor(Url) { super(); this.url = Url; this.readyState = 0; this.sent = []; Sockets.push(this); }
@@ -150,4 +151,27 @@ Test('an inactive native recorder error still drains its following final dataava
 	F.Recorders[0].state = 'inactive'; F.Recorders[0].emit('error');
 	F.Recorders[0].chunk('native-final'); F.Recorders[0].emit('stop');
 	await F.Receiver.stop('requested'); Assert.deepEqual(F.Data, ['first', 'native-final']); Assert.deepEqual(F.Ends, ['webrtc_recording_failed']);
+});
+
+Test('native muted audio and video must both receive media before the recorder is constructed', async () =>
+{
+	const F = Fixture({mutedTracks: true}); await F.Connect();
+	Assert.equal(F.Recorders.length, 0);
+	F.Video.muted = false; F.Video.emit('unmute'); await Settle(); Assert.equal(F.Recorders.length, 0);
+	// Signaling stays responsive while waiting for the first audio packet.
+	F.Sockets[0].message({message: 'ping'}); await Settle(); Assert.equal(F.Sockets[0].sent.at(-1).message, 'pong');
+	F.Audio.muted = false; F.Audio.emit('unmute'); await Settle(); Assert.equal(F.Recorders.length, 1);
+	Assert.deepEqual(F.Recorders[0].stream.getTracks().map(T => T.muted), [false, false]);
+	F.Audio.emit('unmute'); Assert.equal(F.Recorders.length, 1);
+	F.Recorders[0].chunk(); await F.Receiver.ready; await F.Receiver.stop();
+});
+
+Test('cancel while waiting for remote media cleans tracks and cannot start recording later', async () =>
+{
+	const F = Fixture({mutedTracks: true}); await F.Connect();
+	await F.Receiver.stop('canceled'); await Assert.rejects(F.Receiver.ready, /canceled/);
+	Assert.deepEqual(F.Ends, ['canceled']); Assert.equal(F.Peers[0].closed, true);
+	F.Audio.muted = F.Video.muted = false; F.Audio.emit('unmute'); F.Video.emit('unmute');
+	Assert.equal(F.Recorders.length, 0);
+	Assert.equal(F.Audio.listeners.get('unmute')?.length || 0, 0);
 });

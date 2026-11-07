@@ -127,7 +127,7 @@ Filename examples: `Page title_original.mp4` and `Page title_original_YYYY-MM-DD
 
 ## Supported media
 
-WebRTC appears as a normal media item with a **WebRTC** format badge. Supported signaling streams use an independent background receiver, so the source page can close after receiving starts. Shift-click Download to select a server quality; the existing manager provides received bytes, speed, **Save current**, **Stop and save**, and **Cancel**. Valid HLS alternatives remain visible alongside WebRTC. Unexpected connection loss is shown as interrupted with a partial file, rather than normal completion. MP4 is preferred with a WebM fallback, up to 2 GiB per recording. [Background reception and verification scope](docs/webrtc-background-2026-11-08.md)
+WebRTC appears as a normal media item with a **WebRTC** format badge. Supported signaling streams use an independent background receiver, so the source page can close after receiving starts. Shift-click Download to select a server quality; the existing manager provides received bytes, speed, **Save current**, **Stop and save**, and **Cancel**. Valid HLS alternatives remain visible alongside WebRTC. Unexpected connection loss is shown as interrupted with a partial file, rather than normal completion. MP4 is preferred with a WebM fallback, up to 2 GiB per recording. Recording waits for remote media to arrive to preserve audio. [Background reception and verification scope](docs/webrtc-background-2026-11-08.md) · [Audio and received-byte verification](docs/webrtc-audio-progress-2026-11-08.md)
 
 | Media | Support |
 |---|---|

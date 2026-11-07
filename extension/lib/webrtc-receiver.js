@@ -11,7 +11,7 @@ export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd}, Depende
 	const Stopped = new Promise(Resolve => { ResolveStopped = Resolve; });
 	let Socket, Peer, Stream, Recorder, SessionId, Mime, Timer, StatsTimer;
 	let Reason, Ending = false, Ended = false, IsReady = false, Connected = false, Offered = false;
-	let RecorderStarted = false, RecorderStopped = false;
+	let RecorderStarted = false, RecorderStopped = false, RemoteReady = false;
 	let Tail = Promise.resolve(), PendingBytes = 0, WriteFailed = false, LastMedia = Now(), LastBytes, StatsBusy = false;
 	const ErrorFor = Value => new Error(Value);
 	function Cleanup()
@@ -20,7 +20,11 @@ export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd}, Depende
 		signal?.removeEventListener('abort', Canceled);
 		try { Peer?.close(); } catch { /* 이 수신기가 소유한 연결만 정리합니다. */ }
 		try { Socket?.close(); } catch { /* 이미 닫힌 연결 */ }
-		for (const Track of Stream?.getTracks() || []) try { Track.stop(); } catch { /* 종료된 트랙 */ }
+		for (const Track of Stream?.getTracks() || [])
+		{
+			Track.removeEventListener?.('unmute', TryStartRecording);
+			try { Track.stop(); } catch { /* 종료된 트랙 */ }
+		}
 	}
 	async function Complete()
 	{
@@ -86,6 +90,16 @@ export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd}, Depende
 			else void Complete().catch(() => {});
 		}).finally(() => { PendingBytes -= Data.size; });
 	}
+	function TryStartRecording()
+	{
+		if (Reason || Recorder || !RemoteReady) return;
+		// track 이벤트는 실제 RTP 수신보다 먼저 발생합니다. muted 상태에서 MP4
+		// 녹화를 시작하면 Chrome이 짧은 무음 AAC만 저장하므로 첫 미디어를 기다립니다.
+		if (!Stream.getVideoTracks().some(Track => Track.readyState === 'live') ||
+			Stream.getTracks().some(Track => Track.readyState !== 'live' || Track.muted)) return;
+		try { StartRecording(); }
+		catch { void Stop('webrtc_recording_failed'); }
+	}
 	function StartRecording()
 	{
 		if (Reason || Recorder) return;
@@ -142,7 +156,13 @@ export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd}, Depende
 			(Array.isArray(Server.urls) ? Server.urls : [Server.urls]).some(Url => typeof Url === 'string' && /^turns?:/.test(Url)))) Config.iceTransportPolicy = 'all';
 		Peer = new D.RTCPeerConnection(Config);
 		Stream = new D.MediaStream();
-		Peer.addEventListener('track', Event => { if (!Reason) Stream.addTrack(Event.track); else Event.track.stop(); });
+		Peer.addEventListener('track', Event =>
+		{
+			if (Reason) { Event.track.stop(); return; }
+			Stream.addTrack(Event.track);
+			Event.track.addEventListener?.('unmute', TryStartRecording);
+			TryStartRecording();
+		});
 		Peer.addEventListener('connectionstatechange', () =>
 		{
 			if (!Reason && ['failed', 'disconnected', 'closed'].includes(Peer.connectionState)) void Stop('webrtc_connection_lost');
@@ -181,8 +201,8 @@ export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd}, Depende
 			case 'setRemoteSDP':
 				if (!Peer || Value.data?.[0] !== SessionId || typeof Value.data[1] !== 'string') throw ErrorFor('webrtc_connection_lost');
 				await Peer.setRemoteDescription({type: 'answer', sdp: Value.data[1]});
-				try { StartRecording(); }
-				catch { void Stop('webrtc_recording_failed'); }
+				RemoteReady = true;
+				TryStartRecording();
 				break;
 			case 'notifyStreamStatusEvent':
 				if (['FAILED', 'STOPPED', 'UNPUBLISHED'].includes(Value.data?.[0]?.status)) void Stop('webrtc_connection_lost');
