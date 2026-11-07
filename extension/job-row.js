@@ -3,7 +3,7 @@
  */
 import { ErrorText, Translate } from './lib/i18n.js';
 import { DownloadStageLabel } from './lib/download-log.js';
-import { GetDownloadMetrics, ProgressMax, SpeedSampleMs } from './lib/metrics.js';
+import { FormatDownloadBytes, GetDownloadMetrics, ProgressMax, SpeedSampleMs } from './lib/metrics.js';
 import { CreateJobMeasure } from './lib/job-measure.js';
 import { CreateButton, CopyLink, CreateElement, SendRequest, SetButtonIcon } from './lib/ui.js';
 import { CreateLiveBadge } from './media-badges.js';
@@ -345,16 +345,18 @@ export function UpdateJobRowMetrics(Entry, Job, Now, CountFormat)
 			{
 				Value.speed = Translate(Job.snapshot ? 'view_job_snapshot_muxing' : 'view_job_mp4_muxing');
 			}
-			else if (Job.live && !Job.recording)
-			{
-				Value.progress = Translate('view_job_segments', CountFormat.format(Job.finished ?? 0));
-			}
-			else if (!Job.count && !Job.recording)
+			else if (!Job.live && !Job.count && !Job.recording)
 			{
 				Value.speed = Translate('view_job_playlist_check');
 			}
 		}
-		Entry.measure.update(Value);
+		if (Job.state === 'active' || Job.state === 'paused')
+		{
+			Value.progress = FormatDownloadBytes(Job.bytesReceived);
+		}
+		const Description = Entry.measure.update(Value);
+		if (Entry.progress.title !== Description) Entry.progress.title = Description;
+		if (Entry.progress.getAttribute('aria-valuetext') !== Description) Entry.progress.setAttribute('aria-valuetext', Description);
 		const HasValue = Entry.progress.hasAttribute('value');
 		if (Value.percent === null)
 		{

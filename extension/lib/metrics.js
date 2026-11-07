@@ -35,6 +35,13 @@ function Size(Bytes)
 	return Translate('view_metric_bytes', Integer.format(Math.round(Bytes)));
 }
 
+/** 현재 수신량은 진행률 계산과 분리하여 같은 단위·언어로 표시합니다. */
+export function FormatDownloadBytes(Bytes)
+{
+	UpdateFormats();
+	return Size(Number.isFinite(Bytes) && Bytes > 0 ? Bytes : 0);
+}
+
 function TransferPercent(Item)
 {
 	if (Item.state === 'active' && (Item.hls || Item.recording))
