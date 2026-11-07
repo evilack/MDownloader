@@ -33,11 +33,20 @@ Test('defaults to a frozen timestamp at registration and preserves an explicit o
 	const Enqueue = RequestId => EnqueuePlayback({ requestId: RequestId, playlist: '#EXTM3U\n', count: 1, bytes: 188, pageTitle: '방송 제목' });
 	await Enqueue(First);
 	const Filename = Data['job:' + First].filename;
-	Assert.match(Filename, /^방송 제목_playback_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.mp4$/);
-	Assert.doesNotMatch(Filename, /MDownloader-/);
+	Assert.match(Filename, /^방송 제목_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.mp4$/);
+	Assert.doesNotMatch(Filename, /MDownloader|playback/);
 	await Enqueue(First);
 	Assert.equal(Data['job:' + First].filename, Filename);
 	Data.useDownloadDateTime = false;
 	await Enqueue(Second);
-	Assert.equal(Data['job:' + Second].filename, '방송 제목_playback.mp4');
+	Assert.equal(Data['job:' + Second].filename, '방송 제목.mp4');
+});
+
+Test('sources without original filenames use only the available title and start time', () =>
+{
+	const Started = new Date(2026, 10, 8, 15, 4, 6);
+	Assert.equal(SafeFilename(undefined, '방송 제목', Started), '방송 제목_2026-11-08_15-04-06.mp4');
+	Assert.equal(SafeFilename(null, '방송 제목', Started, '.webm'), '방송 제목_2026-11-08_15-04-06.webm');
+	Assert.equal(SafeFilename(undefined, '', Started), '2026-11-08_15-04-06.mp4');
+	Assert.equal(SafeFilename(undefined, '방송 제목'), '방송 제목.mp4');
 });

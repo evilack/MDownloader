@@ -44,27 +44,33 @@ function FilenameDateTime(StartedAt)
 	return DatePart + RuntimePolicy.Filename.TitleSeparator + TimePart;
 }
 
-export function SafeFilename(Name, PageTitle = '', StartedAt)
+export function SafeFilename(Name, PageTitle = '', StartedAt, FallbackExtension = '.mp4')
 {
 	// 날짜를 먼저 예약하여 긴 원본 이름을 줄여도 날짜·시각과 확장자는 끝까지 유지합니다.
 	const Timestamp = FilenameDateTime(StartedAt);
 	const Suffix = Timestamp ? RuntimePolicy.Filename.TitleSeparator + Timestamp : '';
 	const StemBudget = RuntimePolicy.Filename.MaxStemLength - Suffix.length;
-	const Cleaned = CleanFilenamePart(Name);
+	const bHasOriginal = typeof Name === 'string' && Name.trim().length > 0;
+	if (!bHasOriginal && !/^\.[a-z0-9]{1,8}$/.test(FallbackExtension))
+	{
+		throw new TypeError('Invalid output extension');
+	}
+	const Cleaned = bHasOriginal ? CleanFilenamePart(Name) : '';
 	const Dot = Cleaned.lastIndexOf('.');
-	const Extension = Dot < 0 ? '' : Cleaned.slice(Dot);
-	const Original = ShortenStem(Dot < 0 ? Cleaned : Cleaned.slice(0, Dot), StemBudget) || 'video';
+	const Extension = bHasOriginal ? Dot < 0 ? '' : Cleaned.slice(Dot) : FallbackExtension;
+	const Original = bHasOriginal ? ShortenStem(Dot < 0 ? Cleaned : Cleaned.slice(0, Dot), StemBudget) || 'video' : '';
 	const bIsIndex = Original.toLowerCase() === 'index';
 	// 이름이 짧으면 원래 파일명 전체를 보존합니다. 길면 페이지 제목과 원본 이름 모두 들어갈 여유를 나눕니다.
 	const CombinedBudget = StemBudget - RuntimePolicy.Filename.TitleSeparator.length;
 	const Title = typeof PageTitle === 'string'
-	? ShortenStem(CleanFilenamePart(PageTitle.trim()), bIsIndex ? StemBudget : Math.max(RuntimePolicy.Filename.MinTitleBudget, CombinedBudget - Original.length))
+	? ShortenStem(CleanFilenamePart(PageTitle.trim()), !bHasOriginal || bIsIndex ? StemBudget : Math.max(RuntimePolicy.Filename.MinTitleBudget, CombinedBudget - Original.length))
 	: '';
 	let Stem = Original;
 	if (Title)
 	{
-		Stem = bIsIndex ? Title : Title + RuntimePolicy.Filename.TitleSeparator + ShortenStem(Original, CombinedBudget - Title.length);
+		// 이름 없는 스트림은 원래 파일명이 있는 것처럼 playback/WebRTC 같은 단어를 합치지 않습니다.
+		Stem = !bHasOriginal || bIsIndex ? Title : Title + RuntimePolicy.Filename.TitleSeparator + ShortenStem(Original, CombinedBudget - Title.length);
 	}
 	const bReserved = ReservedName.test(Stem);
-	return (bReserved ? '_' : '') + Stem + Suffix + Extension;
+	return (bReserved ? '_' : '') + Stem + (Stem ? Suffix : Timestamp || 'video') + Extension;
 }

@@ -3,7 +3,6 @@ import {test as Test} from 'node:test';
 import {readFile as ReadFile} from 'node:fs/promises';
 import {CreateJobRow, UpdateJobRowMetrics} from '../extension/job-row.js';
 import {InitializeLocale} from '../extension/lib/i18n.js';
-import {CreateJobMeasure} from '../extension/lib/job-measure.js';
 
 class Node
 {
@@ -20,7 +19,7 @@ class Node
 	set value(Value) { this.attributes.value = String(Value); }
 }
 
-Test('the manager overlays received bytes on its progress bar and keeps speed beside the controls', async T =>
+Test('the manager displays received bytes immediately above speed and retains the native progress bar', async T =>
 {
 	T.mock.method(globalThis, 'fetch', async Url => new Response(await ReadFile(Url)));
 	globalThis.document = {createElement: Tag => new Node(Tag)};
@@ -48,25 +47,21 @@ Test('the manager overlays received bytes on its progress bar and keeps speed be
 		Entry.previous = {time: 1000, bytes: 2400000};
 		const Measure = Entry.measure.node;
 		UpdateJobRowMetrics(Entry, Job, 2000, CountFormat);
-		Assert.equal(Entry.progressLabel.textContent, Text);
-		Assert.equal(Measure.children[0].textContent, Speed);
-		Assert.deepEqual(Entry.row.children[1].children, [Entry.progress, Entry.progressLabel]);
-		Assert.equal(Entry.progressLabel.getAttribute('aria-hidden'), 'true');
+		Assert.equal(Measure.children[0].textContent, Text);
+		Assert.equal(Measure.children[1].textContent, Speed);
+		Assert.equal(Entry.row.children[1], Entry.progress);
 		Assert.equal(Entry.progress.hasAttribute('value'), Percent !== null);
 		if (Percent !== null) Assert.equal(Entry.progress.value, Percent);
 		Assert.equal(Entry.progress.title, Measure.title);
 		Assert.equal(Entry.progress.getAttribute('aria-valuetext'), Measure.title);
 		Assert.match(Measure.title, new RegExp(Text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-		Assert.equal(Measure.children.length, 1, 'received bytes must not be duplicated above the bar');
+		Assert.equal(Measure.children.length, 2, 'the existing two-line measure layout is retained');
 		if (Job.state !== 'complete')
 		{
 			UpdateJobRowMetrics(Entry, {...Job, bytesReceived: 12300000}, 3000, CountFormat);
-			Assert.equal(Entry.progressLabel.textContent, '12.3 MB');
+			Assert.equal(Measure.children[0].textContent, '12.3 MB');
 			Assert.match(Entry.progress.title, /12\.3 MB/);
 			Assert.equal(Entry.progress.getAttribute('aria-valuetext'), Measure.title);
 		}
 	});
-	const PopupMeasure = CreateJobMeasure();
-	PopupMeasure.update({progress: '5.8 MB', speed: '3.4 MB/s'});
-	Assert.deepEqual(PopupMeasure.node.children.map(Child => Child.textContent), ['5.8 MB', '3.4 MB/s']);
 });

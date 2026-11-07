@@ -121,7 +121,7 @@ export async function EnqueuePlayback({ requestId: RequestId, playlist: Playlist
 		}
 		await RecordDownloadLog('started', { requestId: RequestId });
 		const Job = {
-			requestId: RequestId, ...await DownloadTarget('playback.mp4', PageTitle), created: Date.now(), state: 'active',
+			requestId: RequestId, ...await DownloadTarget(undefined, PageTitle), created: Date.now(), state: 'active',
 			hls: true, bytesReceived: Bytes, finished: Count, count: Count, muxing: true,
 		};
 		await WriteJob(Key, Job);
@@ -168,7 +168,7 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
 	if (Item.format === 'WEBRTC')
 	{
-		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(Quality ? 'WebRTC.mp4' : Item.name, Item.pageTitle),
+		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle),
 			created: Date.now(), state: 'active', recording: true, live: true, bytesReceived: 0, finished: 0};
 		await RegisterMediaJob(Key, Job, TabId, Item, false);
 		try

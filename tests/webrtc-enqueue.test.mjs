@@ -27,6 +27,8 @@ Test('the existing enqueue registers WebRTC before receiving and controls it fro
 					Prepared = true;
 					Assert.equal(Local['job:' + Id].state, 'active');
 					Assert.equal(Message.job.background, true);
+					Assert.match(Message.job.filename, /^방송 제목_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.mp4$/);
+					Assert.doesNotMatch(Message.job.filename, /WebRTC|playback|MDownloader/);
 					return {ok: true, started: {mimeType: 'video/mp4'}};
 				}
 				if (Message.type === 'webrtcReceiverControl') { Controls.push(Message); return {ok: true}; }
@@ -53,7 +55,7 @@ Test('the existing enqueue registers WebRTC before receiving and controls it fro
 				Controls.push(args[0]);
 				return [{documentId: Doc, result: {state: 'stopping'}}];
 			}
-			return [{documentId: Doc, result: {page: Page, active: true, pageTitle: 'live'}}];
+			return [{documentId: Doc, result: {page: Page, active: true, pageTitle: '방송 제목'}}];
 		}}};
 	T.after(() => { delete globalThis.chrome; });
 	Assert.equal((await Enqueue({tabId: 18, scanId: 'scan', candidateId: 0, requestId: Id})).state, 'started');

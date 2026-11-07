@@ -1,18 +1,14 @@
 /**
- * 진행 수치와 속도를 갱신합니다. 관리자는 수치의 외부 오버레이를 전달하고, 팝업은 기존 두 줄 표시를 사용합니다.
+ * 진행률과 속도를 두 줄로 보여 주는 공용 컴포넌트입니다. 같은 문구를 반복해서 쓰지 않고, 보조 기술이 두 값을 함께 알 수 있는 설명도 갱신합니다.
  */
 import { Translate } from './i18n.js';
 import { CreateElement } from './ui.js';
-export function CreateJobMeasure(ProgressLabel)
+export function CreateJobMeasure()
 {
 	const LocalNode = CreateElement('span', '', 'job-measure');
-	const Progress = ProgressLabel ?? CreateElement('span', '', 'job-measure-progress');
+	const Progress = CreateElement('span', '', 'job-measure-progress');
 	const Speed = CreateElement('span', '', 'job-measure-speed');
-	if (!ProgressLabel)
-	{
-		LocalNode.append(Progress);
-	}
-	LocalNode.append(Speed);
+	LocalNode.append(Progress, Speed);
 	return {
 		node: LocalNode,
 		update(Value)
