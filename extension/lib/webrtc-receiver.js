@@ -9,7 +9,7 @@ export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd}, Depende
 	// stop만 기다리는 호출자에게도 시작 거절이 처리되지 않은 Promise로 새지 않습니다.
 	Ready.catch(() => {});
 	const Stopped = new Promise(Resolve => { ResolveStopped = Resolve; });
-	let Socket, Peer, Stream, Recorder, SessionId, Mime, Timer, StatsTimer;
+	let Socket, Peer, Stream, Recorder, AudioSink, AudioStream, SessionId, Mime, Timer, StatsTimer;
 	let Reason, Ending = false, Ended = false, IsReady = false, Connected = false, Offered = false;
 	let RecorderStarted = false, RecorderStopped = false, RemoteReady = false;
 	let Tail = Promise.resolve(), PendingBytes = 0, WriteFailed = false, LastMedia = Now(), LastBytes, StatsBusy = false;
@@ -18,6 +18,13 @@ export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd}, Depende
 	{
 		Clear(Timer); ClearEvery(StatsTimer);
 		signal?.removeEventListener('abort', Canceled);
+		if (AudioSink)
+		{
+			AudioSink.pause();
+			AudioSink.srcObject = null;
+			AudioSink.remove();
+			AudioSink = AudioStream = undefined;
+		}
 		try { Peer?.close(); } catch { /* 이 수신기가 소유한 연결만 정리합니다. */ }
 		try { Socket?.close(); } catch { /* 이미 닫힌 연결 */ }
 		for (const Track of Stream?.getTracks() || [])
@@ -160,6 +167,26 @@ export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd}, Depende
 		{
 			if (Reason) { Event.track.stop(); return; }
 			Stream.addTrack(Event.track);
+			if (Event.track.kind === 'audio')
+			{
+				try
+				{
+					if (!AudioSink)
+					{
+						// 독립 문서는 사이트 플레이어의 오디오 렌더러를 공유하지 못합니다.
+						// 요소에 연결해 Chrome의 원격 음성 처리를 초기화해야 녹화기가
+						// PCM을 받습니다. play/autoplay 없이 연결만 하며 소리는 내지 않습니다.
+						AudioStream = new D.MediaStream();
+						AudioSink = D.document.createElement('audio');
+						AudioSink.muted = true; AudioSink.volume = 0; AudioSink.hidden = true;
+						D.document.body.append(AudioSink);
+						AudioStream.addTrack(Event.track);
+						AudioSink.srcObject = AudioStream;
+					}
+					else AudioStream.addTrack(Event.track);
+				}
+				catch { void Stop('webrtc_recording_failed'); return; }
+			}
 			Event.track.addEventListener?.('unmute', TryStartRecording);
 			TryStartRecording();
 		});

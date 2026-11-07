@@ -5,7 +5,7 @@ import {StartWebRtcReceiver} from '../extension/lib/webrtc-receiver.js';
 
 function Fixture(Options = {})
 {
-	const Sockets = [], Peers = [], Recorders = [], Data = [], Ends = [];
+	const Sockets = [], Peers = [], Recorders = [], Data = [], Ends = [], AudioSinks = [];
 	class Events
 	{
 		listeners = new Map();
@@ -50,6 +50,12 @@ function Fixture(Options = {})
 	}
 	const Descriptor = {url: 'wss://receiver.test/path', connection: {appKey: 'private-key', custom: {name: 'stream', aclAuth: 'private-token'}}, streamId: 'stream', quality: 'source'};
 	const Dependencies = {WebSocket: Socket, RTCPeerConnection: Peer, MediaStream: Stream, MediaRecorder: Recorder,
+		document: {body: {append(Element) { Element.attached = true; }}, createElement(Tag)
+		{
+			Assert.equal(Tag, 'audio');
+			const Element = {pause() { this.paused = true; }, remove() { this.removed = true; }};
+			AudioSinks.push(Element); return Element;
+		}},
 		crypto: {randomUUID: () => 'independent-session'}, navigator: {userAgent: 'test-agent', appVersion: 'test-os'},
 		setTimeout: (...Args) => setTimeout(...Args).unref(), clearTimeout, setInterval: (...Args) => setInterval(...Args).unref(), clearInterval, Date};
 	const Receiver = StartWebRtcReceiver(Descriptor, {signal: Options.signal,
@@ -62,7 +68,7 @@ function Fixture(Options = {})
 		await Settle(); Sockets[0].message({message: 'getStreamInfoReply', data: Info});
 		await Settle(); Sockets[0].message({message: 'setRemoteSDP', data: ['independent-session', 'answer-sdp']}); await Settle();
 	}
-	return {Receiver, Descriptor, Sockets, Peers, Recorders, Video, Audio, Data, Ends, Info, Connect};
+	return {Receiver, Descriptor, Sockets, Peers, Recorders, Video, Audio, Data, Ends, AudioSinks, Info, Connect};
 }
 
 Test('independent signaling validates server quality and starts MP4 recording before readiness', async () =>
@@ -174,4 +180,28 @@ Test('cancel while waiting for remote media cleans tracks and cannot start recor
 	F.Audio.muted = F.Video.muted = false; F.Audio.emit('unmute'); F.Video.emit('unmute');
 	Assert.equal(F.Recorders.length, 0);
 	Assert.equal(F.Audio.listeners.get('unmute')?.length || 0, 0);
+});
+
+Test('standalone receiver binds its own silent audio renderer and releases it after final data', async () =>
+{
+	const F = Fixture(); await F.Connect();
+	Assert.equal(F.AudioSinks.length, 1);
+	const Sink = F.AudioSinks[0];
+	Assert.equal(Sink.attached, true); Assert.equal(Sink.muted, true); Assert.equal(Sink.volume, 0);
+	Assert.notEqual(Sink.autoplay, true);
+	Assert.deepEqual(Sink.srcObject.getTracks(), [F.Audio]);
+	Assert.equal(Sink.srcObject.getVideoTracks().length, 0);
+	F.Recorders[0].chunk('received'); await F.Receiver.ready;
+	await F.Receiver.stop();
+	Assert.deepEqual(F.Data, ['received', 'last']);
+	Assert.equal(Sink.paused, true); Assert.equal(Sink.srcObject, null); Assert.equal(Sink.removed, true);
+});
+
+Test('cancel before remote tracks unmute releases the independent audio renderer', async () =>
+{
+	const F = Fixture({mutedTracks: true}); await F.Connect();
+	Assert.equal(F.AudioSinks.length, 1); await F.Receiver.stop('canceled');
+	await Assert.rejects(F.Receiver.ready, /canceled/);
+	Assert.equal(F.Recorders.length, 0); Assert.equal(F.AudioSinks[0].srcObject, null);
+	Assert.equal(F.AudioSinks[0].removed, true);
 });
