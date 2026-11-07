@@ -260,21 +260,21 @@ export function CreateJobRow(Job, Tile, Context)
 	{
 		InlineActions.append(SetButtonIcon(Control('', 'show'), Translate('view_action_show'), 'folder'));
 	}
-	// 오른쪽 작업 영역의 순서를 고정합니다. 중지 및 저장은 취소 다음에 두고,
-	// 두 아이콘 모두 공통 생성기를 거쳐 툴팁과 접근성 이름을 함께 받습니다.
+	// 오른쪽 작업 영역은 취소 → 현재 구간 저장 → 중지 및 저장 순서로 배치합니다.
+	// 아이콘은 공통 생성기를 거쳐 툴팁과 접근성 이름을 함께 받습니다.
 	if (Job.state === 'active' || Job.state === 'paused')
 	{
 		InlineActions.append(SetButtonIcon(Control('', 'cancel'), Translate('view_action_cancel'), 'cancel'));
+	}
+	if (['active', 'paused'].includes(Job.state) && !Job.snapshot && Job.snapshotAvailable && !Job.muxing)
+	{
+		InlineActions.append(SetButtonIcon(Control('', 'snapshot', true), Translate(Job.hls ? 'view_action_snapshot' : 'view_action_snapshot_file'), 'download'));
 	}
 	if (Job.state === 'active' && !Job.snapshot && !Job.muxing && (Job.hls || Job.live))
 	{
 		const Finish = SetButtonIcon(Control('', 'finish', true), Translate('view_action_finish'), 'stop-save');
 		Finish.disabled = !CanFinishJob(Job);
 		InlineActions.append(Finish);
-	}
-	if (['active', 'paused'].includes(Job.state) && !Job.snapshot && Job.snapshotAvailable && !Job.muxing)
-	{
-		InlineActions.append(SetButtonIcon(Control('', 'snapshot', true), Translate(Job.hls ? 'view_action_snapshot' : 'view_action_snapshot_file'), 'download'));
 	}
 	if (Job.hasUrl)
 	{
