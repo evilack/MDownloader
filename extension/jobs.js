@@ -26,14 +26,14 @@ import {LaunchWebRtc, ControlWebRtc, ForgetWebRtcControl} from './webrtc-jobs.js
 const Pending = new Map();
 const Removing = new Set();
 const PendingSnapshots = new Set();
-async function RegisterMediaJob(Key, Job, TabId, Candidate)
+async function RegisterMediaJob(Key, Job, TabId, Candidate, PreparePreview = true)
 {
 	await WriteJob(Key, Job);
 	if (DebugLog.IsEnabled())
 	{
 		DebugLog.Record('JobRegistered', () => ({ requestId: Job.requestId, tabId: TabId }));
 	}
-	void PrepareJobPreview(Job, TabId, Candidate).catch(() =>
+	if (PreparePreview) void PrepareJobPreview(Job, TabId, Candidate).catch(() =>
 	{
 	});
 }
@@ -155,7 +155,7 @@ function EnqueueOnce(RequestId, Start)
 	return Pending.get(Key);
 }
 
-async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: CandidateId, requestId: RequestId, variantUrl: VariantUrl, scope: Scope })
+async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: CandidateId, requestId: RequestId, variantUrl: VariantUrl, quality: Quality, scope: Scope })
 {
 	const Existing = await ReadJob(Key);
 	if (Existing)
@@ -167,10 +167,14 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
 	if (Item.format === 'WEBRTC')
 	{
-		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(Item.name, Item.pageTitle),
+		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(Quality ? 'WebRTC.mp4' : Item.name, Item.pageTitle),
 			created: Date.now(), state: 'active', recording: true, live: true, bytesReceived: 0, finished: 0};
-		await RegisterMediaJob(Key, Job, TabId, Item);
-		try { await LaunchWebRtc(Job, Item, TabId); }
+		await RegisterMediaJob(Key, Job, TabId, Item, !Quality);
+		try
+		{
+			await LaunchWebRtc(Job, Item, TabId, Quality);
+			if (Quality) void PrepareJobPreview(Job, TabId, Item).catch(() => {});
+		}
 		catch (ErrorValue)
 		{
 			if (ErrorValue.name === 'AbortError')

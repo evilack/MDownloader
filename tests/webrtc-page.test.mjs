@@ -72,6 +72,26 @@ Test('records only the selected live source and stops only cloned tracks', async
 	Assert.equal(F.Messages.at(-1).reason, 'requested');
 });
 
+Test('a document reserves its recording slot before a server quality change', async () =>
+{
+	const F = Fixture();
+	Assert.equal((await F.Run({action: 'reserve'})).reserved, true);
+	Assert.equal((await F.Run({action: 'reserve', requestId: 'second'})).error, 'webrtc_busy');
+	Assert.equal((await F.Run({action: 'start', requestId: 'second'})).error, 'webrtc_busy');
+	Assert.equal(F.Clones.length, 0);
+	Assert.equal((await F.Run({action: 'start'})).width, 720);
+	Assert.equal((await F.Run({action: 'reserve', requestId: 'third'})).error, 'webrtc_busy');
+	await F.Run({action: 'stop'}); await Settle();
+});
+
+Test('stop during reservation prevents a delayed producer from starting', async () =>
+{
+	const F = Fixture(); await F.Run({action: 'reserve'});
+	Assert.equal((await F.Run({action: 'stop'})).reserved, true);
+	Assert.equal((await F.Run({action: 'start'})).error, 'webrtc_source_changed');
+	Assert.equal(F.Clones.length, 0);
+});
+
 Test('a replaced source ends the recording instead of capturing another video', async () =>
 {
 	const F = Fixture();

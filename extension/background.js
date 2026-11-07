@@ -18,7 +18,7 @@ import { FinishDownloadNaming, ForgetDownloadFilename } from './lib/browser-down
 import { SyncMediaContext } from './media-context-registration.js';
 import { DebugLog, ReportDebugFailure } from './lib/debug-log.js';
 import { InitializeDebugLogging } from './lib/debug-runtime.js';
-import {RelayWebRtc, WebRtcSourceLost, CancelAllWebRtc} from './webrtc-jobs.js';
+import {RelayWebRtc, WebRtcSourceLost, CancelAllWebRtc, WebRtcQualities} from './webrtc-jobs.js';
 void InitializeDebugLogging(async bEnabled =>
 {
 	// 설정 전환에만 기존 오프스크린 문서에 알립니다. 진단 때문에 문서를 만들거나 깨우지 않습니다.
@@ -63,6 +63,7 @@ async function Route(Message)
 		case 'previewCandidate': return PreviewCandidate(Message);
 		case 'captureCandidatePreview': return CaptureCandidatePreview(Message);
 		case 'hlsQualities': return HlsQualities(Message);
+		case 'webrtcQualities': return WebRtcQualities(Message);
 		case 'enqueue': return Enqueue(Message);
 		case 'jobs': return ListJobs(Message.requestIds, Message.mediaKeys);
 		case 'jobUrl': return JobUrl(Message.requestId);

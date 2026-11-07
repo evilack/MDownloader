@@ -107,7 +107,7 @@ function QualityHarness(T, Format = 'M3U8', Qualities = [{url: 'https://cdn.test
 	globalThis.chrome = {storage: {local: {get: async() => ({chooseHlsQuality: true})}}, runtime: {sendMessage: async Message =>
 			{
 				Sent.push(Message);
-				return {ok: true, data: Message.type === 'hlsQualities' ? Qualities: {state: 'started'}};
+				return {ok: true, data: ['hlsQualities', 'webrtcQualities'].includes(Message.type) ? Qualities: {state: 'started'}};
 			}}};
 	T.after(() =>
 	{
@@ -184,6 +184,35 @@ Test('cancel and Escape close item quality controls without registering a downlo
 		Assert.equal(H.button.focused, true);
 	}
 	Assert.equal(H.sent.some(Message => Message.type === 'enqueue'), false);
+});
+Test('WebRTC Shift click uses the existing dialog and sends a server profile instead of a URL', async T =>
+{
+	const Qualities = [{name: 'source', session: 'server-session', resolution: '720x960', bandwidth: 1800000},
+		{name: '240p', session: 'server-session', resolution: '426x240', bandwidth: 500000}];
+	const H = QualityHarness(T, 'WEBRTC', Qualities);
+	const Click = H.button.events.click({shiftKey: true});
+	await H.settle();
+	Assert.equal(H.sent[0].type, 'webrtcQualities');
+	Assert.equal(H.get('quality-dialog').open, true);
+	H.get('quality').selectedIndex = 1;
+	const Confirm = H.get('confirm-quality');
+	await Confirm.form.events.submit({submitter: Confirm, preventDefault() {}});
+	await Click;
+	Assert.deepEqual(H.sent.at(-1).quality, {name: '240p', session: 'server-session'});
+	Assert.equal(H.sent.at(-1).variantUrl, undefined);
+});
+
+Test('WebRTC single server profile still opens the requested Shift dialog; normal click keeps the current feed', async T =>
+{
+	const H = QualityHarness(T, 'WEBRTC', [{name: 'source', session: 's', resolution: '720x960', bandwidth: 1800000}]);
+	await H.button.events.click({shiftKey: false});
+	Assert.equal(H.sent[0].type, 'enqueue');
+	Assert.equal(H.sent[0].quality, undefined);
+	const Click = H.button.events.click({shiftKey: true});
+	await H.settle();
+	Assert.equal(H.get('quality-dialog').open, true);
+	H.get('quality-dialog').close(); await Click;
+	Assert.equal(H.sent.filter(M => M.type === 'enqueue').length, 1);
 });
 Test('Shift click uses automatic registration for a single rendition or a direct media file', async T =>
 {

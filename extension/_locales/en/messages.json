@@ -1314,5 +1314,11 @@
   },
   "stream_hls_decryption_failed": {
     "message": "HLS decryption failed. The key, IV or encrypted segment may be invalid."
+  },
+  "webrtc_quality_unavailable": {
+    "message": "Server quality information is unavailable. Reload the video page after reloading the extension."
+  },
+  "webrtc_quality_failed": {
+    "message": "Could not switch to the selected server quality. Please try again."
   }
 }

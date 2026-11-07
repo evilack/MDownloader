@@ -1314,5 +1314,11 @@
   },
   "stream_hls_decryption_failed": {
     "message": "HLS 解密失败。密钥、IV 或加密分片可能无效。"
+  },
+  "webrtc_quality_unavailable": {
+    "message": "无法获取服务器画质信息。请重新加载扩展程序后，再刷新视频页面。"
+  },
+  "webrtc_quality_failed": {
+    "message": "无法切换到所选的服务器画质，请重试。"
   }
 }

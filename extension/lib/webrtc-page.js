@@ -2,12 +2,13 @@
 export async function WebRtcPageTask(Options)
 {
 	const Existing = globalThis.MDownloaderWebRtcRecording;
+	if (Existing?.reserved && Existing.expires < Date.now()) Existing.stop('webrtc_source_changed');
 	if (Options.action === 'status' || Options.action === 'stop')
 	{
 		if (!Existing || Existing.requestId !== Options.requestId || Existing.token !== Options.token)
 			return null;
 		if (Options.action === 'stop') Existing.stop(Options.reason === 'canceled' ? 'canceled' : 'requested');
-		return {state: Existing.state, reason: Existing.reason, count: Existing.count};
+		return {state: Existing.state, reason: Existing.reason, count: Existing.count, reserved: Existing.reserved === true};
 	}
 	if (location.href !== Options.page) return {error: 'webrtc_source_changed'};
 	const Players = [...document.querySelectorAll('video')].filter(Player =>
@@ -26,11 +27,28 @@ export async function WebRtcPageTask(Options)
 			streams: Players.map(Player => ({trackId: Player.srcObject.getVideoTracks().find(Track => Track.readyState === 'live').id,
 				width: Player.videoWidth, height: Player.videoHeight}))};
 	}
-	if (Options.action !== 'start') return null;
-	if (Existing && Existing.state !== 'ended') return {error: 'webrtc_busy'};
+	if (Options.action !== 'start' && Options.action !== 'reserve') return null;
+	const OwnReservation = Existing?.reserved && Existing.requestId === Options.requestId && Existing.token === Options.token;
+	if (Existing && Existing.state !== 'ended' && !(Options.action === 'start' && OwnReservation)) return {error: 'webrtc_busy'};
+	if (Options.action === 'start' && OwnReservation && Existing.state !== 'preparing') return {error: 'webrtc_source_changed'};
 	const Matches = Players.filter(Player => Player.srcObject.getVideoTracks().some(Track => Track.id === Options.trackId && Track.readyState === 'live'));
 	if (Matches.length !== 1) return {error: 'webrtc_source_changed'};
 	const Player = Matches[0], Original = Player.srcObject;
+	if (Options.action === 'reserve')
+	{
+		// 화질 변경 전에 문서의 단일 녹화 자리를 확보합니다. 조회와 시작 사이의
+		// 동시 요청이 기존 저장의 수신 화질을 바꾸지 않도록 같은 JS 실행에서 예약합니다.
+		globalThis.MDownloaderWebRtcRecording = {requestId: Options.requestId, token: Options.token,
+			reserved: true, state: 'preparing', count: 0, expires: Date.now() + 45000,
+			stop(Reason) { this.reason = Reason; this.state = 'ended'; }};
+		return {reserved: true};
+	}
+	if (Options.qualityLease && (Player.videoWidth !== Options.qualityWidth || Player.videoHeight !== Options.qualityHeight))
+		return {error: 'webrtc_quality_failed'};
+	const QualityEvent = Action =>
+	{
+		if (Options.qualityLease) dispatchEvent(new CustomEvent('mdownloader-webrtc-quality-' + Action, {detail: Options.qualityLease}));
+	};
 	const Mime = ['video/mp4;codecs=avc1.42001f,mp4a.40.2', 'video/webm;codecs=vp8,opus', 'video/webm']
 		.find(Value => MediaRecorder.isTypeSupported(Value));
 	if (!Mime) return {error: 'webrtc_unsupported'};
@@ -90,6 +108,7 @@ export async function WebRtcPageTask(Options)
 	Recorder.onstop = async () =>
 	{
 		clearInterval(Timer);
+		QualityEvent('release');
 		removeEventListener('pagehide', Leaving);
 		Clones.forEach(Track => Track.stop());
 		await Tail;
@@ -100,12 +119,16 @@ export async function WebRtcPageTask(Options)
 	try
 	{
 		Recorder.start(1000);
+		QualityEvent('renew');
 		globalThis.MDownloaderWebRtcRecording = Session;
 		addEventListener('pagehide', Leaving, {once: true});
 		let Checking = false;
 		Timer = setInterval(async () =>
 		{
 			if (!SourceAlive()) return Session.stop('webrtc_source_changed');
+			if (Options.qualityLease && (Player.videoWidth !== Options.qualityWidth || Player.videoHeight !== Options.qualityHeight))
+				return Session.stop('webrtc_quality_failed');
+			QualityEvent('renew');
 			if (Checking) return;
 			Checking = true;
 			try { await Send({heartbeat: true}); }

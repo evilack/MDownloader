@@ -2,4 +2,5 @@
 import { CreateContentScriptSync } from './lib/content-script-registration.js';
 export const SyncMediaContext = CreateContentScriptSync([
 	{ id: 'mdownloader-media-context', js: ['data/page-policy.js', 'media-context-page.js'] },
+	{ id: 'mdownloader-webrtc-quality', js: ['webrtc-quality-observer.js'], world: 'MAIN' },
 ]);

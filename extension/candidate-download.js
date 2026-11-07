@@ -71,7 +71,7 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 				Listeners.abort();
 				Slot.remove();
 				Trigger.focus();
-				Resolve(QualityDialog.returnValue || null);
+				Resolve(QualityDialog.returnValue ? Qualities[Number(QualityDialog.returnValue) - 1] : null);
 			}, { once: true });
 			// show()는 비모달이므로 Esc 처리를 직접 연결합니다. 목록 이동으로 닫을 때도
 			// 같은 close 경로가 리스너와 삽입 영역을 정리하고 등록을 취소합니다.
@@ -110,7 +110,7 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 						{
 							DebugLog.Record('QualitySelected', () => ({ variantIndex: QualitySelect.selectedIndex, bandwidth: Selected.bandwidth }));
 						}
-						QualityDialog.close(Selected.url);
+						QualityDialog.close(String(QualitySelect.selectedIndex + 1));
 					}
 				}
 				catch
@@ -137,8 +137,10 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 	function CreateDownloadButton(Candidate, Input, IsCurrent)
 	{
 		const bIsHls = Candidate.format === MediaFormat.Hls;
+		const bIsWebRtc = Candidate.format === MediaFormat.WebRtc;
+		const bHasQuality = bIsHls || bIsWebRtc;
 		const BaseLabel = Translate(Candidate.serverPermission ? 'view_download_with_permission' : 'view_download');
-		const DownloadLabel = bIsHls ? Translate('view_download_quality_hint', BaseLabel) : BaseLabel;
+		const DownloadLabel = bHasQuality ? Translate('view_download_quality_hint', BaseLabel) : BaseLabel;
 		const Download = CreateButton('', async UiEvent =>
 		{
 			// 키를 계속 감시하거나 설정을 읽지 않고 클릭 순간의 의도만 고정합니다.
@@ -148,7 +150,7 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 			{
 				DebugLog.Record('QualitySelected', () => ({ bChooseQuality: bChooseQuality }));
 			}
-			if (bIsHls && ActiveActions)
+			if (bHasQuality && ActiveActions)
 			{
 				return;
 			}
@@ -176,22 +178,23 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 					return;
 				}
 				let VariantUrl;
-				if (bIsHls && bChooseQuality)
+				let Quality;
+				if (bHasQuality && bChooseQuality)
 				{
 					Announce(Translate('view_quality_checking'));
-					const Qualities = await SendRequest('hlsQualities', Input);
+					const Qualities = await SendRequest(bIsWebRtc ? 'webrtcQualities' : 'hlsQualities', Input);
 					if (!IsCurrent())
 					{
 						return;
 					}
-					if (Qualities.length > 1)
+					if (Qualities.length > 1 || bIsWebRtc && Qualities.length === 1)
 					{
-						VariantUrl = await ChooseQuality(Qualities, Download);
+						const Selected = await ChooseQuality(Qualities, Download);
 						if (!IsCurrent())
 						{
 							return;
 						}
-						if (!VariantUrl)
+						if (!Selected)
 						{
 							Download.disabled = false;
 							SetControlLabel(Download, DownloadLabel);
@@ -199,9 +202,11 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 							Announce(Translate('view_quality_canceled'));
 							return;
 						}
+						if (bIsWebRtc) Quality = {name: Selected.name, session: Selected.session};
+						else VariantUrl = Selected.url;
 					}
 				}
-				const Job = await SendRequest('enqueue', { ...Input, requestId: RequestId, variantUrl: VariantUrl });
+				const Job = await SendRequest('enqueue', { ...Input, requestId: RequestId, variantUrl: VariantUrl, ...(Quality ? {quality: Quality} : {}) });
 				if (!IsCurrent())
 				{
 					return;

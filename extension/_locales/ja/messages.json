@@ -1314,5 +1314,11 @@
   },
   "stream_hls_decryption_failed": {
     "message": "HLSの復号に失敗しました。キー、IV、または暗号化セグメントが無効な可能性があります。"
+  },
+  "webrtc_quality_unavailable": {
+    "message": "サーバーの画質情報を取得できません。拡張機能の再読み込み後に動画ページも再読み込みしてください。"
+  },
+  "webrtc_quality_failed": {
+    "message": "選択したサーバーの画質に切り替えられませんでした。もう一度お試しください。"
   }
 }

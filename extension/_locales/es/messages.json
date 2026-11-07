@@ -1314,5 +1314,11 @@
   },
   "stream_hls_decryption_failed": {
     "message": "No se pudo descifrar el HLS. La clave, el IV o el segmento cifrado pueden no ser válidos."
+  },
+  "webrtc_quality_unavailable": {
+    "message": "No está disponible la información de calidad del servidor. Recarga la página del vídeo después de recargar la extensión."
+  },
+  "webrtc_quality_failed": {
+    "message": "No se pudo cambiar a la calidad del servidor seleccionada. Inténtalo de nuevo."
   }
 }

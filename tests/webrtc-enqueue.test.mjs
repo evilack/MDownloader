@@ -31,6 +31,7 @@ Test('the existing enqueue registers WebRTC before receiving and controls it fro
 			{
 				Assert.deepEqual(target.documentIds, [Doc]);
 				if (args[0].action === 'probe') return [{documentId: Doc, result: {page: Page, streams: [{trackId: 'track'}]}}];
+				if (args[0].action === 'reserve') return [{documentId: Doc, result: {reserved: true}}];
 				if (args[0].action === 'start')
 				{
 					Assert.equal(Prepared, true);

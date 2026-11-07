@@ -1314,5 +1314,11 @@
   },
   "stream_hls_decryption_failed": {
     "message": "Le déchiffrement HLS a échoué. La clé, le vecteur IV ou le segment chiffré peut être invalide."
+  },
+  "webrtc_quality_unavailable": {
+    "message": "Les qualités proposées par le serveur sont indisponibles. Rechargez la page vidéo après avoir rechargé l’extension."
+  },
+  "webrtc_quality_failed": {
+    "message": "Impossible de passer à la qualité du serveur sélectionnée. Veuillez réessayer."
   }
 }
