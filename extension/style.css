@@ -131,6 +131,67 @@ button:disabled { opacity: .68; cursor: default; }
 .job-inline-actions { display: flex; flex: none; align-items: center; gap: 7px; }
 .tooltip { position: absolute; z-index: 2; inset-block-start: 100%; inset-inline-start: 0; width: max-content; max-width: calc(100vw - 42px); max-height: 40vh; overflow: auto; overscroll-behavior: contain; padding: 7px 9px; border: 1px solid #a8b2c1; border-radius: 7px; background: #0e1219; color: var(--text); overflow-wrap: anywhere; }
 progress { display: block; width: 100%; height: 8px; margin: 9px 0 0; accent-color: var(--mint); }
+.job-progress { --job-progress-duration: 1.5s; position: relative; container-type: inline-size; overflow: clip; border-radius: 4px; margin-block-start: 9px; block-size: 20px; }
+.job-progress > progress {
+  --job-progress-track: var(--surface);
+  --job-progress-fill: var(--mint);
+  appearance: none;
+  border: 0 solid;
+  border-radius: 4px;
+  overflow: clip;
+  container-type: inline-size;
+  margin: 0;
+  block-size: 100%;
+  background: var(--job-progress-track);
+}
+.job-progress > progress::-webkit-progress-bar { background: transparent; }
+.job-progress > progress::-webkit-progress-value { background: var(--job-progress-fill); border-radius: 4px; }
+.job-progress > progress::-moz-progress-bar { background: var(--job-progress-fill); border-radius: 4px; }
+/* Chromium의 미정 진행률 내부 채움은 사용자 애니메이션을 그리지 않아 장식용 채움만 별도로 표시합니다. 네이티브 progress의 value는 비워 둡니다. */
+.job-progress:has(> progress:indeterminate)::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  inline-size: 30%;
+  background: var(--mint);
+  border-radius: 4px;
+  pointer-events: none;
+  animation: job-progress-pulse var(--job-progress-duration) infinite linear;
+}
+.job-progress:dir(rtl):has(> progress:indeterminate)::before { animation-direction: reverse; }
+.job-progress-label {
+  position: absolute;
+  z-index: 1;
+  inset-inline-end: 4px;
+  inset-block: 3px;
+  display: grid;
+  align-items: center;
+  max-inline-size: calc(100% - 8px);
+  padding-inline: 5px;
+  border-radius: 3px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+@keyframes job-progress-pulse {
+  from { inline-size: 30%; translate: -30cqi; margin-right: auto; }
+  to { inline-size: 30%; translate: 100cqi; margin-right: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .job-progress { --job-progress-duration: 10s; }
+}
+@media (forced-colors: active) {
+  .job-progress > progress { --job-progress-track: Canvas; --job-progress-fill: Highlight; }
+  .job-progress:has(> progress:indeterminate)::before { background: Highlight; }
+}
 .tooltip[data-above] { inset-block: auto 100%; }
 .state { color: var(--mint); }
 .job-status-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-block-start: 6px; }

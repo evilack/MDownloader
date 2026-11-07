@@ -33,10 +33,11 @@ Test('defaults to a frozen timestamp at registration and preserves an explicit o
 	const Enqueue = RequestId => EnqueuePlayback({ requestId: RequestId, playlist: '#EXTM3U\n', count: 1, bytes: 188, pageTitle: '방송 제목' });
 	await Enqueue(First);
 	const Filename = Data['job:' + First].filename;
-	Assert.match(Filename, /^방송 제목_MDownloader-playback_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.mp4$/);
+	Assert.match(Filename, /^방송 제목_playback_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.mp4$/);
+	Assert.doesNotMatch(Filename, /MDownloader-/);
 	await Enqueue(First);
 	Assert.equal(Data['job:' + First].filename, Filename);
 	Data.useDownloadDateTime = false;
 	await Enqueue(Second);
-	Assert.equal(Data['job:' + Second].filename, '방송 제목_MDownloader-playback.mp4');
+	Assert.equal(Data['job:' + Second].filename, '방송 제목_playback.mp4');
 });

@@ -121,7 +121,7 @@ export async function EnqueuePlayback({ requestId: RequestId, playlist: Playlist
 		}
 		await RecordDownloadLog('started', { requestId: RequestId });
 		const Job = {
-			requestId: RequestId, ...await DownloadTarget('MDownloader-playback.mp4', PageTitle), created: Date.now(), state: 'active',
+			requestId: RequestId, ...await DownloadTarget('playback.mp4', PageTitle), created: Date.now(), state: 'active',
 			hls: true, bytesReceived: Bytes, finished: Count, count: Count, muxing: true,
 		};
 		await WriteJob(Key, Job);

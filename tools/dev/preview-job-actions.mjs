@@ -17,7 +17,8 @@ document.getElementById('empty').hidden = true;
 const Active = document.getElementById('active');
 Active.hidden = false;
 const Jobs = [
- {requestId: 'finite-ready', filename: '샘플 영상 — HLS 다운로드.mp4', hls: true, snapshotAvailable: true, finished: 1},
+ {requestId: 'finite-ready', filename: '샘플 영상 — HLS 다운로드.mp4', hls: true, snapshotAvailable: true, finished: 500, bytesReceived: 10700000},
+ {requestId: 'live-ready', filename: '샘플 라이브 — WebRTC 다운로드.mp4', recording: true, live: true, snapshotAvailable: true, finished: 4, bytesReceived: 10400000},
  {requestId: 'finite-waiting', filename: '준비 중 — 첫 구간을 받는 중.mp4', hls: true, snapshotAvailable: false, finished: 0},
 ];
 const CountFormat = new Intl.NumberFormat();
@@ -33,7 +34,8 @@ for (const Value of Jobs)
  const Entry = CreateJobRow(Job, {control: Control}, {CountFormat, bShowDiagnostics: false,
  Announce: Text => {document.getElementById('status').textContent = Text;}, Refresh: () => {}});
  Active.querySelector('ul').append(Entry.row);
- UpdateJobRowMetrics(Entry, Job, performance.now(), CountFormat);
+ Entry.previous = {time: 1000, bytes: Math.max(0, Job.bytesReceived - 1100000)};
+ UpdateJobRowMetrics(Entry, Job, 2000, CountFormat);
 }
 document.getElementById('status').textContent = 'UI 검사 픽스처 · 설치 확장 아님';
 `;

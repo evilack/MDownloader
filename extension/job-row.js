@@ -177,14 +177,20 @@ export function CreateJobRow(Job, Tile, Context)
 	const bRunning = ['active', 'paused', 'complete'].includes(Job.state);
 	let Measure;
 	let Progress;
+	let ProgressLabel;
 	if (bRunning)
 	{
-		Measure = CreateJobMeasure();
-		End.append(Measure.node);
+		const ProgressGroup = CreateElement('div', '', 'job-progress');
 		Progress = CreateElement('progress');
 		Progress.max = ProgressMax;
 		Progress.setAttribute('aria-label', Translate('view_job_progress', Job.filename));
-		Row.append(Progress);
+		ProgressLabel = CreateElement('span', '', 'job-progress-label');
+		// 용량은 진행 바의 접근성 설명에도 포함되므로 같은 값을 두 번 읽지 않습니다.
+		ProgressLabel.setAttribute('aria-hidden', 'true');
+		ProgressGroup.append(Progress, ProgressLabel);
+		Row.append(ProgressGroup);
+		Measure = CreateJobMeasure(ProgressLabel);
+		End.append(Measure.node);
 	}
 
 	const Label = Labels[Job.state];
@@ -317,7 +323,7 @@ export function CreateJobRow(Job, Tile, Context)
 	{
 		Row.append(Actions);
 	}
-	return { row: Row, measure: Measure, progress: Progress, tile: Tile };
+	return { row: Row, measure: Measure, progress: Progress, progressLabel: ProgressLabel, tile: Tile };
 }
 
 /** 실제로 구조가 달라질 때만 행을 다시 생성합니다. 바이트나 속도는 구조를 바꾸지 않습니다. */
@@ -328,7 +334,7 @@ export function GetJobRowSignature(Job, bShowDiagnostics)
 		bShowDiagnostics || Job.state === 'failed' ? Job.diagnostic : undefined, Job.state === 'failed' ? Job.finished : undefined]);
 }
 
-/** 같은 행에서 진행률과 속도만 갱신합니다. 전송·병합·저장 단계를 두 번째 줄에 구분합니다. */
+/** 행을 다시 만들지 않고 진행 바의 용량 오버레이와 상단 속도·저장 단계만 갱신합니다. */
 export function UpdateJobRowMetrics(Entry, Job, Now, CountFormat)
 {
 	if (Entry.progress)

@@ -12,7 +12,7 @@ node tools/checks/measure-debug-cost.mjs
 
 Generated results belong in Git-ignored `artifacts/<run>/`. Set `MDOWNLOADER_ARTIFACTS` to a run name to group reports. `MDOWNLOADER_WRITE_EVIDENCE=1` retains integration-test media there; normal test runs do not retain media. Generated downloads, old checkout copies, and previous reports can be removed without changing runtime resources or test fixtures.
 
-The documentation was reconciled on 2026-11-08 against local extension version **0.2.32**. The full suite passed **256 tests**, localization rendered **378 messages in each of 10 languages** with no missing references, project verification reported no failures and preserved all **73 cataloged files**, and the generated page policy matched. Detailed logging OFF checks reported zero lazy-detail evaluations, timers, messages, and storage writes. These are local verification results, not a claim of new installed-browser acceptance.
+The documentation was reconciled on 2026-11-08 against local extension version **0.2.33**. The full suite passed **256 tests**, localization rendered **378 messages in each of 10 languages** with no missing references, project verification reported no failures and preserved all **73 cataloged files**, and the generated page policy matched. Detailed logging OFF checks reported zero lazy-detail evaluations, timers, messages, and storage writes. These are local verification results, not a claim of new installed-browser acceptance.
 
 ## Automated coverage
 
@@ -24,7 +24,7 @@ The documentation was reconciled on 2026-11-08 against local extension version *
 | Stop/save | Finite-stream routing, request cutoff, gaps, failed in-flight requests, short audio coverage, timeline overlap, parent cancellation separation, and partial filenames |
 | Partial output | Frozen committed prefixes, concurrent reception, source/read lifetime, independent cancellation, and direct-file range/tail metadata |
 | WebRTC | Descriptor/WSS-host validation, ownership, server profiles, worker-safe static imports, independent receiver lifecycle, source-tab loss, remote-track readiness, audio/video start ordering, ping/start timeout/cancel, ordered writes, snapshots, interruption, and byte limits |
-| UI/state | Candidate actions, received bytes and speed, manager-row button order/readiness, preview state, naming, deletion, and settings defaults with explicit opt-out |
+| UI/state | Candidate actions, right-aligned received-byte overlays, native determinate/indeterminate values, unchanged popup measures, manager-row button order/readiness, preview state, app-prefix-free generated naming, deletion, and settings defaults with explicit opt-out |
 | Diagnostics | OFF-path lazy evaluation and side effects, bounded/throttled ON logging, settings propagation, and result-write races |
 
 The retained local sample MP4 is used by real parser/remux integration tests. Clear and AES-128-encrypted fMP4 fixtures are exercised through full transfer, early stop/save, partial export, preview, and MP4 track/packet parsing. WebRTC partial-remux tests also use existing browser-produced fragmented MP4 data when available. A packet/parser check does not establish audible playback or visual acceptance.
@@ -48,7 +48,9 @@ These results are retained from earlier verification during development. They es
 
 Old implementation plans and dated progress reports have been consolidated into this document and [Development](development.md). Their earlier source-dependent recording instructions are not current usage instructions. Revision history remains in local Git history. Regenerate test reports instead of requiring past temporary folders in a fresh checkout.
 
-The current 0.2.32 source additionally initializes remote audio in the independent document with a hidden muted media element. Its initialization, suppression of speaker playback, and cleanup are regression-tested. A newly saved file from the installed 0.2.32 offscreen-to-manager path remains a separate browser acceptance check; the earlier 0.2.31 page-module result above does not establish it.
+Version 0.2.32 added remote-audio initialization in the independent document with a hidden muted media element. Its initialization, suppression of speaker playback, and cleanup are regression-tested. A newly saved file from the installed 0.2.33 offscreen-to-manager path remains a separate browser acceptance check; the earlier 0.2.31 page-module result above does not establish it.
+
+The 0.2.33 manager component was rendered in a local Chromium fixture at 434px and 320px widths: received-byte labels stayed within the progress bars, 4px from the right edge, without row overflow. The live indeterminate pulse was visually checked. The fixture uses Chrome API substitutes and does not reload or operate the installed extension.
 
 ## Optional local checks
 

@@ -119,7 +119,7 @@ Partial saving can fail when essential media data is missing or the container/co
 
 ## Download manager
 
-- Open the manager from the popup. Active rows show received bytes and speed; the bar represents progress when the total is known.
+- Open the manager from the popup. Received bytes appear over the right end of the progress bar; speed and save-stage text stay beside the action buttons. The bar represents progress when the total is known.
 - Pause or resume a direct browser download when the browser reports that it supports the action.
 - Cancel a selected active job independently of other jobs.
 - Use **Show in folder** for a completed browser download.
@@ -144,6 +144,8 @@ Hover over an icon button to see its action name. The same controls expose acces
 | Enable detailed debug logging | Show safe stage codes, timings, and counts in the extension console; OFF by default. |
 
 Filename examples: `Page title_original.mp4` and `Page title_original_YYYY-MM-DD_HH-mm-ss.mp4`. The name and timestamp are fixed when the job is registered. Partial files receive a separate partial-save suffix.
+
+The extension does not add its app name to generated filenames. Playback-response capture uses `playback.mp4` when no original filename is available, combined with the same page-title and date/time settings.
 
 ## Supported media
 
