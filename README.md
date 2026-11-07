@@ -6,9 +6,9 @@ English · [한국어](docs/README.ko.md)
 
 Find video and audio on the current page, save supported streams, and manage downloads in a side panel.
 
-Chrome · Microsoft Edge · Manifest V3 · English by default · 10 interface languages
+Chrome · Microsoft Edge · Manifest V3 · System language by default · English fallback · 10 interface languages
 
-MDownloader runs in your browser. It can save direct media files, supported clear or AES-encrypted HLS, and supported unencrypted DASH streams without a separate desktop downloader.
+MDownloader runs in your browser. It can save direct media files, supported clear or AES-encrypted HLS, unencrypted DASH, and supported WebRTC streams without a separate desktop downloader.
 
 ## Installation
 
@@ -44,7 +44,7 @@ These are real captured screens. Capture versions are recorded in the [screensho
 - Show thumbnails and hover previews where the media and browser permit them.
 - Group confirmed HLS variants under one source and offer quality selection.
 - Run multiple independent stream downloads and continue them after the source tab closes.
-- Save supported live HLS up to the point received.
+- Receive supported WebRTC streams in the background and save supported live HLS.
 - Save a separate partial file while the original download continues.
 - Manage progress, speed, pause/resume where supported, cancellation, history, and completed files.
 - Customize filenames, download location, interface language, and diagnostics.
@@ -76,30 +76,50 @@ If an item is missing, play the media, seek within it, or refresh the page and t
 
 The browser manages these permissions. You can revoke optional site access from the same options page. Source access can still depend on login state, server rules, or expiring links.
 
-## Choosing HLS quality
+## Choosing stream quality
 
-Normally, **Download** starts the supported rendition with the highest bitrate.
+Normally, **Download** starts the supported HLS rendition with the highest bitrate, or the current available WebRTC server profile.
 
-1. Hold **Shift** while clicking an HLS item's **Download** button.
+1. Hold **Shift** while clicking an HLS or WebRTC item's **Download** button.
 2. Select a resolution/bitrate from the controls inserted below that item.
 3. Confirm the download. Grant access to a separate media server if requested.
 
-Quality controls appear only when multiple supported renditions are available. The list uses confirmed playlist relationships rather than guesses based on filenames.
+HLS controls appear when multiple supported renditions are available. WebRTC lists the profiles actually reported by its supported server, including a single available profile. The extension does not invent resolutions or resize video to imitate server quality.
+
+## Saving WebRTC streams
+
+1. Start playback on a supported page and find the regular media item with the **WebRTC** badge.
+2. Click **Download**, or Shift-click to choose an available server quality.
+3. Wait until the manager shows received bytes increasing. The independent background receiver can then continue after the source page closes or navigates away.
+4. Use **Save received portion**, **Stop and save**, or **Cancel** in the same manager.
+
+Support is limited to the signaling services configured in the project; it does not record every MediaStream on every site. No separate recording tab is required. Valid HLS alternatives can appear alongside WebRTC.
+
+The receiver waits for actual remote video/audio before recording. MP4 is preferred when supported by the browser, with WebM as a fallback. Recording can re-encode media. Connection loss or a stalled stream is shown as interrupted, with a partial file when possible. An intentional **Stop and save** is treated as a normal finish. Closing the browser or reloading/removing the extension ends active receivers; automatic recovery is not implemented.
 
 ## Live and partial saves
 
-**Stop and save** ends a supported HLS/DASH transfer and saves its received continuous portion as MP4. It is also available for ordinary finite HLS downloads. The button becomes available once a playable video/audio prefix is ready. It stops new segment requests, lets requests already in progress finish, and saves the continuous portion before the first missing segment. An incomplete finite download receives a partial-file suffix. **Cancel** stops that job without completing its temporary stream output.
+The active-row buttons are ordered **Cancel → Save received portion → Stop and save** from left to right.
+
+| Action | Result |
+|---|---|
+| **Cancel** | Stops the selected job and discards its unfinished temporary output. |
+| **Save received portion** | Creates a separate partial file and job while the original transfer continues. |
+| **Stop and save** | Ends reception and saves the playable portion in the original job. |
+
+**Stop and save** is available for supported HLS, DASH, and WebRTC jobs once a playable portion is ready. HLS/DASH stops assigning new segments, lets requests already in progress finish, and exports only the continuous video/audio portion before the first missing segment. An incomplete finite stream receives a partial-file suffix.
 
 **Save received portion** creates a separate partial file and download record while the original job continues. Partial output has its own cancellation and does not replace the original file.
 
 - **HLS/DASH:** uses completed contiguous segments and the available audio coverage.
+- **WebRTC:** freezes data already committed to local storage, without requesting media again or interrupting the receiver.
 - **Direct files:** separately reads the reported byte range from the original server, causing additional transfer. The server must support the required access/range behavior, and enough complete packets and metadata must be available.
 
 Partial saving can fail when essential media data is missing or the container/codec cannot be remuxed. Check the partial job's error; the original job remains independent.
 
 ## Download manager
 
-- Open the manager from the popup.
+- Open the manager from the popup. Active rows show received bytes and speed; the bar represents progress when the total is known.
 - Pause or resume a direct browser download when the browser reports that it supports the action.
 - Cancel a selected active job independently of other jobs.
 - Use **Show in folder** for a completed browser download.
@@ -115,7 +135,7 @@ Hover over an icon button to see its action name. The same controls expose acces
 | Setting | Use |
 |---|---|
 | Display language | Use the system language or select one of ten languages; English is the fallback. |
-| Use page title | Combine the current page title with the original filename. |
+| Use page title | Combine the current page title with the original filename; ON by default. |
 | Include date and time | Append the local download start time to the filename; ON by default. |
 | Download location | Set a subfolder under the browser's default download directory, or choose a folder where supported. |
 | Show detected media in the side panel | Display the active tab's media above the download list. |
@@ -127,8 +147,6 @@ Filename examples: `Page title_original.mp4` and `Page title_original_YYYY-MM-DD
 
 ## Supported media
 
-WebRTC appears as a normal media item with a **WebRTC** format badge. Supported signaling streams use an independent background receiver, so the source page can close after receiving starts. Shift-click Download to select a server quality; the existing manager provides received bytes, speed, **Save current**, **Stop and save**, and **Cancel**. Valid HLS alternatives remain visible alongside WebRTC. Unexpected connection loss is shown as interrupted with a partial file, rather than normal completion. MP4 is preferred with a WebM fallback, up to 2 GiB per recording. Recording waits for remote media to arrive to preserve audio. [Background reception and verification scope](docs/webrtc-background-2026-11-08.md) · [Audio and received-byte verification](docs/webrtc-audio-progress-2026-11-08.md)
-
 | Media | Support |
 |---|---|
 | Direct files | HTTP(S) video/audio files, including MP4, WebM, MOV, MKV, MP3, M4A, WAV, FLAC, and OGG families; saved in their original format. |
@@ -139,7 +157,13 @@ WebRTC appears as a normal media item with a **WebRTC** format badge. Supported 
 
 HLS encryption supports `AES-128`, `AES-256` (CBC), `AES-256-CTR`, and `AES-256-GCM` when the playlist supplies a normally accessible `identity` key. Key rotation, explicit IVs, and sequence-number IVs are handled automatically. Encrypted HLS needs no additional setting: use the same Download button. Encrypted low-latency playlists use the complete parent segments.
 
-DRM license systems, sample encryption (`SAMPLE-AES` / `SAMPLE-AES-CTR`), encrypted DASH, live DASH, unknown source protocols, unsupported codecs/layouts, redirects required by stream delivery, and incomplete low-latency groups are outside the supported stream path. A denied or invalid key cannot be used to decrypt media. Stream jobs have a 16 GiB temporary-data ceiling, a 32 MiB resource ceiling, and a 5,000-segment ceiling; browser storage quota may impose a lower limit. See [Development](docs/development.md) for the implementation boundaries.
+| Limit | HLS/DASH | WebRTC |
+|---|---|---|
+| Temporary media per job | 16 GiB | 2 GiB |
+| Individual media resource | 32 MiB | Bounded recording chunks |
+| Segments per job | 5,000 across tracks | Recording chunk and buffer limits apply |
+
+Browser storage quota can impose a lower limit. DRM license systems, sample encryption (`SAMPLE-AES` / `SAMPLE-AES-CTR`), encrypted DASH, live DASH, unknown signaling protocols, unsupported codecs/layouts, delivery that requires redirects, and incomplete low-latency groups are outside the supported path. A denied or invalid encryption key cannot be used. See [Development](docs/development.md) for implementation boundaries.
 
 ## Troubleshooting
 
@@ -158,6 +182,10 @@ Check access to both the page and media host, your session, and whether the link
 **A partial file cannot be saved**
 
 Wait for more data. Direct-file saving may need additional range reads or tail metadata. Some media cannot be safely packaged from the received portion.
+
+**WebRTC is detected but does not start**
+
+Reload the source page and start playback so the connection observer can see its initial signaling. Check page/media-server access. Unsupported signaling or an unavailable server profile cannot be replaced with a made-up quality.
 
 **You need diagnostic details**
 

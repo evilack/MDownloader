@@ -1,6 +1,6 @@
 # Verification
 
-Run the current checks from the project root; no previous evidence directory is required:
+Run checks from the project root with Node.js 24. No historical evidence folder or package installation is required for the core suite.
 
 ```powershell
 node --test tests/*.test.mjs
@@ -10,37 +10,76 @@ node --expose-internals tools/checks/verify-project.mjs
 node tools/checks/measure-debug-cost.mjs
 ```
 
-Reports and optional media output are generated under Git-ignored `artifacts/<run>/`. Set `MDOWNLOADER_ARTIFACTS` to group related runs under a chosen name.
+Generated results belong in Git-ignored `artifacts/<run>/`. Set `MDOWNLOADER_ARTIFACTS` to a run name to group reports. `MDOWNLOADER_WRITE_EVIDENCE=1` retains integration-test media there; normal test runs do not retain media. Generated downloads, old checkout copies, and previous reports can be removed without changing runtime resources or test fixtures.
+
+The documentation was reconciled on 2026-11-08 against local extension version **0.2.32**. The full suite passed **256 tests**, localization rendered **378 messages in each of 10 languages** with no missing references, project verification reported no failures and preserved all **73 cataloged files**, and the generated page policy matched. Detailed logging OFF checks reported zero lazy-detail evaluations, timers, messages, and storage writes. These are local verification results, not a claim of new installed-browser acceptance.
 
 ## Automated coverage
 
-The local suite covers URL/media classification, page/document ownership, source refresh, HLS/DASH parsing, request-header isolation, concurrent jobs, naming, preview state, cancellation, committed partial segments, direct-file prefix remuxing, job deletion, settings, localization, and logging. Media integration tests use the retained local MP4 and real parser/remux code.
+| Area | What the suite checks |
+|---|---|
+| Detection | URL/media classification, document and player ownership, source refresh, live candidates, valid HLS alternatives, preview/ad exclusion, and supported provider schemas |
+| HLS/DASH | Playlist/index parsing, bounded resource access, scoped observed headers, parallel transfer/retry, codecs, initialization/ranges, live refresh, and independent jobs |
+| HLS encryption | Four whole-segment methods; IV derivation; key rotation, including repeated key URIs; initialization key scope; clear/encrypted transitions; invalid keys/padding/GCM tags; host denial; observed-only response capture |
+| Stop/save | Finite-stream routing, request cutoff, gaps, failed in-flight requests, short audio coverage, timeline overlap, parent cancellation separation, and partial filenames |
+| Partial output | Frozen committed prefixes, concurrent reception, source/read lifetime, independent cancellation, and direct-file range/tail metadata |
+| WebRTC | Descriptor/WSS-host validation, ownership, server profiles, worker-safe static imports, independent receiver lifecycle, source-tab loss, remote-track readiness, audio/video start ordering, ping/start timeout/cancel, ordered writes, snapshots, interruption, and byte limits |
+| UI/state | Candidate actions, received bytes and speed, manager-row button order/readiness, preview state, naming, deletion, and settings defaults with explicit opt-out |
+| Diagnostics | OFF-path lazy evaluation and side effects, bounded/throttled ON logging, settings propagation, and result-write races |
 
-Encrypted HLS tests cover all four whole-segment methods, IV derivation, key rotation including a repeated URI during live refresh, clear/encrypted transitions, map key scope, invalid keys/padding/GCM tags, host denial, and observed-response capture. The real fMP4 fixture is tested both clear and AES-128 encrypted through full download, contiguous partial export, preview, and MP4 packet parsing.
+The retained local sample MP4 is used by real parser/remux integration tests. Clear and AES-128-encrypted fMP4 fixtures are exercised through full transfer, early stop/save, partial export, preview, and MP4 track/packet parsing. WebRTC partial-remux tests also use existing browser-produced fragmented MP4 data when available. A packet/parser check does not establish audible playback or visual acceptance.
 
-Stop/save checks cover finite-stream control routing, partial filenames, the request cutoff, gaps, failed in-flight requests, separate audio with shorter segment durations, and preservation of the parent output signal. The real clear/encrypted fMP4 fixture is also stopped early and its resulting MP4 is parsed for video, audio, and reduced duration. `node tools/dev/preview-job-actions.mjs` opens an isolated loopback UI fixture for the ready/disabled button states using the actual row component and styles; its Chrome messages are substitutes and do not control an installed extension.
+`verify-project` checks JavaScript syntax, relative imports, local manual/website links, manifest entries, and the hashes of 73 retained asset/vendor/sample/screenshot files. Localization checks render every message across all ten catalogs. The policy check detects drift between the shared policy and its generated classic-script form.
 
-For an accessible external **media** playlist, `node tools/checks/verify-encrypted-hls.mjs <https-media-playlist-url>` downloads the first three segments and verifies the resulting MP4. Add `--full` to download the entire finite playlist. Set `MDOWNLOADER_ARTIFACTS` to choose the ignored report/output directory. This is a Node check of transfer/remux behavior; it does not establish installed-extension permissions, browser storage quota, or native playback. Reports contain counts, byte totals, duration, codecs, and packet counts, without raw key data or source URLs.
+Detailed-log cost checks use Node counters and a synthetic sink; they are not Chrome console benchmarks. The HTTP preview-server test uses persistent native HTTP connections, HEAD, Range, invalid ranges, method handling, and full-byte comparisons without retries. Closing-connection `ECONNRESET` was also reproduced against an independent memory response server in this Windows environment and is not claimed fixed.
 
-The project checker validates JavaScript syntax, relative module imports, local manual/website links, manifest entry files, and hashes for retained icon sources/runtime derivatives, vendor files, sample media, and active screenshots. Localization checks render every message in all ten catalogs.
+## Existing real-source results
 
-Detailed-log cost checks count lazy evaluations, clock access, serialization, stack construction, timers/observers, log messages, and storage writes on the OFF path. ON burst checks verify throttling. These are Node measurements with a synthetic sink, not Chrome console benchmarks.
+These results are retained from earlier verification during development. They establish the scopes below; repository cleanup does not repeat them or promote them to acceptance of every current browser path.
 
-The HTTP server test uses real persistent HTTP connections and repeats HEAD, exact Range, invalid Range, method handling, and full-byte comparisons. In this Windows environment, connection-closing HEAD sequences also produced `ECONNRESET` against a separate memory-only response server. Persistent native HTTP passed the control comparison. The test uses no retry; the environment's closing-connection behavior is not claimed to be fixed.
+| Check | Observed result | Scope and limitation |
+|---|---|---|
+| Two user-provided AES-128 HLS VODs | 1,028/1,028 and 1,304/1,304 segments; MP4 durations 2,055.623s and 3,910.255s; all H.264/AAC packets parsed | Real source requests through the transfer/remux modules in Node, not a click through the installed extension. Temporary media was 724,703,152 and 2,826,558,568 bytes. |
+| HLS stop/save row | Correct ready/disabled controls and click routing at 434px width | Actual row/styles with Chrome API substitutes, not the installed extension. |
+| WebRTC quality, 0.2.29 | The user confirmed that Shift+Download opens the quality chooser after reloading | This confirmation did not cover every selected quality's final saved file. |
+| Independent WebRTC receiver, 0.2.30 | An installed-extension job received data; the user confirmed that WebRTC and HLS downloads continued after closing the source tab | Source-tab continuity is user-observed; an automated before/after byte timeline was not collected. Artificial connection-loss acceptance was covered by regressions rather than disrupting that live download. |
+| WebRTC audio start fix, 0.2.31 | A real-source module run saved 6,186,412 bytes with AVC video 8.237s and AAC audio 8.149s; decoded stereo audio RMS 0.08521, peak 0.27271 | The corrected receiver module ran with native page APIs. The stored file's tracks/durations were re-read; the current installed offscreen-to-manager flow was not revalidated by that run. |
+| Earlier standalone recording, 0.2.25 | A saved H.264/AAC file replayed locally without a media error | This belonged to an old recording-tab flow and does not validate the current independent background receiver. |
 
-## Browser checks
+Old implementation plans and dated progress reports have been consolidated into this document and [Development](development.md). Their earlier source-dependent recording instructions are not current usage instructions. Revision history remains in local Git history. Regenerate test reports instead of requiring past temporary folders in a fresh checkout.
 
-General website pages and the options rendering fixture can be checked independently of an installed extension. The fixture loads the actual options HTML/modules with Chrome API substitutes; it does not prove permission grants, real download buttons, or offscreen lifetime.
+The current 0.2.32 source additionally initializes remote audio in the independent document with a hidden muted media element. Its initialization, suppression of speaker playback, and cleanup are regression-tested. A newly saved file from the installed 0.2.32 offscreen-to-manager path remains a separate browser acceptance check; the earlier 0.2.31 page-module result above does not establish it.
 
-Installed-browser acceptance still requires checking the changed version in the intended Chrome/Edge profile, including:
+## Optional local checks
 
-1. Popup, manager, permissions, previews, and quality selection.
-2. Concurrent transfers, source-tab closure, cancellation, partial save, and stop/save.
-3. Direct/folder output and completed-file actions.
-4. Detailed logging ON/OFF propagation across UI, worker, and offscreen contexts.
+```powershell
+node tools/dev/preview-options.mjs
+node tools/dev/preview-job-actions.mjs
+node website/serve.mjs
+```
 
-Finish active downloads before deliberately reloading an extension for such checks. Respect the session's browser access restrictions; automated tests or a fixture are not a substitute for installed-browser acceptance.
+The preview tools bind to loopback and print their URLs. They use the real UI modules with Chrome API substitutes and do not control an installed extension. Website/capture commands require a separately configured browser/automation module; see [Development](development.md).
 
-## Capture provenance
+For an accessible finite HLS **media** playlist:
 
-The screenshots shipped with the manuals/website are existing real captures. Their language, capture date, version, and hashes are in `website/assets/screenshots/catalog.json`. Current source-icon metadata and retained review captures are in `assets/catalog.json`. Repository cleanup changes paths and metadata organization without redesigning those images.
+```powershell
+node tools/checks/verify-encrypted-hls.mjs <https-media-playlist-url>
+```
+
+The command downloads the first three segments and verifies an MP4. Add `--full` for the complete VOD. It writes output and a report under `artifacts/<run>/` without raw keys or source URLs in the report. It does not establish browser host permissions, storage quota, or installed-extension behavior.
+
+## Installed-browser acceptance
+
+Check the changed extension in its intended Chrome/Edge profile when browser testing is authorized:
+
+1. Popup, manager, site permissions, previews, and HLS/WebRTC quality selection.
+2. Concurrent transfers, source-tab closure, received bytes/speed, cancellation, current-save, and stop/save.
+3. Encrypted HLS, separate audio, WebRTC audio/video tracks, and abnormal connection-loss reporting.
+4. Browser and picked-folder output, completed-file actions, and WebM fallback where applicable.
+5. Diagnostic ON/OFF propagation across UI, worker, and offscreen contexts.
+
+Large WebRTC recordings, picked-folder end-to-end saving, WebM live-source acceptance, crash recovery, and universal site/codec support have not been established. Automatic interrupted-recording recovery is not implemented. Finish active downloads before intentionally reloading the extension. Respect browser access restrictions; fixture and Node checks do not replace native acceptance.
+
+## Retained asset provenance
+
+Manual/website screenshots are existing real captures, not newly captured screens of every current control. Their language, version, date, and hashes are in `website/assets/screenshots/catalog.json`. Icon originals, baselines, prompts, processing metadata, and retained visual reviews are in `assets/catalog.json`. Repository cleanup preserves those bytes and does not claim new art or retouch acceptance.

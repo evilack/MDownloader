@@ -4,10 +4,10 @@ Run commands from the project root. The full command, environment, and runtime c
 
 | Category | Tools |
 |---|---|
-| `checks/` | `verify-project`, `audit-localization`, `measure-debug-cost`, website/language/motion verification |
+| `checks/` | `verify-project`, `audit-localization`, `measure-debug-cost`, `verify-encrypted-hls`, website/language/motion verification |
 | `build/` | `build-page-policy`, `encode-sample-gif.py` |
 | `capture/` | `capture.mjs`: shared engine selected by preset, or sample motion selected by locale |
-| `dev/` | `preview-options`: actual options modules with Chrome API substitutes |
+| `dev/` | `preview-options` and `preview-job-actions`: actual settings/row components with Chrome API substitutes |
 | `maintenance/` | `format-unreal`: read-only by default; `--write` applies formatting |
 | `lib/` | Shared configuration and capture engines |
 

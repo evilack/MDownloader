@@ -14,11 +14,12 @@ MDownloader is an unbundled Manifest V3 extension. The browser loads `extension/
 | `extension/vendor/` | Unmodified Mediabunny bundle and its license |
 | `website/` | English/Korean static product pages and local media sample |
 | `assets/` | Current icon sources, baselines, review evidence, and hash catalog |
+| `docs/` | Korean user manual, development reference, and verification scope |
 | `tests/` | Regression tests and shared test helpers |
 | `tools/checks/` | Source, reference, localization, performance, and website checks |
 | `tools/build/` | Classic policy generation and captured-frame encoding |
 | `tools/capture/` | One CLI for extension or sample-motion captures |
-| `tools/dev/` | Options rendering fixture with Chrome API substitutes |
+| `tools/dev/` | Options and download-row rendering fixtures with Chrome API substitutes |
 | `tools/maintenance/` | JavaScript style maintenance |
 | `tools/lib/` | Shared tool configuration and capture engines |
 | `artifacts/` | Generated local reports, recordings, and captures; ignored by Git |
@@ -71,9 +72,36 @@ The media goes into `artifacts/media-check/test-media/`. Remove these environmen
 
 Sample encryption (`SAMPLE-AES` / `SAMPLE-AES-CTR`), DRM license acquisition, and encrypted DASH remain unsupported. Resource bodies are bounded at 32 MiB, scratch media at 16 GiB per job, and queues at 5,000 segments; the browser's available storage quota still applies.
 
+### WebRTC reception
+
+WebRTC is a regular detected-media candidate with the existing Download and Shift-quality controls. Valid HLS alternatives are retained alongside it. Detection still excludes evidence-backed advertisements, previews, and blurred profiles; the presence of WebRTC alone does not suppress HLS.
+
+| Component | Responsibility |
+|---|---|
+| `webrtc-quality-observer.js` | MAIN-world observation, exact track/session association, and observed server profiles |
+| `lib/webrtc-quality-task.js` | Limited page task for profile lookup and one-time connection descriptors |
+| `webrtc-jobs.js` | Candidate ownership, quality selection, runner startup, cancellation, and session control records |
+| `lib/webrtc-descriptor.js` | Validation of the configured `ristretto-v1` signaling descriptor and exact allowed WSS host |
+| `lib/webrtc-receiver.js` | Independent WebSocket, PeerConnection, remote tracks, and MediaRecorder in the offscreen document |
+| `lib/webrtc-transfers.js` | Per-job receive/save lifecycle, serialized reports, snapshots, interruption, and output ownership |
+| `lib/webrtc-recording.js` | Ordered, bounded OPFS chunk storage and frozen committed prefixes |
+| `lib/webrtc-page.js` | Active MediaStream probing and compatibility handling for page-owned sessions |
+
+The current start path uses an independent offscreen receiver. After reception starts, source-tab closure/navigation does not own its lifetime. The receiver uses the selected observed server profile without changing the original player's quality or tracks. Unknown signaling services are unsupported; generic page capture is not used as a silent fallback.
+
+Connection authentication is validated and sent once to the runner, never written to job/session storage or diagnostics. Session control records contain ownership information rather than connection credentials. Service-worker dependencies use static imports; the quality regression harness rejects dynamic imports to match the worker restriction.
+
+Recording starts only after the remote description is applied and received tracks are live and unmuted. The independent document also attaches remote audio to an owned hidden, muted audio element to initialize Chrome's remote-audio processing without speaker playback; cleanup detaches and removes that element. Signaling, startup timeout, ping handling, and cancellation remain active during the readiness wait. The receiver prefers MP4 H.264/AAC, with WebM VP8/Opus or browser-supported WebM fallbacks. MediaRecorder may re-encode; this path does not promise lossless remuxing.
+
+Each recording is bounded at 2 GiB; pending receiver data is bounded at 8 MiB. Current-save freezes committed handles and uses the existing partial-remux path while reception continues. Pending snapshot readers keep their source workspace alive. User-requested stop is a normal finish; connection loss, stalled media, and recording/storage failures retain committed data when possible and report interruption/partial output. Successful browser saving does not turn interrupted reception into a normal completion.
+
+Browser/extension crash recovery, arbitrary signaling protocols, DRM license acquisition, and automatic recording resumption are not implemented. Historical page-owned control branches remain for probing/compatibility and are not separate user-facing recording tabs.
+
 ## Settings and diagnostics
 
 `debugDownloads` opens the existing job diagnostics tab. `logDownloads` keeps bounded local result events. `debugLogging` enables detailed console diagnostics and a bounded internal memory buffer. All default to OFF.
+
+Page-title naming and local download date/time naming default to ON. Explicit saved choices are preserved. Names and timestamps are fixed when a job is registered; partial outputs use the shared partial naming helper. Language selection defaults to the system language, with English fallback. Active download rows show received bytes and speed; completion and mux/save phases keep their distinct state text.
 
 Detailed logging uses cached options, caller guards, lazy detail factories, allowlisted codes/numbers, throttling, and bounded retention. It excludes URLs, headers, tokens, IP addresses, paths, and raw error messages/stacks. OFF must not evaluate detail factories, serialize data, create log timers/observers, send log events, or write log storage. Initial settings reads and change subscriptions maintain the cached option. Persisted result logging rechecks an ON write inside the shared lock so another context's OFF wins even when its change event arrives late.
 
@@ -123,11 +151,12 @@ node tools/checks/verify-website.mjs
 node tools/checks/verify-site-languages.mjs
 node tools/checks/verify-sample-motion.mjs en
 node tools/dev/preview-options.mjs
+node tools/dev/preview-job-actions.mjs
 ```
 
 Presets are `aligned`, `english`, `manager`, and `website`. All use shared engines and write generated captures into `artifacts/`. Promoting a capture into the website is a separate reviewed asset update. The capture tools do not install dependencies automatically. Do not use extension capture commands to bypass a session's extension-page access restrictions or reload an extension with active downloads.
 
-The options preview runs the actual HTML/modules against Chrome API substitutes. It cannot validate installed-extension permissions, offscreen lifetime, or real download buttons.
+The preview tools run actual HTML/components against Chrome API substitutes. They cannot validate installed-extension permissions, offscreen lifetime, or real download buttons. The download-row fixture covers ready/disabled stop-save states and the Cancel → Save received portion → Stop and save order.
 
 ## Asset maintenance
 
