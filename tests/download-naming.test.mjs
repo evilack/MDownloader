@@ -14,9 +14,9 @@ Test('reserves space for the local start timestamp without dropping the page tit
 	Assert.ok(Long.length <= 104);
 	Assert.equal(SafeFilename('clip.mp4', '제목'), '제목_clip.mp4');
 });
-Test('freezes the optional timestamp at registration and keeps existing names when the option is off', async T =>
+Test('defaults to a frozen timestamp at registration and preserves an explicit opt-out', async T =>
 {
-	const Data = { usePageTitle: true, useDownloadDateTime: true };
+	const Data = { usePageTitle: true };
 	globalThis.chrome = {
 		storage: { local: {
 				get: async Keys => Object.fromEntries((Array.isArray(Keys) ? Keys : [Keys]).map(Key => [Key, Data[Key]])),

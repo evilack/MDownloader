@@ -22,7 +22,7 @@ const Defaults = {
 	[SettingKeys.logDownloads]: false,
 	[SettingKeys.showPanelMedia]: false,
 	[SettingKeys.usePageTitle]: true,
-	[SettingKeys.useDownloadDateTime]: false,
+	[SettingKeys.useDownloadDateTime]: true,
 	[SettingKeys.downloadFolder]: '',
 	[SettingKeys.pickedDownloadFolder]: '',
 	[SettingKeys.language]: AUTO_LANGUAGE,

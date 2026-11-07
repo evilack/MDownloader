@@ -59,7 +59,7 @@ Test('a known master 403 is shown as an independent failed job without another r
 	}, { url: chrome.runtime.getURL('popup.html') }, Resolve));
 	Assert.deepEqual(await Send({ type: 'enqueue', requestId: RequestId }), { ok: true, data: { state: 'failed' } });
 	const Job = Local['job:' + RequestId];
-	Assert.equal(Job.filename, 'video.mp4');
+	Assert.match(Job.filename, /^video_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.mp4$/);
 	Assert.equal(Job.state, 'failed');
 	Assert.equal(Job.finished, 0);
 	Assert.equal(Job.diagnostic.stage, 'master-request');

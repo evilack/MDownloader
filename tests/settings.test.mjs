@@ -23,7 +23,7 @@ Test('normalizes existing preference values and keeps their storage keys', async
 	});
 	const Keys = Object.values(SettingKeys);
 	Assert.deepEqual(await GetSettings(Keys), {
-		debugLogging: false, debugDownloads: false, logDownloads: false, showPanelMedia: false, usePageTitle: true, useDownloadDateTime: false,
+		debugLogging: false, debugDownloads: false, logDownloads: false, showPanelMedia: false, usePageTitle: true, useDownloadDateTime: true,
 		downloadFolder: 'Videos/HLS', pickedDownloadFolder: '', language: 'es',
 	});
 	Assert.deepEqual(Reads, [Keys]);
@@ -34,7 +34,7 @@ Test('normalizes existing preference values and keeps their storage keys', async
 	Assert.equal(Records.language, 'es');
 	await Assert.rejects(SetSetting(SettingKeys.downloadFolder, '../invalid'), TypeError);
 	Assert.equal(Records.downloadFolder, 'New/Folder');
-	Object.assign(Records, { usePageTitle: false, downloadFolder: '../invalid', language: '../../es' });
+	Object.assign(Records, { usePageTitle: false, useDownloadDateTime: false, downloadFolder: '../invalid', language: '../../es' });
 	Assert.deepEqual(await GetSettings(Keys), {
 		debugLogging: false, debugDownloads: false, logDownloads: false, showPanelMedia: false, usePageTitle: false, useDownloadDateTime: false,
 		downloadFolder: '', pickedDownloadFolder: '', language: 'auto',
