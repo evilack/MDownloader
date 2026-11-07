@@ -20,6 +20,7 @@ const Jobs = [
  {requestId: 'finite-ready', filename: '샘플 영상 — HLS 다운로드.mp4', hls: true, snapshotAvailable: true, finished: 500, bytesReceived: 10700000},
  {requestId: 'live-ready', filename: '샘플 라이브 — WebRTC 다운로드.mp4', recording: true, live: true, snapshotAvailable: true, finished: 4, bytesReceived: 10400000},
  {requestId: 'finite-waiting', filename: '준비 중 — 첫 구간을 받는 중.mp4', hls: true, snapshotAvailable: false, finished: 0},
+ {requestId: 'canceled', filename: '샘플 영상 — 취소된 다운로드.mp4', hls: true, state: 'canceled'},
 ];
 const CountFormat = new Intl.NumberFormat();
 for (const Value of Jobs)

@@ -8,6 +8,7 @@
   --line: #414853;
   --text: #f5f7fa;
   --muted: #b9c2cf;
+  --transfer-text: #b1d9ff;
   --mint: #76f5b6;
   --live-surface: #a71d38;
   --live-text: #ffffff;
@@ -52,9 +53,11 @@ ul { list-style: none; padding: 0; margin: 0; }
   .media-live { color: contrast-color(var(--live-surface)); }
 }
 .candidate-job-status { flex: 0 1 auto; max-inline-size: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--muted); }
-.candidate-job-status:not(:empty) { margin-inline-start: 6px; padding-inline: 6px; border: 1px solid var(--line); border-radius: 999px; }
-.candidate-job-status[data-state="active"] { color: #b1d9ff; flex: 0 1 12ch; max-inline-size: 100%; min-inline-size: 0; padding-block: 2px; border-radius: 6px; font-size: 11px; }
+.candidate-job-status:not(:empty) { margin-inline-start: 6px; }
+.candidate-job-status:not(:empty), .state[data-state="canceled"] { padding-inline: 6px; border: 1px solid var(--line); border-radius: 999px; }
+.candidate-job-status[data-state="active"] { color: var(--transfer-text); flex: 0 1 12ch; max-inline-size: 100%; min-inline-size: 0; padding-block: 2px; border-radius: 6px; font-size: 11px; }
 .candidate-job-status[data-state="complete"] { color: var(--mint); }
+.candidate-job-status[data-state="canceled"] { color: var(--mint); }
 .candidate-job-status[data-state="failed"] { color: #ffb4ac; }
 .actions { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-top: 9px; }
 .popup .actions > button { flex: 1; }
@@ -127,7 +130,7 @@ button:disabled { opacity: .68; cursor: default; }
 .job-measure-speed { color: var(--muted); }
 .job-end { display: grid; grid-auto-flow: column; grid-template-columns: minmax(0, 1fr) auto; flex: 0 1 auto; align-items: center; gap: 8px; margin-inline-start: auto; max-inline-size: 100%; }
 /* 뷰포트가 아니라 각 행의 실제 폭에 맞춰 정보 영역을 줄여 좁은 패널에서도 이름과 버튼을 남깁니다. */
-.job-end > .job-measure { inline-size: clamp(8ch, 22cqi, 15ch); max-inline-size: 100%; font-size: 13px; }
+.job-end > .job-measure { inline-size: clamp(8ch, 22cqi, 15ch); max-inline-size: 100%; font-size: 13px; color: var(--transfer-text); }
 .job-inline-actions { display: flex; flex: none; align-items: center; gap: 7px; }
 .tooltip { position: absolute; z-index: 2; inset-block-start: 100%; inset-inline-start: 0; width: max-content; max-width: calc(100vw - 42px); max-height: 40vh; overflow: auto; overscroll-behavior: contain; padding: 7px 9px; border: 1px solid #a8b2c1; border-radius: 7px; background: #0e1219; color: var(--text); overflow-wrap: anywhere; }
 progress { display: block; width: 100%; height: 8px; margin: 9px 0 0; accent-color: var(--mint); }

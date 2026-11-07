@@ -190,6 +190,10 @@ export function CreateJobRow(Job, Tile, Context)
 	const Label = Labels[Job.state];
 	const Details = JobDetails(Job, Context);
 	const State = Label && CreateElement('span', Translate(Label), 'state');
+	if (State)
+	{
+		State.dataset.state = Job.state;
+	}
 	const bInlineStatus = Job.state === 'failed' || Job.state === 'canceled';
 	const bFailureTooltip = Job.state === 'failed' && Details.length > 0;
 	// 완료 행의 진행률과 같은 영역에 상태를 두고, 상세 내용은 별도로 표시합니다.
