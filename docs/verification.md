@@ -27,7 +27,7 @@ The documentation was reconciled on 2026-11-08 against local extension version *
 | UI/state | Candidate actions, received bytes immediately above speed, native determinate/indeterminate values, manager-row button order/readiness, preview state, title/date-only naming for streams without original filenames, deletion, and settings defaults with explicit opt-out |
 | Diagnostics | OFF-path lazy evaluation and side effects, bounded/throttled ON logging, settings propagation, and result-write races |
 
-The retained local sample MP4 is used by real parser/remux integration tests. Clear and AES-128-encrypted fMP4 fixtures are exercised through full transfer, early stop/save, partial export, preview, and MP4 track/packet parsing. WebRTC partial-remux tests also use existing browser-produced fragmented MP4 data when available. A packet/parser check does not establish audible playback or visual acceptance.
+The retained local sample MP4 is used by real parser/remux integration tests. Clear and AES-128-encrypted fMP4 fixtures are exercised through full transfer, early stop/save, partial export, preview, and MP4 track/packet parsing. A packet/parser check does not establish audible playback or visual acceptance. Historical generated reports and downloads are not required fixtures.
 
 `verify-project` checks JavaScript syntax, relative imports, local manual/website links, manifest entries, and the hashes of 73 retained asset/vendor/sample/screenshot files. Localization checks render every message across all ten catalogs. The policy check detects drift between the shared policy and its generated classic-script form.
 
@@ -44,19 +44,24 @@ These results are retained from earlier verification during development. They es
 | WebRTC quality, 0.2.29 | The user confirmed that Shift+Download opens the quality chooser after reloading | This confirmation did not cover every selected quality's final saved file. |
 | Independent WebRTC receiver, 0.2.30 | An installed-extension job received data; the user confirmed that WebRTC and HLS downloads continued after closing the source tab | Source-tab continuity is user-observed; an automated before/after byte timeline was not collected. Artificial connection-loss acceptance was covered by regressions rather than disrupting that live download. |
 | WebRTC audio start fix, 0.2.31 | A real-source module run saved 6,186,412 bytes with AVC video 8.237s and AAC audio 8.149s; decoded stereo audio RMS 0.08521, peak 0.27271 | The corrected receiver module ran with native page APIs. The stored file's tracks/durations were re-read; the current installed offscreen-to-manager flow was not revalidated by that run. |
-| Earlier standalone recording, 0.2.25 | A saved H.264/AAC file replayed locally without a media error | This belonged to an old recording-tab flow and does not validate the current independent background receiver. |
 
-Old implementation plans and dated progress reports have been consolidated into this document and [Development](development.md). Their earlier source-dependent recording instructions are not current usage instructions. Revision history remains in local Git history. Regenerate test reports instead of requiring past temporary folders in a fresh checkout.
+Revision history and superseded implementation steps remain in local Git history. The manuals and [Development](development.md) describe the current behavior. Regenerate test reports instead of requiring past temporary folders in a fresh checkout.
 
-Version 0.2.32 added remote-audio initialization in the independent document with a hidden muted media element. Its initialization, suppression of speaker playback, and cleanup are regression-tested. A newly saved file from the installed 0.2.34 offscreen-to-manager path remains a separate browser acceptance check; the earlier 0.2.31 page-module result above does not establish it.
+The current independent receiver initializes remote audio through an owned hidden, muted media element. Initialization, suppression of speaker playback, and cleanup are regression-tested. A newly saved file from the current installed offscreen-to-manager path remains a separate browser acceptance check; the earlier 0.2.31 page-module result above does not establish it.
 
-The 0.2.34 manager component was rendered in a local Chromium fixture at 434px width: received bytes appeared directly above speed, outside the progress bar, with no row overflow. Finite, live, and waiting rows retained native progress elements at their original 8px height, with no overlay labels. The fixture uses Chrome API substitutes and does not reload or operate the installed extension.
+## Current UI verification
 
-Version 0.2.35 shares the popup's received-byte color token with manager measures. The same 434px fixture confirmed received bytes at `#b1d9ff` and speed at `#b9c2cf`, matching the popup's styles while retaining the layout and 8px bar. Canceled status text uses mint (`#76f5b6`) in both surfaces; the manager's canceled badge shares the popup's rounded border and padding, visually checked in the fixture.
+The actual manager component and styles were rendered in a local Chromium fixture with Chrome API substitutes. This did not reload or operate the installed extension.
 
-Version 0.2.36 places manager received bytes and speed in one rounded box, sharing the popup's border, 6px radius, and 2px/6px padding. A 434px Chromium fixture confirmed these computed styles and unclipped values.
+| Display | Observed result |
+|---|---|
+| Received bytes and speed | Two lines in one rounded box, matching the popup reference at both 434px and 320px viewport widths |
+| Text and dimensions | Both surfaces: 11px text, 13.2px line height, 12ch preferred width, 2px/6px padding, 1px border, and 6px corners. Measured boxes: 72.703125 × 32.375 CSS pixels, with no clipped metric text |
+| Colors | Received bytes `#b1d9ff`; speed `#b9c2cf`; canceled text `#76f5b6` in a rounded status badge |
+| Progress | Native 8px bar below the row, without an overlaid byte label; finite, live, and waiting states retained |
+| Actions | Cancel → Save received portion → Stop and save; ready/disabled controls and click routing checked in the fixture |
 
-Version 0.2.37 shares the popup and manager metric font and width rules (11px and 12ch). The comparison fixture at 434px and 320px widths measured both boxes at 72.703125 × 32.375 CSS pixels, with identical 13.2px line height and 2px/6px padding, and no clipped metric text.
+The row fixture includes a popup-style reference measure to make later dimension comparisons reproducible.
 
 ## Optional local checks
 

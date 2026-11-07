@@ -7,7 +7,7 @@ Run commands from the project root. The full command, environment, and runtime c
 | `checks/` | `verify-project`, `audit-localization`, `measure-debug-cost`, `verify-encrypted-hls`, website/language/motion verification |
 | `build/` | `build-page-policy`, `encode-sample-gif.py` |
 | `capture/` | `capture.mjs`: shared engine selected by preset, or sample motion selected by locale |
-| `dev/` | `preview-options` and `preview-job-actions`: actual settings/row components with Chrome API substitutes |
+| `dev/` | `preview-options` and `preview-job-actions`: actual settings/row components with Chrome API substitutes; the row fixture includes a popup-style measure for matching dimensions |
 | `maintenance/` | `format-unreal`: read-only by default; `--write` applies formatting |
 | `lib/` | Shared configuration and capture engines |
 

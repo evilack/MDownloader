@@ -10,6 +10,8 @@ Chrome · Microsoft Edge · Manifest V3 · System language by default · English
 
 MDownloader runs in your browser. It can save direct media files, supported clear or AES-encrypted HLS, unencrypted DASH, and supported WebRTC streams without a separate desktop downloader.
 
+[Installation](#installation) · [Downloading media](#downloading-media) · [Live and partial saves](#live-and-partial-saves) · [Settings](#settings) · [Troubleshooting](#troubleshooting)
+
 ## Installation
 
 1. Obtain this project folder and keep it in a permanent location.
@@ -119,7 +121,14 @@ Partial saving can fail when essential media data is missing or the container/co
 
 ## Download manager
 
-- Open the manager from the popup. Received bytes appear immediately above speed in one rounded box beside the action buttons, matching the popup. The thin progress bar below retains its original 8px height and represents progress when the total is known.
+Open **Download manager** from the popup to manage active and completed jobs.
+
+| Display | Meaning |
+|---|---|
+| Received bytes and speed | Two lines inside one rounded box, with the same text size, box size, and colors as the popup. Received bytes are blue; speed is gray. |
+| Progress bar | A thin bar below the row. A known total shows progress; an unknown total remains indeterminate. |
+| Canceled | Mint text inside a rounded status badge in both the popup and manager. |
+
 - Pause or resume a direct browser download when the browser reports that it supports the action.
 - Cancel a selected active job independently of other jobs.
 - Use **Show in folder** for a completed browser download.
@@ -143,9 +152,15 @@ Hover over an icon button to see its action name. The same controls expose acces
 | Record download events | Keep a bounded local result log for troubleshooting. |
 | Enable detailed debug logging | Show safe stage codes, timings, and counts in the extension console; OFF by default. |
 
-Filename examples: `Page title_original.mp4` and `Page title_original_YYYY-MM-DD_HH-mm-ss.mp4`. The name and timestamp are fixed when the job is registered. Partial files receive a separate partial-save suffix.
+With the default page-title and date/time settings:
 
-When a stream has no original filename, the filename uses the page title and download start date/time, with the correct media extension. It does not append app names, `playback`, or generated WebRTC labels. Explicit page-title/date-time settings still apply; if no title is available, the timestamp alone supplies the name.
+| Source | Example output |
+|---|---|
+| Original filename available | `Page title_original_2026-11-08_15-04-06.mp4` |
+| No original filename | `Page title_2026-11-08_15-04-06.mp4` |
+| No original filename or page title | `2026-11-08_15-04-06.mp4` |
+
+The name and local start time are fixed when the job is registered. The output uses the actual media extension, including WebM when applicable. The extension does not add `MDownloader-`, `playback`, or generated WebRTC labels to streams without original filenames. Explicit page-title/date-time choices still apply. Partial files receive a separate partial-save suffix.
 
 ## Supported media
 

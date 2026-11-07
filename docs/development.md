@@ -101,7 +101,15 @@ Browser/extension crash recovery, arbitrary signaling protocols, DRM license acq
 
 `debugDownloads` opens the existing job diagnostics tab. `logDownloads` keeps bounded local result events. `debugLogging` enables detailed console diagnostics and a bounded internal memory buffer. All default to OFF.
 
-Page-title naming and local download date/time naming default to ON. Explicit saved choices are preserved. Names and timestamps are fixed when a job is registered; partial outputs use the shared partial naming helper. Playback capture and WebRTC have no original filename and pass an absent name to the common filename helper, which uses the available page title/date-time without an app, playback, or generated WebRTC stem. Recording format reporting determines the actual output extension. Language selection defaults to the system language, with English fallback. Manager and popup measures show received bytes above speed/stage text; the manager uses the original native 8px progress bar below the row. Unknown totals remain indeterminate, and completion/mux/save keep their distinct text and values.
+Page-title naming and local download date/time naming default to ON. Explicit saved choices are preserved. Names and timestamps are fixed when a job is registered; partial outputs use the shared partial naming helper. Playback capture and WebRTC have no original filename and pass an absent name to the common filename helper, which uses the available page title/date-time without an app, playback, or generated WebRTC stem. Recording format reporting determines the actual output extension. Language selection defaults to the system language, with English fallback.
+
+### Shared status presentation
+
+`lib/job-measure.js` renders received bytes above speed or save-stage text. Popup active-status wrappers and manager measures share the same CSS rules: 11px text, 12ch preferred box width, 2px/6px padding, a 1px border, and 6px corners. `--transfer-text` supplies the received-byte color; speed uses `--muted`. Canceled text uses `--mint` and the shared rounded status border in both surfaces.
+
+The manager retains the native 8px progress element below the row, without an overlaid byte label. Unknown totals remain indeterminate. Completion, muxing, and saving keep their distinct text and progress values. These layout rules do not change transfer state or button behavior.
+
+### Logging
 
 Detailed logging uses cached options, caller guards, lazy detail factories, allowlisted codes/numbers, throttling, and bounded retention. It excludes URLs, headers, tokens, IP addresses, paths, and raw error messages/stacks. OFF must not evaluate detail factories, serialize data, create log timers/observers, send log events, or write log storage. Initial settings reads and change subscriptions maintain the cached option. Persisted result logging rechecks an ON write inside the shared lock so another context's OFF wins even when its change event arrives late.
 
@@ -156,7 +164,7 @@ node tools/dev/preview-job-actions.mjs
 
 Presets are `aligned`, `english`, `manager`, and `website`. All use shared engines and write generated captures into `artifacts/`. Promoting a capture into the website is a separate reviewed asset update. The capture tools do not install dependencies automatically. Do not use extension capture commands to bypass a session's extension-page access restrictions or reload an extension with active downloads.
 
-The preview tools run actual HTML/components against Chrome API substitutes. They cannot validate installed-extension permissions, offscreen lifetime, or real download buttons. The download-row fixture covers ready/disabled stop-save states and the Cancel → Save received portion → Stop and save order.
+The preview tools run actual HTML/components against Chrome API substitutes. They cannot validate installed-extension permissions, offscreen lifetime, or real download buttons. The download-row fixture covers ready/disabled stop-save states, the Cancel → Save received portion → Stop and save order, canceled badges, and a popup-style reference measure for comparing text and box dimensions.
 
 ## Asset maintenance
 
