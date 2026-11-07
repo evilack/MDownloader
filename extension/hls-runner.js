@@ -24,17 +24,20 @@ import {PartialOutputFilename} from './lib/partial-naming.js';
 import { DebugLog } from './lib/debug-log.js';
 import {CreateWebRtcTransfers} from './lib/webrtc-transfers.js';
 import {CreateRecordingStore} from './lib/webrtc-recording.js';
+import {StartWebRtcReceiver} from './lib/webrtc-receiver.js';
 const ScratchName = 'mdownloader-hls';
 const Workspaces = CreateStreamWorkspaces(ScratchName);
 const Transfers = CreateStreamTransfers((Job, Controller, FinishSignal) =>
 Job.playback ? SavePlayback(Job, Controller) : Download(Job, Controller, FinishSignal));
 const DirectTransfers = new Map();
 const Snapshots = CreateTransferSnapshots(SavePartial);
+const Receivers = new Map();
 const RecordingRoot = async () => (await navigator.storage.getDirectory()).getDirectoryHandle('mdownloader-webrtc', {create: true});
 const Recordings = CreateWebRtcTransfers({extensionId: chrome.runtime.id, report: LocalReport, snapshots: Snapshots,
 	async createStore(Job) { return CreateRecordingStore(await (await RecordingRoot()).getDirectoryHandle(Job.requestId, {create: true})); },
 	async release(Id)
 	{
+		Receivers.delete(Id);
 		await (await RecordingRoot()).removeEntry(Id, {recursive: true});
 		await LocalReport(Id, 'recordingReleased').catch(() => {});
 	},
@@ -470,6 +473,40 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 		let Pending;
 		switch (Message.type)
 		{
+			case 'webrtcReceive':
+				Pending = (async () =>
+				{
+					await Recordings.prepare({...Message.job, background: true});
+					const Receiver = StartWebRtcReceiver(Message.connection, {
+						onData: BlobValue => Recordings.appendBlob(Message.job.requestId, BlobValue),
+						onEnd: Reason => Recordings.finish(Message.job.requestId, undefined, Reason),
+					});
+					Receivers.set(Message.job.requestId, Receiver);
+					try { return {ok: true, started: await Receiver.ready}; }
+					catch (ErrorValue)
+					{
+						await Receiver.stop(ErrorValue.message);
+						const Key = ['webrtc_connection_lost', 'webrtc_media_stalled', 'webrtc_quality_unavailable',
+							'webrtc_unsupported', 'webrtc_recording_failed', 'webrtc_buffer_limit'].includes(ErrorValue.message)
+							? ErrorValue.message : 'webrtc_recording_failed';
+						throw new LocalizedError(Key);
+					}
+				})();
+				break;
+			case 'webrtcReceiverControl':
+				Pending = (async () =>
+				{
+					const Receiver = Receivers.get(Message.requestId);
+					if (Message.action === 'cancel' || Message.action === 'finish' && !Receiver)
+					{
+						const Canceling = Recordings.cancel(Message.requestId);
+						await Receiver?.stop('canceled');
+						return {ok: await Canceling};
+					}
+					if (Message.action !== 'finish' || !Receiver) return {ok: false};
+					await Receiver.stop('requested'); return {ok: true};
+				})();
+				break;
 			case 'webrtcPrepare': Pending = Recordings.prepare(Message.job).then(() => ({ok: true})); break;
 			case 'webrtcRelay': Pending = Recordings.accept(Message.message, Message.source); break;
 			case 'webrtcCancel': Pending = Recordings.cancel(Message.requestId).then(Ok => ({ok: Ok})); break;

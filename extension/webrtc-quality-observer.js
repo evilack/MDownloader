@@ -1,5 +1,5 @@
 /** MAIN/document_start: 기존 Ristretto 수신 세션만 관측합니다.
- * 인증 패킷·주소·SDP는 외부로 보내지 않습니다. 프로필은 SDP로 연결된 수신 트랙에만 공개합니다.
+ * 인증은 페이지 메모리에 두고 다운로드 시작 때만 확장 수신기로 전달합니다. 목록/로그에는 내보내지 않습니다.
  * 서버 화질 고정은 녹화 임대 기간에만 적용하며 원래 소켓/PeerConnection의 동작을 전달합니다.
  */
 (() =>
@@ -72,6 +72,8 @@
 			if (!Message || !Session) return;
 			if (Message.message === 'getStreamInfoReply' && Message.data?.mediaSessionId === Session.id)
 				Session.profiles = Message.data.status === true ? Message.data.profiles : null;
+			if (Message.message === 'changeQualityStatus' && Message.data?.status === 'success')
+				Session.currentQuality = Message.data.currentQuality;
 			if (Message.message === 'setRemoteSDP' && Message.data?.[0] === Session.id)
 				Session.sdpKey = SdpKey(Message.data[1]);
 			if (Message.message === 'changeQualityStatus' && Session.lease)
@@ -89,9 +91,12 @@
 		try
 		{
 			const Message = Parse(Data);
-			if (['getStreamInfo', 'playStream', 'changeQuality', 'stopStream'].includes(Message?.message))
+			if (['connection', 'getStreamInfo', 'playStream', 'changeQuality', 'stopStream'].includes(Message?.message))
 			{
 				const State = Observe(this), Fields = Array.isArray(Message.data) ? Message.data[0] : Message.data;
+				if (State && Message.message === 'connection' && typeof Fields?.appKey === 'string' &&
+					typeof Fields.custom?.name === 'string' && typeof Fields.custom.aclAuth === 'string')
+					State.connection = {appKey: Fields.appKey, custom: {name: Fields.custom.name, aclAuth: Fields.custom.aclAuth}};
 				if (State && typeof Fields?.mediaSessionId === 'string')
 				{
 					if (State.session?.id !== Fields.mediaSessionId)
@@ -100,6 +105,8 @@
 						State.session = {id: Fields.mediaSessionId, key: crypto.randomUUID(), socket: this};
 					}
 					const Session = State.session;
+					if (Message.message === 'playStream' && typeof Fields.name === 'string') Session.streamId = Fields.name;
+					if (Message.message === 'getStreamInfo' && typeof Fields.modelName === 'string') Session.streamId = Fields.modelName;
 					if (Session.lease && Session.lease.expires < Date.now()) Release(Session);
 					if (Message.message === 'stopStream') Session.lease = null;
 					if (typeof Fields.quality === 'string')
@@ -130,6 +137,19 @@
 	};
 	const Api = {
 		list(TrackId) { const Session = Find(TrackId); return Session ? Profiles(Session) : []; },
+		connection(TrackId, Choice)
+		{
+			const Session = Find(TrackId), State = Session && Sockets.get(Session.socket);
+			if (!Session || !State?.connection || !Session.streamId) throw new Error('webrtc_background_unavailable');
+			const Qualities = Profiles(Session);
+			const Quality = Choice ? Qualities.find(Item => Item.name === Choice.name && Item.session === Choice.session)
+				: Qualities.find(Item => Item.name === (Session.currentQuality || Session.lastQuality));
+			if (!Quality) throw new Error('webrtc_quality_unavailable');
+			return {protocol: 'ristretto-v1', url: Session.socket.url, connection: {appKey: State.connection.appKey,
+				custom: {...State.connection.custom}}, streamId: Session.streamId, quality: Quality.name,
+				profiles: Object.fromEntries(Qualities.map(Item => [Item.name,
+					{width: Item.width, height: Item.height, bitrate: Item.bandwidth, fps: Item.fps}]))};
+		},
 		async select(TrackId, Choice, LeaseId)
 		{
 			if (Revoked.has(LeaseId)) throw new Error('webrtc_quality_failed');

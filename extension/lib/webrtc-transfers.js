@@ -23,12 +23,12 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 			const Signal = Entry.controller.signal;
 			try
 			{
-				let Partial = !['requested', 'ended'].includes(Reason);
+				let Partial = Reason !== 'requested';
 				try { await Entry.sink.finish(Count); }
 				catch (ErrorValue) { if (!Entry.store.bytes) throw ErrorValue; Partial = true; }
 				Signal.throwIfAborted();
 				if (!Entry.store.bytes) throw new LocalizedError('webrtc_empty');
-				const Filename = await Report(Entry, 'recordingFormat', {mimeType: Entry.job.mimeType, partial: Partial});
+				const Filename = await Report(Entry, 'recordingFormat', {mimeType: Entry.job.mimeType, partial: Partial, reason: Reason});
 				await Report(Entry, 'progress', {received: Entry.store.bytes, finished: Entry.count, live: true, muxing: true});
 				const File = await Entry.store.file(Entry.job.mimeType);
 				await saveFile({...Entry.job, filename: Filename}, File, Signal);
@@ -88,7 +88,7 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 		async accept(Message, Sender)
 		{
 			const Entry = Entries.get(Message.requestId);
-			if (!Entry || !IsRecordingMessage(Message, Sender, Entry, extensionId, Entry.tabId)) return {ok: false};
+			if (!Entry || Entry.background || !IsRecordingMessage(Message, Sender, Entry, extensionId, Entry.tabId)) return {ok: false};
 			if (Message.heartbeat) return {ok: true};
 			if (Message.end) { void Finish(Message.requestId, Message.count, Message.reason); return {ok: true}; }
 			try
@@ -102,7 +102,21 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 			catch { return {ok: false}; }
 		},
 		finish: Finish,
-		sourceLost(TabId, Page) { return Promise.all([...Entries.values()].filter(Entry => Entry.tabId === TabId && (!Page || Entry.page !== Page))
+		async appendBlob(Id, BlobValue)
+		{
+			const Entry = Entries.get(Id);
+			if (!Entry || Entry.phase !== 'recording') throw new LocalizedError('webrtc_receiver_lost');
+			for (let Offset = 0; Offset < BlobValue.size; Offset += 192 * 1024)
+			{
+				const Chunk = new Uint8Array(await BlobValue.slice(Offset, Offset + 192 * 1024).arrayBuffer());
+				Entry.controller.signal.throwIfAborted();
+				const Result = await Entry.sink.appendBytes(Entry.count, Chunk);
+				Entry.count = Result.count;
+				await Report(Entry, 'progress', {received: Result.bytes, finished: Result.count, live: true,
+					snapshotAvailable: !!snapshots && Entry.phase === 'recording'});
+			}
+		},
+		sourceLost(TabId, Page) { return Promise.all([...Entries.values()].filter(Entry => !Entry.background && Entry.tabId === TabId && (!Page || Entry.page !== Page))
 			.map(Entry => Finish(Entry.requestId, undefined, 'webrtc_source_changed'))); },
 		async cancel(Id)
 		{

@@ -4,6 +4,8 @@ import {WebRtcQualityTask} from './lib/webrtc-quality-task.js';
 import {RuntimePolicy} from './lib/runtime-policy.js';
 import {LocalizedError, ReceivedError} from './lib/i18n.js';
 import {ResolveCandidate} from './detection.js';
+import {LoadSourceProviders} from './lib/source-provider-data.js';
+import {RequireWebRtcConnection} from './lib/webrtc-descriptor.js';
 const Prefix = 'webrtc-control:';
 const CancelPrefix = 'webrtc-canceled:';
 const WasCanceled = async Id => (await chrome.storage.session.get(CancelPrefix + Id))[CancelPrefix + Id] === true;
@@ -40,28 +42,22 @@ export async function WebRtcQualities(Input)
 export async function LaunchWebRtc(Job, Candidate, TabId, Quality)
 {
 	const Source = {tabId: TabId, documentId: Candidate.documentId, page: Candidate.page,
-		trackId: Candidate.trackId, requestId: Job.requestId, token: crypto.randomUUID(),
-		...(Quality ? {qualityLease: crypto.randomUUID()} : {})};
+		trackId: Candidate.trackId, requestId: Job.requestId, token: crypto.randomUUID(), background: true};
 	await chrome.storage.session.set({[Prefix + Job.requestId]: Source});
 	try
 	{
 		await CheckCanceled(Job.requestId);
-		if (!(await RunPage(Source, {action: 'reserve'}))?.reserved) throw new LocalizedError('webrtc_busy');
+		const Descriptor = (await QualityPage(Source, {action: 'connection', quality: Quality})).connection;
+		const Providers = await LoadSourceProviders();
+		const Connection = RequireWebRtcConnection(Descriptor, Providers.mouflon?.rtcSignalingHosts);
 		await CheckCanceled(Job.requestId);
-		if (Quality)
-		{
-			const Selected = await QualityPage(Source, {action: 'select', quality: Quality});
-			Source.qualityWidth = Selected.quality.width;
-			Source.qualityHeight = Selected.quality.height;
-			await chrome.storage.session.set({[Prefix + Job.requestId]: Source});
-			await CheckCanceled(Job.requestId);
-		}
 		await EnsureRunner();
 		await CheckCanceled(Job.requestId);
-		const Prepared = await chrome.runtime.sendMessage({type: 'webrtcPrepare', job: {...Job, ...Source, mimeType: Candidate.mimeType}});
+		// 연결 인증값은 이 메시지 한 번으로만 전달하며 Job/세션/진단 저장소에 기록하지 않습니다.
+		const Prepared = await chrome.runtime.sendMessage({type: 'webrtcReceive', connection: Connection,
+			job: {...Job, ...Source, mimeType: Candidate.mimeType}});
 		if (!Prepared?.ok) throw ReceivedError(Prepared?.error, 'webrtc_recording_failed');
-		await CheckCanceled(Job.requestId);
-		const Started = await RunPage(Source, {action: 'start', maxChunkBytes: 192 * 1024, maxQueuedBytes: 8 * 1048576});
+		const Started = Prepared.started;
 		if (!Started?.mimeType) throw new LocalizedError('webrtc_recording_failed');
 		await CheckCanceled(Job.requestId);
 		return Started;
@@ -69,8 +65,7 @@ export async function LaunchWebRtc(Job, Candidate, TabId, Quality)
 	catch (ErrorValue)
 	{
 		const Canceled = ErrorValue.name === 'AbortError' || await WasCanceled(Job.requestId);
-		await RunPage(Source, {action: 'stop', reason: 'canceled'}).catch(() => {});
-		if (Source.qualityLease) await QualityPage(Source, {action: 'release'}).catch(() => {});
+		await chrome.runtime.sendMessage({type: 'webrtcReceiverControl', requestId: Job.requestId, action: 'cancel'}).catch(() => {});
 		await chrome.runtime.sendMessage({type: 'webrtcCancel', requestId: Job.requestId}).catch(() => {});
 		await chrome.storage.session.remove(Prefix + Job.requestId);
 		if (Canceled) throw new DOMException('Canceled', 'AbortError');
@@ -84,6 +79,8 @@ export async function ControlWebRtc(RequestId, Action)
 	if (Action === 'cancel') await chrome.storage.session.set({[CancelPrefix + RequestId]: true});
 	const Source = (await chrome.storage.session.get(Prefix + RequestId))[Prefix + RequestId];
 	if (!Source) return Action === 'cancel';
+	if (Source.background)
+		return !!(await chrome.runtime.sendMessage({type: 'webrtcReceiverControl', requestId: RequestId, action: Action}).catch(() => null))?.ok;
 	if (Action === 'cancel')
 	{
 		// 취소 상태를 먼저 설정하여 마지막 조각이 저장 완료로 바뀌지 않게 합니다.

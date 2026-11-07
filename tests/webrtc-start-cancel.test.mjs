@@ -2,15 +2,18 @@ import Assert from 'node:assert/strict';
 import {test as Test} from 'node:test';
 import {setImmediate as Settle} from 'node:timers/promises';
 import {LaunchWebRtc, ControlWebRtc} from '../extension/webrtc-jobs.js';
+import {Connection, MockSourceProviders} from './helpers/webrtc-connection.mjs';
 
-Test('cancellation during runner startup is accepted before producer creation', async T =>
+Test('cancellation during offscreen startup is accepted before creating a receiver', async T =>
 {
+	MockSourceProviders(T);
 	const Data = {}, Gate = Promise.withResolvers();
 	let Starts = 0;
 	globalThis.chrome = {runtime: {getURL: Path => 'chrome-extension://ext/' + Path,
-		getContexts: async () => { await Gate.promise; return [{}]; }, sendMessage: async () => ({ok: true})},
+		getContexts: async () => { await Gate.promise; return [{}]; }, sendMessage: async Message =>
+		{ if (Message.type === 'webrtcReceive') Starts++; return {ok: true, started: {mimeType: 'video/mp4'}}; }},
 		storage: {session: {get: async Key => ({[Key]: Data[Key]}), set: async Values => Object.assign(Data, Values), remove: async Key => { delete Data[Key]; }}},
-		scripting: {async executeScript({args}) { if (args[0].action === 'start') Starts++; return [{documentId: 'doc', result: args[0].action === 'reserve' ? {reserved: true} : {mimeType: 'video/mp4'}}]; }}};
+		scripting: {async executeScript() { return [{documentId: 'doc', result: {connection: Connection()}}]; }}};
 	T.after(() => { delete globalThis.chrome; });
 	const Starting = LaunchWebRtc({requestId: 'request'}, {documentId: 'doc', page: 'https://player.test/live', trackId: 'track', mimeType: 'video/mp4'}, 7).catch(ErrorValue => ErrorValue);
 	await Settle();
@@ -31,39 +34,44 @@ Test('stop/save force-finishes an already ended producer instead of leaving its 
 	Assert.equal(Forced, true);
 });
 
-Test('an occupied recording slot rejects selection before changing the server quality', async T =>
+Test('independent quality selection never changes the source player or starts a page recorder', async T =>
 {
-	const Data = {}, Actions = [];
+	MockSourceProviders(T);
+	const Data = {}, Actions = [], Messages = [];
 	globalThis.chrome = {storage: {session: {get: async Key => ({[Key]: Data[Key]}), set: async Values => Object.assign(Data, Values), remove: async Key => { delete Data[Key]; }}},
-		runtime: {sendMessage: async () => ({ok: true})}, scripting: {async executeScript({func, args})
+		runtime: {getURL: Path => 'chrome-extension://ext/' + Path, getContexts: async () => [{}],
+			sendMessage: async Message => { Messages.push(Message); return {ok: true, started: {mimeType: 'video/mp4'}}; }},
+		scripting: {async executeScript({func, args, world})
 		{
 			Actions.push(func.name + ':' + args[0].action);
-			return [{documentId: 'doc', result: args[0].action === 'reserve' ? {error: 'webrtc_busy'} : {released: true}}];
+			Assert.equal(world, 'MAIN');
+			return [{documentId: 'doc', result: {connection: Connection(args[0].quality?.name)}}];
 		}}};
 	T.after(() => { delete globalThis.chrome; });
-	await Assert.rejects(LaunchWebRtc({requestId: 'r'}, {documentId: 'doc', page: 'https://player.test/live', trackId: 'track'}, 7,
-		{name: '240p', session: 's'}), ErrorValue => ErrorValue.key === 'webrtc_busy');
-	Assert.equal(Actions.includes('WebRtcQualityTask:select'), false);
+	await LaunchWebRtc({requestId: 'r'}, {documentId: 'doc', page: 'https://player.test/live', trackId: 'track'}, 7,
+		{name: '240p', session: 's'});
+	Assert.deepEqual(Actions, ['WebRtcQualityTask:connection']);
+	Assert.equal(Messages.find(Message => Message.type === 'webrtcReceive').connection.quality, '240p');
 });
 
-Test('cancel during server selection releases its lease and never starts the recorder', async T =>
+Test('cancel during descriptor extraction prevents a delayed receiver from starting', async T =>
 {
-	const Data = {}, Gate = Promise.withResolvers(), Actions = [];
+	MockSourceProviders(T);
+	const Data = {}, Gate = Promise.withResolvers(), Actions = [], Messages = [];
 	globalThis.chrome = {storage: {session: {get: async Key => ({[Key]: Data[Key]}), set: async Values => Object.assign(Data, Values), remove: async Key => { delete Data[Key]; }}},
-		runtime: {sendMessage: async () => ({ok: true})}, scripting: {async executeScript({func, args, world})
+		runtime: {getURL: Path => 'chrome-extension://ext/' + Path, sendMessage: async Message => { Messages.push(Message); return {ok: true}; }}, scripting: {async executeScript({func, args, world})
 		{
 			const Action = args[0].action; Actions.push(Action);
 			if (func.name === 'WebRtcQualityTask') Assert.equal(world, 'MAIN');
-			if (Action === 'select') { await Gate.promise; return [{documentId: 'doc', result: {quality: {width: 180, height: 240}}}]; }
+			if (Action === 'connection') { await Gate.promise; return [{documentId: 'doc', result: {connection: Connection()}}]; }
 			return [{documentId: 'doc', result: Action === 'reserve' ? {reserved: true} : {released: true}}];
 		}}};
 	T.after(() => { delete globalThis.chrome; });
 	const Pending = LaunchWebRtc({requestId: 'r'}, {documentId: 'doc', page: 'https://player.test/live', trackId: 'track'}, 7,
 		{name: '240p', session: 's'}).catch(ErrorValue => ErrorValue);
 	await Settle();
-	Assert.equal(Actions.includes('select'), true);
+	Assert.equal(Actions.includes('connection'), true);
 	await ControlWebRtc('r', 'cancel'); Gate.resolve();
 	Assert.equal((await Pending).name, 'AbortError');
-	Assert.equal(Actions.includes('release'), true);
-	Assert.equal(Actions.includes('start'), false);
+	Assert.equal(Messages.some(Message => Message.type === 'webrtcReceive'), false);
 });

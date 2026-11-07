@@ -57,6 +57,7 @@ export function GetDownloadMetrics(Item, Previous, Now = Date.now())
 {
 	UpdateFormats();
 	const Bytes = Item.bytesReceived;
+	if (Item.state === 'interrupted') return {progress: Size(Bytes || 0), speed: '—', percent: null};
 	if (Item.state === 'complete')
 	{
 		const Seconds = (Date.parse(Item.endTime) - Date.parse(Item.startTime)) / Units.MillisecondsPerSecond;

@@ -29,7 +29,7 @@ export async function EnsureRunner()
 				throw new LocalizedError('stream_runner_unavailable');
 			}
 			await chrome.offscreen.createDocument({
-				url: Path, reasons: ['BLOBS'],
+				url: Path, reasons: ['BLOBS', 'WEB_RTC'],
 				justification: Translate('offscreen_justification'),
 			});
 		})().finally(() =>

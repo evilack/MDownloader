@@ -61,6 +61,16 @@ export function CreateRecordingSink(Writer, {maxBytes, maxChunkBytes})
 		if (Failure) throw Failure;
 		if (Closed) throw new Error('recording_closed');
 	}
+	async function Write(Sequence, Chunk)
+	{
+		Check();
+		if (Sequence !== Count || !(Chunk instanceof Uint8Array) || !Chunk.length || Chunk.length > maxChunkBytes || Bytes + Chunk.length > maxBytes)
+			throw new Error('recording_size_limit');
+		try { await Writer.write(Chunk); }
+		catch (ErrorValue) { Failure = ErrorValue; throw ErrorValue; }
+		Bytes += Chunk.length; Count++;
+		return {bytes: Bytes, count: Count};
+	}
 	return {
 		append(Sequence, Data)
 		{
@@ -73,13 +83,10 @@ export function CreateRecordingSink(Writer, {maxBytes, maxChunkBytes})
 				const Decoded = atob(Data);
 				if (btoa(Decoded) !== Data || Decoded.length > maxChunkBytes || Bytes + Decoded.length > maxBytes)
 					throw new Error('recording_size_limit');
-				try { await Writer.write(Uint8Array.from(Decoded, Value => Value.charCodeAt(0))); }
-				catch (ErrorValue) { Failure = ErrorValue; throw ErrorValue; }
-				Bytes += Decoded.length;
-				Count++;
-				return {bytes: Bytes, count: Count};
+				return Write(Sequence, Uint8Array.from(Decoded, Value => Value.charCodeAt(0)));
 			});
 		},
+		appendBytes(Sequence, Chunk) { return Queue(() => Write(Sequence, Chunk)); },
 		finish(ExpectedCount)
 		{
 			return Queue(async () =>

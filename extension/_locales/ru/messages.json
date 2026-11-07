@@ -1320,5 +1320,20 @@
   },
   "webrtc_quality_failed": {
     "message": "Не удалось переключиться на выбранное качество сервера. Повторите попытку."
+  },
+  "webrtc_background_unavailable": {
+    "message": "Данные фонового подключения WebRTC недоступны. Перезагрузите страницу с видео и повторите попытку."
+  },
+  "webrtc_connection_lost": {
+    "message": "Соединение для приема WebRTC прервано."
+  },
+  "webrtc_media_stalled": {
+    "message": "Новые медиаданные WebRTC не поступали слишком долго."
+  },
+  "webrtc_interrupted_saved": {
+    "message": "Прием прерван. Полученная часть сохранена в отдельный частичный файл."
+  },
+  "view_state_interrupted": {
+    "message": "Прервано · часть сохранена"
   }
 }

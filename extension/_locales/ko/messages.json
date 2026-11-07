@@ -1320,5 +1320,20 @@
   },
   "webrtc_quality_failed": {
     "message": "선택한 서버 화질로 전환하지 못했습니다. 잠시 후 다시 시도해 주세요."
+  },
+  "webrtc_background_unavailable": {
+    "message": "백그라운드 WebRTC 연결 정보를 확보하지 못했습니다. 영상 페이지를 새로고침한 뒤 다시 시도해 주세요."
+  },
+  "webrtc_connection_lost": {
+    "message": "WebRTC 수신 연결이 중단되었습니다."
+  },
+  "webrtc_media_stalled": {
+    "message": "WebRTC 영상 수신이 장시간 멈췄습니다."
+  },
+  "webrtc_interrupted_saved": {
+    "message": "수신이 중단되었습니다. 받은 구간은 별도의 부분 파일로 저장했습니다."
+  },
+  "view_state_interrupted": {
+    "message": "중단 · 부분 저장"
   }
 }

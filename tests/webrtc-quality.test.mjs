@@ -11,6 +11,7 @@ function Fixture()
 	class Socket extends EventTarget
 	{
 		readyState = 1;
+		url = 'wss://edge-webrtc.doppiocdn.com/signaling';
 		send(Data) { Sent.push(JSON.parse(Data)); }
 		receive(Message) { this.dispatchEvent(new MessageEvent('message', {data: JSON.stringify(Message)})); }
 	}
@@ -21,7 +22,7 @@ function Fixture()
 		getReceivers() { return [{track: {id: 'video', kind: 'video', readyState: 'live'}}]; }
 	}
 	const Video = {srcObject: {getVideoTracks: () => [{id: 'video', readyState: 'live'}]}, videoWidth: 720, videoHeight: 960};
-	const Context = createContext({WebSocket: Socket, RTCPeerConnection: Peer, document: {querySelectorAll: () => [Video]},
+	const Context = createContext({WebSocket: Socket, RTCPeerConnection: Peer, URL, document: {querySelectorAll: () => [Video]},
 		location: {href: 'https://player.test/live'}, crypto, Date, JSON, Map, Set, Object, Promise, setTimeout, clearTimeout,
 		setInterval: () => 1, clearInterval() {}, addEventListener: (Name, Fn) => Listeners.set(Name, Fn)});
 	runInContext(Code, Context);
@@ -29,6 +30,7 @@ function Fixture()
 	const Send = (Message, Data) => Ws.send(JSON.stringify({message: Message, data: Data}));
 	async function Connect()
 	{
+		Send('connection', [{appKey: 'player-key', custom: {name: 'stream', aclAuth: 'observed-session-authorization'}}]);
 		Send('getStreamInfo', {mediaSessionId: 'session', modelName: 'stream'});
 		Ws.receive({message: 'getStreamInfoReply', data: {mediaSessionId: 'session', status: true, profiles: {
 			'160p_blurred': {width: 284, height: 160, bitrate: 100000, abr: false},
@@ -90,4 +92,17 @@ Test('cancellation before the MAIN select arrives prevents any server change', a
 	F.Api.release('canceled-before-start');
 	await Assert.rejects(F.Api.select('video', Choice, 'canceled-before-start'), /webrtc_quality_failed/);
 	Assert.equal(F.Sent.length, Count);
+});
+
+Test('a background connection descriptor is bound to the exact observed session and stays out of quality lists', async () =>
+{
+	const F = Fixture(); await F.Connect();
+	const Choice = F.Api.list('video')[1];
+	const Descriptor = F.Api.connection('video', Choice);
+	Assert.equal(Descriptor.url, 'wss://edge-webrtc.doppiocdn.com/signaling');
+	Assert.equal(Descriptor.quality, '240p');
+	Assert.equal(Descriptor.connection.custom.aclAuth, 'observed-session-authorization');
+	Assert.equal(JSON.stringify(F.Api.list('video')).includes('observed-session-authorization'), false);
+	Assert.throws(() => F.Api.connection('other', Choice), /webrtc_background_unavailable/);
+	Assert.throws(() => F.Api.connection('video', {...Choice, session: 'stale'}), /webrtc_quality_unavailable/);
 });

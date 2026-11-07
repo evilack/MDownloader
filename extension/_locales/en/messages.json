@@ -1320,5 +1320,20 @@
   },
   "webrtc_quality_failed": {
     "message": "Could not switch to the selected server quality. Please try again."
+  },
+  "webrtc_background_unavailable": {
+    "message": "Background WebRTC connection information is unavailable. Reload the video page and try again."
+  },
+  "webrtc_connection_lost": {
+    "message": "The WebRTC receiving connection was interrupted."
+  },
+  "webrtc_media_stalled": {
+    "message": "No new WebRTC media has been received for too long."
+  },
+  "webrtc_interrupted_saved": {
+    "message": "Receiving was interrupted. The received portion was saved to a separate partial file."
+  },
+  "view_state_interrupted": {
+    "message": "Interrupted · partial file saved"
   }
 }

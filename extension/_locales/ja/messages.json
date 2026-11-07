@@ -1320,5 +1320,20 @@
   },
   "webrtc_quality_failed": {
     "message": "選択したサーバーの画質に切り替えられませんでした。もう一度お試しください。"
+  },
+  "webrtc_background_unavailable": {
+    "message": "バックグラウンドWebRTC接続情報を取得できません。動画ページを再読み込みして再試行してください。"
+  },
+  "webrtc_connection_lost": {
+    "message": "WebRTCの受信接続が中断されました。"
+  },
+  "webrtc_media_stalled": {
+    "message": "WebRTC映像の受信が長時間停止しています。"
+  },
+  "webrtc_interrupted_saved": {
+    "message": "受信が中断されました。受信済みの区間は別の部分ファイルに保存しました。"
+  },
+  "view_state_interrupted": {
+    "message": "中断 · 部分保存"
   }
 }

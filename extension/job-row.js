@@ -108,7 +108,7 @@ function NameWithTooltip(Job, LoadLink)
 
 const Labels = {
 	starting: 'view_state_starting', paused: 'view_state_paused', canceled: 'view_state_canceled',
-	failed: 'view_state_failed', unknown: 'view_state_unknown',
+	failed: 'view_state_failed', unknown: 'view_state_unknown', interrupted: 'view_state_interrupted',
 };
 
 /** 화면에 표시할 진단은 이곳에서 조립합니다. 원본 오류는 워커가 관리합니다. */
@@ -154,7 +154,7 @@ function JobDetails(Job, { bShowDiagnostics, CountFormat })
 			Details.push(Translate('view_job_rescan'));
 		}
 	}
-	if (Job.state === 'complete' && !Job.exists)
+	if (['complete', 'interrupted'].includes(Job.state) && !Job.exists)
 	{
 		Details.push(Translate('view_job_file_missing'));
 	}
@@ -256,7 +256,7 @@ export function CreateJobRow(Job, Tile, Context)
 	{
 		Actions.append(Control(Translate('view_action_resume'), 'resume', true));
 	}
-	if (Job.state === 'complete' && Job.exists && !Job.pickedDownloadFolder)
+	if (['complete', 'interrupted'].includes(Job.state) && Job.exists && !Job.pickedDownloadFolder)
 	{
 		InlineActions.append(SetButtonIcon(Control('', 'show'), Translate('view_action_show'), 'folder'));
 	}

@@ -1320,5 +1320,20 @@
   },
   "webrtc_quality_failed": {
     "message": "无法切换到所选的服务器画质，请重试。"
+  },
+  "webrtc_background_unavailable": {
+    "message": "无法获取后台WebRTC连接信息。请刷新视频页面后重试。"
+  },
+  "webrtc_connection_lost": {
+    "message": "WebRTC接收连接已中断。"
+  },
+  "webrtc_media_stalled": {
+    "message": "WebRTC媒体接收已长时间停滞。"
+  },
+  "webrtc_interrupted_saved": {
+    "message": "接收已中断。已接收的部分已保存为独立的部分文件。"
+  },
+  "view_state_interrupted": {
+    "message": "已中断 · 已保存部分文件"
   }
 }

@@ -54,11 +54,12 @@ async function PrepareJobPreview(Job, TabId, Candidate)
 		return;
 	}
 	const Preview = await ReadCandidateThumbnail(TabId, Candidate);
-	if (!Preview || !await ReadJob(JobKey(Job.requestId)))
+	if ((!Preview && !Candidate.recordingResolution) || !await ReadJob(JobKey(Job.requestId)))
 	{
 		return;
 	}
-	const { still: Still, duration: Duration, resolution: Resolution } = Preview;
+	const { still: Still, duration: Duration } = Preview ?? {};
+	const Resolution = Candidate.recordingResolution ?? Preview?.resolution;
 	const Frame = Still?.startsWith('data:image/jpeg;base64,') ? Still : undefined;
 	if (/^https?:\/\//i.test(Still))
 	{
@@ -169,20 +170,21 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 	{
 		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(Quality ? 'WebRTC.mp4' : Item.name, Item.pageTitle),
 			created: Date.now(), state: 'active', recording: true, live: true, bytesReceived: 0, finished: 0};
-		await RegisterMediaJob(Key, Job, TabId, Item, !Quality);
+		await RegisterMediaJob(Key, Job, TabId, Item, false);
 		try
 		{
-			await LaunchWebRtc(Job, Item, TabId, Quality);
-			if (Quality) void PrepareJobPreview(Job, TabId, Item).catch(() => {});
+			const Started = await LaunchWebRtc(Job, Item, TabId, Quality);
+			const Resolution = Started.width > 0 && Started.height > 0 ? `${Started.width}x${Started.height}` : undefined;
+			void PrepareJobPreview(Job, TabId, {...Item, recordingResolution: Resolution}).catch(() => {});
 		}
 		catch (ErrorValue)
 		{
 			if (ErrorValue.name === 'AbortError')
 			{
-				await WriteJob(Key, {...Job, state: 'canceled'});
+				await WriteJob(Key, {...await ReadJob(Key), state: 'canceled'});
 				return {state: 'canceled'};
 			}
-			await WriteJob(Key, {...Job, state: 'failed', error: SerializeError(ErrorValue)});
+			await WriteJob(Key, {...await ReadJob(Key), state: 'failed', error: SerializeError(ErrorValue)});
 			throw ErrorValue;
 		}
 		await OpenDebugView(RequestId);
@@ -344,7 +346,9 @@ export async function UpdateHls(Message)
 			if (!Job.recording || !/^video\/(mp4|webm)(?:;|$)/.test(Message.mimeType)) throw new LocalizedError('job_hls_wrong_state');
 			let Filename = PartialOutputFilename(Job.filename, Message.mimeType.startsWith('video/mp4') ? '.mp4' : '.webm');
 			if (Message.partial && !Job.partial) Filename = PartialFilename(Filename);
-			await WriteJob(Key, {...Job, filename: Filename, partial: !!Message.partial});
+			await WriteJob(Key, {...Job, filename: Filename, partial: !!Message.partial,
+				recordingInterrupted: !!Message.partial, recordingEndReason: Message.reason,
+				outputFormat: Message.mimeType.startsWith('video/mp4') ? 'MP4' : 'WEBM'});
 			return Filename;
 		}
 		case 'access': return RequireHlsHosts(Message.urls);
@@ -390,7 +394,8 @@ export async function UpdateHls(Message)
 			}
 			await WriteJob(Key, {
 				...Job, filename: Message.filename, bytesReceived: Message.bytes, totalBytes: Message.bytes,
-				state: 'complete', endTime: new Date().toISOString(), exists: true,
+				state: Job.recordingInterrupted ? 'interrupted' : 'complete', endTime: new Date().toISOString(), exists: true,
+				error: Job.recordingInterrupted ? MessageRef('webrtc_interrupted_saved') : undefined,
 			});
 			await RecordDownloadLog('complete', { requestId: Job.requestId });
 			return;
@@ -468,7 +473,7 @@ export async function PreviewJob(RequestId)
 	}
 	const SourceKey = PreviewSourceKey(RequestId);
 	const Source = (await chrome.storage.session.get(SourceKey))[SourceKey];
-	if (Job.pickedDownloadFolder && Job.state === 'complete')
+	if (Job.pickedDownloadFolder && ['complete', 'interrupted'].includes(Job.state))
 	{
 		return {
 			...Source, format: Job.outputFormat ?? (Job.hls ? 'MP4' : Source?.format) ??
@@ -632,7 +637,7 @@ export async function ControlJob(RequestId, Action)
 		{
 			return chrome.downloads.cancel(Item.id);
 		}
-		if (Action === 'show' && State === 'complete' && Item.exists)
+		if (Action === 'show' && ['complete', 'interrupted'].includes(State) && Item.exists)
 		{
 			return chrome.downloads.show(Item.id);
 		}

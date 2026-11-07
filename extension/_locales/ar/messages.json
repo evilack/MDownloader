@@ -1320,5 +1320,20 @@
   },
   "webrtc_quality_failed": {
     "message": "تعذر التبديل إلى جودة الخادم المحددة. يرجى المحاولة مجددًا."
+  },
+  "webrtc_background_unavailable": {
+    "message": "معلومات اتصال WebRTC في الخلفية غير متاحة. أعد تحميل صفحة الفيديو وحاول مجددًا."
+  },
+  "webrtc_connection_lost": {
+    "message": "انقطع اتصال استقبال WebRTC."
+  },
+  "webrtc_media_stalled": {
+    "message": "لم تصل بيانات وسائط WebRTC جديدة منذ مدة طويلة."
+  },
+  "webrtc_interrupted_saved": {
+    "message": "انقطع الاستقبال. تم حفظ الجزء المستلم في ملف جزئي منفصل."
+  },
+  "view_state_interrupted": {
+    "message": "انقطع · تم حفظ ملف جزئي"
   }
 }

@@ -1320,5 +1320,20 @@
   },
   "webrtc_quality_failed": {
     "message": "सर्वर की चुनी गई गुणवत्ता पर स्विच नहीं हो सका। कृपया फिर से प्रयास करें।"
+  },
+  "webrtc_background_unavailable": {
+    "message": "बैकग्राउंड WebRTC कनेक्शन की जानकारी उपलब्ध नहीं है। वीडियो पेज को फिर से लोड करें और दोबारा प्रयास करें।"
+  },
+  "webrtc_connection_lost": {
+    "message": "WebRTC प्राप्ति कनेक्शन बाधित हो गया।"
+  },
+  "webrtc_media_stalled": {
+    "message": "काफ़ी समय से नया WebRTC मीडिया प्राप्त नहीं हुआ है।"
+  },
+  "webrtc_interrupted_saved": {
+    "message": "प्राप्ति बाधित हो गई। प्राप्त हिस्से को अलग आंशिक फ़ाइल में सहेजा गया है।"
+  },
+  "view_state_interrupted": {
+    "message": "बाधित · आंशिक फ़ाइल सहेजी गई"
   }
 }

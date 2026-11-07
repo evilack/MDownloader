@@ -29,6 +29,9 @@ export async function GetBrowserDownload(Id)
 /** 영속 작업 기록과 Chrome 다운로드 상태를 합쳐 UI가 읽는 스냅샷을 만듭니다. */
 export function SummarizeJob(Job, Item, Runners = {}, bRegistering = false)
 {
+	const Interrupted = Job.recording && (Job.recordingInterrupted ?? Job.partial === true);
+	if (!Item && Interrupted && Job.state === 'complete')
+		return {...Job, state: 'interrupted', error: MessageRef('webrtc_interrupted_saved')};
 	if (!Item)
 	{
 		if ((Job.hls || Job.recording || Job.pickedDownloadFolder) && Job.downloadId === undefined)
@@ -50,14 +53,15 @@ export function SummarizeJob(Job, Item, Runners = {}, bRegistering = false)
 	const Filename = Item.filename.split(/[\\/]/).at(-1) || Job.filename;
 	const bWrongType = Item.state === 'complete' && IsHtmlMediaType(Item.mime);
 	const State = bWrongType ? 'failed'
-	: Item.state === 'complete' ? 'complete'
+	: Item.state === 'complete' ? Interrupted ? 'interrupted' : 'complete'
 	: Item.state === 'in_progress' ? (Item.paused ? 'paused' : 'active')
 	: Item.error === 'USER_CANCELED' ? 'canceled' : 'failed';
 	return {
 		...Job, filename: Filename, state: State,
-		error: bWrongType ? MessageRef('job_not_video') : Item.error && MessageRef('job_browser_error', Item.error),
+		error: bWrongType ? MessageRef('job_not_video') : State === 'interrupted' ? MessageRef('webrtc_interrupted_saved')
+		: Item.error && MessageRef('job_browser_error', Item.error),
 		hasUrl: /^https?:\/\//i.test(Item.url),
-		bytesReceived: (Job.hls || Job.recording) && State === 'complete' ? Job.bytesReceived : Item.bytesReceived,
+		bytesReceived: (Job.hls || Job.recording) && ['complete', 'interrupted'].includes(State) ? Job.bytesReceived : Item.bytesReceived,
 		totalBytes: Item.totalBytes,
 		startTime: Job.hls || Job.recording ? new Date(Job.created).toISOString() : Item.startTime,
 		endTime: Item.endTime, paused: Item.paused,

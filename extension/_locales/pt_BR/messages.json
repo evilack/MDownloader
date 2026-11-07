@@ -1320,5 +1320,20 @@
   },
   "webrtc_quality_failed": {
     "message": "Não foi possível mudar para a qualidade do servidor selecionada. Tente novamente."
+  },
+  "webrtc_background_unavailable": {
+    "message": "As informações de conexão WebRTC em segundo plano estão indisponíveis. Recarregue a página do vídeo e tente novamente."
+  },
+  "webrtc_connection_lost": {
+    "message": "A conexão de recebimento WebRTC foi interrompida."
+  },
+  "webrtc_media_stalled": {
+    "message": "Nenhum novo dado WebRTC foi recebido por tempo demais."
+  },
+  "webrtc_interrupted_saved": {
+    "message": "O recebimento foi interrompido. A parte recebida foi salva em um arquivo parcial separado."
+  },
+  "view_state_interrupted": {
+    "message": "Interrompido · arquivo parcial salvo"
   }
 }

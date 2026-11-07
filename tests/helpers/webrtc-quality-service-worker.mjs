@@ -18,6 +18,8 @@ const Dependencies = new Map(Object.entries({
 	'./lib/webrtc-quality-task.js': {WebRtcQualityTask() {}},
 	'./lib/runtime-policy.js': {RuntimePolicy: {}},
 	'./lib/i18n.js': {LocalizedError, ReceivedError() {}},
+	'./lib/source-provider-data.js': {LoadSourceProviders() {}},
+	'./lib/webrtc-descriptor.js': {RequireWebRtcConnection() {}},
 	'./detection.js': {async ResolveCandidate(...Args)
 	{
 		CandidateCalls.push(Args);

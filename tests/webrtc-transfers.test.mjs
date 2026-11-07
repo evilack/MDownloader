@@ -157,3 +157,24 @@ Test('canceling a partial save does not cancel the original recording or future 
 	await F.Transfers.finish('recording', 2, 'requested');
 	Assert.equal(F.Saved[0].File.size, 6);
 });
+
+Test('an independent receiver continues appending and current-saving after its source tab closes or navigates', async () =>
+{
+	let Partial;
+	const Snapshots = CreateTransferSnapshots(async (_Job, Snapshot) => { Partial = await Snapshot.recording.readFile(); });
+	const F = Fixture({snapshots: Snapshots});
+	await F.Transfers.prepare({...F.Job, background: true});
+	await F.Transfers.appendBlob('recording', new Blob([new Uint8Array([1, 2, 3])]));
+	await F.Transfers.sourceLost(7, 'https://player.test/different');
+	await F.Transfers.sourceLost(7);
+	Assert.deepEqual(F.Transfers.ids(), ['recording']);
+	Assert.equal(F.Saved.length, 0, 'tab lifecycle must not finalize the independent recording');
+	await F.Transfers.appendBlob('recording', new Blob([new Uint8Array([4, 5, 6])]));
+	Assert.equal(F.Reports.at(-1).received, 6);
+	await Snapshots.save('recording', {requestId: 'partial'});
+	Assert.equal(Partial.size, 6);
+	Assert.equal((await F.Accept({sequence: 2, data: 'AAEC'})).ok, false, 'page relay cannot inject into an independent receiver');
+	await F.Transfers.finish('recording', undefined, 'requested');
+	Assert.equal(F.Saved[0].File.size, 6);
+	Assert.equal(F.Reports.find(R => R.Action === 'recordingFormat').partial, false);
+});
