@@ -1,0 +1,154 @@
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+:root {
+  color-scheme: dark;
+  font: 14px/1.5 system-ui, 'Malgun Gothic', sans-serif;
+  --bg: #191d25;
+  --surface: #212630;
+  --line: #414853;
+  --text: #f5f7fa;
+  --muted: #b9c2cf;
+  --mint: #76f5b6;
+  --live-surface: #a71d38;
+  --live-text: #ffffff;
+
+  /* 여러 화면에서 쓰는 미리보기와 컨트롤의 시각 설정입니다. */
+  --preview-surface: #10131a;
+  --control-line: #656f7e;
+  --action-icon-size: 20px;
+  --preview-spinner-period: 850ms;
+  --preview-fade-duration: 300ms;
+}
+body { margin: 0; background: var(--bg); color: var(--text); }
+.popup { inline-size: 420px; max-height: 460px; display: flex; flex-direction: column; }
+.brand { padding: 13px 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; border-bottom: 1px solid var(--line); }
+.brand strong { color: var(--mint); font-size: 16px; }
+.playback-hint { margin-block: 12px 0; color: var(--muted); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.playback-hint > span { display: block; }
+.playback-hint strong { color: var(--mint); }
+.brand span { color: var(--muted); font-size: 12px; }
+.brand-with-options { align-items: center; flex-wrap: nowrap; padding-block: 9px; }
+.brand-with-options > #options { margin-inline-start: auto; min-height: 32px; }
+main { padding: 12px 16px 16px; }
+.popup main { min-height: 0; overflow: auto; overscroll-behavior: contain; }
+h1 { font-size: 23px; margin: 0 0 8px; }
+h2 { font-size: 17px; margin: 20px 0 0; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+p { margin: 5px 0; }
+.muted, .notice { color: var(--muted); overflow-wrap: anywhere; }
+.notice:not(:empty) { margin: 8px 0; }
+ul { list-style: none; padding: 0; margin: 0; }
+.candidate { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 9px; padding: 3px 8px; padding-inline-start: 4px; margin-top: 6px; }
+.filename { overflow-wrap: anywhere; min-width: 0; }
+.candidate-details { display: flex; align-items: center; flex: 1; min-inline-size: 0; }
+.candidate .filename { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.candidate-status { font-size: 12px; white-space: nowrap; }
+.candidate-format, .media-live { flex: none; padding-inline: 5px; border-radius: 4px; color: #c6d7eb; background: #2a3545; font-size: 10px; font-weight: 650; line-height: 18px; }
+.candidate-format[data-format="M3U8"] { color: #e6e0ff; background: #403574; }
+.candidate-format[data-format="MPD"] { color: #c6f0f5; background: #224b55; }
+.media-live { color: var(--live-text); background: var(--live-surface); white-space: nowrap; }
+.job-live { display: inline-block; vertical-align: middle; }
+/* 최소 Chrome 116에서는 고정 배경의 대비색을 사용하고 지원 브라우저에서는 대비를 자동 계산합니다. */
+@supports (color: contrast-color(red)) {
+  .media-live { color: contrast-color(var(--live-surface)); }
+}
+.candidate-job-status { flex: 0 1 auto; max-inline-size: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--muted); }
+.candidate-job-status:not(:empty) { margin-inline-start: 6px; padding-inline: 6px; border: 1px solid var(--line); border-radius: 999px; }
+.candidate-job-status[data-state="active"] { color: #b1d9ff; flex: 0 1 12ch; max-inline-size: 100%; min-inline-size: 0; padding-block: 2px; border-radius: 6px; font-size: 11px; }
+.candidate-job-status[data-state="complete"] { color: var(--mint); }
+.candidate-job-status[data-state="failed"] { color: #ffb4ac; }
+.actions { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-top: 9px; }
+.popup .actions > button { flex: 1; }
+.popup footer > .icon-button { flex: none; }
+.candidate .actions { flex: none; flex-wrap: nowrap; gap: 6px; margin: 0; }
+.candidate .actions > button { flex: none; min-height: 30px; padding: 3px 8px; white-space: nowrap; }
+.quality { display: block; width: 100%; min-inline-size: 0; min-height: 34px; margin: 0; padding: 6px 8px; border: 1px solid var(--control-line); border-radius: 7px; background: var(--bg); color: var(--text); font: inherit; }
+.quality-controls { display: flex; align-items: stretch; gap: 8px; margin-block-start: 9px; }
+.quality-controls > .quality { flex: 1; }
+.quality-controls > .actions { flex: none; flex-wrap: nowrap; gap: 6px; margin: 0; }
+.quality-controls > .actions > .icon-button { flex: none; }
+.quality-dialog .notice:empty { display: none; }
+.popup:has(#preview-hover:popover-open) { min-block-size: 220px; }
+.popup:has(#preview-hover:popover-open #preview-stream-path:not([hidden])) { min-block-size: 250px; }
+.quality-slot { margin-block-start: 6px; list-style: none; }
+/* 선택 영역은 대상 행 아래의 문서 흐름에 놓습니다. 창 끝에서도 목록과 함께 스크롤됩니다. */
+.quality-dialog { position: static; margin: 0; inline-size: 100%; max-inline-size: none; max-block-size: none; padding: 16px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--text); overscroll-behavior: contain; }
+.quality-dialog h2 { margin: 0 0 12px; }
+#preview-hover { position: fixed; inset: auto; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--preview-surface); overflow: hidden; }
+#preview-hover:popover-open { display: block; }
+#preview-media { position: relative; display: grid; background: inherit; --preview-loading-size: 34px; }
+#preview-media > :is(video, audio, img) { display: block; inline-size: 100%; max-block-size: min(240px, calc(100vh - 18px)); object-fit: contain; }
+#preview-media > :is(video, img) { grid-area: 1 / 1; aspect-ratio: 16 / 9; }
+#preview-media > img + video { background: inherit; }
+#preview-hover:has(#preview-stream-path:not([hidden])) #preview-media > :is(video, img) { max-block-size: min(240px, calc(100vh - 64px)); }
+#preview-stream-path { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; border-block-start: 1px solid var(--line); padding: 5px 8px; color: var(--muted); font: 11px/1.4 ui-monospace, monospace; }
+footer.actions { margin: 0; padding: 12px 16px; border-top: 1px solid var(--line); }
+button { font: inherit; font-weight: 650; min-height: 34px; padding: 5px 10px; border: 1px solid var(--control-line); border-radius: 7px; color: var(--text); background: transparent; cursor: pointer; }
+.candidate-preview { position: relative; display: grid; place-items: center; flex: none; block-size: 36px; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid var(--line); border-radius: 7px; background: var(--preview-surface); }
+.preview-loading { position: absolute; z-index: 1; inset: 0; margin: auto; inline-size: var(--preview-loading-size, 22px); block-size: var(--preview-loading-size, 22px); appearance: none; border: 2px solid var(--line); border-block-start-color: var(--mint); border-inline-end-color: var(--mint); border-radius: 50%; background: transparent; pointer-events: none; }
+.preview-loading::-webkit-progress-bar { display: none; }
+@keyframes preview-loading-spin { to { rotate: 1turn; } }
+.candidate-preview > img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+.candidate-preview-stale { position: absolute; z-index: 1; inset: 0; margin: auto; display: grid; place-items: center; inline-size: 20px; block-size: 20px; border-radius: 4px; background: #10131aeb; pointer-events: none; }
+.candidate-preview-stale > img { display: block; inline-size: 16px; block-size: 16px; }
+.candidate-preview :is(.candidate-preview-duration, .candidate-preview-resolution) { position: absolute; z-index: 2; padding-inline: 2px; border-radius: 2px; background: #000c; color: #fff; font-size: 9px; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.candidate-preview-duration { inset-block-end: 1px; inset-inline-end: 1px; }
+.candidate-preview-resolution { inset-block-start: 1px; inset-inline-start: 1px; }
+.icon-button { display: inline-grid; place-items: center; inline-size: 34px; padding: 0; }
+.candidate .actions > .icon-button { padding: 0; }
+.button-icon { display: block; inline-size: var(--action-icon-size); block-size: var(--action-icon-size); }
+.job-inline-actions > .primary .button-icon { filter: brightness(.15); }
+#scan { display: inline-flex; flex: 1; align-items: center; justify-content: center; }
+button.primary { background: var(--mint); border-color: var(--mint); color: #10261b; }
+button:disabled { opacity: .68; cursor: default; }
+:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; }
+@media (hover: hover) { button:enabled:hover { filter: brightness(1.13); } }
+@media (prefers-reduced-motion: no-preference) {
+  .preview-loading { animation: preview-loading-spin var(--preview-spinner-period) linear infinite; }
+  #preview-media > img + video { transition: opacity var(--preview-fade-duration) ease-out; }
+  #preview-media > .preview-video-entering { opacity: 0; }
+  button { transition: scale 150ms ease-out; }
+  button:enabled:active { scale: .96; }
+}
+.job { container-type: inline-size; padding: 11px 0; border-bottom: 1px solid var(--line); }
+.job-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-block-start: 20px; padding-block-end: 8px; border-block-end: 1px solid var(--line); }
+.job-section-heading h2 { margin: 0; padding: 0; border: 0; min-inline-size: 0; overflow-wrap: anywhere; }
+.job-section-heading > .icon-button { flex: none; }
+#panel-media-divider { margin-block: 16px; border: 0; border-block-start: 1px solid var(--line); }
+.job-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.job-top-with-status { flex-wrap: nowrap; }
+.job-summary { display: flex; align-items: center; gap: 8px; flex: 1; min-inline-size: min-content; }
+.name-wrap { display: flex; align-items: center; gap: 5px; position: relative; flex: 1; min-width: 0; max-width: 100%; }
+/* 이름만 줄이고 라이브 배지와 오른쪽 조작 버튼은 각각의 너비를 유지합니다. */
+.name-wrap > .filename { display: block; flex: 1; inline-size: 0; min-inline-size: 4ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.name-wrap > .media-live { flex: none; }
+.filename[tabindex] { text-decoration: underline dotted var(--mint); text-underline-offset: 3px; }
+.job-measure { display: grid; min-inline-size: 0; line-height: 1.2; text-align: end; font-variant-numeric: tabular-nums; }
+.job-measure > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.job-measure-speed { color: var(--muted); }
+.job-end { display: grid; grid-auto-flow: column; grid-template-columns: minmax(0, 1fr) auto; flex: 0 1 auto; align-items: center; gap: 8px; margin-inline-start: auto; max-inline-size: 100%; }
+/* 뷰포트가 아니라 각 행의 실제 폭에 맞춰 정보 영역을 줄여 좁은 패널에서도 이름과 버튼을 남깁니다. */
+.job-end > .job-measure { inline-size: clamp(8ch, 22cqi, 15ch); max-inline-size: 100%; font-size: 13px; }
+.job-inline-actions { display: flex; flex: none; align-items: center; gap: 7px; }
+.tooltip { position: absolute; z-index: 2; inset-block-start: 100%; inset-inline-start: 0; width: max-content; max-width: calc(100vw - 42px); max-height: 40vh; overflow: auto; overscroll-behavior: contain; padding: 7px 9px; border: 1px solid #a8b2c1; border-radius: 7px; background: #0e1219; color: var(--text); overflow-wrap: anywhere; }
+progress { display: block; width: 100%; height: 8px; margin: 9px 0 0; accent-color: var(--mint); }
+.tooltip[data-above] { inset-block: auto 100%; }
+.state { color: var(--mint); }
+.job-status-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-block-start: 6px; }
+.job-status-line > button { flex: none; margin-inline-start: auto; }
+.job-status-copy { display: grid; align-content: center; align-self: stretch; position: relative; min-inline-size: 0; }
+.job-top-with-status > .job-end { position: relative; }
+.job-end > .job-status-copy { position: static; white-space: nowrap; }
+.job-end > .job-status-copy .tooltip { inset-inline: auto 0; }
+.job-status-copy .state[tabindex] { cursor: help; text-decoration: underline dotted; text-underline-offset: 3px; }
+.job-status-copy .tooltip { white-space: pre-line; }
+.options main { max-width: 680px; margin: 0 auto; padding: 28px 16px; }
+.option-group { margin-top: 16px; padding: 16px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.option-group h2 { margin: 0 0 10px; }
+.option-group .notice:empty { margin: 0; }
+.option-group summary { padding: 8px 0; cursor: pointer; }
+.option-toggle { display: flex; gap: 8px; align-items: center; }
+.option-toggle label { padding: 8px 0; cursor: pointer; }
+.option-toggle input { margin: 0; accent-color: var(--mint); }
+.option-field { margin-top: 12px; }
+.option-field :is(input, select) { display: block; width: 100%; margin-top: 4px; padding: 8px 10px; border: 1px solid var(--control-line); border-radius: 7px; background: var(--bg); color: var(--text); font: inherit; }
+#download-log { width: 100%; padding: 8px 10px; border: 1px solid var(--control-line); border-radius: 7px; background: var(--bg); color: var(--text); font: inherit; resize: vertical; }

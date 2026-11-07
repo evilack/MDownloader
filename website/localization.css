@@ -1,0 +1,25 @@
+/* Shared language controls remain reachable at every supported screen width. */
+.localized-page .site-header{gap:16px}
+.localized-page .site-header .brand{flex-shrink:0}
+.localized-page .site-header nav{gap:20px}
+.language-link{display:inline-flex;align-items:center;min-block-size:32px;white-space:nowrap;text-decoration:underline;text-underline-offset:4px}
+html[lang="en"] .localized-page{letter-spacing:-.015em}
+html[lang="en"] .product-page h1{font-size:clamp(32px,5.3vw,70px);letter-spacing:-.055em}
+html[lang="en"] .localized-page h2{letter-spacing:-.04em}
+html[lang="en"] .sample-capture img{aspect-ratio:720/619}
+html[lang="en"] .popup-capture img{aspect-ratio:420/283}
+@media(min-width:1201px){html[lang="en"] .capture-grid{grid-template-columns:minmax(0,1fr) minmax(0,370px)}}
+@media(min-width:1001px) and (max-width:1200px){
+  html[lang="en"] .capture-grid{grid-template-columns:minmax(0,1fr)}
+  html[lang="en"] .sample-capture{inline-size:min(100%,720px);justify-self:center}
+  html[lang="en"] .extension-captures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+}
+.sample-header-tools{display:flex;align-items:center;gap:24px}
+@media(max-width:640px){
+  .localized-page .site-header nav{gap:12px}
+  .localized-page .site-header nav>a.language-link{display:inline-flex}
+  .localized-page .site-header .brand{gap:8px;font-size:16px}
+  .localized-page .site-header nav>a.support-nav{font-size:11px;gap:4px}
+  .sample-header-tools>span{display:none}
+  html[lang="en"] .product-page h1{font-size:clamp(30px,8vw,48px)}
+}

@@ -1,0 +1,1227 @@
+{
+  "view_stream_live": {
+    "message": "ЭФИР"
+  },
+  "opt_side_panel": {
+    "message": "Боковая панель"
+  },
+  "opt_show_panel_media": {
+    "message": "Показывать найденные медиа в боковой панели"
+  },
+  "opt_show_panel_media_help": {
+    "message": "Показывает медиа активной вкладки над списком загрузок."
+  },
+  "opt_download_log": {
+    "message": "Журнал загрузок"
+  },
+  "opt_log_downloads": {
+    "message": "Записывать события загрузки"
+  },
+  "opt_log_help": {
+    "message": "На этом устройстве сохраняются последние $LIMIT$ событий. URL, файлы cookie, заголовки запросов и пути к файлам не записываются.",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_log_empty": {
+    "message": "Событий загрузки пока нет."
+  },
+  "opt_log_copy": {
+    "message": "Копировать журнал"
+  },
+  "opt_log_clear": {
+    "message": "Очистить журнал"
+  },
+  "opt_log_copied": {
+    "message": "Журнал скопирован."
+  },
+  "opt_log_copy_failed": {
+    "message": "Не удалось скопировать журнал."
+  },
+  "opt_log_cleared": {
+    "message": "Журнал очищен."
+  },
+  "opt_log_clear_failed": {
+    "message": "Не удалось очистить журнал."
+  },
+  "opt_log_read_failed": {
+    "message": "Не удалось загрузить журнал."
+  },
+  "opt_log_step_ok": {
+    "message": "Этап завершён"
+  },
+  "opt_pick_download_folder": {
+    "message": "Выбрать папку…"
+  },
+  "opt_restore_folder_access": {
+    "message": "Восстановить доступ к папке"
+  },
+  "opt_picked_folder": {
+    "message": "Выбранная папка загрузок: $FOLDER$",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_folder_picker_failed": {
+    "message": "Не удалось сохранить выбранную папку. Выберите её снова."
+  },
+  "opt_folder_access_restored": {
+    "message": "Доступ к папке восстановлен."
+  },
+  "folder_access_required": {
+    "message": "Откройте настройки расширения и разрешите доступ к выбранной папке загрузок."
+  },
+  "action_title": {
+    "message": "MDownloader · Текущая страница"
+  },
+  "candidate_changed": {
+    "message": "Страница или медиа изменились. Запустите проверку заново."
+  },
+  "candidate_no_access": {
+    "message": "У MDownloader нет разрешения на обнаружение URL медиа. Запустите проверку заново."
+  },
+  "extension_description": {
+    "message": "Находите видео, аудио и потоки HLS и DASH. Управляйте загрузками в боковой панели."
+  },
+  "headers_reuse_denied": {
+    "message": "Заголовки запросов нельзя повторно использовать для этого видеосервера."
+  },
+  "headers_too_many": {
+    "message": "Слишком много URL сегментов для применения заголовков запросов."
+  },
+  "headers_url_outside_cdn": {
+    "message": "URL HLS не входит в область наблюдаемых запросов CDN."
+  },
+  "html_cancel": {
+    "message": "Отмена"
+  },
+  "html_cancel_capture": {
+    "message": "Отменить захват"
+  },
+  "html_choose_quality": {
+    "message": "Выберите качество загрузки"
+  },
+  "html_completed_downloads": {
+    "message": "Завершённые загрузки"
+  },
+  "html_detected_media": {
+    "message": "Обнаруженные медиа"
+  },
+  "html_download_manager": {
+    "message": "Менеджер загрузок"
+  },
+  "html_download_selected_quality": {
+    "message": "Скачать в выбранном качестве"
+  },
+  "html_downloading": {
+    "message": "Загружаются"
+  },
+  "html_extension_options": {
+    "message": "Настройки расширения"
+  },
+  "html_hls_playlist_url": {
+    "message": "URL плейлиста HLS"
+  },
+  "html_loading_downloads": {
+    "message": "Загрузка истории скачиваний…"
+  },
+  "html_media_preview": {
+    "message": "Предпросмотр медиа"
+  },
+  "html_needs_attention": {
+    "message": "Требуют внимания"
+  },
+  "html_options": {
+    "message": "Настройки"
+  },
+  "html_options_title": {
+    "message": "MDownloader · Настройки"
+  },
+  "html_playback_heading": {
+    "message": "Сохранение данных воспроизведения"
+  },
+  "html_playback_instructions": {
+    "message": "Введите URL HLS, начните захват и запустите видео с начала в текущей вкладке. Когда все сегменты будут получены, видео можно сохранить в формате MP4."
+  },
+  "html_playback_title": {
+    "message": "MDownloader · Сохранение данных воспроизведения"
+  },
+  "html_popup_title": {
+    "message": "MDownloader · Текущая страница"
+  },
+  "html_rescan": {
+    "message": "Искать снова"
+  },
+  "html_resolution_bitrate": {
+    "message": "Разрешение и битрейт"
+  },
+  "html_save_mp4": {
+    "message": "Сохранить MP4"
+  },
+  "html_scanning_page": {
+    "message": "Поиск медиа на этой странице…"
+  },
+  "html_sidepanel_title": {
+    "message": "MDownloader · Менеджер загрузок"
+  },
+  "html_start_capture": {
+    "message": "Начать захват"
+  },
+  "job_browser_error": {
+    "message": "Ошибка загрузки в браузере: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "job_browser_start_failed": {
+    "message": "Браузеру не удалось начать загрузку."
+  },
+  "job_busy": {
+    "message": "Задача обрабатывается. Повторите попытку чуть позже."
+  },
+  "job_cancel_first": {
+    "message": "Сначала отмените текущую задачу HLS."
+  },
+  "job_delete_after_finish": {
+    "message": "Файл можно удалить после завершения загрузки."
+  },
+  "job_delete_failed": {
+    "message": "Не удалось удалить сохранённый файл. Запись осталась в списке."
+  },
+  "job_file_unknown": {
+    "message": "Сохранённый файл не найден."
+  },
+  "job_hls_not_found": {
+    "message": "Задача HLS не найдена."
+  },
+  "job_hls_unsupported": {
+    "message": "Этот запрос HLS не поддерживается."
+  },
+  "job_hls_wrong_state": {
+    "message": "Задачу HLS нельзя обработать в текущем состоянии."
+  },
+  "job_invalid_capture": {
+    "message": "Перехваченные данные воспроизведения недействительны."
+  },
+  "job_invalid_mp4_url": {
+    "message": "Недействительный URL временного файла MP4."
+  },
+  "job_invalid_request": {
+    "message": "Недействительный запрос на загрузку."
+  },
+  "job_not_found": {
+    "message": "Задача не найдена в списке загрузок."
+  },
+  "job_not_video": {
+    "message": "Сервер вернул веб-страницу вместо видео."
+  },
+  "job_permission_changed": {
+    "message": "Передача HLS остановлена из-за изменения доступа к сайту."
+  },
+  "job_playlist_denied": {
+    "message": "Сервер отклонил первый запрос плейлиста (HTTP 403)."
+  },
+  "job_runner_closed": {
+    "message": "Документ загрузки HLS был закрыт."
+  },
+  "job_source_unknown": {
+    "message": "Исходный URL не найден."
+  },
+  "job_state_changed": {
+    "message": "Состояние задачи изменилось. Проверьте список загрузок ещё раз."
+  },
+  "offscreen_justification": {
+    "message": "Объединить сегменты потока в MP4 и передать файл в загрузки Chrome."
+  },
+  "opt_advanced": {
+    "message": "Дополнительно"
+  },
+  "opt_all_sites_check_failed": {
+    "message": "Не удалось проверить доступ ко всем сайтам."
+  },
+  "opt_all_sites_denied": {
+    "message": "Доступ ко всем сайтам не предоставлен."
+  },
+  "opt_all_sites_granted": {
+    "message": "Доступ ко всем сайтам разрешён. Запустите видео ещё раз."
+  },
+  "opt_all_sites_help": {
+    "message": "Разрешите доступ ко всем сайтам, чтобы обнаруживать запросы воспроизведения на сайтах HTTP и HTTPS и на видеосерверах."
+  },
+  "opt_all_sites_request_failed": {
+    "message": "Не удалось запросить доступ ко всем сайтам."
+  },
+  "opt_all_sites_revoke_failed": {
+    "message": "Не удалось отозвать доступ ко всем сайтам."
+  },
+  "opt_all_sites_revoked": {
+    "message": "Доступ ко всем сайтам отозван."
+  },
+  "opt_allow_all_sites": {
+    "message": "Разрешить доступ ко всем сайтам"
+  },
+  "opt_allow_network": {
+    "message": "Разрешить обнаружение"
+  },
+  "opt_cdn_url": {
+    "message": "Адрес отдельного видеосервера (необязательно)"
+  },
+  "opt_change_browser_location": {
+    "message": "Изменить папку по умолчанию в браузере"
+  },
+  "opt_debug": {
+    "message": "Режим отладки"
+  },
+  "opt_debug_help": {
+    "message": "Открывает отдельную вкладку для диагностики проблем с загрузкой."
+  },
+  "opt_default_folder": {
+    "message": "Папка загрузок по умолчанию"
+  },
+  "opt_default_folder_saved": {
+    "message": "Новые загрузки будут сохранены в папке по умолчанию."
+  },
+  "opt_display_language": {
+    "message": "Язык интерфейса"
+  },
+  "opt_download_location": {
+    "message": "Папка для загрузок"
+  },
+  "opt_download_settings": {
+    "message": "Настройки загрузок"
+  },
+  "opt_extension": {
+    "message": "Расширение"
+  },
+  "opt_folder_help": {
+    "message": "Укажите подпапку в папке загрузок по умолчанию, например MDownloader/Видео. Оставьте поле пустым, чтобы использовать папку по умолчанию."
+  },
+  "opt_folder_read_failed": {
+    "message": "Не удалось прочитать настройку папки загрузок."
+  },
+  "opt_folder_save_failed": {
+    "message": "Не удалось сохранить папку для загрузок."
+  },
+  "opt_folder_saved": {
+    "message": "Новые загрузки будут сохранены в этой подпапке."
+  },
+  "opt_invalid_folder": {
+    "message": "Укажите путь к подпапке без буквы диска и ссылок на родительский каталог."
+  },
+  "opt_invalid_site_url": {
+    "message": "Введите адрес сайта, начинающийся с http:// или https://."
+  },
+  "opt_language": {
+    "message": "Язык"
+  },
+  "opt_language_auto": {
+    "message": "Как в системе"
+  },
+  "opt_language_save_failed": {
+    "message": "Не удалось сохранить язык интерфейса."
+  },
+  "opt_network_denied": {
+    "message": "Разрешение на обнаружение не предоставлено."
+  },
+  "opt_network_granted": {
+    "message": "Обнаружение разрешено. Запустите видео ещё раз."
+  },
+  "opt_network_help": {
+    "message": "Чтобы выдать разрешение для отдельных сайтов, введите их адреса ниже и снова запустите видео."
+  },
+  "opt_network_partially_revoked": {
+    "message": "Отозвана часть разрешений на обнаружение."
+  },
+  "opt_network_permissions": {
+    "message": "Разрешения на обнаружение в сети"
+  },
+  "opt_network_request_failed": {
+    "message": "Не удалось запросить разрешение на обнаружение."
+  },
+  "opt_network_revoke_failed": {
+    "message": "Не удалось отозвать разрешение на обнаружение."
+  },
+  "opt_network_revoked": {
+    "message": "Разрешения на обнаружение для указанных адресов отозваны."
+  },
+  "opt_network_sites_revoke_failed": {
+    "message": "Не удалось отозвать разрешения на обнаружение для указанных адресов."
+  },
+  "opt_open_browser_settings_failed": {
+    "message": "Не удалось открыть настройки загрузок в браузере."
+  },
+  "opt_page_title": {
+    "message": "Добавлять заголовок страницы в имена загружаемых файлов"
+  },
+  "opt_page_title_help": {
+    "message": "Соединяет заголовок страницы и исходное имя файла знаком подчёркивания. Если исходное имя — index, используется только заголовок страницы."
+  },
+  "opt_page_title_short": {
+    "message": "Заголовок страницы в имени файла"
+  },
+  "opt_reload": {
+    "message": "Перезагрузить расширение"
+  },
+  "opt_revoke_all_sites": {
+    "message": "Отозвать доступ ко всем сайтам"
+  },
+  "opt_revoke_network": {
+    "message": "Отозвать разрешение"
+  },
+  "opt_save_location": {
+    "message": "Сохранить путь"
+  },
+  "opt_setting_disabled": {
+    "message": "Настройка «$arg1$» выключена.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_enabled": {
+    "message": "Настройка «$arg1$» включена.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_read_failed": {
+    "message": "Не удалось прочитать настройку «$arg1$».",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_save_failed": {
+    "message": "Не удалось сохранить настройку «$arg1$».",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_site_url": {
+    "message": "Адрес сайта с видео"
+  },
+  "opt_version": {
+    "message": "Версия"
+  },
+  "request_failed": {
+    "message": "Не удалось выполнить запрос."
+  },
+  "request_unsupported": {
+    "message": "Этот запрос не поддерживается."
+  },
+  "stream_dash_doctype": {
+    "message": "Манифесты DASH MPD с объявлением DOCTYPE не поддерживаются."
+  },
+  "stream_dash_empty_segments": {
+    "message": "Список сегментов DASH пуст или неполон."
+  },
+  "stream_dash_encrypted": {
+    "message": "Дорожки DASH с шифрованием или защитой DRM не поддерживаются."
+  },
+  "stream_dash_ept_delta": {
+    "message": "Коррекция начала первого сегмента с помощью DASH eptDelta не поддерживается."
+  },
+  "stream_dash_index_limit": {
+    "message": "Диапазон индекса сегментов DASH превышает лимит хранилища."
+  },
+  "stream_dash_index_same_file": {
+    "message": "Поддерживается только SegmentBase с индексом DASH SIDX в том же медиафайле."
+  },
+  "stream_dash_index_truncated": {
+    "message": "Индекс сегментов DASH обрезан."
+  },
+  "stream_dash_init_range_missing": {
+    "message": "Для сегмента инициализации DASH не указан диапазон байтов."
+  },
+  "stream_dash_init_url_missing": {
+    "message": "Отсутствует URL сегмента инициализации DASH."
+  },
+  "stream_dash_invalid_addressing": {
+    "message": "Недопустимый способ адресации сегментов DASH."
+  },
+  "stream_dash_invalid_duration": {
+    "message": "Недопустимая длительность воспроизведения DASH."
+  },
+  "stream_dash_invalid_index_range": {
+    "message": "Диапазон индекса DASH SIDX отсутствует или слишком велик."
+  },
+  "stream_dash_invalid_integer": {
+    "message": "Недопустимое значение параметра $arg1$ в DASH.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_invalid_mpd": {
+    "message": "Сервер не вернул корректный манифест DASH MPD."
+  },
+  "stream_dash_invalid_segment_url": {
+    "message": "Недопустимый URL сегмента DASH."
+  },
+  "stream_dash_invalid_template": {
+    "message": "Шаблон URL DASH не поддерживается."
+  },
+  "stream_dash_list_timeline_mismatch": {
+    "message": "Количество записей в списке URL сегментов DASH и на временной шкале не совпадает."
+  },
+  "stream_dash_mpd_size": {
+    "message": "Размер манифеста DASH MPD превышает допустимый предел."
+  },
+  "stream_dash_no_addressing": {
+    "message": "В манифесте DASH MPD нет поддерживаемого способа адресации сегментов."
+  },
+  "stream_dash_no_track": {
+    "message": "В манифесте DASH MPD не найдено поддерживаемой дорожки MP4 с кодеком $arg1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_overlapping_timeline": {
+    "message": "Записи на временной шкале сегментов DASH перекрываются."
+  },
+  "stream_dash_repeat_end_missing": {
+    "message": "Для повтора на временной шкале сегментов DASH не указано время окончания."
+  },
+  "stream_dash_segment_scheme": {
+    "message": "URL сегментов DASH должны использовать HTTP или HTTPS и не содержать учётных данных."
+  },
+  "stream_dash_segment_url_missing": {
+    "message": "Отсутствует URL сегмента DASH."
+  },
+  "stream_dash_sidx_header_truncated": {
+    "message": "Заголовок DASH SIDX обрезан."
+  },
+  "stream_dash_sidx_hierarchical": {
+    "message": "Иерархические индексы DASH SIDX не поддерживаются."
+  },
+  "stream_dash_sidx_invalid_segments": {
+    "message": "Недопустимый список сегментов DASH SIDX."
+  },
+  "stream_dash_sidx_missing": {
+    "message": "В диапазоне индекса DASH нет корректного блока SIDX."
+  },
+  "stream_dash_sidx_range_mismatch": {
+    "message": "Ответ DASH SIDX не соответствует запрошенному диапазону байтов."
+  },
+  "stream_dash_sidx_segment_invalid": {
+    "message": "Недопустимый размер или длительность сегмента DASH SIDX."
+  },
+  "stream_dash_sidx_segment_range": {
+    "message": "Диапазон байтов сегмента DASH SIDX слишком велик."
+  },
+  "stream_dash_sidx_version": {
+    "message": "Версия DASH SIDX не поддерживается."
+  },
+  "stream_dash_single_period": {
+    "message": "Поддерживается только DASH VOD с одним элементом Period."
+  },
+  "stream_dash_static_only": {
+    "message": "Поддерживается только статическое DASH VOD."
+  },
+  "stream_dash_template_missing": {
+    "message": "Поддерживаемый шаблон URL сегментов DASH не найден."
+  },
+  "stream_dash_template_not_unique": {
+    "message": "Шаблон URL DASH не создаёт уникальный URL для каждого сегмента."
+  },
+  "stream_dash_too_many_segments": {
+    "message": "В дорожке DASH больше 5 000 сегментов."
+  },
+  "stream_dash_too_many_tracks": {
+    "message": "В манифесте DASH MPD больше 200 видео- и аудиодорожек."
+  },
+  "stream_dash_xlink_unsupported": {
+    "message": "Манифесты DASH MPD с внешними ссылками XLink не поддерживаются."
+  },
+  "stream_download_failed": {
+    "message": "Не удалось скачать поток."
+  },
+  "stream_hls_duplicate_byte_range": {
+    "message": "Диапазон байтов HLS указан несколько раз."
+  },
+  "stream_hls_empty_segments": {
+    "message": "Список сегментов HLS пуст или неполон."
+  },
+  "stream_hls_encrypted": {
+    "message": "Зашифрованные потоки HLS не поддерживаются."
+  },
+  "stream_hls_init_scheme": {
+    "message": "Для сегментов инициализации поддерживаются только URL по HTTP или HTTPS."
+  },
+  "stream_hls_invalid_byte_range": {
+    "message": "Недопустимый диапазон байтов или начальное смещение HLS."
+  },
+  "stream_hls_invalid_init_attributes": {
+    "message": "Недопустимые атрибуты сегмента инициализации HLS."
+  },
+  "stream_hls_invalid_master": {
+    "message": "Основной плейлист HLS недопустим или не поддерживается."
+  },
+  "stream_hls_invalid_master_attributes": {
+    "message": "Атрибуты варианта HLS недопустимы."
+  },
+  "stream_hls_invalid_playlist_response": {
+    "message": "Сервер вернул другой ответ вместо плейлиста HLS."
+  },
+  "stream_hls_invalid_segment_duration": {
+    "message": "Недопустимая длительность сегмента HLS."
+  },
+  "stream_hls_invalid_sequence": {
+    "message": "Недопустимый порядковый номер сегмента HLS."
+  },
+  "stream_hls_invalid_target_duration": {
+    "message": "Недопустимая целевая длительность сегментов HLS."
+  },
+  "stream_hls_no_variants": {
+    "message": "Поддерживаемые варианты HLS не найдены. Потоку может требоваться отдельная аудиодорожка или неподдерживаемый кодек."
+  },
+  "stream_hls_partial_only": {
+    "message": "Плейлисты HLS, содержащие только частичные сегменты, не поддерживаются."
+  },
+  "stream_hls_segment_duration_missing": {
+    "message": "Не указана длительность сегмента HLS."
+  },
+  "stream_hls_segment_scheme": {
+    "message": "Поддерживаются только URL сегментов по HTTP или HTTPS."
+  },
+  "stream_hls_segment_url_missing": {
+    "message": "Отсутствует URL сегмента."
+  },
+  "stream_hls_target_duration_missing": {
+    "message": "В плейлисте прямой трансляции HLS не указана целевая длительность сегментов."
+  },
+  "stream_hls_too_many_segments": {
+    "message": "В плейлисте HLS больше 5 000 сегментов."
+  },
+  "stream_hls_too_many_variants": {
+    "message": "В плейлисте HLS больше 100 вариантов."
+  },
+  "stream_hls_ts_only": {
+    "message": "Поддерживаются только непрерывные плейлисты HLS MPEG-TS с одним уровнем качества."
+  },
+  "stream_hls_unsupported_media": {
+    "message": "Этот медиаплейлист HLS не поддерживается."
+  },
+  "stream_hls_unsupported_playlist": {
+    "message": "Этот плейлист HLS не поддерживается."
+  },
+  "stream_hls_variant_bitrate": {
+    "message": "Недопустимый битрейт варианта HLS."
+  },
+  "stream_hls_variant_info_missing": {
+    "message": "Для URL варианта HLS нет соответствующих атрибутов."
+  },
+  "stream_hls_variant_not_found": {
+    "message": "Выбранный вариант качества HLS не найден в плейлисте."
+  },
+  "stream_hls_variant_url_missing": {
+    "message": "Отсутствует URL варианта HLS."
+  },
+  "stream_hls_vod_end_required": {
+    "message": "Поддерживаются только плейлисты HLS VOD с маркером окончания."
+  },
+  "stream_host_permission": {
+    "message": "Разрешите доступ к серверу потока $arg1$ во всплывающем окне.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_challenge": {
+    "message": "Для скачивания этого потока сервер требует проверки браузера (HTTP 403)."
+  },
+  "stream_http_forbidden": {
+    "message": "Сервер отклонил запрос на скачивание потока (HTTP 403)."
+  },
+  "stream_http_missing_resource": {
+    "message": "Не удалось получить ресурс потока (HTTP $arg1$).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_range_mismatch": {
+    "message": "Сервер вернул диапазон байтов, отличный от запрошенного для медиасегмента."
+  },
+  "stream_http_resource_limit": {
+    "message": "Ресурс потока превысил лимит хранилища."
+  },
+  "stream_http_server_error": {
+    "message": "Сервер видео вернул ошибку (HTTP $arg1$).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_timeout": {
+    "message": "Время ожидания ответа от сервера видео истекло."
+  },
+  "stream_invalid_host": {
+    "message": "URL сервера потока не поддерживается."
+  },
+  "stream_invalid_mpeg_ts": {
+    "message": "Недопустимый видеосегмент MPEG-TS."
+  },
+  "stream_live_segment_expired": {
+    "message": "Сегмент исчез из плейлиста прямой трансляции до того, как его удалось скачать."
+  },
+  "stream_no_segments": {
+    "message": "Нет медиасегментов для сохранения."
+  },
+  "stream_playback_playlist_url": {
+    "message": "Введите URL плейлиста по HTTP или HTTPS."
+  },
+  "stream_playback_raw_bytes_missing": {
+    "message": "Chrome не предоставил исходные байты видеосегмента."
+  },
+  "stream_playback_response_limit": {
+    "message": "Ответ при воспроизведении превышает лимит хранилища."
+  },
+  "stream_playback_segments_missing": {
+    "message": "Некоторые видеосегменты ещё не получены."
+  },
+  "stream_playback_storage_limit": {
+    "message": "Превышен лимит временного хранилища HLS."
+  },
+  "stream_playback_ts_incomplete": {
+    "message": "Видеосегмент MPEG-TS пуст или обрезан."
+  },
+  "stream_playback_ts_only": {
+    "message": "Поддерживаются только сегменты HLS в формате MPEG-TS."
+  },
+  "stream_playback_unknown_segment": {
+    "message": "Этого видеосегмента нет в плейлисте."
+  },
+  "stream_preview_empty_segment": {
+    "message": "Сегмент предварительного просмотра пуст."
+  },
+  "stream_preview_host_permission": {
+    "message": "Разрешите доступ к серверу видео для предварительного просмотра."
+  },
+  "stream_remux_codecs": {
+    "message": "Этот видео- или аудиокодек нельзя объединить в MP4."
+  },
+  "stream_remux_decoder_config": {
+    "message": "Не удалось прочитать настройки кодека видеодорожки."
+  },
+  "stream_remux_no_packets": {
+    "message": "В дорожке HLS нет медиапакетов."
+  },
+  "stream_runner_busy": {
+    "message": "Скачивание потока уже выполняется."
+  },
+  "stream_runner_disconnected": {
+    "message": "Связь с задачей скачивания потока прервана."
+  },
+  "stream_runner_unavailable": {
+    "message": "Этот браузер не может запустить обработку потока."
+  },
+  "stream_segment_incomplete": {
+    "message": "Медиасегмент пуст или обрезан."
+  },
+  "stream_start_failed": {
+    "message": "Не удалось начать скачивание потока."
+  },
+  "stream_temporary_storage_limit": {
+    "message": "Превышен лимит временного хранилища в 2 ГиБ."
+  },
+  "stream_too_many_segments": {
+    "message": "Количество медиасегментов превышает 5 000."
+  },
+  "view_action_cancel": {
+    "message": "Отменить"
+  },
+  "view_action_delete_all": {
+    "message": "Удалить все"
+  },
+  "view_action_delete": {
+    "message": "Удалить"
+  },
+  "view_action_finish": {
+    "message": "Остановить и сохранить"
+  },
+  "view_action_pause": {
+    "message": "Приостановить"
+  },
+  "view_action_resume": {
+    "message": "Возобновить"
+  },
+  "view_action_show": {
+    "message": "Показать в папке"
+  },
+  "view_candidate_complete": {
+    "message": "Загрузка завершена"
+  },
+  "view_candidate_downloading": {
+    "message": "Загрузка"
+  },
+  "view_copy_failed": {
+    "message": "Не удалось скопировать ссылку."
+  },
+  "view_copy_link": {
+    "message": "Копировать ссылку"
+  },
+  "view_copy_success": {
+    "message": "Ссылка скопирована."
+  },
+  "view_delete_file_success": {
+    "message": "Сохранённый файл и запись в списке удалены."
+  },
+  "view_delete_hint": {
+    "message": "Щёлкните, чтобы удалить запись из списка. Удерживайте Shift при щелчке, чтобы также удалить сохранённый файл завершённой загрузки."
+  },
+  "view_devtools_panel": {
+    "message": "MDownloader"
+  },
+  "view_diagnostics": {
+    "message": "Диагностика загрузок"
+  },
+  "view_diagnostics_http": {
+    "message": "HTTP $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_previous": {
+    "message": "Предыдущий ответ"
+  },
+  "view_diagnostics_received": {
+    "message": "Получено сегментов: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_title": {
+    "message": "MDownloader · Диагностика загрузок"
+  },
+  "view_download": {
+    "message": "Скачать"
+  },
+  "view_download_check": {
+    "message": "Проверить состояние загрузки"
+  },
+  "view_download_check_manager": {
+    "message": "Проверьте состояние задачи в менеджере загрузок."
+  },
+  "view_download_failed_start": {
+    "message": "Не удалось начать скачивание"
+  },
+  "view_download_queueing": {
+    "message": "Добавление скачивания в очередь…"
+  },
+  "view_download_started": {
+    "message": "Скачивание началось"
+  },
+  "view_download_unsupported": {
+    "message": "$arg1$ · Скачивание недоступно",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_download_with_permission": {
+    "message": "Разрешить доступ к серверу и скачать"
+  },
+  "view_format_unknown": {
+    "message": "Неизвестный формат"
+  },
+  "view_job_check_browser": {
+    "message": "Проверьте эту задачу в списке загрузок браузера."
+  },
+  "view_job_file_missing": {
+    "message": "Сохранённый файл не найден."
+  },
+  "view_job_mp4_muxing": {
+    "message": "Сборка MP4…"
+  },
+  "view_job_mp4_saving": {
+    "message": "Сохранение MP4…"
+  },
+  "view_job_playlist_check": {
+    "message": "Проверка плейлиста…"
+  },
+  "view_job_progress": {
+    "message": "Ход скачивания файла $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_job_rescan": {
+    "message": "При необходимости просканируйте исходную страницу снова."
+  },
+  "view_job_server_denied": {
+    "message": "Используйте адрес на сервере, который разрешает прямое скачивание."
+  },
+  "view_jobs_active": {
+    "message": "Скачиваются ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_attention": {
+    "message": "Требуется проверка ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_complete": {
+    "message": "Завершены ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_empty": {
+    "message": "История загрузок пуста."
+  },
+  "view_jobs_failed": {
+    "message": "Не удалось загрузить историю скачиваний."
+  },
+  "view_link_loading": {
+    "message": "Поиск адреса…"
+  },
+  "view_link_unavailable": {
+    "message": "Исходный адрес недоступен."
+  },
+  "view_metric_bytes": {
+    "message": "$arg1$ Б",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_average_rate": {
+    "message": "Средн. $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_kilobytes": {
+    "message": "$arg1$ КБ",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_megabytes": {
+    "message": "$arg1$ МБ",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_progress": {
+    "message": "$arg1$ · $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_metric_rate": {
+    "message": "$arg1$/с",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_options_failed": {
+    "message": "Не удалось открыть страницу настроек."
+  },
+  "view_panel_failed": {
+    "message": "Не удалось открыть боковую панель. Выберите MDownloader в меню боковой панели браузера."
+  },
+  "view_panel_use_menu": {
+    "message": "Выберите MDownloader в меню боковой панели браузера."
+  },
+  "view_permission_denied": {
+    "message": "Доступ к видеосерверу не разрешён."
+  },
+  "view_permission_failed": {
+    "message": "Не удалось запросить доступ к видеосерверу."
+  },
+  "view_playback_busy": {
+    "message": "Уже выполняется другой сбор или сохранение данных воспроизведения."
+  },
+  "view_playback_canceled": {
+    "message": "Сбор отменён."
+  },
+  "view_playback_collected": {
+    "message": "Получены все сегменты видео. Нажмите «Сохранить MP4»."
+  },
+  "view_playback_collecting": {
+    "message": "Собираются сегменты, полученные при воспроизведении на этой вкладке."
+  },
+  "view_playback_coverage": {
+    "message": "Собрано сегментов: $arg1$ / $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_playback_page_changed": {
+    "message": "Сбор остановлен, поскольку страница изменилась."
+  },
+  "view_playback_preparing": {
+    "message": "Подготовка к сбору…"
+  },
+  "view_playback_saving": {
+    "message": "Началось сохранение MP4. Вкладку воспроизведения можно закрыть, а за ходом сохранения следить в менеджере загрузок."
+  },
+  "view_playback_waiting": {
+    "message": "Ожидание указанного плейлиста на этой вкладке."
+  },
+  "view_preview": {
+    "message": "Предпросмотр"
+  },
+  "view_preview_loading": {
+    "message": "Загрузка предпросмотра…"
+  },
+  "view_preview_still_alt": {
+    "message": "Кадр предпросмотра видео"
+  },
+  "view_quality_allow_server": {
+    "message": "Разрешите доступ к выбранному видеосерверу."
+  },
+  "view_quality_canceled": {
+    "message": "Выбор качества отменён."
+  },
+  "view_quality_checking": {
+    "message": "Проверка качества видео HLS…"
+  },
+  "view_quality_details": {
+    "message": "$arg1$ · $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_quality_no_resolution": {
+    "message": "Неизвестное разрешение"
+  },
+  "view_scan_empty": {
+    "message": "Медиафайлы для скачивания не найдены."
+  },
+  "view_scan_found": {
+    "message": "Доступно для скачивания: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_scan_in_progress": {
+    "message": "Поиск медиафайлов на текущей странице…"
+  },
+  "view_scan_no_tab": {
+    "message": "Не удалось определить текущую вкладку."
+  },
+  "view_scan_page_changed": {
+    "message": "Страница изменилась. Просканируйте её снова."
+  },
+  "view_scan_restricted": {
+    "message": "Эту страницу нельзя просканировать."
+  },
+  "view_stage_browser_save": {
+    "message": "Сохранение на диск"
+  },
+  "view_stage_master_access": {
+    "message": "Доступ к плейлисту"
+  },
+  "view_stage_master_parse": {
+    "message": "Разбор плейлиста"
+  },
+  "view_stage_master_request": {
+    "message": "Запрос исходного плейлиста"
+  },
+  "view_stage_media_parse": {
+    "message": "Разбор списка сегментов"
+  },
+  "view_stage_mp4_mux": {
+    "message": "Сборка MP4"
+  },
+  "view_stage_segments_access": {
+    "message": "Доступ к серверу сегментов"
+  },
+  "view_stage_segments_transfer": {
+    "message": "Запрос сегментов видео"
+  },
+  "view_stage_temporary_storage": {
+    "message": "Подготовка временного хранилища"
+  },
+  "view_stage_unknown": {
+    "message": "Неизвестный этап"
+  },
+  "view_stage_variant_access": {
+    "message": "Доступ к плейлисту выбранного качества"
+  },
+  "view_stage_variant_request": {
+    "message": "Запрос плейлиста выбранного качества"
+  },
+  "view_stage_variant_selection": {
+    "message": "Выбор качества"
+  },
+  "view_state_canceled": {
+    "message": "Отменено"
+  },
+  "view_state_failed": {
+    "message": "Ошибка скачивания"
+  },
+  "view_state_paused": {
+    "message": "Приостановлено"
+  },
+  "view_state_starting": {
+    "message": "Запуск"
+  },
+  "view_state_unknown": {
+    "message": "Требуется проверка"
+  },
+  "view_unit_kilobits": {
+    "message": "$arg1$ кбит/с",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_unit_megabits": {
+    "message": "$arg1$ Мбит/с",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_download_date_time": {
+    "message": "Добавлять дату и время в имя файла"
+  },
+  "opt_download_date_time_help": {
+    "message": "Добавляет местное время начала загрузки перед расширением: страница_файл_2026-11-07_09-08-06.mp4."
+  },
+  "view_job_segments": {
+    "message": "Сегменты: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_preview_playback_failed": {
+    "message": "Не удалось воспроизвести предпросмотр"
+  },
+  "view_download_quality_hint": {
+    "message": "$LABEL$ (Shift+щелчок: выбрать качество)",
+    "placeholders": {
+      "label": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_playback": {
+    "message": "Для обновления и скачивания некоторых видео нужно $actions$.",
+    "placeholders": {
+      "actions": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_retry": {
+    "message": "Если скачивание или предпросмотр не работает, $reload$.",
+    "placeholders": {
+      "reload": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_reload_page": {
+    "message": "обновите страницу"
+  },
+  "hint_playback_actions": {
+    "message": "запустить воспроизведение или переместить ползунок"
+  },
+  "view_action_snapshot": {
+    "message": "Сохранить полученную часть (продолжить скачивание)"
+  },
+  "job_snapshot_busy": {
+    "message": "Полученная часть уже сохраняется."
+  },
+  "job_snapshot_unavailable": {
+    "message": "Готовой части ещё нет или состояние задачи изменилось."
+  },
+  "job_snapshot_metadata": {
+    "message": "В полученной части недостаточно данных для воспроизведения. Повторите после получения дополнительных данных."
+  },
+  "job_snapshot_codecs": {
+    "message": "Кодеки этого файла не поддерживают сохранение частичного файла."
+  },
+  "job_snapshot_source_changed": {
+    "message": "Исходный файл изменился или запрошенный диапазон не удалось проверить."
+  },
+  "view_job_snapshot_muxing": {
+    "message": "Подготовка частичного файла"
+  },
+  "view_job_snapshot_saving": {
+    "message": "Сохранение частичного файла"
+  },
+  "view_action_snapshot_file": {
+    "message": "Сохранить полученную часть (скачивание продолжится · дополнительная передача данных)"
+  },
+  "opt_debug_logging": {
+    "message": "Включить подробный журнал отладки"
+  },
+  "opt_debug_logging_help": {
+    "message": "Показывает безопасные коды этапов, длительность и числовые данные в консоли расширения. Хранит до $LIMIT$ записей в памяти каждого контекста и удаляет их при отключении. Адреса, заголовки и тексты ошибок не записываются.",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  }
+}

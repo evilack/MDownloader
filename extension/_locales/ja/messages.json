@@ -1,0 +1,1227 @@
+{
+  "view_stream_live": {
+    "message": "ライブ"
+  },
+  "opt_side_panel": {
+    "message": "サイドパネル"
+  },
+  "opt_show_panel_media": {
+    "message": "サイドパネルに検出したメディアを表示"
+  },
+  "opt_show_panel_media_help": {
+    "message": "アクティブなタブのメディアをダウンロード一覧の上に表示します。"
+  },
+  "opt_download_log": {
+    "message": "ダウンロードログ"
+  },
+  "opt_log_downloads": {
+    "message": "ダウンロードのイベントを記録"
+  },
+  "opt_log_help": {
+    "message": "最新の$LIMIT$件をこの端末に保存します。URL、Cookie、リクエストヘッダー、ファイルパスは記録されません。",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_log_empty": {
+    "message": "ダウンロードログはありません。"
+  },
+  "opt_log_copy": {
+    "message": "ログをコピー"
+  },
+  "opt_log_clear": {
+    "message": "ログを消去"
+  },
+  "opt_log_copied": {
+    "message": "ログをコピーしました。"
+  },
+  "opt_log_copy_failed": {
+    "message": "ログをコピーできませんでした。"
+  },
+  "opt_log_cleared": {
+    "message": "ログを消去しました。"
+  },
+  "opt_log_clear_failed": {
+    "message": "ログを消去できませんでした。"
+  },
+  "opt_log_read_failed": {
+    "message": "ログを読み込めませんでした。"
+  },
+  "opt_log_step_ok": {
+    "message": "ステップ完了"
+  },
+  "opt_pick_download_folder": {
+    "message": "フォルダーを選択…"
+  },
+  "opt_restore_folder_access": {
+    "message": "フォルダーへのアクセスを再許可"
+  },
+  "opt_picked_folder": {
+    "message": "選択したダウンロードフォルダー：$FOLDER$",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_folder_picker_failed": {
+    "message": "選択したフォルダーを保存できませんでした。もう一度選択してください。"
+  },
+  "opt_folder_access_restored": {
+    "message": "フォルダーへのアクセスが復元されました。"
+  },
+  "folder_access_required": {
+    "message": "拡張機能のオプションで、選択したダウンロードフォルダーへのアクセスを許可してください。"
+  },
+  "action_title": {
+    "message": "MDownloader · 現在のページ"
+  },
+  "candidate_changed": {
+    "message": "ページまたはメディアが変更されました。再スキャンしてください。"
+  },
+  "candidate_no_access": {
+    "message": "メディア URL の通信を検出する権限がありません。再スキャンしてください。"
+  },
+  "extension_description": {
+    "message": "動画や音声ファイル、HLS・DASH を検出し、サイドパネルでダウンロードを管理します。"
+  },
+  "headers_reuse_denied": {
+    "message": "この動画サーバーではリクエストヘッダーを再利用できません。"
+  },
+  "headers_too_many": {
+    "message": "リクエストヘッダーを適用するセグメント URL が多すぎます。"
+  },
+  "headers_url_outside_cdn": {
+    "message": "HLS URL が検出した CDN リクエストの範囲外にあります。"
+  },
+  "html_cancel": {
+    "message": "キャンセル"
+  },
+  "html_cancel_capture": {
+    "message": "キャプチャを中止"
+  },
+  "html_choose_quality": {
+    "message": "ダウンロード画質を選択"
+  },
+  "html_completed_downloads": {
+    "message": "ダウンロード完了"
+  },
+  "html_detected_media": {
+    "message": "検出したメディア"
+  },
+  "html_download_manager": {
+    "message": "ダウンロード管理"
+  },
+  "html_download_selected_quality": {
+    "message": "選択した画質でダウンロード"
+  },
+  "html_downloading": {
+    "message": "ダウンロード中"
+  },
+  "html_extension_options": {
+    "message": "拡張機能のオプション"
+  },
+  "html_hls_playlist_url": {
+    "message": "HLS プレイリストの URL"
+  },
+  "html_loading_downloads": {
+    "message": "ダウンロード履歴を読み込み中…"
+  },
+  "html_media_preview": {
+    "message": "メディアのプレビュー"
+  },
+  "html_needs_attention": {
+    "message": "確認が必要な項目"
+  },
+  "html_options": {
+    "message": "オプション"
+  },
+  "html_options_title": {
+    "message": "MDownloader · オプション"
+  },
+  "html_playback_heading": {
+    "message": "再生データの保存"
+  },
+  "html_playback_instructions": {
+    "message": "HLS の URL を入力してキャプチャを開始し、現在のタブで動画を最初から再生してください。すべてのセグメントを取得すると MP4 として保存できます。"
+  },
+  "html_playback_title": {
+    "message": "MDownloader · 再生データの保存"
+  },
+  "html_popup_title": {
+    "message": "MDownloader · 現在のページ"
+  },
+  "html_rescan": {
+    "message": "再スキャン"
+  },
+  "html_resolution_bitrate": {
+    "message": "解像度とビットレート"
+  },
+  "html_save_mp4": {
+    "message": "MP4 を保存"
+  },
+  "html_scanning_page": {
+    "message": "このページのメディアを検索中…"
+  },
+  "html_sidepanel_title": {
+    "message": "MDownloader · ダウンロード管理"
+  },
+  "html_start_capture": {
+    "message": "キャプチャを開始"
+  },
+  "job_browser_error": {
+    "message": "ブラウザのダウンロードエラー：$arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "job_browser_start_failed": {
+    "message": "ブラウザでダウンロードを開始できませんでした。"
+  },
+  "job_busy": {
+    "message": "ジョブを処理中です。しばらくしてから再試行してください。"
+  },
+  "job_cancel_first": {
+    "message": "先に進行中の HLS ジョブをキャンセルしてください。"
+  },
+  "job_delete_after_finish": {
+    "message": "ファイルはダウンロードが完了してから削除できます。"
+  },
+  "job_delete_failed": {
+    "message": "保存ファイルを削除できませんでした。項目は一覧に残っています。"
+  },
+  "job_file_unknown": {
+    "message": "保存されたファイルを確認できませんでした。"
+  },
+  "job_hls_not_found": {
+    "message": "HLS ジョブが見つかりませんでした。"
+  },
+  "job_hls_unsupported": {
+    "message": "この HLS リクエストには対応していません。"
+  },
+  "job_hls_wrong_state": {
+    "message": "HLS ジョブは現在の状態では処理できません。"
+  },
+  "job_invalid_capture": {
+    "message": "取得した再生データが無効です。"
+  },
+  "job_invalid_mp4_url": {
+    "message": "一時 MP4 ファイルの URL が無効です。"
+  },
+  "job_invalid_request": {
+    "message": "ダウンロードのリクエストが無効です。"
+  },
+  "job_not_found": {
+    "message": "ダウンロード一覧にジョブが見つかりませんでした。"
+  },
+  "job_not_video": {
+    "message": "サーバーが動画ではなくウェブページを返しました。"
+  },
+  "job_permission_changed": {
+    "message": "サイトへのアクセス権限が変わったため、HLS の転送を停止しました。"
+  },
+  "job_playlist_denied": {
+    "message": "サーバーが最初のプレイリストのリクエストを拒否しました（HTTP 403）。"
+  },
+  "job_runner_closed": {
+    "message": "HLS ダウンロード用のドキュメントが閉じられました。"
+  },
+  "job_source_unknown": {
+    "message": "元の URL を確認できませんでした。"
+  },
+  "job_state_changed": {
+    "message": "ジョブの状態が変わりました。ダウンロード一覧を確認してください。"
+  },
+  "offscreen_justification": {
+    "message": "ストリームのセグメントを MP4 にまとめ、Chrome のダウンロードに渡します。"
+  },
+  "opt_advanced": {
+    "message": "詳細設定"
+  },
+  "opt_all_sites_check_failed": {
+    "message": "すべてのサイトへのアクセス権限を確認できませんでした。"
+  },
+  "opt_all_sites_denied": {
+    "message": "すべてのサイトへのアクセスは許可されませんでした。"
+  },
+  "opt_all_sites_granted": {
+    "message": "すべてのサイトへのアクセスを許可しました。動画を再生し直してください。"
+  },
+  "opt_all_sites_help": {
+    "message": "すべての HTTP・HTTPS サイトと動画サーバーの再生リクエストを検出するには、全サイトへのアクセスを許可してください。"
+  },
+  "opt_all_sites_request_failed": {
+    "message": "すべてのサイトへのアクセス許可をリクエストできませんでした。"
+  },
+  "opt_all_sites_revoke_failed": {
+    "message": "すべてのサイトへのアクセス許可を取り消せませんでした。"
+  },
+  "opt_all_sites_revoked": {
+    "message": "すべてのサイトへのアクセス許可を取り消しました。"
+  },
+  "opt_allow_all_sites": {
+    "message": "すべてのサイトを許可"
+  },
+  "opt_allow_network": {
+    "message": "検出を許可"
+  },
+  "opt_cdn_url": {
+    "message": "別の動画サーバーの URL（任意）"
+  },
+  "opt_change_browser_location": {
+    "message": "ブラウザーの既定の保存先を変更"
+  },
+  "opt_debug": {
+    "message": "デバッグモード"
+  },
+  "opt_debug_help": {
+    "message": "ダウンロードの問題を調べるために別の診断タブを開きます。"
+  },
+  "opt_default_folder": {
+    "message": "既定のダウンロードフォルダー"
+  },
+  "opt_default_folder_saved": {
+    "message": "今後のダウンロードには既定の保存先を使用します。"
+  },
+  "opt_display_language": {
+    "message": "表示言語"
+  },
+  "opt_download_location": {
+    "message": "ダウンロード先"
+  },
+  "opt_download_settings": {
+    "message": "ダウンロード設定"
+  },
+  "opt_extension": {
+    "message": "拡張機能"
+  },
+  "opt_folder_help": {
+    "message": "既定のダウンロードフォルダー内のサブフォルダーを入力してください（例：MDownloader/動画）。空欄にすると既定の場所に保存します。"
+  },
+  "opt_folder_read_failed": {
+    "message": "ダウンロード先を読み込めませんでした。"
+  },
+  "opt_folder_save_failed": {
+    "message": "ダウンロード先を保存できませんでした。"
+  },
+  "opt_folder_saved": {
+    "message": "今後のダウンロードはこのサブフォルダーに保存されます。"
+  },
+  "opt_invalid_folder": {
+    "message": "ドライブ文字や親フォルダーの指定を含まないサブフォルダーのパスを入力してください。"
+  },
+  "opt_invalid_site_url": {
+    "message": "http:// または https:// で始まるサイトの URL を入力してください。"
+  },
+  "opt_language": {
+    "message": "言語"
+  },
+  "opt_language_auto": {
+    "message": "システムの既定値"
+  },
+  "opt_language_save_failed": {
+    "message": "表示言語を保存できませんでした。"
+  },
+  "opt_network_denied": {
+    "message": "検出権限は許可されませんでした。"
+  },
+  "opt_network_granted": {
+    "message": "検出を許可しました。動画を再生し直してください。"
+  },
+  "opt_network_help": {
+    "message": "サイトごとに許可するには、下に URL を入力してから動画を再生し直してください。"
+  },
+  "opt_network_partially_revoked": {
+    "message": "一部の検出権限を取り消しました。"
+  },
+  "opt_network_permissions": {
+    "message": "ネットワーク検出の権限"
+  },
+  "opt_network_request_failed": {
+    "message": "検出権限をリクエストできませんでした。"
+  },
+  "opt_network_revoke_failed": {
+    "message": "検出権限を取り消せませんでした。"
+  },
+  "opt_network_revoked": {
+    "message": "指定した URL の検出権限を取り消しました。"
+  },
+  "opt_network_sites_revoke_failed": {
+    "message": "指定した URL の検出権限を取り消せませんでした。"
+  },
+  "opt_open_browser_settings_failed": {
+    "message": "ブラウザーのダウンロード設定を開けませんでした。"
+  },
+  "opt_page_title": {
+    "message": "ダウンロードするファイル名にページのタイトルを使用"
+  },
+  "opt_page_title_help": {
+    "message": "ページのタイトルと元のファイル名をアンダースコアでつなぎます。元の名前が index の場合はページのタイトルだけを使用します。"
+  },
+  "opt_page_title_short": {
+    "message": "ファイル名へのページタイトルの使用"
+  },
+  "opt_reload": {
+    "message": "拡張機能を再読み込み"
+  },
+  "opt_revoke_all_sites": {
+    "message": "すべてのサイトへのアクセス許可を取り消す"
+  },
+  "opt_revoke_network": {
+    "message": "権限を取り消す"
+  },
+  "opt_save_location": {
+    "message": "保存先を設定"
+  },
+  "opt_setting_disabled": {
+    "message": "「$arg1$」をオフにしました。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_enabled": {
+    "message": "「$arg1$」をオンにしました。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_read_failed": {
+    "message": "「$arg1$」の設定を読み込めませんでした。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_save_failed": {
+    "message": "「$arg1$」の設定を保存できませんでした。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_site_url": {
+    "message": "動画があるサイトの URL"
+  },
+  "opt_version": {
+    "message": "バージョン"
+  },
+  "request_failed": {
+    "message": "リクエストを完了できませんでした。"
+  },
+  "request_unsupported": {
+    "message": "このリクエストには対応していません。"
+  },
+  "stream_dash_doctype": {
+    "message": "DOCTYPE宣言のあるDASH MPDには対応していません。"
+  },
+  "stream_dash_empty_segments": {
+    "message": "DASHセグメントのリストが空か、不完全です。"
+  },
+  "stream_dash_encrypted": {
+    "message": "DRMで保護された、または暗号化されたDASHトラックには対応していません。"
+  },
+  "stream_dash_ept_delta": {
+    "message": "最初のセグメントの開始を調整するDASHのeptDeltaには対応していません。"
+  },
+  "stream_dash_index_limit": {
+    "message": "DASHセグメントインデックスの範囲が保存容量の上限を超えています。"
+  },
+  "stream_dash_index_same_file": {
+    "message": "DASH SIDXインデックスが同じメディアファイルにあるSegmentBaseにのみ対応しています。"
+  },
+  "stream_dash_index_truncated": {
+    "message": "DASHセグメントインデックスの一部が欠けています。"
+  },
+  "stream_dash_init_range_missing": {
+    "message": "DASH初期化セグメントにバイト範囲の指定がありません。"
+  },
+  "stream_dash_init_url_missing": {
+    "message": "DASH初期化セグメントのURLがありません。"
+  },
+  "stream_dash_invalid_addressing": {
+    "message": "DASHセグメントのアドレス指定方式が無効です。"
+  },
+  "stream_dash_invalid_duration": {
+    "message": "DASHの再生時間が無効です。"
+  },
+  "stream_dash_invalid_index_range": {
+    "message": "DASH SIDXインデックスの範囲がないか、大きすぎます。"
+  },
+  "stream_dash_invalid_integer": {
+    "message": "DASHの$arg1$の値が無効です。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_invalid_mpd": {
+    "message": "サーバーは有効なDASH MPDを返しませんでした。"
+  },
+  "stream_dash_invalid_segment_url": {
+    "message": "DASHセグメントのURLが無効です。"
+  },
+  "stream_dash_invalid_template": {
+    "message": "このDASH URLテンプレートには対応していません。"
+  },
+  "stream_dash_list_timeline_mismatch": {
+    "message": "DASHセグメントのURLリストとタイムラインの項目数が一致しません。"
+  },
+  "stream_dash_mpd_size": {
+    "message": "DASH MPDのサイズが上限を超えています。"
+  },
+  "stream_dash_no_addressing": {
+    "message": "DASH MPDに対応するセグメントのアドレス指定がありません。"
+  },
+  "stream_dash_no_track": {
+    "message": "DASH MPDにコーデックが$arg1$の対応MP4トラックが見つかりません。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_overlapping_timeline": {
+    "message": "DASHセグメントのタイムラインに重複する区間があります。"
+  },
+  "stream_dash_repeat_end_missing": {
+    "message": "DASHセグメントのタイムラインにある繰り返しに終了時刻がありません。"
+  },
+  "stream_dash_segment_scheme": {
+    "message": "DASHセグメントのURLには、認証情報を含まないHTTPまたはHTTPSのURLを指定してください。"
+  },
+  "stream_dash_segment_url_missing": {
+    "message": "DASHセグメントのURLがありません。"
+  },
+  "stream_dash_sidx_header_truncated": {
+    "message": "DASH SIDXヘッダーの一部が欠けています。"
+  },
+  "stream_dash_sidx_hierarchical": {
+    "message": "階層化されたDASH SIDXインデックスには対応していません。"
+  },
+  "stream_dash_sidx_invalid_segments": {
+    "message": "DASH SIDXのセグメント一覧が無効です。"
+  },
+  "stream_dash_sidx_missing": {
+    "message": "DASHインデックスの範囲に有効なSIDXボックスがありません。"
+  },
+  "stream_dash_sidx_range_mismatch": {
+    "message": "DASH SIDXの応答が要求されたバイト範囲と一致しません。"
+  },
+  "stream_dash_sidx_segment_invalid": {
+    "message": "DASH SIDXセグメントのサイズまたは再生時間が無効です。"
+  },
+  "stream_dash_sidx_segment_range": {
+    "message": "DASH SIDXセグメントのバイト範囲が大きすぎます。"
+  },
+  "stream_dash_sidx_version": {
+    "message": "このバージョンのDASH SIDXには対応していません。"
+  },
+  "stream_dash_single_period": {
+    "message": "Periodが1つのDASH VODにのみ対応しています。"
+  },
+  "stream_dash_static_only": {
+    "message": "静的なDASH VODにのみ対応しています。"
+  },
+  "stream_dash_template_missing": {
+    "message": "対応するDASHセグメントURLテンプレートが見つかりません。"
+  },
+  "stream_dash_template_not_unique": {
+    "message": "DASH URLテンプレートからセグメントごとに異なるURLを生成できません。"
+  },
+  "stream_dash_too_many_segments": {
+    "message": "DASHトラックのセグメント数が5,000件を超えています。"
+  },
+  "stream_dash_too_many_tracks": {
+    "message": "DASH MPDの映像・音声トラックが合計200件を超えています。"
+  },
+  "stream_dash_xlink_unsupported": {
+    "message": "外部XLinkを読み込むDASH MPDには対応していません。"
+  },
+  "stream_download_failed": {
+    "message": "ストリームのダウンロードに失敗しました。"
+  },
+  "stream_hls_duplicate_byte_range": {
+    "message": "HLSのバイト範囲が重複して指定されています。"
+  },
+  "stream_hls_empty_segments": {
+    "message": "HLSセグメントのリストが空か、不完全です。"
+  },
+  "stream_hls_encrypted": {
+    "message": "暗号化されたHLSには対応していません。"
+  },
+  "stream_hls_init_scheme": {
+    "message": "初期化セグメントはHTTPまたはHTTPSのURLにのみ対応しています。"
+  },
+  "stream_hls_invalid_byte_range": {
+    "message": "HLSのバイト範囲または開始位置が無効です。"
+  },
+  "stream_hls_invalid_init_attributes": {
+    "message": "HLS初期化セグメントの属性が無効です。"
+  },
+  "stream_hls_invalid_master": {
+    "message": "HLSマスタープレイリストの形式が無効か、未対応です。"
+  },
+  "stream_hls_invalid_master_attributes": {
+    "message": "HLS画質の属性の形式が無効です。"
+  },
+  "stream_hls_invalid_playlist_response": {
+    "message": "サーバーはHLSプレイリストの代わりに別の応答を返しました。"
+  },
+  "stream_hls_invalid_segment_duration": {
+    "message": "HLSセグメントの長さが無効です。"
+  },
+  "stream_hls_invalid_sequence": {
+    "message": "HLSセグメントのシーケンス番号が無効です。"
+  },
+  "stream_hls_invalid_target_duration": {
+    "message": "HLSセグメントの目標長が無効です。"
+  },
+  "stream_hls_no_variants": {
+    "message": "対応するHLS画質がありません。別の音声トラックや未対応のコーデックが必要な場合があります。"
+  },
+  "stream_hls_partial_only": {
+    "message": "部分セグメントだけを含むHLSプレイリストには対応していません。"
+  },
+  "stream_hls_segment_duration_missing": {
+    "message": "HLSセグメントの長さの指定がありません。"
+  },
+  "stream_hls_segment_scheme": {
+    "message": "HTTPまたはHTTPSのセグメントURLにのみ対応しています。"
+  },
+  "stream_hls_segment_url_missing": {
+    "message": "セグメントのURLがありません。"
+  },
+  "stream_hls_target_duration_missing": {
+    "message": "ライブHLSプレイリストにセグメントの目標長の指定がありません。"
+  },
+  "stream_hls_too_many_segments": {
+    "message": "HLSプレイリストのセグメント数が5,000件を超えています。"
+  },
+  "stream_hls_too_many_variants": {
+    "message": "HLSプレイリストの画質項目が100件を超えています。"
+  },
+  "stream_hls_ts_only": {
+    "message": "画質が1種類で連続したMPEG-TSのHLSプレイリストにのみ対応しています。"
+  },
+  "stream_hls_unsupported_media": {
+    "message": "このHLSメディアプレイリストには対応していません。"
+  },
+  "stream_hls_unsupported_playlist": {
+    "message": "このHLSプレイリストには対応していません。"
+  },
+  "stream_hls_variant_bitrate": {
+    "message": "HLS画質のビットレートが無効です。"
+  },
+  "stream_hls_variant_info_missing": {
+    "message": "HLS画質のURLに対応する属性がありません。"
+  },
+  "stream_hls_variant_not_found": {
+    "message": "選択したHLS画質がプレイリストに見つかりません。"
+  },
+  "stream_hls_variant_url_missing": {
+    "message": "HLS画質のURLがありません。"
+  },
+  "stream_hls_vod_end_required": {
+    "message": "終了マーカーのあるHLS VODプレイリストにのみ対応しています。"
+  },
+  "stream_host_permission": {
+    "message": "ポップアップでストリームサーバー $arg1$ へのアクセスを許可してください。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_challenge": {
+    "message": "このストリームのダウンロードにはサーバーによるブラウザーの確認が必要です（HTTP 403）。"
+  },
+  "stream_http_forbidden": {
+    "message": "サーバーがストリームのダウンロード要求を拒否しました（HTTP 403）。"
+  },
+  "stream_http_missing_resource": {
+    "message": "ストリームのリソースを取得できませんでした（HTTP $arg1$）。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_range_mismatch": {
+    "message": "サーバーがメディアセグメントの要求と異なるバイト範囲を返しました。"
+  },
+  "stream_http_resource_limit": {
+    "message": "ストリームのリソースが保存容量の上限を超えました。"
+  },
+  "stream_http_server_error": {
+    "message": "映像サーバーがエラーを返しました（HTTP $arg1$）。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_timeout": {
+    "message": "映像サーバーの応答がタイムアウトしました。"
+  },
+  "stream_invalid_host": {
+    "message": "このストリームサーバーのURLには対応していません。"
+  },
+  "stream_invalid_mpeg_ts": {
+    "message": "MPEG-TSの映像セグメントが無効です。"
+  },
+  "stream_live_segment_expired": {
+    "message": "未取得のセグメントがライブプレイリストから期限切れで削除されました。"
+  },
+  "stream_no_segments": {
+    "message": "保存できるメディアセグメントがありません。"
+  },
+  "stream_playback_playlist_url": {
+    "message": "HTTPまたはHTTPSのプレイリストURLを入力してください。"
+  },
+  "stream_playback_raw_bytes_missing": {
+    "message": "Chromeから映像セグメントの元のバイトデータを取得できませんでした。"
+  },
+  "stream_playback_response_limit": {
+    "message": "再生時の応答が保存容量の上限を超えています。"
+  },
+  "stream_playback_segments_missing": {
+    "message": "まだ受信していない映像セグメントがあります。"
+  },
+  "stream_playback_storage_limit": {
+    "message": "HLSの一時ストレージの上限を超えました。"
+  },
+  "stream_playback_ts_incomplete": {
+    "message": "MPEG-TSの映像セグメントが空か、一部が欠けています。"
+  },
+  "stream_playback_ts_only": {
+    "message": "MPEG-TS形式のHLSセグメントにのみ対応しています。"
+  },
+  "stream_playback_unknown_segment": {
+    "message": "この映像セグメントはプレイリストにありません。"
+  },
+  "stream_preview_empty_segment": {
+    "message": "プレビューのセグメントが空です。"
+  },
+  "stream_preview_host_permission": {
+    "message": "プレビューを再生するには映像サーバーへのアクセスを許可してください。"
+  },
+  "stream_remux_codecs": {
+    "message": "この映像または音声コーデックはMP4にまとめられません。"
+  },
+  "stream_remux_decoder_config": {
+    "message": "映像トラックのコーデック設定を読み取れませんでした。"
+  },
+  "stream_remux_no_packets": {
+    "message": "HLSトラックにメディアパケットがありません。"
+  },
+  "stream_runner_busy": {
+    "message": "ストリームのダウンロードがすでに進行中です。"
+  },
+  "stream_runner_disconnected": {
+    "message": "ストリームのダウンロードへの接続が切れました。"
+  },
+  "stream_runner_unavailable": {
+    "message": "このブラウザーではストリーム処理を開始できません。"
+  },
+  "stream_segment_incomplete": {
+    "message": "メディアセグメントが空か、一部が欠けています。"
+  },
+  "stream_start_failed": {
+    "message": "ストリームのダウンロードを開始できませんでした。"
+  },
+  "stream_temporary_storage_limit": {
+    "message": "一時ストレージの上限（2 GiB）を超えました。"
+  },
+  "stream_too_many_segments": {
+    "message": "メディアセグメントの数が5,000件を超えています。"
+  },
+  "view_action_cancel": {
+    "message": "キャンセル"
+  },
+  "view_action_delete_all": {
+    "message": "すべて削除"
+  },
+  "view_action_delete": {
+    "message": "削除"
+  },
+  "view_action_finish": {
+    "message": "停止して保存"
+  },
+  "view_action_pause": {
+    "message": "一時停止"
+  },
+  "view_action_resume": {
+    "message": "再開"
+  },
+  "view_action_show": {
+    "message": "フォルダで表示"
+  },
+  "view_candidate_complete": {
+    "message": "ダウンロード完了"
+  },
+  "view_candidate_downloading": {
+    "message": "ダウンロード中"
+  },
+  "view_copy_failed": {
+    "message": "リンクをコピーできませんでした。"
+  },
+  "view_copy_link": {
+    "message": "リンクをコピー"
+  },
+  "view_copy_success": {
+    "message": "リンクをコピーしました。"
+  },
+  "view_delete_file_success": {
+    "message": "保存したファイルと一覧の項目を削除しました。"
+  },
+  "view_delete_hint": {
+    "message": "クリックすると一覧から項目を削除します。Shift を押しながらクリックすると、完了したダウンロードの保存ファイルも削除します。"
+  },
+  "view_devtools_panel": {
+    "message": "MDownloader"
+  },
+  "view_diagnostics": {
+    "message": "ダウンロード診断"
+  },
+  "view_diagnostics_http": {
+    "message": "HTTP $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_previous": {
+    "message": "前回の応答"
+  },
+  "view_diagnostics_received": {
+    "message": "受信したセグメント：$arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_title": {
+    "message": "MDownloader・ダウンロード診断"
+  },
+  "view_download": {
+    "message": "ダウンロード"
+  },
+  "view_download_check": {
+    "message": "ダウンロードの状態を確認"
+  },
+  "view_download_check_manager": {
+    "message": "ダウンロード管理でタスクの状態を確認してください。"
+  },
+  "view_download_failed_start": {
+    "message": "ダウンロードを開始できませんでした"
+  },
+  "view_download_queueing": {
+    "message": "ダウンロードをキューに追加しています…"
+  },
+  "view_download_started": {
+    "message": "ダウンロードを開始しました"
+  },
+  "view_download_unsupported": {
+    "message": "$arg1$・ダウンロード不可",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_download_with_permission": {
+    "message": "サーバーへのアクセスを許可してダウンロード"
+  },
+  "view_format_unknown": {
+    "message": "形式不明"
+  },
+  "view_job_check_browser": {
+    "message": "ブラウザのダウンロード一覧でこのタスクを確認してください。"
+  },
+  "view_job_file_missing": {
+    "message": "保存したファイルが見つかりません。"
+  },
+  "view_job_mp4_muxing": {
+    "message": "MP4 を作成しています…"
+  },
+  "view_job_mp4_saving": {
+    "message": "MP4 を保存しています…"
+  },
+  "view_job_playlist_check": {
+    "message": "プレイリストを確認しています…"
+  },
+  "view_job_progress": {
+    "message": "$arg1$ のダウンロード進行状況",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_job_rescan": {
+    "message": "必要に応じて元のページをもう一度スキャンしてください。"
+  },
+  "view_job_server_denied": {
+    "message": "直接ダウンロードを許可するサーバーのアドレスを使用してください。"
+  },
+  "view_jobs_active": {
+    "message": "ダウンロード中（$arg1$）",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_attention": {
+    "message": "確認が必要なタスク（$arg1$）",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_complete": {
+    "message": "ダウンロード完了（$arg1$）",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_empty": {
+    "message": "ダウンロード履歴はありません。"
+  },
+  "view_jobs_failed": {
+    "message": "ダウンロード履歴を読み込めませんでした。"
+  },
+  "view_link_loading": {
+    "message": "アドレスを取得しています…"
+  },
+  "view_link_unavailable": {
+    "message": "元のアドレスを取得できません。"
+  },
+  "view_metric_bytes": {
+    "message": "$arg1$ B",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_average_rate": {
+    "message": "平均 $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_kilobytes": {
+    "message": "$arg1$ KB",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_megabytes": {
+    "message": "$arg1$ MB",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_progress": {
+    "message": "$arg1$・$arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_metric_rate": {
+    "message": "$arg1$/s",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_options_failed": {
+    "message": "設定ページを開けませんでした。"
+  },
+  "view_panel_failed": {
+    "message": "サイドパネルを開けませんでした。ブラウザのサイドパネルメニューで MDownloader を選択してください。"
+  },
+  "view_panel_use_menu": {
+    "message": "ブラウザのサイドパネルメニューで MDownloader を選択してください。"
+  },
+  "view_permission_denied": {
+    "message": "動画サーバーへのアクセスが許可されていません。"
+  },
+  "view_permission_failed": {
+    "message": "動画サーバーへのアクセス許可をリクエストできませんでした。"
+  },
+  "view_playback_busy": {
+    "message": "別の再生データの収集または保存が進行中です。"
+  },
+  "view_playback_canceled": {
+    "message": "収集をキャンセルしました。"
+  },
+  "view_playback_collected": {
+    "message": "すべての動画セグメントを受信しました。「MP4 を保存」をクリックしてください。"
+  },
+  "view_playback_collecting": {
+    "message": "このタブで再生中に受信したセグメントを収集しています。"
+  },
+  "view_playback_coverage": {
+    "message": "収集済みセグメント：$arg1$ / $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_playback_page_changed": {
+    "message": "ページが変わったため、収集を終了しました。"
+  },
+  "view_playback_preparing": {
+    "message": "収集を準備しています…"
+  },
+  "view_playback_saving": {
+    "message": "MP4 の保存を開始しました。再生タブを閉じてもかまいません。保存状況はダウンロード管理で確認できます。"
+  },
+  "view_playback_waiting": {
+    "message": "このタブで指定したプレイリストを待っています。"
+  },
+  "view_preview": {
+    "message": "プレビュー"
+  },
+  "view_preview_loading": {
+    "message": "プレビューを読み込み中…"
+  },
+  "view_preview_still_alt": {
+    "message": "動画のプレビュー画像"
+  },
+  "view_quality_allow_server": {
+    "message": "選択した動画サーバーへのアクセスを許可してください。"
+  },
+  "view_quality_canceled": {
+    "message": "画質の選択をキャンセルしました。"
+  },
+  "view_quality_checking": {
+    "message": "HLS の画質を確認しています…"
+  },
+  "view_quality_details": {
+    "message": "$arg1$・$arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_quality_no_resolution": {
+    "message": "解像度不明"
+  },
+  "view_scan_empty": {
+    "message": "ダウンロードできるメディアが見つかりませんでした。"
+  },
+  "view_scan_found": {
+    "message": "ダウンロード可能：$arg1$ 件",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_scan_in_progress": {
+    "message": "現在のページでメディアを検索しています…"
+  },
+  "view_scan_no_tab": {
+    "message": "現在のタブを特定できませんでした。"
+  },
+  "view_scan_page_changed": {
+    "message": "ページが変わりました。もう一度スキャンしてください。"
+  },
+  "view_scan_restricted": {
+    "message": "このページはスキャンできません。"
+  },
+  "view_stage_browser_save": {
+    "message": "ディスクへの保存"
+  },
+  "view_stage_master_access": {
+    "message": "プレイリストへのアクセス"
+  },
+  "view_stage_master_parse": {
+    "message": "プレイリストの解析"
+  },
+  "view_stage_master_request": {
+    "message": "最初のプレイリストの取得"
+  },
+  "view_stage_media_parse": {
+    "message": "セグメント一覧の解析"
+  },
+  "view_stage_mp4_mux": {
+    "message": "MP4 の作成"
+  },
+  "view_stage_segments_access": {
+    "message": "セグメントサーバーへのアクセス"
+  },
+  "view_stage_segments_transfer": {
+    "message": "動画セグメントの取得"
+  },
+  "view_stage_temporary_storage": {
+    "message": "一時ストレージの準備"
+  },
+  "view_stage_unknown": {
+    "message": "段階不明"
+  },
+  "view_stage_variant_access": {
+    "message": "選択した画質のプレイリストへのアクセス"
+  },
+  "view_stage_variant_request": {
+    "message": "選択した画質のプレイリストの取得"
+  },
+  "view_stage_variant_selection": {
+    "message": "画質の選択"
+  },
+  "view_state_canceled": {
+    "message": "キャンセル済み"
+  },
+  "view_state_failed": {
+    "message": "ダウンロード失敗"
+  },
+  "view_state_paused": {
+    "message": "一時停止中"
+  },
+  "view_state_starting": {
+    "message": "開始処理中"
+  },
+  "view_state_unknown": {
+    "message": "確認が必要"
+  },
+  "view_unit_kilobits": {
+    "message": "$arg1$ kbps",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_unit_megabits": {
+    "message": "$arg1$ Mbps",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_download_date_time": {
+    "message": "ファイル名に日付と時刻を含める"
+  },
+  "opt_download_date_time_help": {
+    "message": "ダウンロード開始時の現地時刻を拡張子の前に付けます: ページ名_ファイル名_2026-11-07_09-08-06.mp4。"
+  },
+  "view_job_segments": {
+    "message": "セグメント: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_preview_playback_failed": {
+    "message": "プレビューの再生に失敗しました"
+  },
+  "view_download_quality_hint": {
+    "message": "$LABEL$（Shift+クリックで画質を選択）",
+    "placeholders": {
+      "label": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_playback": {
+    "message": "一部の動画は、$actions$を行うと更新・ダウンロードが可能になります。",
+    "placeholders": {
+      "actions": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_retry": {
+    "message": "ダウンロードやプレビューに失敗した場合は、$reload$してください。",
+    "placeholders": {
+      "reload": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_reload_page": {
+    "message": "ページを再読み込み"
+  },
+  "hint_playback_actions": {
+    "message": "再生またはシークバーの操作"
+  },
+  "view_action_snapshot": {
+    "message": "受信済み部分を保存（ダウンロードは継続）"
+  },
+  "job_snapshot_busy": {
+    "message": "受信済み部分を保存中です。"
+  },
+  "job_snapshot_unavailable": {
+    "message": "保存できる完全な部分がまだないか、処理の状態が変わりました。"
+  },
+  "job_snapshot_metadata": {
+    "message": "受信済み部分の再生情報が不足しています。さらに受信してから再試行してください。"
+  },
+  "job_snapshot_codecs": {
+    "message": "このファイルのコーデックでは部分ファイルを保存できません。"
+  },
+  "job_snapshot_source_changed": {
+    "message": "元のファイルが変更されたか、要求範囲を確認できません。"
+  },
+  "view_job_snapshot_muxing": {
+    "message": "部分ファイルを作成中"
+  },
+  "view_job_snapshot_saving": {
+    "message": "部分ファイルを保存中"
+  },
+  "view_action_snapshot_file": {
+    "message": "受信済み部分を保存（ダウンロード継続・追加データ通信あり）"
+  },
+  "opt_debug_logging": {
+    "message": "詳細デバッグログを有効にする"
+  },
+  "opt_debug_logging_help": {
+    "message": "拡張機能のコンソールに安全な段階コード、所要時間、件数を表示します。実行環境ごとに最大$LIMIT$件をメモリに保持し、無効にすると消去します。URL、ヘッダー、エラー本文は記録しません。",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  }
+}

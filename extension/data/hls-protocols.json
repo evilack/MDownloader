@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "mouflon": {
+    "schemeTag": "#EXT-X-MOUFLON:PSCH:",
+    "uriTag": "#EXT-X-MOUFLON:URI:",
+    "version": "v2",
+    "requestParameters": { "scheme": "psch", "key": "pkey" },
+    "tokenPattern": "_([^_]+)_(\\d+(?:_part\\d+)?)\\.mp4(?:[?#].*)?$",
+    "tokenKeys": { "NTK9aqcLmNFMWrpQ": "tOcYOap4Ty1l9Jzb" },
+    "provenance": {
+      "playerVersion": "2.15.0",
+      "source": "https://mmp.doppiocdn.com/player/mmp/v2.15.0/chunk-2692fd01b0db7b00082d.js",
+      "sha256": "dfd6e062fe4a58059b14a47c5b1e3078fecadcf5820a8e9fadd758d606d15cfc",
+      "verified": "2026-11-07",
+      "purpose": "Public playlist URL metadata transformation; media payloads are not decrypted."
+    }
+  }
+}

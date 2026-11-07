@@ -1,0 +1,1227 @@
+{
+  "view_stream_live": {
+    "message": "直播"
+  },
+  "opt_side_panel": {
+    "message": "侧边栏"
+  },
+  "opt_show_panel_media": {
+    "message": "在侧边栏中显示检测到的媒体"
+  },
+  "opt_show_panel_media_help": {
+    "message": "在下载列表上方显示当前标签页中的媒体。"
+  },
+  "opt_download_log": {
+    "message": "下载日志"
+  },
+  "opt_log_downloads": {
+    "message": "记录下载事件"
+  },
+  "opt_log_help": {
+    "message": "在此设备上保留最近 $LIMIT$ 条记录。日志不包含网址、Cookie、请求标头或文件路径。",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_log_empty": {
+    "message": "尚无下载日志。"
+  },
+  "opt_log_copy": {
+    "message": "复制日志"
+  },
+  "opt_log_clear": {
+    "message": "清除日志"
+  },
+  "opt_log_copied": {
+    "message": "已复制日志。"
+  },
+  "opt_log_copy_failed": {
+    "message": "无法复制日志。"
+  },
+  "opt_log_cleared": {
+    "message": "已清除日志。"
+  },
+  "opt_log_clear_failed": {
+    "message": "无法清除日志。"
+  },
+  "opt_log_read_failed": {
+    "message": "无法加载日志。"
+  },
+  "opt_log_step_ok": {
+    "message": "步骤完成"
+  },
+  "opt_pick_download_folder": {
+    "message": "选择文件夹…"
+  },
+  "opt_restore_folder_access": {
+    "message": "恢复文件夹访问权限"
+  },
+  "opt_picked_folder": {
+    "message": "已选择的下载文件夹：$FOLDER$",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_folder_picker_failed": {
+    "message": "无法保存所选文件夹。请重新选择。"
+  },
+  "opt_folder_access_restored": {
+    "message": "已恢复文件夹访问权限。"
+  },
+  "folder_access_required": {
+    "message": "请在扩展程序选项中授予对所选下载文件夹的访问权限。"
+  },
+  "action_title": {
+    "message": "MDownloader · 当前页面"
+  },
+  "candidate_changed": {
+    "message": "页面或媒体已更改。请重新扫描。"
+  },
+  "candidate_no_access": {
+    "message": "没有监测媒体地址的权限。请重新扫描。"
+  },
+  "extension_description": {
+    "message": "查找视频、音频文件及 HLS、DASH 流，并在侧边栏管理下载。"
+  },
+  "headers_reuse_denied": {
+    "message": "无法为此视频服务器重用请求标头。"
+  },
+  "headers_too_many": {
+    "message": "需要应用请求标头的分片地址过多。"
+  },
+  "headers_url_outside_cdn": {
+    "message": "HLS 地址不在已监测的 CDN 请求范围内。"
+  },
+  "html_cancel": {
+    "message": "取消"
+  },
+  "html_cancel_capture": {
+    "message": "取消采集"
+  },
+  "html_choose_quality": {
+    "message": "选择下载画质"
+  },
+  "html_completed_downloads": {
+    "message": "已完成的下载"
+  },
+  "html_detected_media": {
+    "message": "检测到的媒体"
+  },
+  "html_download_manager": {
+    "message": "下载管理"
+  },
+  "html_download_selected_quality": {
+    "message": "按所选画质下载"
+  },
+  "html_downloading": {
+    "message": "正在下载"
+  },
+  "html_extension_options": {
+    "message": "扩展程序选项"
+  },
+  "html_hls_playlist_url": {
+    "message": "HLS 播放列表地址"
+  },
+  "html_loading_downloads": {
+    "message": "正在加载下载记录…"
+  },
+  "html_media_preview": {
+    "message": "媒体预览"
+  },
+  "html_needs_attention": {
+    "message": "需要处理"
+  },
+  "html_options": {
+    "message": "选项"
+  },
+  "html_options_title": {
+    "message": "MDownloader · 选项"
+  },
+  "html_playback_heading": {
+    "message": "保存播放数据"
+  },
+  "html_playback_instructions": {
+    "message": "输入 HLS 地址并开始采集，然后在当前标签页中从头播放视频。采集所有分片后，即可将视频保存为 MP4。"
+  },
+  "html_playback_title": {
+    "message": "MDownloader · 保存播放数据"
+  },
+  "html_popup_title": {
+    "message": "MDownloader · 当前页面"
+  },
+  "html_rescan": {
+    "message": "重新扫描"
+  },
+  "html_resolution_bitrate": {
+    "message": "分辨率和码率"
+  },
+  "html_save_mp4": {
+    "message": "保存 MP4"
+  },
+  "html_scanning_page": {
+    "message": "正在检测此页面的媒体…"
+  },
+  "html_sidepanel_title": {
+    "message": "MDownloader · 下载管理"
+  },
+  "html_start_capture": {
+    "message": "开始采集"
+  },
+  "job_browser_error": {
+    "message": "浏览器下载错误：$arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "job_browser_start_failed": {
+    "message": "浏览器无法开始下载。"
+  },
+  "job_busy": {
+    "message": "任务正在处理。请稍后重试。"
+  },
+  "job_cancel_first": {
+    "message": "请先取消正在进行的 HLS 任务。"
+  },
+  "job_delete_after_finish": {
+    "message": "下载完成后才能删除文件。"
+  },
+  "job_delete_failed": {
+    "message": "无法删除已保存的文件，条目仍保留在列表中。"
+  },
+  "job_file_unknown": {
+    "message": "找不到已保存的文件。"
+  },
+  "job_hls_not_found": {
+    "message": "找不到 HLS 任务。"
+  },
+  "job_hls_unsupported": {
+    "message": "不支持此 HLS 请求。"
+  },
+  "job_hls_wrong_state": {
+    "message": "无法在当前状态下处理 HLS 任务。"
+  },
+  "job_invalid_capture": {
+    "message": "捕获的播放数据无效。"
+  },
+  "job_invalid_mp4_url": {
+    "message": "临时 MP4 文件地址无效。"
+  },
+  "job_invalid_request": {
+    "message": "下载请求无效。"
+  },
+  "job_not_found": {
+    "message": "在下载列表中找不到此任务。"
+  },
+  "job_not_video": {
+    "message": "服务器返回的是网页，而不是视频。"
+  },
+  "job_permission_changed": {
+    "message": "由于网站访问权限已更改，HLS 传输已停止。"
+  },
+  "job_playlist_denied": {
+    "message": "服务器拒绝了初始播放列表请求（HTTP 403）。"
+  },
+  "job_runner_closed": {
+    "message": "HLS 下载文档已关闭。"
+  },
+  "job_source_unknown": {
+    "message": "无法获取原始地址。"
+  },
+  "job_state_changed": {
+    "message": "任务状态已更改。请重新查看下载列表。"
+  },
+  "offscreen_justification": {
+    "message": "将流分片合并为 MP4 并交给 Chrome 下载。"
+  },
+  "opt_advanced": {
+    "message": "高级"
+  },
+  "opt_all_sites_check_failed": {
+    "message": "无法检查对所有网站的访问权限。"
+  },
+  "opt_all_sites_denied": {
+    "message": "未授予访问所有网站的权限。"
+  },
+  "opt_all_sites_granted": {
+    "message": "已允许访问所有网站。请重新播放视频。"
+  },
+  "opt_all_sites_help": {
+    "message": "允许访问所有网站，以检测 HTTP 和 HTTPS 网站以及视频服务器上的播放请求。"
+  },
+  "opt_all_sites_request_failed": {
+    "message": "无法请求访问所有网站的权限。"
+  },
+  "opt_all_sites_revoke_failed": {
+    "message": "无法撤销对所有网站的访问权限。"
+  },
+  "opt_all_sites_revoked": {
+    "message": "已撤销对所有网站的访问权限。"
+  },
+  "opt_allow_all_sites": {
+    "message": "允许访问所有网站"
+  },
+  "opt_allow_network": {
+    "message": "允许检测"
+  },
+  "opt_cdn_url": {
+    "message": "独立视频服务器的网址（可选）"
+  },
+  "opt_change_browser_location": {
+    "message": "更改浏览器的默认下载位置"
+  },
+  "opt_debug": {
+    "message": "调试模式"
+  },
+  "opt_debug_help": {
+    "message": "打开单独的诊断标签页以排查下载问题。"
+  },
+  "opt_default_folder": {
+    "message": "默认下载文件夹"
+  },
+  "opt_default_folder_saved": {
+    "message": "新的下载将使用默认位置。"
+  },
+  "opt_display_language": {
+    "message": "显示语言"
+  },
+  "opt_download_location": {
+    "message": "下载位置"
+  },
+  "opt_download_settings": {
+    "message": "下载设置"
+  },
+  "opt_extension": {
+    "message": "扩展程序"
+  },
+  "opt_folder_help": {
+    "message": "请输入默认下载文件夹下的子文件夹，例如 MDownloader/视频。留空则使用默认位置。"
+  },
+  "opt_folder_read_failed": {
+    "message": "无法读取下载位置。"
+  },
+  "opt_folder_save_failed": {
+    "message": "无法保存下载位置。"
+  },
+  "opt_folder_saved": {
+    "message": "新的下载将保存到此子文件夹。"
+  },
+  "opt_invalid_folder": {
+    "message": "请输入不含驱动器号或上级目录引用的子文件夹路径。"
+  },
+  "opt_invalid_site_url": {
+    "message": "请输入以 http:// 或 https:// 开头的网址。"
+  },
+  "opt_language": {
+    "message": "语言"
+  },
+  "opt_language_auto": {
+    "message": "跟随系统"
+  },
+  "opt_language_save_failed": {
+    "message": "无法保存显示语言。"
+  },
+  "opt_network_denied": {
+    "message": "未授予检测权限。"
+  },
+  "opt_network_granted": {
+    "message": "已允许检测。请重新播放视频。"
+  },
+  "opt_network_help": {
+    "message": "如需按网站授权，请在下方输入网址，然后重新播放视频。"
+  },
+  "opt_network_partially_revoked": {
+    "message": "已撤销部分检测权限。"
+  },
+  "opt_network_permissions": {
+    "message": "网络检测权限"
+  },
+  "opt_network_request_failed": {
+    "message": "无法请求检测权限。"
+  },
+  "opt_network_revoke_failed": {
+    "message": "无法撤销检测权限。"
+  },
+  "opt_network_revoked": {
+    "message": "已撤销指定网址的检测权限。"
+  },
+  "opt_network_sites_revoke_failed": {
+    "message": "无法撤销指定网址的检测权限。"
+  },
+  "opt_open_browser_settings_failed": {
+    "message": "无法打开浏览器的下载设置。"
+  },
+  "opt_page_title": {
+    "message": "在下载文件名中使用页面标题"
+  },
+  "opt_page_title_help": {
+    "message": "用下划线连接页面标题和原始文件名。如果原始名称为 index，则仅使用页面标题。"
+  },
+  "opt_page_title_short": {
+    "message": "文件名使用页面标题"
+  },
+  "opt_reload": {
+    "message": "重新加载扩展程序"
+  },
+  "opt_revoke_all_sites": {
+    "message": "撤销对所有网站的访问权限"
+  },
+  "opt_revoke_network": {
+    "message": "撤销权限"
+  },
+  "opt_save_location": {
+    "message": "保存下载位置"
+  },
+  "opt_setting_disabled": {
+    "message": "已关闭“$arg1$”。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_enabled": {
+    "message": "已开启“$arg1$”。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_read_failed": {
+    "message": "无法读取“$arg1$”设置。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_save_failed": {
+    "message": "无法保存“$arg1$”设置。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_site_url": {
+    "message": "视频所在网站的网址"
+  },
+  "opt_version": {
+    "message": "版本"
+  },
+  "request_failed": {
+    "message": "无法完成请求。"
+  },
+  "request_unsupported": {
+    "message": "不支持此请求。"
+  },
+  "stream_dash_doctype": {
+    "message": "不支持含有 DOCTYPE 声明的 DASH MPD。"
+  },
+  "stream_dash_empty_segments": {
+    "message": "DASH 分段列表为空或不完整。"
+  },
+  "stream_dash_encrypted": {
+    "message": "不支持受 DRM 保护或加密的 DASH 轨道。"
+  },
+  "stream_dash_ept_delta": {
+    "message": "不支持用于调整首个分段起点的 DASH eptDelta。"
+  },
+  "stream_dash_index_limit": {
+    "message": "DASH 分段索引范围超出存储上限。"
+  },
+  "stream_dash_index_same_file": {
+    "message": "仅支持 DASH SIDX 索引位于同一媒体文件中的 SegmentBase。"
+  },
+  "stream_dash_index_truncated": {
+    "message": "DASH 分段索引已截断。"
+  },
+  "stream_dash_init_range_missing": {
+    "message": "DASH 初始化分段缺少字节范围。"
+  },
+  "stream_dash_init_url_missing": {
+    "message": "缺少 DASH 初始化分段地址。"
+  },
+  "stream_dash_invalid_addressing": {
+    "message": "DASH 分段寻址方式无效。"
+  },
+  "stream_dash_invalid_duration": {
+    "message": "DASH 播放时长无效。"
+  },
+  "stream_dash_invalid_index_range": {
+    "message": "DASH SIDX 索引范围缺失或过大。"
+  },
+  "stream_dash_invalid_integer": {
+    "message": "DASH 的 $arg1$ 值无效。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_invalid_mpd": {
+    "message": "服务器未返回有效的 DASH MPD。"
+  },
+  "stream_dash_invalid_segment_url": {
+    "message": "DASH 分段地址无效。"
+  },
+  "stream_dash_invalid_template": {
+    "message": "不支持此 DASH 地址模板。"
+  },
+  "stream_dash_list_timeline_mismatch": {
+    "message": "DASH 分段地址列表和时间线的条目数不一致。"
+  },
+  "stream_dash_mpd_size": {
+    "message": "DASH MPD 超过大小限制。"
+  },
+  "stream_dash_no_addressing": {
+    "message": "DASH MPD 中没有受支持的分段寻址信息。"
+  },
+  "stream_dash_no_track": {
+    "message": "DASH MPD 中未找到使用 $arg1$ 编解码器的受支持 MP4 轨道。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_overlapping_timeline": {
+    "message": "DASH 分段时间线中的条目相互重叠。"
+  },
+  "stream_dash_repeat_end_missing": {
+    "message": "DASH 分段时间线中的重复项缺少结束时间。"
+  },
+  "stream_dash_segment_scheme": {
+    "message": "DASH 分段地址必须使用 HTTP 或 HTTPS，且不得包含凭据。"
+  },
+  "stream_dash_segment_url_missing": {
+    "message": "缺少 DASH 分段地址。"
+  },
+  "stream_dash_sidx_header_truncated": {
+    "message": "DASH SIDX 标头被截断。"
+  },
+  "stream_dash_sidx_hierarchical": {
+    "message": "不支持分层的 DASH SIDX 索引。"
+  },
+  "stream_dash_sidx_invalid_segments": {
+    "message": "DASH SIDX 分段列表无效。"
+  },
+  "stream_dash_sidx_missing": {
+    "message": "DASH 索引范围内没有有效的 SIDX 盒。"
+  },
+  "stream_dash_sidx_range_mismatch": {
+    "message": "DASH SIDX 响应与请求的字节范围不一致。"
+  },
+  "stream_dash_sidx_segment_invalid": {
+    "message": "DASH SIDX 分段的大小或时长无效。"
+  },
+  "stream_dash_sidx_segment_range": {
+    "message": "DASH SIDX 分段的字节范围过大。"
+  },
+  "stream_dash_sidx_version": {
+    "message": "不支持此 DASH SIDX 版本。"
+  },
+  "stream_dash_single_period": {
+    "message": "仅支持包含单个 Period 的 DASH VOD。"
+  },
+  "stream_dash_static_only": {
+    "message": "仅支持静态 DASH VOD。"
+  },
+  "stream_dash_template_missing": {
+    "message": "未找到受支持的 DASH 分段地址模板。"
+  },
+  "stream_dash_template_not_unique": {
+    "message": "DASH 地址模板无法为每个分段生成唯一地址。"
+  },
+  "stream_dash_too_many_segments": {
+    "message": "DASH 轨道的分段数超过 5,000 个。"
+  },
+  "stream_dash_too_many_tracks": {
+    "message": "DASH MPD 的视频和音频轨道总数超过 200 个。"
+  },
+  "stream_dash_xlink_unsupported": {
+    "message": "不支持加载外部 XLink 的 DASH MPD。"
+  },
+  "stream_download_failed": {
+    "message": "流下载失败。"
+  },
+  "stream_hls_duplicate_byte_range": {
+    "message": "HLS 字节范围重复指定。"
+  },
+  "stream_hls_empty_segments": {
+    "message": "HLS 分段列表为空或不完整。"
+  },
+  "stream_hls_encrypted": {
+    "message": "不支持加密的 HLS。"
+  },
+  "stream_hls_init_scheme": {
+    "message": "仅支持 HTTP 或 HTTPS 初始化分段地址。"
+  },
+  "stream_hls_invalid_byte_range": {
+    "message": "HLS 字节范围或起始偏移量无效。"
+  },
+  "stream_hls_invalid_init_attributes": {
+    "message": "HLS 初始化分段的属性无效。"
+  },
+  "stream_hls_invalid_master": {
+    "message": "HLS 主播放列表无效或不受支持。"
+  },
+  "stream_hls_invalid_master_attributes": {
+    "message": "HLS 清晰度属性无效。"
+  },
+  "stream_hls_invalid_playlist_response": {
+    "message": "服务器返回了其他响应，而非 HLS 播放列表。"
+  },
+  "stream_hls_invalid_segment_duration": {
+    "message": "HLS 分段时长无效。"
+  },
+  "stream_hls_invalid_sequence": {
+    "message": "HLS 分段序号无效。"
+  },
+  "stream_hls_invalid_target_duration": {
+    "message": "HLS 分段目标时长无效。"
+  },
+  "stream_hls_no_variants": {
+    "message": "未找到受支持的 HLS 清晰度选项。此流可能需要独立音轨或不受支持的编解码器。"
+  },
+  "stream_hls_partial_only": {
+    "message": "不支持仅包含部分分段的 HLS 播放列表。"
+  },
+  "stream_hls_segment_duration_missing": {
+    "message": "HLS 分段缺少时长。"
+  },
+  "stream_hls_segment_scheme": {
+    "message": "仅支持 HTTP 或 HTTPS 分段地址。"
+  },
+  "stream_hls_segment_url_missing": {
+    "message": "缺少分段地址。"
+  },
+  "stream_hls_target_duration_missing": {
+    "message": "直播 HLS 播放列表缺少分段目标时长。"
+  },
+  "stream_hls_too_many_segments": {
+    "message": "HLS 播放列表的分段数超过 5,000 个。"
+  },
+  "stream_hls_too_many_variants": {
+    "message": "HLS 播放列表的清晰度选项超过 100 个。"
+  },
+  "stream_hls_ts_only": {
+    "message": "仅支持单一清晰度、连续的 MPEG-TS HLS 播放列表。"
+  },
+  "stream_hls_unsupported_media": {
+    "message": "不支持此 HLS 媒体播放列表。"
+  },
+  "stream_hls_unsupported_playlist": {
+    "message": "不支持此 HLS 播放列表。"
+  },
+  "stream_hls_variant_bitrate": {
+    "message": "HLS 清晰度的比特率无效。"
+  },
+  "stream_hls_variant_info_missing": {
+    "message": "HLS 清晰度地址缺少对应属性。"
+  },
+  "stream_hls_variant_not_found": {
+    "message": "在播放列表中未找到所选的 HLS 清晰度。"
+  },
+  "stream_hls_variant_url_missing": {
+    "message": "缺少 HLS 清晰度地址。"
+  },
+  "stream_hls_vod_end_required": {
+    "message": "仅支持带结束标记的 HLS VOD 播放列表。"
+  },
+  "stream_host_permission": {
+    "message": "请在弹出窗口中允许访问流服务器 $arg1$。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_challenge": {
+    "message": "服务器要求先验证浏览器，才能下载此流（HTTP 403）。"
+  },
+  "stream_http_forbidden": {
+    "message": "服务器拒绝了流下载请求（HTTP 403）。"
+  },
+  "stream_http_missing_resource": {
+    "message": "无法获取流资源（HTTP $arg1$）。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_range_mismatch": {
+    "message": "服务器返回的字节范围与请求的媒体分段范围不一致。"
+  },
+  "stream_http_resource_limit": {
+    "message": "流资源超出存储上限。"
+  },
+  "stream_http_server_error": {
+    "message": "视频服务器返回错误（HTTP $arg1$）。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_timeout": {
+    "message": "视频服务器响应超时。"
+  },
+  "stream_invalid_host": {
+    "message": "不支持此流服务器地址。"
+  },
+  "stream_invalid_mpeg_ts": {
+    "message": "MPEG-TS 视频分段无效。"
+  },
+  "stream_live_segment_expired": {
+    "message": "直播播放列表中的分段在下载前已过期。"
+  },
+  "stream_no_segments": {
+    "message": "没有可保存的媒体分段。"
+  },
+  "stream_playback_playlist_url": {
+    "message": "请输入 HTTP 或 HTTPS 播放列表地址。"
+  },
+  "stream_playback_raw_bytes_missing": {
+    "message": "Chrome 未提供视频分段的原始字节。"
+  },
+  "stream_playback_response_limit": {
+    "message": "播放响应超出存储上限。"
+  },
+  "stream_playback_segments_missing": {
+    "message": "部分视频分段尚未接收。"
+  },
+  "stream_playback_storage_limit": {
+    "message": "超出 HLS 临时存储上限。"
+  },
+  "stream_playback_ts_incomplete": {
+    "message": "MPEG-TS 视频分段为空或已截断。"
+  },
+  "stream_playback_ts_only": {
+    "message": "仅支持 MPEG-TS 格式的 HLS 分段。"
+  },
+  "stream_playback_unknown_segment": {
+    "message": "此视频分段不在播放列表中。"
+  },
+  "stream_preview_empty_segment": {
+    "message": "预览分段为空。"
+  },
+  "stream_preview_host_permission": {
+    "message": "请允许访问视频服务器以播放预览。"
+  },
+  "stream_remux_codecs": {
+    "message": "此视频或音频编码无法合并为 MP4。"
+  },
+  "stream_remux_decoder_config": {
+    "message": "无法读取视频轨道的编解码器配置。"
+  },
+  "stream_remux_no_packets": {
+    "message": "HLS 轨道中没有媒体数据包。"
+  },
+  "stream_runner_busy": {
+    "message": "已有流下载正在进行。"
+  },
+  "stream_runner_disconnected": {
+    "message": "与流下载任务的连接已断开。"
+  },
+  "stream_runner_unavailable": {
+    "message": "此浏览器无法启动流处理程序。"
+  },
+  "stream_segment_incomplete": {
+    "message": "媒体分段为空或已截断。"
+  },
+  "stream_start_failed": {
+    "message": "无法启动流下载。"
+  },
+  "stream_temporary_storage_limit": {
+    "message": "超出 2 GiB 的临时存储上限。"
+  },
+  "stream_too_many_segments": {
+    "message": "媒体分段超过 5,000 个。"
+  },
+  "view_action_cancel": {
+    "message": "取消"
+  },
+  "view_action_delete_all": {
+    "message": "全部删除"
+  },
+  "view_action_delete": {
+    "message": "删除"
+  },
+  "view_action_finish": {
+    "message": "停止并保存"
+  },
+  "view_action_pause": {
+    "message": "暂停"
+  },
+  "view_action_resume": {
+    "message": "继续"
+  },
+  "view_action_show": {
+    "message": "在文件夹中显示"
+  },
+  "view_candidate_complete": {
+    "message": "下载完成"
+  },
+  "view_candidate_downloading": {
+    "message": "正在下载"
+  },
+  "view_copy_failed": {
+    "message": "无法复制链接。"
+  },
+  "view_copy_link": {
+    "message": "复制链接"
+  },
+  "view_copy_success": {
+    "message": "已复制链接。"
+  },
+  "view_delete_file_success": {
+    "message": "已删除保存的文件及其列表记录。"
+  },
+  "view_delete_hint": {
+    "message": "点击即可从列表中移除记录。按住 Shift 点击还会删除已完成下载的文件。"
+  },
+  "view_devtools_panel": {
+    "message": "MDownloader"
+  },
+  "view_diagnostics": {
+    "message": "下载诊断"
+  },
+  "view_diagnostics_http": {
+    "message": "HTTP $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_previous": {
+    "message": "上一次响应"
+  },
+  "view_diagnostics_received": {
+    "message": "已接收分片：$arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_title": {
+    "message": "MDownloader · 下载诊断"
+  },
+  "view_download": {
+    "message": "下载"
+  },
+  "view_download_check": {
+    "message": "查看下载状态"
+  },
+  "view_download_check_manager": {
+    "message": "请在下载管理中查看任务状态。"
+  },
+  "view_download_failed_start": {
+    "message": "无法开始下载"
+  },
+  "view_download_queueing": {
+    "message": "正在将下载加入队列…"
+  },
+  "view_download_started": {
+    "message": "已开始下载"
+  },
+  "view_download_unsupported": {
+    "message": "$arg1$ · 无法下载",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_download_with_permission": {
+    "message": "允许访问服务器并下载"
+  },
+  "view_format_unknown": {
+    "message": "格式未知"
+  },
+  "view_job_check_browser": {
+    "message": "请在浏览器下载列表中查看此任务。"
+  },
+  "view_job_file_missing": {
+    "message": "找不到已保存的文件。"
+  },
+  "view_job_mp4_muxing": {
+    "message": "正在合成 MP4…"
+  },
+  "view_job_mp4_saving": {
+    "message": "正在保存 MP4…"
+  },
+  "view_job_playlist_check": {
+    "message": "正在检查播放列表…"
+  },
+  "view_job_progress": {
+    "message": "$arg1$ 的下载进度",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_job_rescan": {
+    "message": "如有需要，请重新扫描原始页面。"
+  },
+  "view_job_server_denied": {
+    "message": "请使用服务器允许直接下载的地址。"
+  },
+  "view_jobs_active": {
+    "message": "正在下载（$arg1$）",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_attention": {
+    "message": "需要检查（$arg1$）",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_complete": {
+    "message": "下载完成（$arg1$）",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_empty": {
+    "message": "没有下载记录。"
+  },
+  "view_jobs_failed": {
+    "message": "无法加载下载记录。"
+  },
+  "view_link_loading": {
+    "message": "正在查找地址…"
+  },
+  "view_link_unavailable": {
+    "message": "无法获取原始地址。"
+  },
+  "view_metric_bytes": {
+    "message": "$arg1$ B",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_average_rate": {
+    "message": "平均 $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_kilobytes": {
+    "message": "$arg1$ KB",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_megabytes": {
+    "message": "$arg1$ MB",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_progress": {
+    "message": "$arg1$ · $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_metric_rate": {
+    "message": "$arg1$/秒",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_options_failed": {
+    "message": "无法打开设置页面。"
+  },
+  "view_panel_failed": {
+    "message": "无法打开侧边栏。请在浏览器的侧边栏菜单中选择 MDownloader。"
+  },
+  "view_panel_use_menu": {
+    "message": "请在浏览器的侧边栏菜单中选择 MDownloader。"
+  },
+  "view_permission_denied": {
+    "message": "未授予视频服务器访问权限。"
+  },
+  "view_permission_failed": {
+    "message": "无法请求访问视频服务器。"
+  },
+  "view_playback_busy": {
+    "message": "另一项播放数据采集或保存任务正在进行。"
+  },
+  "view_playback_canceled": {
+    "message": "已取消采集。"
+  },
+  "view_playback_collected": {
+    "message": "已收到所有视频分片。请点击“保存 MP4”。"
+  },
+  "view_playback_collecting": {
+    "message": "正在采集此标签页播放时接收的分片。"
+  },
+  "view_playback_coverage": {
+    "message": "已采集分片：$arg1$ / $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_playback_page_changed": {
+    "message": "页面已更改，采集已停止。"
+  },
+  "view_playback_preparing": {
+    "message": "正在准备采集…"
+  },
+  "view_playback_saving": {
+    "message": "已开始保存 MP4。现在可以关闭播放标签页，并在下载管理中查看状态。"
+  },
+  "view_playback_waiting": {
+    "message": "正在等待此标签页中的指定播放列表。"
+  },
+  "view_preview": {
+    "message": "预览"
+  },
+  "view_preview_loading": {
+    "message": "正在加载预览…"
+  },
+  "view_preview_still_alt": {
+    "message": "视频预览图像"
+  },
+  "view_quality_allow_server": {
+    "message": "请允许访问所选的视频服务器。"
+  },
+  "view_quality_canceled": {
+    "message": "已取消画质选择。"
+  },
+  "view_quality_checking": {
+    "message": "正在检查 HLS 视频画质…"
+  },
+  "view_quality_details": {
+    "message": "$arg1$ · $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_quality_no_resolution": {
+    "message": "分辨率未知"
+  },
+  "view_scan_empty": {
+    "message": "未找到可下载的媒体。"
+  },
+  "view_scan_found": {
+    "message": "可下载：$arg1$ 项",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_scan_in_progress": {
+    "message": "正在当前页面查找媒体…"
+  },
+  "view_scan_no_tab": {
+    "message": "无法识别当前标签页。"
+  },
+  "view_scan_page_changed": {
+    "message": "页面已更改。请重新扫描。"
+  },
+  "view_scan_restricted": {
+    "message": "无法扫描此页面。"
+  },
+  "view_stage_browser_save": {
+    "message": "保存到磁盘"
+  },
+  "view_stage_master_access": {
+    "message": "播放列表访问权限"
+  },
+  "view_stage_master_parse": {
+    "message": "解析播放列表"
+  },
+  "view_stage_master_request": {
+    "message": "请求初始播放列表"
+  },
+  "view_stage_media_parse": {
+    "message": "解析分片列表"
+  },
+  "view_stage_mp4_mux": {
+    "message": "合成 MP4"
+  },
+  "view_stage_segments_access": {
+    "message": "分片服务器访问权限"
+  },
+  "view_stage_segments_transfer": {
+    "message": "请求视频分片"
+  },
+  "view_stage_temporary_storage": {
+    "message": "准备临时存储"
+  },
+  "view_stage_unknown": {
+    "message": "阶段未知"
+  },
+  "view_stage_variant_access": {
+    "message": "清晰度播放列表的访问权限"
+  },
+  "view_stage_variant_request": {
+    "message": "请求清晰度播放列表"
+  },
+  "view_stage_variant_selection": {
+    "message": "选择画质"
+  },
+  "view_state_canceled": {
+    "message": "已取消"
+  },
+  "view_state_failed": {
+    "message": "下载失败"
+  },
+  "view_state_paused": {
+    "message": "已暂停"
+  },
+  "view_state_starting": {
+    "message": "正在启动"
+  },
+  "view_state_unknown": {
+    "message": "需要检查"
+  },
+  "view_unit_kilobits": {
+    "message": "$arg1$ kbps",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_unit_megabits": {
+    "message": "$arg1$ Mbps",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_download_date_time": {
+    "message": "在文件名中包含日期和时间"
+  },
+  "opt_download_date_time_help": {
+    "message": "在扩展名前添加下载开始的本地时间：页面名_文件名_2026-11-07_09-08-06.mp4。"
+  },
+  "view_job_segments": {
+    "message": "分片：$arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_preview_playback_failed": {
+    "message": "预览播放失败"
+  },
+  "view_download_quality_hint": {
+    "message": "$LABEL$（Shift+单击：选择画质）",
+    "placeholders": {
+      "label": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_playback": {
+    "message": "部分视频需要$actions$后才能更新和下载。",
+    "placeholders": {
+      "actions": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_retry": {
+    "message": "如果下载或预览失败，请$reload$。",
+    "placeholders": {
+      "reload": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_reload_page": {
+    "message": "刷新页面"
+  },
+  "hint_playback_actions": {
+    "message": "播放或拖动进度条"
+  },
+  "view_action_snapshot": {
+    "message": "保存已接收部分（继续下载）"
+  },
+  "job_snapshot_busy": {
+    "message": "正在保存已接收部分。"
+  },
+  "job_snapshot_unavailable": {
+    "message": "尚无可保存的完整部分，或任务状态已更改。"
+  },
+  "job_snapshot_metadata": {
+    "message": "已接收部分缺少足够的播放信息。请等待接收更多数据后重试。"
+  },
+  "job_snapshot_codecs": {
+    "message": "此文件的编解码器不支持保存部分文件。"
+  },
+  "job_snapshot_source_changed": {
+    "message": "源文件已更改，或无法验证请求的范围。"
+  },
+  "view_job_snapshot_muxing": {
+    "message": "正在生成部分文件"
+  },
+  "view_job_snapshot_saving": {
+    "message": "正在保存部分文件"
+  },
+  "view_action_snapshot_file": {
+    "message": "保存已接收部分（继续下载 · 产生额外数据传输）"
+  },
+  "opt_debug_logging": {
+    "message": "启用详细调试日志"
+  },
+  "opt_debug_logging_help": {
+    "message": "在扩展控制台中显示安全的阶段代码、耗时和数量。每个执行环境仅在内存中保留最近 $LIMIT$ 条，关闭后清除。不记录网址、标头或原始错误消息。",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  }
+}

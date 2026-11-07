@@ -1,0 +1,1227 @@
+{
+  "view_stream_live": {
+    "message": "EN VIVO"
+  },
+  "opt_side_panel": {
+    "message": "Panel lateral"
+  },
+  "opt_show_panel_media": {
+    "message": "Mostrar los medios detectados en el panel lateral"
+  },
+  "opt_show_panel_media_help": {
+    "message": "Muestra los medios de la pestaña activa encima de la lista de descargas."
+  },
+  "opt_download_log": {
+    "message": "Registro de descargas"
+  },
+  "opt_log_downloads": {
+    "message": "Registrar eventos de descarga"
+  },
+  "opt_log_help": {
+    "message": "Guarda los últimos $LIMIT$ eventos en este dispositivo. Se excluyen las URL, las cookies, los encabezados y las rutas de archivos.",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_log_empty": {
+    "message": "No hay eventos de descarga registrados."
+  },
+  "opt_log_copy": {
+    "message": "Copiar registro"
+  },
+  "opt_log_clear": {
+    "message": "Borrar registro"
+  },
+  "opt_log_copied": {
+    "message": "Se copió el registro."
+  },
+  "opt_log_copy_failed": {
+    "message": "No se pudo copiar el registro."
+  },
+  "opt_log_cleared": {
+    "message": "Se borró el registro."
+  },
+  "opt_log_clear_failed": {
+    "message": "No se pudo borrar el registro."
+  },
+  "opt_log_read_failed": {
+    "message": "No se pudo cargar el registro."
+  },
+  "opt_log_step_ok": {
+    "message": "Paso completado"
+  },
+  "opt_pick_download_folder": {
+    "message": "Elegir carpeta…"
+  },
+  "opt_restore_folder_access": {
+    "message": "Restaurar acceso a la carpeta"
+  },
+  "opt_picked_folder": {
+    "message": "Carpeta de descarga seleccionada: $FOLDER$",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_folder_picker_failed": {
+    "message": "No se pudo guardar la carpeta seleccionada. Vuelve a seleccionarla."
+  },
+  "opt_folder_access_restored": {
+    "message": "Se restauró el acceso a la carpeta."
+  },
+  "folder_access_required": {
+    "message": "Abre las opciones de la extensión y concede acceso a la carpeta de descarga seleccionada."
+  },
+  "action_title": {
+    "message": "MDownloader · Página actual"
+  },
+  "candidate_changed": {
+    "message": "La página o el contenido multimedia han cambiado. Vuelve a escanear."
+  },
+  "candidate_no_access": {
+    "message": "MDownloader no tiene permiso para detectar la URL del archivo. Vuelve a escanear."
+  },
+  "extension_description": {
+    "message": "Encuentra archivos de vídeo y audio y transmisiones HLS y DASH. Gestiona las descargas en el panel lateral."
+  },
+  "headers_reuse_denied": {
+    "message": "No se pueden reutilizar los encabezados de solicitud de este servidor de vídeo."
+  },
+  "headers_too_many": {
+    "message": "Hay demasiadas URL de segmentos para aplicar los encabezados de solicitud."
+  },
+  "headers_url_outside_cdn": {
+    "message": "La URL HLS está fuera del ámbito de las solicitudes CDN detectadas."
+  },
+  "html_cancel": {
+    "message": "Cancelar"
+  },
+  "html_cancel_capture": {
+    "message": "Cancelar captura"
+  },
+  "html_choose_quality": {
+    "message": "Elegir la calidad de descarga"
+  },
+  "html_completed_downloads": {
+    "message": "Descargas completadas"
+  },
+  "html_detected_media": {
+    "message": "Archivos multimedia detectados"
+  },
+  "html_download_manager": {
+    "message": "Gestor de descargas"
+  },
+  "html_download_selected_quality": {
+    "message": "Descargar en la calidad seleccionada"
+  },
+  "html_downloading": {
+    "message": "En curso"
+  },
+  "html_extension_options": {
+    "message": "Opciones de la extensión"
+  },
+  "html_hls_playlist_url": {
+    "message": "URL de la lista de reproducción HLS"
+  },
+  "html_loading_downloads": {
+    "message": "Cargando el historial de descargas…"
+  },
+  "html_media_preview": {
+    "message": "Vista previa multimedia"
+  },
+  "html_needs_attention": {
+    "message": "Requieren atención"
+  },
+  "html_options": {
+    "message": "Opciones"
+  },
+  "html_options_title": {
+    "message": "MDownloader · Opciones"
+  },
+  "html_playback_heading": {
+    "message": "Guardar datos de reproducción"
+  },
+  "html_playback_instructions": {
+    "message": "Introduce la URL de HLS, inicia la captura y reproduce el vídeo desde el principio en la pestaña actual. Cuando se hayan capturado todos los segmentos, podrás guardar el vídeo como MP4."
+  },
+  "html_playback_title": {
+    "message": "MDownloader · Guardar datos de reproducción"
+  },
+  "html_popup_title": {
+    "message": "MDownloader · Página actual"
+  },
+  "html_rescan": {
+    "message": "Volver a buscar"
+  },
+  "html_resolution_bitrate": {
+    "message": "Resolución y tasa de bits"
+  },
+  "html_save_mp4": {
+    "message": "Guardar MP4"
+  },
+  "html_scanning_page": {
+    "message": "Buscando archivos multimedia en esta página…"
+  },
+  "html_sidepanel_title": {
+    "message": "MDownloader · Gestor de descargas"
+  },
+  "html_start_capture": {
+    "message": "Iniciar captura"
+  },
+  "job_browser_error": {
+    "message": "Error de descarga del navegador: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "job_browser_start_failed": {
+    "message": "El navegador no pudo iniciar la descarga."
+  },
+  "job_busy": {
+    "message": "La tarea se está procesando. Vuelve a intentarlo en unos momentos."
+  },
+  "job_cancel_first": {
+    "message": "Cancela primero la tarea HLS en curso."
+  },
+  "job_delete_after_finish": {
+    "message": "Puedes eliminar el archivo cuando termine la descarga."
+  },
+  "job_delete_failed": {
+    "message": "No se pudo eliminar el archivo guardado. La entrada sigue en la lista."
+  },
+  "job_file_unknown": {
+    "message": "No se pudo encontrar el archivo guardado."
+  },
+  "job_hls_not_found": {
+    "message": "No se encontró la tarea HLS."
+  },
+  "job_hls_unsupported": {
+    "message": "Esta solicitud HLS no es compatible."
+  },
+  "job_hls_wrong_state": {
+    "message": "No se puede procesar la tarea HLS en su estado actual."
+  },
+  "job_invalid_capture": {
+    "message": "Los datos de reproducción capturados no son válidos."
+  },
+  "job_invalid_mp4_url": {
+    "message": "La URL temporal del MP4 no es válida."
+  },
+  "job_invalid_request": {
+    "message": "La solicitud de descarga no es válida."
+  },
+  "job_not_found": {
+    "message": "No se encontró la tarea en la lista de descargas."
+  },
+  "job_not_video": {
+    "message": "El servidor devolvió una página web en lugar de un vídeo."
+  },
+  "job_permission_changed": {
+    "message": "La transferencia HLS se detuvo porque cambió el acceso al sitio."
+  },
+  "job_playlist_denied": {
+    "message": "El servidor rechazó la solicitud inicial de la lista de reproducción (HTTP 403)."
+  },
+  "job_runner_closed": {
+    "message": "Se cerró el documento de descarga HLS."
+  },
+  "job_source_unknown": {
+    "message": "No se pudo encontrar la URL original."
+  },
+  "job_state_changed": {
+    "message": "El estado de la tarea ha cambiado. Vuelve a consultar la lista de descargas."
+  },
+  "offscreen_justification": {
+    "message": "Combinar segmentos de la transmisión en un MP4 y enviarlo a las descargas de Chrome."
+  },
+  "opt_advanced": {
+    "message": "Avanzado"
+  },
+  "opt_all_sites_check_failed": {
+    "message": "No se pudo comprobar el acceso a todos los sitios."
+  },
+  "opt_all_sites_denied": {
+    "message": "No se concedió el acceso a todos los sitios."
+  },
+  "opt_all_sites_granted": {
+    "message": "Se permitió el acceso a todos los sitios. Vuelve a reproducir el vídeo."
+  },
+  "opt_all_sites_help": {
+    "message": "Permite el acceso a todos los sitios para detectar solicitudes de reproducción en sitios HTTP y HTTPS y en servidores de vídeo."
+  },
+  "opt_all_sites_request_failed": {
+    "message": "No se pudo solicitar el acceso a todos los sitios."
+  },
+  "opt_all_sites_revoke_failed": {
+    "message": "No se pudo revocar el acceso a todos los sitios."
+  },
+  "opt_all_sites_revoked": {
+    "message": "Se revocó el acceso a todos los sitios."
+  },
+  "opt_allow_all_sites": {
+    "message": "Permitir todos los sitios"
+  },
+  "opt_allow_network": {
+    "message": "Permitir detección"
+  },
+  "opt_cdn_url": {
+    "message": "URL de un servidor de vídeo aparte (opcional)"
+  },
+  "opt_change_browser_location": {
+    "message": "Cambiar la ubicación predeterminada del navegador"
+  },
+  "opt_debug": {
+    "message": "Modo de depuración"
+  },
+  "opt_debug_help": {
+    "message": "Abre una pestaña de diagnóstico para investigar problemas de descarga."
+  },
+  "opt_default_folder": {
+    "message": "Carpeta de descargas predeterminada"
+  },
+  "opt_default_folder_saved": {
+    "message": "Las nuevas descargas usarán la ubicación predeterminada."
+  },
+  "opt_display_language": {
+    "message": "Idioma de la interfaz"
+  },
+  "opt_download_location": {
+    "message": "Ubicación de descarga"
+  },
+  "opt_download_settings": {
+    "message": "Ajustes de descarga"
+  },
+  "opt_extension": {
+    "message": "Extensión"
+  },
+  "opt_folder_help": {
+    "message": "Introduce una subcarpeta dentro de la carpeta de descargas predeterminada, por ejemplo MDownloader/Vídeos. Déjalo en blanco para usar la ubicación predeterminada."
+  },
+  "opt_folder_read_failed": {
+    "message": "No se pudo leer la ubicación de descarga."
+  },
+  "opt_folder_save_failed": {
+    "message": "No se pudo guardar la ubicación de descarga."
+  },
+  "opt_folder_saved": {
+    "message": "Las nuevas descargas se guardarán en esta subcarpeta."
+  },
+  "opt_invalid_folder": {
+    "message": "Introduce la ruta de una subcarpeta sin letra de unidad ni referencias a carpetas superiores."
+  },
+  "opt_invalid_site_url": {
+    "message": "Introduce una URL de sitio que empiece por http:// o https://."
+  },
+  "opt_language": {
+    "message": "Idioma"
+  },
+  "opt_language_auto": {
+    "message": "Predeterminado del sistema"
+  },
+  "opt_language_save_failed": {
+    "message": "No se pudo guardar el idioma de la interfaz."
+  },
+  "opt_network_denied": {
+    "message": "No se concedió el permiso de detección."
+  },
+  "opt_network_granted": {
+    "message": "Se permitió la detección. Vuelve a reproducir el vídeo."
+  },
+  "opt_network_help": {
+    "message": "Para permitir el acceso a sitios concretos, introduce sus URL abajo y vuelve a reproducir el vídeo."
+  },
+  "opt_network_partially_revoked": {
+    "message": "Se revocaron algunos permisos de detección."
+  },
+  "opt_network_permissions": {
+    "message": "Permisos de detección en la red"
+  },
+  "opt_network_request_failed": {
+    "message": "No se pudo solicitar el permiso de detección."
+  },
+  "opt_network_revoke_failed": {
+    "message": "No se pudo revocar el permiso de detección."
+  },
+  "opt_network_revoked": {
+    "message": "Se revocaron los permisos de detección para las URL indicadas."
+  },
+  "opt_network_sites_revoke_failed": {
+    "message": "No se pudieron revocar los permisos de detección para las URL indicadas."
+  },
+  "opt_open_browser_settings_failed": {
+    "message": "No se pudieron abrir los ajustes de descarga del navegador."
+  },
+  "opt_page_title": {
+    "message": "Usar el título de la página en los nombres de archivo"
+  },
+  "opt_page_title_help": {
+    "message": "Une el título de la página y el nombre original con un guion bajo. Si el nombre original es index, se usa solo el título de la página."
+  },
+  "opt_page_title_short": {
+    "message": "Título de la página en el nombre de archivo"
+  },
+  "opt_reload": {
+    "message": "Volver a cargar la extensión"
+  },
+  "opt_revoke_all_sites": {
+    "message": "Revocar el acceso a todos los sitios"
+  },
+  "opt_revoke_network": {
+    "message": "Revocar permiso"
+  },
+  "opt_save_location": {
+    "message": "Guardar ubicación"
+  },
+  "opt_setting_disabled": {
+    "message": "Se desactivó «$arg1$».",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_enabled": {
+    "message": "Se activó «$arg1$».",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_read_failed": {
+    "message": "No se pudo leer el ajuste «$arg1$».",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_save_failed": {
+    "message": "No se pudo guardar el ajuste «$arg1$».",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_site_url": {
+    "message": "URL del sitio que contiene el vídeo"
+  },
+  "opt_version": {
+    "message": "Versión"
+  },
+  "request_failed": {
+    "message": "No se pudo completar la solicitud."
+  },
+  "request_unsupported": {
+    "message": "Esta solicitud no es compatible."
+  },
+  "stream_dash_doctype": {
+    "message": "No se admiten los MPD de DASH con una declaración DOCTYPE."
+  },
+  "stream_dash_empty_segments": {
+    "message": "La lista de segmentos DASH está vacía o incompleta."
+  },
+  "stream_dash_encrypted": {
+    "message": "No se admiten las pistas DASH cifradas o protegidas por DRM."
+  },
+  "stream_dash_ept_delta": {
+    "message": "No se admite el ajuste eptDelta de DASH para el primer segmento."
+  },
+  "stream_dash_index_limit": {
+    "message": "El intervalo del índice de segmentos DASH supera el límite de almacenamiento."
+  },
+  "stream_dash_index_same_file": {
+    "message": "Solo se admite SegmentBase si el índice SIDX de DASH está en el mismo archivo multimedia."
+  },
+  "stream_dash_index_truncated": {
+    "message": "El índice de segmentos DASH está truncado."
+  },
+  "stream_dash_init_range_missing": {
+    "message": "Falta el intervalo de bytes del segmento de inicialización DASH."
+  },
+  "stream_dash_init_url_missing": {
+    "message": "Falta la URL del segmento de inicialización DASH."
+  },
+  "stream_dash_invalid_addressing": {
+    "message": "El método de direccionamiento de segmentos DASH no es válido."
+  },
+  "stream_dash_invalid_duration": {
+    "message": "La duración de reproducción de DASH no es válida."
+  },
+  "stream_dash_invalid_index_range": {
+    "message": "Falta el intervalo del índice SIDX de DASH o es demasiado grande."
+  },
+  "stream_dash_invalid_integer": {
+    "message": "El valor DASH de $arg1$ no es válido.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_invalid_mpd": {
+    "message": "El servidor no devolvió un MPD de DASH válido."
+  },
+  "stream_dash_invalid_segment_url": {
+    "message": "La URL del segmento DASH no es válida."
+  },
+  "stream_dash_invalid_template": {
+    "message": "La plantilla de URL DASH no es compatible."
+  },
+  "stream_dash_list_timeline_mismatch": {
+    "message": "La lista de URL de segmentos DASH y la línea de tiempo tienen un número distinto de entradas."
+  },
+  "stream_dash_mpd_size": {
+    "message": "El MPD de DASH supera el límite de tamaño."
+  },
+  "stream_dash_no_addressing": {
+    "message": "El MPD de DASH no contiene un método compatible de direccionamiento de segmentos."
+  },
+  "stream_dash_no_track": {
+    "message": "No se encontró en el MPD de DASH ninguna pista MP4 compatible con el códec $arg1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_overlapping_timeline": {
+    "message": "Hay entradas que se solapan en la línea de tiempo de segmentos DASH."
+  },
+  "stream_dash_repeat_end_missing": {
+    "message": "Falta la hora de fin de una repetición en la línea de tiempo de segmentos DASH."
+  },
+  "stream_dash_segment_scheme": {
+    "message": "Las URL de segmentos DASH deben usar HTTP o HTTPS y no incluir credenciales."
+  },
+  "stream_dash_segment_url_missing": {
+    "message": "Falta la URL de un segmento DASH."
+  },
+  "stream_dash_sidx_header_truncated": {
+    "message": "La cabecera SIDX de DASH está truncada."
+  },
+  "stream_dash_sidx_hierarchical": {
+    "message": "No se admiten índices SIDX de DASH jerárquicos."
+  },
+  "stream_dash_sidx_invalid_segments": {
+    "message": "La lista de segmentos SIDX de DASH no es válida."
+  },
+  "stream_dash_sidx_missing": {
+    "message": "El intervalo del índice DASH no contiene una caja SIDX válida."
+  },
+  "stream_dash_sidx_range_mismatch": {
+    "message": "La respuesta SIDX de DASH no coincide con el intervalo de bytes solicitado."
+  },
+  "stream_dash_sidx_segment_invalid": {
+    "message": "El tamaño o la duración de un segmento SIDX de DASH no es válido."
+  },
+  "stream_dash_sidx_segment_range": {
+    "message": "El intervalo de bytes de un segmento SIDX de DASH es demasiado grande."
+  },
+  "stream_dash_sidx_version": {
+    "message": "La versión SIDX de DASH no es compatible."
+  },
+  "stream_dash_single_period": {
+    "message": "Solo se admite DASH VOD con un único Period."
+  },
+  "stream_dash_static_only": {
+    "message": "Solo se admite DASH VOD estático."
+  },
+  "stream_dash_template_missing": {
+    "message": "No se encontró una plantilla de URL de segmentos DASH compatible."
+  },
+  "stream_dash_template_not_unique": {
+    "message": "La plantilla de URL DASH no genera una URL distinta para cada segmento."
+  },
+  "stream_dash_too_many_segments": {
+    "message": "La pista DASH tiene más de 5000 segmentos."
+  },
+  "stream_dash_too_many_tracks": {
+    "message": "El MPD de DASH tiene más de 200 pistas de vídeo y audio en total."
+  },
+  "stream_dash_xlink_unsupported": {
+    "message": "No se admiten MPD de DASH que cargan enlaces XLink externos."
+  },
+  "stream_download_failed": {
+    "message": "No se pudo descargar la transmisión."
+  },
+  "stream_hls_duplicate_byte_range": {
+    "message": "Se ha especificado más de una vez el intervalo de bytes HLS."
+  },
+  "stream_hls_empty_segments": {
+    "message": "La lista de segmentos HLS está vacía o incompleta."
+  },
+  "stream_hls_encrypted": {
+    "message": "No se admite HLS cifrado."
+  },
+  "stream_hls_init_scheme": {
+    "message": "Solo se admiten URL HTTP o HTTPS para los segmentos de inicialización."
+  },
+  "stream_hls_invalid_byte_range": {
+    "message": "El intervalo de bytes o el desplazamiento inicial de HLS no es válido."
+  },
+  "stream_hls_invalid_init_attributes": {
+    "message": "Los atributos del segmento de inicialización HLS no son válidos."
+  },
+  "stream_hls_invalid_master": {
+    "message": "La lista maestra HLS no es válida o no es compatible."
+  },
+  "stream_hls_invalid_master_attributes": {
+    "message": "Los atributos de la variante HLS no son válidos."
+  },
+  "stream_hls_invalid_playlist_response": {
+    "message": "El servidor devolvió una respuesta distinta de la lista HLS."
+  },
+  "stream_hls_invalid_segment_duration": {
+    "message": "La duración del segmento HLS no es válida."
+  },
+  "stream_hls_invalid_sequence": {
+    "message": "El número de secuencia del segmento HLS no es válido."
+  },
+  "stream_hls_invalid_target_duration": {
+    "message": "La duración objetivo de los segmentos HLS no es válida."
+  },
+  "stream_hls_no_variants": {
+    "message": "No se encontraron variantes HLS compatibles. Es posible que el flujo requiera audio separado o un códec no compatible."
+  },
+  "stream_hls_partial_only": {
+    "message": "No se admiten las listas HLS que solo contienen segmentos parciales."
+  },
+  "stream_hls_segment_duration_missing": {
+    "message": "Falta la duración de un segmento HLS."
+  },
+  "stream_hls_segment_scheme": {
+    "message": "Solo se admiten URL de segmentos HTTP o HTTPS."
+  },
+  "stream_hls_segment_url_missing": {
+    "message": "Falta la URL de un segmento."
+  },
+  "stream_hls_target_duration_missing": {
+    "message": "Falta la duración objetivo de los segmentos en la lista HLS en directo."
+  },
+  "stream_hls_too_many_segments": {
+    "message": "La lista HLS tiene más de 5000 segmentos."
+  },
+  "stream_hls_too_many_variants": {
+    "message": "La lista HLS contiene más de 100 variantes."
+  },
+  "stream_hls_ts_only": {
+    "message": "Solo se admiten listas HLS continuas de MPEG-TS con una sola calidad."
+  },
+  "stream_hls_unsupported_media": {
+    "message": "Esta lista de medios HLS no es compatible."
+  },
+  "stream_hls_unsupported_playlist": {
+    "message": "Esta lista HLS no es compatible."
+  },
+  "stream_hls_variant_bitrate": {
+    "message": "La tasa de bits de la variante HLS no es válida."
+  },
+  "stream_hls_variant_info_missing": {
+    "message": "Faltan los atributos correspondientes a la URL de la variante HLS."
+  },
+  "stream_hls_variant_not_found": {
+    "message": "No se encontró la calidad HLS seleccionada en la lista."
+  },
+  "stream_hls_variant_url_missing": {
+    "message": "Falta la URL de la variante HLS."
+  },
+  "stream_hls_vod_end_required": {
+    "message": "Solo se admiten listas HLS VOD con un marcador de fin."
+  },
+  "stream_host_permission": {
+    "message": "En la ventana emergente, permite el acceso al servidor de transmisión $arg1$.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_challenge": {
+    "message": "El servidor requiere verificar el navegador para descargar esta transmisión (HTTP 403)."
+  },
+  "stream_http_forbidden": {
+    "message": "El servidor rechazó la solicitud de descarga de la transmisión (HTTP 403)."
+  },
+  "stream_http_missing_resource": {
+    "message": "No se pudo obtener el recurso de la transmisión (HTTP $arg1$).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_range_mismatch": {
+    "message": "El servidor devolvió un intervalo de bytes distinto al solicitado para el segmento multimedia."
+  },
+  "stream_http_resource_limit": {
+    "message": "El recurso de la transmisión superó el límite de almacenamiento."
+  },
+  "stream_http_server_error": {
+    "message": "El servidor de vídeo devolvió un error (HTTP $arg1$).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_timeout": {
+    "message": "El servidor de vídeo tardó demasiado en responder."
+  },
+  "stream_invalid_host": {
+    "message": "La URL del servidor de transmisión no es compatible."
+  },
+  "stream_invalid_mpeg_ts": {
+    "message": "El segmento de vídeo MPEG-TS no es válido."
+  },
+  "stream_live_segment_expired": {
+    "message": "Un segmento caducó en la lista en directo antes de poder descargarse."
+  },
+  "stream_no_segments": {
+    "message": "No hay segmentos multimedia para guardar."
+  },
+  "stream_playback_playlist_url": {
+    "message": "Introduce la URL HTTP o HTTPS de la lista de reproducción."
+  },
+  "stream_playback_raw_bytes_missing": {
+    "message": "Chrome no proporcionó los bytes originales del segmento de vídeo."
+  },
+  "stream_playback_response_limit": {
+    "message": "La respuesta de reproducción supera el límite de almacenamiento."
+  },
+  "stream_playback_segments_missing": {
+    "message": "Aún faltan segmentos de vídeo por recibir."
+  },
+  "stream_playback_storage_limit": {
+    "message": "Se superó el límite de almacenamiento temporal de HLS."
+  },
+  "stream_playback_ts_incomplete": {
+    "message": "El segmento de vídeo MPEG-TS está vacío o truncado."
+  },
+  "stream_playback_ts_only": {
+    "message": "Solo se admiten segmentos HLS de tipo MPEG-TS."
+  },
+  "stream_playback_unknown_segment": {
+    "message": "Este segmento de vídeo no está en la lista de reproducción."
+  },
+  "stream_preview_empty_segment": {
+    "message": "El segmento de vista previa está vacío."
+  },
+  "stream_preview_host_permission": {
+    "message": "Permite el acceso al servidor de vídeo para reproducir la vista previa."
+  },
+  "stream_remux_codecs": {
+    "message": "Este códec de vídeo o audio no se puede combinar en MP4."
+  },
+  "stream_remux_decoder_config": {
+    "message": "No se pudo leer la configuración del códec de la pista de vídeo."
+  },
+  "stream_remux_no_packets": {
+    "message": "La pista HLS no contiene paquetes multimedia."
+  },
+  "stream_runner_busy": {
+    "message": "Ya hay una descarga de transmisión en curso."
+  },
+  "stream_runner_disconnected": {
+    "message": "Se perdió la conexión con la descarga de la transmisión."
+  },
+  "stream_runner_unavailable": {
+    "message": "Este navegador no puede iniciar el procesador de transmisiones."
+  },
+  "stream_segment_incomplete": {
+    "message": "Un segmento multimedia está vacío o truncado."
+  },
+  "stream_start_failed": {
+    "message": "No se pudo iniciar la descarga de la transmisión."
+  },
+  "stream_temporary_storage_limit": {
+    "message": "Se superó el límite de almacenamiento temporal de 2 GiB."
+  },
+  "stream_too_many_segments": {
+    "message": "Hay más de 5000 segmentos multimedia."
+  },
+  "view_action_cancel": {
+    "message": "Cancelar"
+  },
+  "view_action_delete_all": {
+    "message": "Eliminar todo"
+  },
+  "view_action_delete": {
+    "message": "Eliminar"
+  },
+  "view_action_finish": {
+    "message": "Detener y guardar"
+  },
+  "view_action_pause": {
+    "message": "Pausar"
+  },
+  "view_action_resume": {
+    "message": "Reanudar"
+  },
+  "view_action_show": {
+    "message": "Mostrar en carpeta"
+  },
+  "view_candidate_complete": {
+    "message": "Descarga completa"
+  },
+  "view_candidate_downloading": {
+    "message": "Descargando"
+  },
+  "view_copy_failed": {
+    "message": "No se pudo copiar el enlace."
+  },
+  "view_copy_link": {
+    "message": "Copiar enlace"
+  },
+  "view_copy_success": {
+    "message": "Enlace copiado."
+  },
+  "view_delete_file_success": {
+    "message": "Se eliminaron el archivo guardado y su entrada de la lista."
+  },
+  "view_delete_hint": {
+    "message": "Haz clic para eliminar la entrada de la lista. Mantén pulsada la tecla Mayús al hacer clic para eliminar también el archivo de una descarga completada."
+  },
+  "view_devtools_panel": {
+    "message": "MDownloader"
+  },
+  "view_diagnostics": {
+    "message": "Diagnóstico de descargas"
+  },
+  "view_diagnostics_http": {
+    "message": "HTTP $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_previous": {
+    "message": "Respuesta anterior"
+  },
+  "view_diagnostics_received": {
+    "message": "Segmentos recibidos: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_title": {
+    "message": "MDownloader · Diagnóstico de descargas"
+  },
+  "view_download": {
+    "message": "Descargar"
+  },
+  "view_download_check": {
+    "message": "Consultar el estado de la descarga"
+  },
+  "view_download_check_manager": {
+    "message": "Consulta el estado de la tarea en el gestor de descargas."
+  },
+  "view_download_failed_start": {
+    "message": "No se pudo iniciar la descarga"
+  },
+  "view_download_queueing": {
+    "message": "Añadiendo la descarga a la cola…"
+  },
+  "view_download_started": {
+    "message": "Descarga iniciada"
+  },
+  "view_download_unsupported": {
+    "message": "$arg1$ · Descarga no disponible",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_download_with_permission": {
+    "message": "Permitir acceso al servidor y descargar"
+  },
+  "view_format_unknown": {
+    "message": "Formato desconocido"
+  },
+  "view_job_check_browser": {
+    "message": "Consulta esta tarea en la lista de descargas del navegador."
+  },
+  "view_job_file_missing": {
+    "message": "No se encontró el archivo guardado."
+  },
+  "view_job_mp4_muxing": {
+    "message": "Ensamblando MP4…"
+  },
+  "view_job_mp4_saving": {
+    "message": "Guardando MP4…"
+  },
+  "view_job_playlist_check": {
+    "message": "Comprobando la lista de reproducción…"
+  },
+  "view_job_progress": {
+    "message": "Progreso de la descarga de $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_job_rescan": {
+    "message": "Si es necesario, vuelve a analizar la página original."
+  },
+  "view_job_server_denied": {
+    "message": "Usa una dirección cuyo servidor permita la descarga directa."
+  },
+  "view_jobs_active": {
+    "message": "Descargando ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_attention": {
+    "message": "Requieren atención ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_complete": {
+    "message": "Completadas ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_empty": {
+    "message": "No hay historial de descargas."
+  },
+  "view_jobs_failed": {
+    "message": "No se pudo cargar el historial de descargas."
+  },
+  "view_link_loading": {
+    "message": "Buscando la dirección…"
+  },
+  "view_link_unavailable": {
+    "message": "La dirección original no está disponible."
+  },
+  "view_metric_bytes": {
+    "message": "$arg1$ B",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_average_rate": {
+    "message": "Prom. $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_kilobytes": {
+    "message": "$arg1$ kB",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_megabytes": {
+    "message": "$arg1$ MB",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_progress": {
+    "message": "$arg1$ · $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_metric_rate": {
+    "message": "$arg1$/s",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_options_failed": {
+    "message": "No se pudo abrir la página de opciones."
+  },
+  "view_panel_failed": {
+    "message": "No se pudo abrir el panel lateral. Selecciona MDownloader en su menú."
+  },
+  "view_panel_use_menu": {
+    "message": "Selecciona MDownloader en el menú del panel lateral del navegador."
+  },
+  "view_permission_denied": {
+    "message": "No se concedió acceso al servidor de video."
+  },
+  "view_permission_failed": {
+    "message": "No se pudo solicitar acceso al servidor de video."
+  },
+  "view_playback_busy": {
+    "message": "Ya hay otra captura o guardado de reproducción en curso."
+  },
+  "view_playback_canceled": {
+    "message": "Captura cancelada."
+  },
+  "view_playback_collected": {
+    "message": "Se recibieron todos los segmentos de video. Haz clic en Guardar MP4."
+  },
+  "view_playback_collecting": {
+    "message": "Se están capturando segmentos durante la reproducción en esta pestaña."
+  },
+  "view_playback_coverage": {
+    "message": "Segmentos capturados: $arg1$ / $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_playback_page_changed": {
+    "message": "La captura se detuvo porque cambió la página."
+  },
+  "view_playback_preparing": {
+    "message": "Preparando la captura…"
+  },
+  "view_playback_saving": {
+    "message": "Se inició el guardado del MP4. Puedes cerrar la pestaña de reproducción y consultar el estado en el gestor de descargas."
+  },
+  "view_playback_waiting": {
+    "message": "Esperando la lista de reproducción indicada en esta pestaña."
+  },
+  "view_preview": {
+    "message": "Vista previa"
+  },
+  "view_preview_loading": {
+    "message": "Cargando la vista previa…"
+  },
+  "view_preview_still_alt": {
+    "message": "Imagen de vista previa del video"
+  },
+  "view_quality_allow_server": {
+    "message": "Permite el acceso al servidor de video seleccionado."
+  },
+  "view_quality_canceled": {
+    "message": "Se canceló la selección de calidad."
+  },
+  "view_quality_checking": {
+    "message": "Comprobando la calidad del video HLS…"
+  },
+  "view_quality_details": {
+    "message": "$arg1$ · $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_quality_no_resolution": {
+    "message": "Resolución desconocida"
+  },
+  "view_scan_empty": {
+    "message": "No se encontraron archivos multimedia descargables."
+  },
+  "view_scan_found": {
+    "message": "Descargas disponibles: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_scan_in_progress": {
+    "message": "Buscando archivos multimedia en la página actual…"
+  },
+  "view_scan_no_tab": {
+    "message": "No se pudo identificar la pestaña actual."
+  },
+  "view_scan_page_changed": {
+    "message": "La página cambió. Vuelve a analizarla."
+  },
+  "view_scan_restricted": {
+    "message": "No se puede analizar esta página."
+  },
+  "view_stage_browser_save": {
+    "message": "Guardado en el disco"
+  },
+  "view_stage_master_access": {
+    "message": "Acceso a la lista de reproducción"
+  },
+  "view_stage_master_parse": {
+    "message": "Lectura de la lista de reproducción"
+  },
+  "view_stage_master_request": {
+    "message": "Solicitud de la lista de reproducción inicial"
+  },
+  "view_stage_media_parse": {
+    "message": "Lectura de la lista de segmentos"
+  },
+  "view_stage_mp4_mux": {
+    "message": "Ensamblado de MP4"
+  },
+  "view_stage_segments_access": {
+    "message": "Acceso al servidor de segmentos"
+  },
+  "view_stage_segments_transfer": {
+    "message": "Solicitud de segmentos de video"
+  },
+  "view_stage_temporary_storage": {
+    "message": "Preparación del almacenamiento temporal"
+  },
+  "view_stage_unknown": {
+    "message": "Etapa desconocida"
+  },
+  "view_stage_variant_access": {
+    "message": "Acceso a la lista de la calidad seleccionada"
+  },
+  "view_stage_variant_request": {
+    "message": "Solicitud de la lista de la calidad seleccionada"
+  },
+  "view_stage_variant_selection": {
+    "message": "Selección de calidad"
+  },
+  "view_state_canceled": {
+    "message": "Cancelada"
+  },
+  "view_state_failed": {
+    "message": "Descarga fallida"
+  },
+  "view_state_paused": {
+    "message": "En pausa"
+  },
+  "view_state_starting": {
+    "message": "Iniciando"
+  },
+  "view_state_unknown": {
+    "message": "Requiere atención"
+  },
+  "view_unit_kilobits": {
+    "message": "$arg1$ kb/s",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_unit_megabits": {
+    "message": "$arg1$ Mb/s",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_download_date_time": {
+    "message": "Incluir fecha y hora en el nombre"
+  },
+  "opt_download_date_time_help": {
+    "message": "Añade la hora local de inicio de la descarga antes de la extensión: página_archivo_2026-11-07_09-08-06.mp4."
+  },
+  "view_job_segments": {
+    "message": "Segmentos: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_preview_playback_failed": {
+    "message": "Error al reproducir la vista previa"
+  },
+  "view_download_quality_hint": {
+    "message": "$LABEL$ (Mayús+clic: elegir calidad)",
+    "placeholders": {
+      "label": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_playback": {
+    "message": "Algunos videos requieren $actions$ para actualizarse y descargarse.",
+    "placeholders": {
+      "actions": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_retry": {
+    "message": "Si falla la descarga o la vista previa, $reload$.",
+    "placeholders": {
+      "reload": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_reload_page": {
+    "message": "actualiza la página"
+  },
+  "hint_playback_actions": {
+    "message": "iniciar la reproducción o mover la barra de progreso"
+  },
+  "view_action_snapshot": {
+    "message": "Guardar la parte recibida (continuar descargando)"
+  },
+  "job_snapshot_busy": {
+    "message": "La parte recibida ya se está guardando."
+  },
+  "job_snapshot_unavailable": {
+    "message": "Aún no hay una parte completa disponible o el estado de la tarea cambió."
+  },
+  "job_snapshot_metadata": {
+    "message": "La parte recibida no contiene suficientes metadatos de reproducción. Inténtalo cuando lleguen más datos."
+  },
+  "job_snapshot_codecs": {
+    "message": "Los códecs de este archivo no permiten guardar un archivo parcial."
+  },
+  "job_snapshot_source_changed": {
+    "message": "El archivo de origen cambió o no se pudo verificar el rango solicitado."
+  },
+  "view_job_snapshot_muxing": {
+    "message": "Preparando archivo parcial"
+  },
+  "view_job_snapshot_saving": {
+    "message": "Guardando archivo parcial"
+  },
+  "view_action_snapshot_file": {
+    "message": "Guardar la parte recibida (continuar descargando · transfiere datos adicionales)"
+  },
+  "opt_debug_logging": {
+    "message": "Activar el registro detallado de depuración"
+  },
+  "opt_debug_logging_help": {
+    "message": "Muestra códigos de etapa seguros, tiempos y cantidades en la consola de la extensión. Conserva hasta $LIMIT$ entradas en memoria por contexto y las borra al desactivarse. No registra direcciones, cabeceras ni mensajes de error.",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  }
+}

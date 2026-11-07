@@ -1,0 +1,1227 @@
+{
+  "view_stream_live": {
+    "message": "लाइव"
+  },
+  "opt_side_panel": {
+    "message": "साइड पैनल"
+  },
+  "opt_show_panel_media": {
+    "message": "साइड पैनल में मिला मीडिया दिखाएँ"
+  },
+  "opt_show_panel_media_help": {
+    "message": "सक्रिय टैब का मीडिया डाउनलोड की सूची के ऊपर दिखाएँ।"
+  },
+  "opt_download_log": {
+    "message": "डाउनलोड लॉग"
+  },
+  "opt_log_downloads": {
+    "message": "डाउनलोड की गतिविधि रिकॉर्ड करें"
+  },
+  "opt_log_help": {
+    "message": "इस डिवाइस पर हाल की $LIMIT$ गतिविधियाँ सेव होती हैं। यूआरएल, कुकी, अनुरोध हेडर और फ़ाइल के पाथ शामिल नहीं होते।",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_log_empty": {
+    "message": "डाउनलोड की कोई गतिविधि रिकॉर्ड नहीं हुई है।"
+  },
+  "opt_log_copy": {
+    "message": "लॉग कॉपी करें"
+  },
+  "opt_log_clear": {
+    "message": "लॉग मिटाएँ"
+  },
+  "opt_log_copied": {
+    "message": "लॉग कॉपी हो गया।"
+  },
+  "opt_log_copy_failed": {
+    "message": "लॉग कॉपी नहीं हो सका।"
+  },
+  "opt_log_cleared": {
+    "message": "लॉग मिटा दिया गया।"
+  },
+  "opt_log_clear_failed": {
+    "message": "लॉग मिटाया नहीं जा सका।"
+  },
+  "opt_log_read_failed": {
+    "message": "लॉग लोड नहीं हो सका।"
+  },
+  "opt_log_step_ok": {
+    "message": "चरण पूरा हुआ"
+  },
+  "opt_pick_download_folder": {
+    "message": "फ़ोल्डर चुनें…"
+  },
+  "opt_restore_folder_access": {
+    "message": "फ़ोल्डर का ऐक्सेस बहाल करें"
+  },
+  "opt_picked_folder": {
+    "message": "चुना गया डाउनलोड फ़ोल्डर: $FOLDER$",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_folder_picker_failed": {
+    "message": "चुना गया फ़ोल्डर सेव नहीं हो सका। उसे फिर से चुनें।"
+  },
+  "opt_folder_access_restored": {
+    "message": "फ़ोल्डर का ऐक्सेस बहाल हो गया।"
+  },
+  "folder_access_required": {
+    "message": "एक्सटेंशन के विकल्प खोलें और चुने गए डाउनलोड फ़ोल्डर का ऐक्सेस दें।"
+  },
+  "action_title": {
+    "message": "MDownloader · मौजूदा पेज"
+  },
+  "candidate_changed": {
+    "message": "पेज या मीडिया बदल गया है। फिर से स्कैन करें।"
+  },
+  "candidate_no_access": {
+    "message": "MDownloader को मीडिया URL की निगरानी की अनुमति नहीं है। फिर से स्कैन करें।"
+  },
+  "extension_description": {
+    "message": "वीडियो और ऑडियो फ़ाइलें तथा HLS और DASH स्ट्रीम ढूँढें। साइड पैनल में डाउनलोड प्रबंधित करें।"
+  },
+  "headers_reuse_denied": {
+    "message": "इस वीडियो सर्वर के लिए अनुरोध हेडर दोबारा इस्तेमाल नहीं किए जा सकते।"
+  },
+  "headers_too_many": {
+    "message": "अनुरोध हेडर लागू करने के लिए सेगमेंट URL बहुत ज़्यादा हैं।"
+  },
+  "headers_url_outside_cdn": {
+    "message": "HLS URL देखे गए CDN अनुरोधों के दायरे से बाहर है।"
+  },
+  "html_cancel": {
+    "message": "रद्द करें"
+  },
+  "html_cancel_capture": {
+    "message": "कैप्चर रद्द करें"
+  },
+  "html_choose_quality": {
+    "message": "डाउनलोड की गुणवत्ता चुनें"
+  },
+  "html_completed_downloads": {
+    "message": "पूरे हुए डाउनलोड"
+  },
+  "html_detected_media": {
+    "message": "मिला हुआ मीडिया"
+  },
+  "html_download_manager": {
+    "message": "डाउनलोड प्रबंधक"
+  },
+  "html_download_selected_quality": {
+    "message": "चुनी गई गुणवत्ता में डाउनलोड करें"
+  },
+  "html_downloading": {
+    "message": "डाउनलोड हो रहा है"
+  },
+  "html_extension_options": {
+    "message": "एक्सटेंशन के विकल्प"
+  },
+  "html_hls_playlist_url": {
+    "message": "HLS प्लेलिस्ट का URL"
+  },
+  "html_loading_downloads": {
+    "message": "डाउनलोड इतिहास लोड हो रहा है…"
+  },
+  "html_media_preview": {
+    "message": "मीडिया का पूर्वावलोकन"
+  },
+  "html_needs_attention": {
+    "message": "ध्यान देने की ज़रूरत है"
+  },
+  "html_options": {
+    "message": "विकल्प"
+  },
+  "html_options_title": {
+    "message": "MDownloader · विकल्प"
+  },
+  "html_playback_heading": {
+    "message": "प्लेबैक डेटा सहेजें"
+  },
+  "html_playback_instructions": {
+    "message": "HLS URL डालें, कैप्चर शुरू करें और मौजूदा टैब में वीडियो शुरू से चलाएँ। सभी खंड कैप्चर हो जाने पर वीडियो को MP4 के रूप में सहेज सकते हैं।"
+  },
+  "html_playback_title": {
+    "message": "MDownloader · प्लेबैक डेटा सहेजें"
+  },
+  "html_popup_title": {
+    "message": "MDownloader · मौजूदा पेज"
+  },
+  "html_rescan": {
+    "message": "फिर से खोजें"
+  },
+  "html_resolution_bitrate": {
+    "message": "रिज़ॉल्यूशन और बिटरेट"
+  },
+  "html_save_mp4": {
+    "message": "MP4 सहेजें"
+  },
+  "html_scanning_page": {
+    "message": "इस पेज पर मीडिया खोजा जा रहा है…"
+  },
+  "html_sidepanel_title": {
+    "message": "MDownloader · डाउनलोड प्रबंधक"
+  },
+  "html_start_capture": {
+    "message": "कैप्चर शुरू करें"
+  },
+  "job_browser_error": {
+    "message": "ब्राउज़र डाउनलोड त्रुटि: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "job_browser_start_failed": {
+    "message": "ब्राउज़र डाउनलोड शुरू नहीं कर सका।"
+  },
+  "job_busy": {
+    "message": "कार्य प्रोसेस हो रहा है। कुछ देर बाद फिर कोशिश करें।"
+  },
+  "job_cancel_first": {
+    "message": "पहले चल रहे HLS कार्य को रद्द करें।"
+  },
+  "job_delete_after_finish": {
+    "message": "डाउनलोड पूरा होने के बाद फ़ाइल मिटा सकते हैं।"
+  },
+  "job_delete_failed": {
+    "message": "सहेजी गई फ़ाइल मिटाई नहीं जा सकी। आइटम सूची में मौजूद है।"
+  },
+  "job_file_unknown": {
+    "message": "सहेजी गई फ़ाइल नहीं मिली।"
+  },
+  "job_hls_not_found": {
+    "message": "HLS कार्य नहीं मिला।"
+  },
+  "job_hls_unsupported": {
+    "message": "यह HLS अनुरोध समर्थित नहीं है।"
+  },
+  "job_hls_wrong_state": {
+    "message": "मौजूदा स्थिति में HLS कार्य प्रोसेस नहीं किया जा सकता।"
+  },
+  "job_invalid_capture": {
+    "message": "कैप्चर किया गया प्लेबैक डेटा अमान्य है।"
+  },
+  "job_invalid_mp4_url": {
+    "message": "अस्थायी MP4 का URL अमान्य है।"
+  },
+  "job_invalid_request": {
+    "message": "डाउनलोड अनुरोध अमान्य है।"
+  },
+  "job_not_found": {
+    "message": "डाउनलोड सूची में कार्य नहीं मिला।"
+  },
+  "job_not_video": {
+    "message": "सर्वर ने वीडियो की जगह वेब पेज लौटाया।"
+  },
+  "job_permission_changed": {
+    "message": "साइट की अनुमति बदलने के कारण HLS ट्रांसफ़र रोक दिया गया।"
+  },
+  "job_playlist_denied": {
+    "message": "सर्वर ने पहली प्लेलिस्ट का अनुरोध अस्वीकार कर दिया (HTTP 403)।"
+  },
+  "job_runner_closed": {
+    "message": "HLS डाउनलोड दस्तावेज़ बंद हो गया।"
+  },
+  "job_source_unknown": {
+    "message": "मूल URL नहीं मिला।"
+  },
+  "job_state_changed": {
+    "message": "कार्य की स्थिति बदल गई है। डाउनलोड सूची फिर से देखें।"
+  },
+  "offscreen_justification": {
+    "message": "स्ट्रीम सेगमेंट को MP4 में जोड़कर फ़ाइल Chrome डाउनलोड को भेजें।"
+  },
+  "opt_advanced": {
+    "message": "उन्नत"
+  },
+  "opt_all_sites_check_failed": {
+    "message": "सभी साइटों के ऐक्सेस की जाँच नहीं हो सकी।"
+  },
+  "opt_all_sites_denied": {
+    "message": "सभी साइटों का ऐक्सेस नहीं मिला।"
+  },
+  "opt_all_sites_granted": {
+    "message": "सभी साइटों का ऐक्सेस मिल गया। वीडियो दोबारा चलाएँ।"
+  },
+  "opt_all_sites_help": {
+    "message": "HTTP और HTTPS साइटों व वीडियो सर्वरों पर प्लेबैक अनुरोध ढूँढने के लिए सभी साइटों का ऐक्सेस दें।"
+  },
+  "opt_all_sites_request_failed": {
+    "message": "सभी साइटों के ऐक्सेस का अनुरोध नहीं किया जा सका।"
+  },
+  "opt_all_sites_revoke_failed": {
+    "message": "सभी साइटों का ऐक्सेस हटाया नहीं जा सका।"
+  },
+  "opt_all_sites_revoked": {
+    "message": "सभी साइटों का ऐक्सेस हटा दिया गया।"
+  },
+  "opt_allow_all_sites": {
+    "message": "सभी साइटों की अनुमति दें"
+  },
+  "opt_allow_network": {
+    "message": "मीडिया खोजने की अनुमति दें"
+  },
+  "opt_cdn_url": {
+    "message": "अलग वीडियो सर्वर का URL (वैकल्पिक)"
+  },
+  "opt_change_browser_location": {
+    "message": "ब्राउज़र की डिफ़ॉल्ट जगह बदलें"
+  },
+  "opt_debug": {
+    "message": "डीबग मोड"
+  },
+  "opt_debug_help": {
+    "message": "डाउनलोड की समस्याओं की जाँच के लिए अलग निदान टैब खुलता है।"
+  },
+  "opt_default_folder": {
+    "message": "डिफ़ॉल्ट डाउनलोड फ़ोल्डर"
+  },
+  "opt_default_folder_saved": {
+    "message": "नए डाउनलोड डिफ़ॉल्ट जगह पर सहेजे जाएँगे।"
+  },
+  "opt_display_language": {
+    "message": "इंटरफ़ेस की भाषा"
+  },
+  "opt_download_location": {
+    "message": "डाउनलोड की जगह"
+  },
+  "opt_download_settings": {
+    "message": "डाउनलोड की सेटिंग"
+  },
+  "opt_extension": {
+    "message": "एक्सटेंशन"
+  },
+  "opt_folder_help": {
+    "message": "डिफ़ॉल्ट डाउनलोड फ़ोल्डर के अंदर का कोई सबफ़ोल्डर डालें, जैसे MDownloader/वीडियो। डिफ़ॉल्ट जगह इस्तेमाल करने के लिए खाली छोड़ दें।"
+  },
+  "opt_folder_read_failed": {
+    "message": "डाउनलोड की जगह पता नहीं चल सकी।"
+  },
+  "opt_folder_save_failed": {
+    "message": "डाउनलोड की जगह सहेजी नहीं जा सकी।"
+  },
+  "opt_folder_saved": {
+    "message": "नए डाउनलोड इस सबफ़ोल्डर में सहेजे जाएँगे।"
+  },
+  "opt_invalid_folder": {
+    "message": "सबफ़ोल्डर का पाथ डालें जिसमें ड्राइव अक्षर या पैरेंट फ़ोल्डर का संदर्भ न हो।"
+  },
+  "opt_invalid_site_url": {
+    "message": "साइट का ऐसा URL डालें जो http:// या https:// से शुरू हो।"
+  },
+  "opt_language": {
+    "message": "भाषा"
+  },
+  "opt_language_auto": {
+    "message": "सिस्टम की डिफ़ॉल्ट भाषा"
+  },
+  "opt_language_save_failed": {
+    "message": "इंटरफ़ेस की भाषा सहेजी नहीं जा सकी।"
+  },
+  "opt_network_denied": {
+    "message": "मीडिया खोजने की अनुमति नहीं मिली।"
+  },
+  "opt_network_granted": {
+    "message": "मीडिया खोजने की अनुमति मिल गई। वीडियो दोबारा चलाएँ।"
+  },
+  "opt_network_help": {
+    "message": "चुनिंदा साइटों का ऐक्सेस देने के लिए नीचे उनके URL डालें, फिर वीडियो दोबारा चलाएँ।"
+  },
+  "opt_network_partially_revoked": {
+    "message": "मीडिया खोजने की कुछ अनुमतियाँ हटा दी गईं।"
+  },
+  "opt_network_permissions": {
+    "message": "नेटवर्क पर मीडिया खोजने की अनुमतियाँ"
+  },
+  "opt_network_request_failed": {
+    "message": "मीडिया खोजने की अनुमति का अनुरोध नहीं किया जा सका।"
+  },
+  "opt_network_revoke_failed": {
+    "message": "मीडिया खोजने की अनुमति हटाई नहीं जा सकी।"
+  },
+  "opt_network_revoked": {
+    "message": "दिए गए URL के लिए मीडिया खोजने की अनुमतियाँ हटा दी गईं।"
+  },
+  "opt_network_sites_revoke_failed": {
+    "message": "दिए गए URL के लिए मीडिया खोजने की अनुमतियाँ हटाई नहीं जा सकीं।"
+  },
+  "opt_open_browser_settings_failed": {
+    "message": "ब्राउज़र की डाउनलोड सेटिंग नहीं खुल सकी।"
+  },
+  "opt_page_title": {
+    "message": "डाउनलोड की गई फ़ाइलों के नाम में पेज का शीर्षक इस्तेमाल करें"
+  },
+  "opt_page_title_help": {
+    "message": "पेज के शीर्षक और फ़ाइल के मूल नाम को अंडरस्कोर से जोड़ता है। मूल नाम index होने पर केवल पेज का शीर्षक इस्तेमाल होता है।"
+  },
+  "opt_page_title_short": {
+    "message": "फ़ाइल के नाम में पेज का शीर्षक"
+  },
+  "opt_reload": {
+    "message": "एक्सटेंशन फिर से लोड करें"
+  },
+  "opt_revoke_all_sites": {
+    "message": "सभी साइटों का ऐक्सेस हटाएँ"
+  },
+  "opt_revoke_network": {
+    "message": "अनुमति हटाएँ"
+  },
+  "opt_save_location": {
+    "message": "जगह सहेजें"
+  },
+  "opt_setting_disabled": {
+    "message": "“$arg1$” बंद है।",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_enabled": {
+    "message": "“$arg1$” चालू है।",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_read_failed": {
+    "message": "“$arg1$” सेटिंग पढ़ी नहीं जा सकी।",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_save_failed": {
+    "message": "“$arg1$” सेटिंग सहेजी नहीं जा सकी।",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_site_url": {
+    "message": "वीडियो वाली साइट का URL"
+  },
+  "opt_version": {
+    "message": "वर्शन"
+  },
+  "request_failed": {
+    "message": "अनुरोध पूरा नहीं हो सका।"
+  },
+  "request_unsupported": {
+    "message": "यह अनुरोध समर्थित नहीं है।"
+  },
+  "stream_dash_doctype": {
+    "message": "DOCTYPE घोषणा वाले DASH MPD समर्थित नहीं हैं।"
+  },
+  "stream_dash_empty_segments": {
+    "message": "DASH सेगमेंट सूची खाली या अधूरी है।"
+  },
+  "stream_dash_encrypted": {
+    "message": "DRM से सुरक्षित या एन्क्रिप्ट किए गए DASH ट्रैक समर्थित नहीं हैं।"
+  },
+  "stream_dash_ept_delta": {
+    "message": "पहले सेगमेंट के लिए DASH eptDelta समायोजन समर्थित नहीं है।"
+  },
+  "stream_dash_index_limit": {
+    "message": "DASH सेगमेंट इंडेक्स की रेंज स्टोरेज की सीमा से बड़ी है।"
+  },
+  "stream_dash_index_same_file": {
+    "message": "सिर्फ़ वही SegmentBase समर्थित है जिसका DASH SIDX इंडेक्स उसी मीडिया फ़ाइल में है।"
+  },
+  "stream_dash_index_truncated": {
+    "message": "DASH सेगमेंट इंडेक्स अधूरा है।"
+  },
+  "stream_dash_init_range_missing": {
+    "message": "DASH आरंभीकरण सेगमेंट में बाइट रेंज मौजूद नहीं है।"
+  },
+  "stream_dash_init_url_missing": {
+    "message": "DASH आरंभीकरण सेगमेंट का URL मौजूद नहीं है।"
+  },
+  "stream_dash_invalid_addressing": {
+    "message": "DASH सेगमेंट का पता तय करने का तरीका अमान्य है।"
+  },
+  "stream_dash_invalid_duration": {
+    "message": "DASH प्लेबैक की अवधि अमान्य है।"
+  },
+  "stream_dash_invalid_index_range": {
+    "message": "DASH SIDX इंडेक्स की रेंज मौजूद नहीं है या बहुत बड़ी है।"
+  },
+  "stream_dash_invalid_integer": {
+    "message": "DASH में $arg1$ का मान अमान्य है।",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_invalid_mpd": {
+    "message": "सर्वर ने मान्य DASH MPD नहीं लौटाया।"
+  },
+  "stream_dash_invalid_segment_url": {
+    "message": "DASH सेगमेंट का URL अमान्य है।"
+  },
+  "stream_dash_invalid_template": {
+    "message": "DASH URL टेम्पलेट समर्थित नहीं है।"
+  },
+  "stream_dash_list_timeline_mismatch": {
+    "message": "DASH सेगमेंट URL सूची और टाइमलाइन में प्रविष्टियों की संख्या अलग है।"
+  },
+  "stream_dash_mpd_size": {
+    "message": "DASH MPD तय आकार सीमा से बड़ा है।"
+  },
+  "stream_dash_no_addressing": {
+    "message": "DASH MPD में सेगमेंट के पते तय करने का कोई समर्थित तरीका नहीं है।"
+  },
+  "stream_dash_no_track": {
+    "message": "DASH MPD में $arg1$ कोडेक वाला कोई समर्थित MP4 ट्रैक नहीं मिला।",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_overlapping_timeline": {
+    "message": "DASH सेगमेंट टाइमलाइन में कुछ प्रविष्टियाँ एक-दूसरे पर चढ़ती हैं।"
+  },
+  "stream_dash_repeat_end_missing": {
+    "message": "DASH सेगमेंट टाइमलाइन में एक दोहराव का समाप्ति समय मौजूद नहीं है।"
+  },
+  "stream_dash_segment_scheme": {
+    "message": "DASH सेगमेंट URL में HTTP या HTTPS होना चाहिए और लॉगिन जानकारी नहीं होनी चाहिए।"
+  },
+  "stream_dash_segment_url_missing": {
+    "message": "DASH सेगमेंट का URL मौजूद नहीं है।"
+  },
+  "stream_dash_sidx_header_truncated": {
+    "message": "DASH SIDX हेडर अधूरा है।"
+  },
+  "stream_dash_sidx_hierarchical": {
+    "message": "क्रमबद्ध स्तरों वाले DASH SIDX इंडेक्स समर्थित नहीं हैं।"
+  },
+  "stream_dash_sidx_invalid_segments": {
+    "message": "DASH SIDX की सेगमेंट सूची अमान्य है।"
+  },
+  "stream_dash_sidx_missing": {
+    "message": "DASH इंडेक्स की रेंज में कोई मान्य SIDX बॉक्स नहीं है।"
+  },
+  "stream_dash_sidx_range_mismatch": {
+    "message": "DASH SIDX का जवाब माँगी गई बाइट रेंज से मेल नहीं खाता।"
+  },
+  "stream_dash_sidx_segment_invalid": {
+    "message": "DASH SIDX सेगमेंट का आकार या अवधि अमान्य है।"
+  },
+  "stream_dash_sidx_segment_range": {
+    "message": "DASH SIDX सेगमेंट की बाइट रेंज बहुत बड़ी है।"
+  },
+  "stream_dash_sidx_version": {
+    "message": "DASH SIDX का यह संस्करण समर्थित नहीं है।"
+  },
+  "stream_dash_single_period": {
+    "message": "सिर्फ़ एक Period वाला DASH VOD समर्थित है।"
+  },
+  "stream_dash_static_only": {
+    "message": "सिर्फ़ स्टैटिक DASH VOD समर्थित है।"
+  },
+  "stream_dash_template_missing": {
+    "message": "कोई समर्थित DASH सेगमेंट URL टेम्पलेट नहीं मिला।"
+  },
+  "stream_dash_template_not_unique": {
+    "message": "DASH URL टेम्पलेट हर सेगमेंट के लिए अलग URL नहीं बनाता।"
+  },
+  "stream_dash_too_many_segments": {
+    "message": "DASH ट्रैक में 5,000 से ज़्यादा सेगमेंट हैं।"
+  },
+  "stream_dash_too_many_tracks": {
+    "message": "DASH MPD में वीडियो और ऑडियो के कुल 200 से ज़्यादा ट्रैक हैं।"
+  },
+  "stream_dash_xlink_unsupported": {
+    "message": "बाहरी XLink लोड करने वाले DASH MPD समर्थित नहीं हैं।"
+  },
+  "stream_download_failed": {
+    "message": "स्ट्रीम डाउनलोड नहीं हो सका।"
+  },
+  "stream_hls_duplicate_byte_range": {
+    "message": "HLS की बाइट रेंज एक से ज़्यादा बार दी गई है।"
+  },
+  "stream_hls_empty_segments": {
+    "message": "HLS सेगमेंट सूची खाली या अधूरी है।"
+  },
+  "stream_hls_encrypted": {
+    "message": "एन्क्रिप्ट किया गया HLS समर्थित नहीं है।"
+  },
+  "stream_hls_init_scheme": {
+    "message": "आरंभीकरण सेगमेंट के लिए सिर्फ़ HTTP और HTTPS URL समर्थित हैं।"
+  },
+  "stream_hls_invalid_byte_range": {
+    "message": "HLS की बाइट रेंज या शुरुआती ऑफ़सेट अमान्य है।"
+  },
+  "stream_hls_invalid_init_attributes": {
+    "message": "HLS आरंभीकरण सेगमेंट के गुण अमान्य हैं।"
+  },
+  "stream_hls_invalid_master": {
+    "message": "HLS मास्टर प्लेलिस्ट अमान्य या असमर्थित है।"
+  },
+  "stream_hls_invalid_master_attributes": {
+    "message": "HLS गुणवत्ता के गुण अमान्य हैं।"
+  },
+  "stream_hls_invalid_playlist_response": {
+    "message": "सर्वर ने HLS प्लेलिस्ट की जगह कोई और जवाब दिया।"
+  },
+  "stream_hls_invalid_segment_duration": {
+    "message": "HLS सेगमेंट की अवधि अमान्य है।"
+  },
+  "stream_hls_invalid_sequence": {
+    "message": "HLS सेगमेंट की क्रम संख्या अमान्य है।"
+  },
+  "stream_hls_invalid_target_duration": {
+    "message": "HLS सेगमेंट की लक्ष्य अवधि अमान्य है।"
+  },
+  "stream_hls_no_variants": {
+    "message": "कोई समर्थित HLS गुणवत्ता विकल्प नहीं मिला। स्ट्रीम के लिए अलग ऑडियो या कोई असमर्थित कोडेक ज़रूरी हो सकता है।"
+  },
+  "stream_hls_partial_only": {
+    "message": "सिर्फ़ आंशिक सेगमेंट वाली HLS प्लेलिस्ट समर्थित नहीं हैं।"
+  },
+  "stream_hls_segment_duration_missing": {
+    "message": "HLS सेगमेंट की अवधि मौजूद नहीं है।"
+  },
+  "stream_hls_segment_scheme": {
+    "message": "सिर्फ़ HTTP और HTTPS सेगमेंट URL समर्थित हैं।"
+  },
+  "stream_hls_segment_url_missing": {
+    "message": "एक सेगमेंट का URL मौजूद नहीं है।"
+  },
+  "stream_hls_target_duration_missing": {
+    "message": "लाइव HLS प्लेलिस्ट में सेगमेंट की लक्ष्य अवधि मौजूद नहीं है।"
+  },
+  "stream_hls_too_many_segments": {
+    "message": "HLS प्लेलिस्ट में 5,000 से ज़्यादा सेगमेंट हैं।"
+  },
+  "stream_hls_too_many_variants": {
+    "message": "HLS प्लेलिस्ट में 100 से ज़्यादा गुणवत्ता विकल्प हैं।"
+  },
+  "stream_hls_ts_only": {
+    "message": "सिर्फ़ एक गुणवत्ता वाली लगातार MPEG-TS HLS प्लेलिस्ट समर्थित हैं।"
+  },
+  "stream_hls_unsupported_media": {
+    "message": "यह HLS मीडिया प्लेलिस्ट समर्थित नहीं है।"
+  },
+  "stream_hls_unsupported_playlist": {
+    "message": "यह HLS प्लेलिस्ट समर्थित नहीं है।"
+  },
+  "stream_hls_variant_bitrate": {
+    "message": "HLS गुणवत्ता की बिटरेट अमान्य है।"
+  },
+  "stream_hls_variant_info_missing": {
+    "message": "HLS गुणवत्ता के URL के लिए संबंधित गुण नहीं मिले।"
+  },
+  "stream_hls_variant_not_found": {
+    "message": "चुनी गई HLS गुणवत्ता प्लेलिस्ट में नहीं मिली।"
+  },
+  "stream_hls_variant_url_missing": {
+    "message": "HLS गुणवत्ता का URL मौजूद नहीं है।"
+  },
+  "stream_hls_vod_end_required": {
+    "message": "सिर्फ़ समाप्ति चिह्न वाली HLS VOD प्लेलिस्ट समर्थित हैं।"
+  },
+  "stream_host_permission": {
+    "message": "पॉप-अप में स्ट्रीम सर्वर $arg1$ का ऐक्सेस दें।",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_challenge": {
+    "message": "इस स्ट्रीम को डाउनलोड करने के लिए सर्वर को ब्राउज़र की पुष्टि चाहिए (HTTP 403)।"
+  },
+  "stream_http_forbidden": {
+    "message": "सर्वर ने स्ट्रीम डाउनलोड का अनुरोध अस्वीकार कर दिया (HTTP 403)।"
+  },
+  "stream_http_missing_resource": {
+    "message": "स्ट्रीम का संसाधन नहीं मिल सका (HTTP $arg1$)।",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_range_mismatch": {
+    "message": "सर्वर ने मीडिया सेगमेंट के लिए माँगी गई बाइट रेंज से अलग रेंज लौटाई।"
+  },
+  "stream_http_resource_limit": {
+    "message": "स्ट्रीम का संसाधन स्टोरेज की सीमा से बड़ा है।"
+  },
+  "stream_http_server_error": {
+    "message": "वीडियो सर्वर ने गड़बड़ी लौटाई (HTTP $arg1$)।",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_timeout": {
+    "message": "वीडियो सर्वर को जवाब देने में बहुत देर लगी।"
+  },
+  "stream_invalid_host": {
+    "message": "इस स्ट्रीम सर्वर का URL समर्थित नहीं है।"
+  },
+  "stream_invalid_mpeg_ts": {
+    "message": "MPEG-TS वीडियो सेगमेंट अमान्य है।"
+  },
+  "stream_live_segment_expired": {
+    "message": "लाइव प्लेलिस्ट का एक सेगमेंट डाउनलोड होने से पहले ही एक्सपायर हो गया।"
+  },
+  "stream_no_segments": {
+    "message": "सेव करने के लिए कोई मीडिया सेगमेंट नहीं है।"
+  },
+  "stream_playback_playlist_url": {
+    "message": "प्लेलिस्ट का HTTP या HTTPS URL डालें।"
+  },
+  "stream_playback_raw_bytes_missing": {
+    "message": "Chrome ने वीडियो सेगमेंट के मूल बाइट नहीं दिए।"
+  },
+  "stream_playback_response_limit": {
+    "message": "प्लेबैक का जवाब स्टोरेज की सीमा से बड़ा है।"
+  },
+  "stream_playback_segments_missing": {
+    "message": "वीडियो के कुछ सेगमेंट अभी तक नहीं मिले हैं।"
+  },
+  "stream_playback_storage_limit": {
+    "message": "HLS की अस्थायी स्टोरेज सीमा पार हो गई है।"
+  },
+  "stream_playback_ts_incomplete": {
+    "message": "MPEG-TS वीडियो सेगमेंट खाली या अधूरा है।"
+  },
+  "stream_playback_ts_only": {
+    "message": "सिर्फ़ MPEG-TS फ़ॉर्मैट वाले HLS सेगमेंट समर्थित हैं।"
+  },
+  "stream_playback_unknown_segment": {
+    "message": "यह वीडियो सेगमेंट प्लेलिस्ट में नहीं है।"
+  },
+  "stream_preview_empty_segment": {
+    "message": "प्रीव्यू सेगमेंट खाली है।"
+  },
+  "stream_preview_host_permission": {
+    "message": "प्रीव्यू चलाने के लिए वीडियो सर्वर का ऐक्सेस दें।"
+  },
+  "stream_remux_codecs": {
+    "message": "इस वीडियो या ऑडियो कोडेक को MP4 में नहीं जोड़ा जा सकता।"
+  },
+  "stream_remux_decoder_config": {
+    "message": "वीडियो ट्रैक की कोडेक सेटिंग पढ़ी नहीं जा सकी।"
+  },
+  "stream_remux_no_packets": {
+    "message": "HLS ट्रैक में कोई मीडिया पैकेट नहीं है।"
+  },
+  "stream_runner_busy": {
+    "message": "एक स्ट्रीम पहले से डाउनलोड हो रही है।"
+  },
+  "stream_runner_disconnected": {
+    "message": "स्ट्रीम डाउनलोड से कनेक्शन टूट गया।"
+  },
+  "stream_runner_unavailable": {
+    "message": "यह ब्राउज़र स्ट्रीम प्रोसेसर शुरू नहीं कर सकता।"
+  },
+  "stream_segment_incomplete": {
+    "message": "एक मीडिया सेगमेंट खाली या अधूरा है।"
+  },
+  "stream_start_failed": {
+    "message": "स्ट्रीम डाउनलोड शुरू नहीं हो सका।"
+  },
+  "stream_temporary_storage_limit": {
+    "message": "अस्थायी स्टोरेज की 2 GiB की सीमा पार हो गई है।"
+  },
+  "stream_too_many_segments": {
+    "message": "मीडिया सेगमेंट की संख्या 5,000 से ज़्यादा है।"
+  },
+  "view_action_cancel": {
+    "message": "रद्द करें"
+  },
+  "view_action_delete_all": {
+    "message": "सभी हटाएँ"
+  },
+  "view_action_delete": {
+    "message": "हटाएँ"
+  },
+  "view_action_finish": {
+    "message": "रोकें और सेव करें"
+  },
+  "view_action_pause": {
+    "message": "रोकें"
+  },
+  "view_action_resume": {
+    "message": "जारी रखें"
+  },
+  "view_action_show": {
+    "message": "फ़ोल्डर में दिखाएँ"
+  },
+  "view_candidate_complete": {
+    "message": "डाउनलोड पूरा"
+  },
+  "view_candidate_downloading": {
+    "message": "डाउनलोड हो रहा है"
+  },
+  "view_copy_failed": {
+    "message": "लिंक कॉपी नहीं हो सका।"
+  },
+  "view_copy_link": {
+    "message": "लिंक कॉपी करें"
+  },
+  "view_copy_success": {
+    "message": "लिंक कॉपी हो गया।"
+  },
+  "view_delete_file_success": {
+    "message": "सेव की गई फ़ाइल और सूची की एंट्री हटा दी गईं।"
+  },
+  "view_delete_hint": {
+    "message": "सूची से एंट्री हटाने के लिए क्लिक करें। पूरा हो चुके डाउनलोड की सेव की गई फ़ाइल भी हटाने के लिए Shift दबाकर क्लिक करें।"
+  },
+  "view_devtools_panel": {
+    "message": "MDownloader"
+  },
+  "view_diagnostics": {
+    "message": "डाउनलोड की जाँच"
+  },
+  "view_diagnostics_http": {
+    "message": "HTTP $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_previous": {
+    "message": "पिछला रिस्पॉन्स"
+  },
+  "view_diagnostics_received": {
+    "message": "मिले सेगमेंट: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_title": {
+    "message": "MDownloader · डाउनलोड की जाँच"
+  },
+  "view_download": {
+    "message": "डाउनलोड करें"
+  },
+  "view_download_check": {
+    "message": "डाउनलोड की स्थिति देखें"
+  },
+  "view_download_check_manager": {
+    "message": "डाउनलोड मैनेजर में काम की स्थिति देखें।"
+  },
+  "view_download_failed_start": {
+    "message": "डाउनलोड शुरू नहीं हो सका"
+  },
+  "view_download_queueing": {
+    "message": "डाउनलोड कतार में जोड़ा जा रहा है…"
+  },
+  "view_download_started": {
+    "message": "डाउनलोड शुरू हुआ"
+  },
+  "view_download_unsupported": {
+    "message": "$arg1$ · डाउनलोड उपलब्ध नहीं है",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_download_with_permission": {
+    "message": "सर्वर का ऐक्सेस देकर डाउनलोड करें"
+  },
+  "view_format_unknown": {
+    "message": "फ़ॉर्मैट अज्ञात"
+  },
+  "view_job_check_browser": {
+    "message": "ब्राउज़र की डाउनलोड सूची में यह काम देखें।"
+  },
+  "view_job_file_missing": {
+    "message": "सेव की गई फ़ाइल नहीं मिली।"
+  },
+  "view_job_mp4_muxing": {
+    "message": "MP4 बन रहा है…"
+  },
+  "view_job_mp4_saving": {
+    "message": "MP4 सेव हो रहा है…"
+  },
+  "view_job_playlist_check": {
+    "message": "प्लेलिस्ट जाँची जा रही है…"
+  },
+  "view_job_progress": {
+    "message": "$arg1$ के डाउनलोड की प्रगति",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_job_rescan": {
+    "message": "ज़रूरत पड़ने पर मूल पेज फिर से स्कैन करें।"
+  },
+  "view_job_server_denied": {
+    "message": "ऐसा पता इस्तेमाल करें जिसका सर्वर सीधे डाउनलोड की अनुमति देता हो।"
+  },
+  "view_jobs_active": {
+    "message": "डाउनलोड जारी ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_attention": {
+    "message": "जाँच ज़रूरी ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_complete": {
+    "message": "पूरे हुए ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_empty": {
+    "message": "डाउनलोड का कोई इतिहास नहीं है।"
+  },
+  "view_jobs_failed": {
+    "message": "डाउनलोड का इतिहास लोड नहीं हो सका।"
+  },
+  "view_link_loading": {
+    "message": "पता खोजा जा रहा है…"
+  },
+  "view_link_unavailable": {
+    "message": "मूल पता उपलब्ध नहीं है।"
+  },
+  "view_metric_bytes": {
+    "message": "$arg1$ B",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_average_rate": {
+    "message": "औसत $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_kilobytes": {
+    "message": "$arg1$ KB",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_megabytes": {
+    "message": "$arg1$ MB",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_progress": {
+    "message": "$arg1$ · $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_metric_rate": {
+    "message": "$arg1$/सेकंड",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_options_failed": {
+    "message": "सेटिंग पेज नहीं खुल सका।"
+  },
+  "view_panel_failed": {
+    "message": "साइड पैनल नहीं खुल सका। ब्राउज़र के साइड पैनल मेन्यू में MDownloader चुनें।"
+  },
+  "view_panel_use_menu": {
+    "message": "ब्राउज़र के साइड पैनल मेन्यू में MDownloader चुनें।"
+  },
+  "view_permission_denied": {
+    "message": "वीडियो सर्वर का ऐक्सेस नहीं मिला।"
+  },
+  "view_permission_failed": {
+    "message": "वीडियो सर्वर का ऐक्सेस नहीं माँगा जा सका।"
+  },
+  "view_playback_busy": {
+    "message": "प्लेबैक की दूसरी कैप्चर या सेव प्रक्रिया जारी है।"
+  },
+  "view_playback_canceled": {
+    "message": "कैप्चर रद्द किया गया।"
+  },
+  "view_playback_collected": {
+    "message": "सभी वीडियो सेगमेंट मिल गए हैं। MP4 सेव करें पर क्लिक करें।"
+  },
+  "view_playback_collecting": {
+    "message": "इस टैब में चलते हुए वीडियो के सेगमेंट कैप्चर हो रहे हैं।"
+  },
+  "view_playback_coverage": {
+    "message": "कैप्चर किए गए सेगमेंट: $arg1$ / $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_playback_page_changed": {
+    "message": "पेज बदलने की वजह से कैप्चर रुक गया।"
+  },
+  "view_playback_preparing": {
+    "message": "कैप्चर तैयार हो रहा है…"
+  },
+  "view_playback_saving": {
+    "message": "MP4 सेव होना शुरू हो गया है। आप प्लेबैक टैब बंद करके डाउनलोड मैनेजर में स्थिति देख सकते हैं।"
+  },
+  "view_playback_waiting": {
+    "message": "इस टैब में दी गई प्लेलिस्ट का इंतज़ार है।"
+  },
+  "view_preview": {
+    "message": "प्रीव्यू"
+  },
+  "view_preview_loading": {
+    "message": "पूर्वावलोकन लोड हो रहा है…"
+  },
+  "view_preview_still_alt": {
+    "message": "वीडियो का प्रीव्यू चित्र"
+  },
+  "view_quality_allow_server": {
+    "message": "चुने गए वीडियो सर्वर का ऐक्सेस दें।"
+  },
+  "view_quality_canceled": {
+    "message": "क्वालिटी का चुनाव रद्द किया गया।"
+  },
+  "view_quality_checking": {
+    "message": "HLS वीडियो की क्वालिटी जाँची जा रही है…"
+  },
+  "view_quality_details": {
+    "message": "$arg1$ · $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_quality_no_resolution": {
+    "message": "रिज़ॉल्यूशन अज्ञात"
+  },
+  "view_scan_empty": {
+    "message": "डाउनलोड करने लायक मीडिया नहीं मिला।"
+  },
+  "view_scan_found": {
+    "message": "उपलब्ध डाउनलोड: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_scan_in_progress": {
+    "message": "इस पेज पर मीडिया खोजा जा रहा है…"
+  },
+  "view_scan_no_tab": {
+    "message": "मौजूदा टैब की पहचान नहीं हो सकी।"
+  },
+  "view_scan_page_changed": {
+    "message": "पेज बदल गया है। इसे फिर से स्कैन करें।"
+  },
+  "view_scan_restricted": {
+    "message": "इस पेज को स्कैन नहीं किया जा सकता।"
+  },
+  "view_stage_browser_save": {
+    "message": "डिस्क पर सेव करना"
+  },
+  "view_stage_master_access": {
+    "message": "प्लेलिस्ट का ऐक्सेस"
+  },
+  "view_stage_master_parse": {
+    "message": "प्लेलिस्ट पढ़ना"
+  },
+  "view_stage_master_request": {
+    "message": "पहली प्लेलिस्ट का अनुरोध"
+  },
+  "view_stage_media_parse": {
+    "message": "सेगमेंट की सूची पढ़ना"
+  },
+  "view_stage_mp4_mux": {
+    "message": "MP4 बनाना"
+  },
+  "view_stage_segments_access": {
+    "message": "सेगमेंट सर्वर का ऐक्सेस"
+  },
+  "view_stage_segments_transfer": {
+    "message": "वीडियो सेगमेंट का अनुरोध"
+  },
+  "view_stage_temporary_storage": {
+    "message": "अस्थायी स्टोरेज तैयार करना"
+  },
+  "view_stage_unknown": {
+    "message": "चरण अज्ञात"
+  },
+  "view_stage_variant_access": {
+    "message": "चुनी हुई क्वालिटी की प्लेलिस्ट का ऐक्सेस"
+  },
+  "view_stage_variant_request": {
+    "message": "चुनी हुई क्वालिटी की प्लेलिस्ट का अनुरोध"
+  },
+  "view_stage_variant_selection": {
+    "message": "क्वालिटी का चुनाव"
+  },
+  "view_state_canceled": {
+    "message": "रद्द किया गया"
+  },
+  "view_state_failed": {
+    "message": "डाउनलोड विफल"
+  },
+  "view_state_paused": {
+    "message": "रुका हुआ"
+  },
+  "view_state_starting": {
+    "message": "शुरू हो रहा है"
+  },
+  "view_state_unknown": {
+    "message": "जाँच ज़रूरी"
+  },
+  "view_unit_kilobits": {
+    "message": "$arg1$ kbps",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_unit_megabits": {
+    "message": "$arg1$ Mbps",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_download_date_time": {
+    "message": "फ़ाइल नाम में दिनांक और समय शामिल करें"
+  },
+  "opt_download_date_time_help": {
+    "message": "एक्सटेंशन से पहले डाउनलोड शुरू होने का स्थानीय समय जोड़ें: पृष्ठ_फ़ाइल_2026-11-07_09-08-06.mp4."
+  },
+  "view_job_segments": {
+    "message": "खंड: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_preview_playback_failed": {
+    "message": "प्रीव्यू चलाना विफल रहा"
+  },
+  "view_download_quality_hint": {
+    "message": "$LABEL$ (Shift+क्लिक: गुणवत्ता चुनें)",
+    "placeholders": {
+      "label": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_playback": {
+    "message": "कुछ वीडियो को अपडेट और डाउनलोड करने के लिए $actions$ ज़रूरी है।",
+    "placeholders": {
+      "actions": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_retry": {
+    "message": "डाउनलोड या पूर्वावलोकन विफल होने पर कृपया $reload$।",
+    "placeholders": {
+      "reload": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_reload_page": {
+    "message": "पेज रीफ़्रेश करें"
+  },
+  "hint_playback_actions": {
+    "message": "उन्हें चलाना या सीक बार को आगे-पीछे करना"
+  },
+  "view_action_snapshot": {
+    "message": "प्राप्त भाग सहेजें (डाउनलोड जारी रखें)"
+  },
+  "job_snapshot_busy": {
+    "message": "प्राप्त भाग पहले से सहेजा जा रहा है।"
+  },
+  "job_snapshot_unavailable": {
+    "message": "अभी कोई पूर्ण भाग उपलब्ध नहीं है या कार्य की स्थिति बदल गई है।"
+  },
+  "job_snapshot_metadata": {
+    "message": "प्राप्त भाग में चलाने के लिए पर्याप्त मेटाडेटा नहीं है। अधिक डेटा आने पर फिर प्रयास करें।"
+  },
+  "job_snapshot_codecs": {
+    "message": "इस फ़ाइल के कोडेक आंशिक फ़ाइल के रूप में सहेजने का समर्थन नहीं करते।"
+  },
+  "job_snapshot_source_changed": {
+    "message": "स्रोत फ़ाइल बदल गई है या अनुरोधित बाइट सीमा की पुष्टि नहीं हो सकी।"
+  },
+  "view_job_snapshot_muxing": {
+    "message": "आंशिक फ़ाइल तैयार हो रही है"
+  },
+  "view_job_snapshot_saving": {
+    "message": "आंशिक फ़ाइल सहेजी जा रही है"
+  },
+  "view_action_snapshot_file": {
+    "message": "प्राप्त भाग सहेजें (डाउनलोड जारी रखें · अतिरिक्त डेटा ट्रांसफ़र होगा)"
+  },
+  "opt_debug_logging": {
+    "message": "विस्तृत डीबग लॉग चालू करें"
+  },
+  "opt_debug_logging_help": {
+    "message": "एक्सटेंशन कंसोल में सुरक्षित चरण कोड, समय और संख्या दिखाता है। हर संदर्भ में अधिकतम $LIMIT$ प्रविष्टियाँ मेमोरी में रखता है और बंद करने पर मिटा देता है। पते, हेडर और मूल त्रुटि संदेश दर्ज नहीं होते।",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  }
+}

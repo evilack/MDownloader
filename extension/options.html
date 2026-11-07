@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="html_options_title">MDownloader</title>
+<link rel="stylesheet" href="style.css">
+<body class="options">
+<header class="brand"><strong>MDownloader</strong><span data-i18n="html_options"></span></header>
+<main>
+  <h1 data-i18n="html_extension_options"></h1>
+  <section class="option-group" aria-labelledby="language-settings">
+    <h2 id="language-settings" data-i18n="opt_language"></h2>
+    <div class="option-field">
+      <label for="language" data-i18n="opt_display_language"></label>
+      <select id="language" disabled>
+        <option value="auto" data-i18n="opt_language_auto"></option>
+      </select>
+    </div>
+    <p id="language-status" class="notice" role="status"></p>
+  </section>
+  <section class="option-group" aria-labelledby="download-settings">
+    <h2 id="download-settings" data-i18n="opt_download_settings"></h2>
+    <div class="option-toggle">
+      <input id="debug-downloads" type="checkbox" aria-describedby="debug-help" disabled>
+      <label for="debug-downloads" data-i18n="opt_debug"></label>
+    </div>
+    <p id="debug-help" class="muted" data-i18n="opt_debug_help"></p>
+    <div class="option-toggle">
+      <input id="debug-logging" type="checkbox" aria-describedby="debug-logging-help" disabled>
+      <label for="debug-logging" data-i18n="opt_debug_logging"></label>
+    </div>
+    <p id="debug-logging-help" class="muted"></p>
+    <div class="option-toggle">
+      <input id="use-page-title" type="checkbox" aria-describedby="filename-help" disabled>
+      <label for="use-page-title" data-i18n="opt_page_title"></label>
+    </div>
+    <p id="filename-help" class="muted" data-i18n="opt_page_title_help"></p>
+    <div class="option-toggle">
+      <input id="use-download-date-time" type="checkbox" aria-describedby="date-time-help" disabled>
+      <label for="use-download-date-time" data-i18n="opt_download_date_time"></label>
+    </div>
+    <p id="date-time-help" class="muted" data-i18n="opt_download_date_time_help"></p>
+    <p id="debug-status" class="notice" role="status"></p>
+    <form id="download-folder-form">
+      <div class="option-field">
+        <label for="download-folder" data-i18n="opt_download_location"></label>
+        <input id="download-folder" name="downloadFolder" type="text" data-i18n-placeholder="opt_default_folder" aria-describedby="download-folder-help" autocomplete="off" autocapitalize="off" spellcheck="false" disabled>
+      </div>
+      <p id="download-folder-help" class="muted" data-i18n="opt_folder_help"></p>
+      <div class="actions">
+        <button id="save-download-folder" type="submit" class="primary" data-i18n="opt_save_location" disabled></button>
+        <button id="pick-download-folder" type="button" data-i18n="opt_pick_download_folder" hidden disabled></button>
+        <button id="restore-folder-access" type="button" data-i18n="opt_restore_folder_access" hidden disabled></button>
+        <button id="open-download-settings" type="button" data-i18n="opt_change_browser_location"></button>
+      </div>
+      <p id="picked-download-folder" class="muted" hidden></p>
+      <p id="download-folder-status" class="notice" role="status"></p>
+    </form>
+  </section>
+  <section class="option-group" aria-labelledby="advanced-settings">
+    <h2 id="advanced-settings" data-i18n="opt_advanced"></h2>
+    <details open>
+      <summary data-i18n="opt_side_panel"></summary>
+      <div class="option-toggle">
+        <input id="show-panel-media" type="checkbox" aria-describedby="panel-media-help" disabled>
+        <label for="show-panel-media" data-i18n="opt_show_panel_media"></label>
+      </div>
+      <p id="panel-media-help" class="muted" data-i18n="opt_show_panel_media_help"></p>
+      <p id="panel-settings-status" class="notice" role="status"></p>
+    </details>
+    <details open>
+      <summary id="download-log-label" data-i18n="opt_download_log"></summary>
+      <div class="option-toggle">
+        <input id="log-downloads" type="checkbox" aria-describedby="download-log-help" disabled>
+        <label for="log-downloads" data-i18n="opt_log_downloads"></label>
+      </div>
+      <p id="download-log-help" class="muted"></p>
+      <p id="download-log-empty" class="muted" data-i18n="opt_log_empty" hidden></p>
+      <textarea id="download-log" rows="8" aria-labelledby="download-log-label" readonly hidden></textarea>
+      <div class="actions">
+        <button id="copy-download-log" type="button" data-i18n="opt_log_copy" disabled></button>
+        <button id="clear-download-log" type="button" data-i18n="opt_log_clear" disabled></button>
+      </div>
+      <p id="download-log-status" class="notice" role="status"></p>
+    </details>
+    <details open>
+      <summary data-i18n="opt_network_permissions"></summary>
+      <p id="all-sites-help" class="muted" data-i18n="opt_all_sites_help"></p>
+      <div class="actions">
+        <button id="all-sites-access" type="button" aria-describedby="all-sites-help" data-i18n="opt_allow_all_sites" disabled></button>
+      </div>
+      <p id="all-sites-status" class="notice" role="status"></p>
+      <form id="network-form">
+        <p id="network-help" class="muted" data-i18n="opt_network_help"></p>
+        <div class="option-field">
+          <label for="site" data-i18n="opt_site_url"></label>
+          <input id="site" name="site" type="url" dir="ltr" placeholder="https://example.com" aria-describedby="network-help" autocapitalize="off" spellcheck="false" required>
+        </div>
+        <div class="option-field">
+          <label for="cdn" data-i18n="opt_cdn_url"></label>
+          <input id="cdn" name="cdn" type="url" dir="ltr" placeholder="https://cdn.example.com" autocapitalize="off" spellcheck="false">
+        </div>
+        <div class="actions">
+          <button id="allow-network" type="submit" class="primary" data-i18n="opt_allow_network"></button>
+          <button id="revoke-network" type="submit" data-i18n="opt_revoke_network"></button>
+        </div>
+        <p id="network-status" class="notice" role="status"></p>
+      </form>
+    </details>
+  </section>
+  <section class="option-group" aria-labelledby="extension-settings">
+    <h2 id="extension-settings" data-i18n="opt_extension"></h2>
+    <p class="muted"><span data-i18n="opt_version"></span> <bdi id="version"></bdi></p>
+    <div class="actions">
+      <button id="reload-extension" type="button" data-i18n="opt_reload"></button>
+    </div>
+  </section>
+</main>
+<script type="module" src="options.js"></script>
+</body>
+</html>

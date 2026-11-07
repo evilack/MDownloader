@@ -1,0 +1,68 @@
+{
+  "screenshots": [
+    {
+      "path": "website/assets/screenshots/en/media-list.png",
+      "sha256": "4e4e41244f7dccdf9e6dc919f9f30111cefbaec4ce3879adfe2120a1f50a240b",
+      "locale": "en",
+      "extensionVersion": "0.2.24",
+      "capturedOn": "2026-11-08",
+      "source": "Actual isolated Chrome captures; sample motion is a sequence of real playback screenshots."
+    },
+    {
+      "path": "website/assets/screenshots/en/downloads.png",
+      "sha256": "c0ead1dbc2af8ded01b5d48bd9eca42af90fba34820147501f0b038ba0268eff",
+      "locale": "en",
+      "extensionVersion": "0.2.24",
+      "capturedOn": "2026-11-08",
+      "source": "Actual isolated Chrome captures; sample motion is a sequence of real playback screenshots."
+    },
+    {
+      "path": "website/assets/screenshots/en/sample-motion.gif",
+      "sha256": "ce76fe5ef667a24acc3ae918bbec23168663ab2b7e5725a77bc0bdc0dc92ada2",
+      "locale": "en",
+      "extensionVersion": "0.2.24",
+      "capturedOn": "2026-11-08",
+      "source": "Actual isolated Chrome captures; sample motion is a sequence of real playback screenshots."
+    },
+    {
+      "path": "website/assets/screenshots/en/sample-still.png",
+      "sha256": "2aae765f223b06cde8ea91fe0245c31355ce75190d6a3bf885c23a09d212852c",
+      "locale": "en",
+      "extensionVersion": "0.2.24",
+      "capturedOn": "2026-11-08",
+      "source": "Actual isolated Chrome captures; sample motion is a sequence of real playback screenshots."
+    },
+    {
+      "path": "website/assets/screenshots/ko/media-list.png",
+      "sha256": "c52c31391c0d06892eef9ea0582d558943dc0697e3a436fe0d7c035e814450f7",
+      "locale": "ko",
+      "extensionVersion": "0.2.18",
+      "capturedOn": "2026-11-07",
+      "source": "Actual isolated Chrome captures; sample motion is a sequence of real playback screenshots."
+    },
+    {
+      "path": "website/assets/screenshots/ko/downloads.png",
+      "sha256": "16b81c422bc503ccaa8db6be99b527d0916b1ffa745a46b1e78934c631916542",
+      "locale": "ko",
+      "extensionVersion": "0.2.18",
+      "capturedOn": "2026-11-07",
+      "source": "Actual isolated Chrome captures; sample motion is a sequence of real playback screenshots."
+    },
+    {
+      "path": "website/assets/screenshots/ko/sample-motion.gif",
+      "sha256": "e045b6b086aa1f73242a8253183d18425b2018fb9f3c30fd9babe50b0a817293",
+      "locale": "ko",
+      "extensionVersion": "0.2.18",
+      "capturedOn": "2026-11-07",
+      "source": "Actual isolated Chrome captures; sample motion is a sequence of real playback screenshots."
+    },
+    {
+      "path": "website/assets/screenshots/ko/sample-still.png",
+      "sha256": "3878885e981814f0e6c4799d39becce03f4f1c7b9bc508ab08083b2dc60ceaae",
+      "locale": "ko",
+      "extensionVersion": "0.2.18",
+      "capturedOn": "2026-11-07",
+      "source": "Actual isolated Chrome captures; sample motion is a sequence of real playback screenshots."
+    }
+  ]
+}

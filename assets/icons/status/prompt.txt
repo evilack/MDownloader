@@ -1,0 +1,13 @@
+Tool: built-in image_gen.imagegen
+transparent_background: true
+
+One tiny UI pictogram: a circular refresh arrow crossed out with one diagonal slash. Solid light coral red #ff9999. Bold simple rounded silhouette, even thick strokes. Flat single-color graphic, NO gradients, NO lighting, NO shadows, NO glow, NO haze, NO pale fog, NO textured fill, NO white. The surrounding canvas and every hole inside the symbol must be COMPLETELY TRANSPARENT (alpha zero), with only clean antialiased edges at the symbol. No badge disc, no frame, no text. Centered square, moderate equal padding, made to read at 16px on a dark background. A professional small status icon meaning preview update unavailable.
+
+Runtime mapping:
+extension/lib/preview-status.js creates the status overlay shared by every PreviewTile.
+16 CSS px uses preview-stale-16.png, 2x uses preview-stale-32.png, 3x uses preview-stale-48.png.
+The 24px derivative is retained for actual-size visual inspection only.
+
+The initially generated amber icon was rejected after the user's pale-red correction.
+An intermediate generated recolor introduced background haze and was rejected.
+These generated originals remain at their tool-provided generated_images paths. Only the final pale-red source was connected.

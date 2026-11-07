@@ -1,0 +1,470 @@
+{
+  "schemaVersion": 1,
+  "groups": {
+    "app": {
+      "sourceTool": "Built-in OpenAI ImageGen, transparent image edit",
+      "generation": "Precisely edit the first reference, the original generated MDownloader icon. The second reference is the currently shipped small icon and is a reference only for the flat, dark mint-green color (approximately #31886F), not composition or resolution. Output one transparent square PNG and preserve the first reference's thick symmetric rounded capital M with its small downward triangular point joined seamlessly at the center, and its wide thick U-shaped tray with rounded ends. Make ONLY these layout adjustments to that composition: keep the width and horizontal center of the M exactly the same, stretch the entire M including the connected point vertically by about 7%, and shift the whole M upward so its highest point is about 16–17% from the top of the square (reference was about 21%) and its lowest point is about 67–68% from the top (reference was about 69%). Move the intact tray down by about 2.5% of the square: ends start around 59% from the top, bottom edge around 90%. Keep the tray's exact width (about 93% of the square), thickness, rounded corners and upturned ends. This creates a slightly more visible clear transparent gap from the tip to the tray bed, while the tray arms still visually flank the lower part of the M. Keep the original outer silhouette style, round contours, identical two-part layout and balance. The two parts must be separate, and the triangular point remains attached to M. Use clean opaque flat dark mint #31886F consistent with the small color reference, with clean antialiased edges. Genuine transparent background and negative space. No gradients, shadows, glow, glitter, lettering, checkerboard, strokes outside the mark, or other elements.",
+      "processing": {
+        "baseline": "Windows System.Drawing HighQualityBicubic, SourceCopy, HighQuality pixel offset and TileFlipXY. Resamples the full source canvas.",
+        "retouch": {
+          "method": "Add [1, 12, 9] to visible RGB channels, clamped to 255, to align mint color with the prior toolbar icon. Preserve alpha and the full canvas.",
+          "alphaComparison": "Every decoded alpha value in the baseline and final PNGs matches."
+        }
+      },
+      "visualReview": {
+        "description": "Compared v6 and v7 at 16, 24, 32, and 48 native pixels on light and dark backgrounds. Confirmed the separate tray and M in the pinned toolbar, the media count badge, and the download manager button in isolated Chrome.",
+        "evidence": [
+          "assets/icons/app/size-review.png",
+          "assets/icons/app/chrome-toolbar-plain.png",
+          "assets/icons/app/chrome-toolbar-badge.png",
+          "assets/icons/app/chrome-popup-review.png"
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "assets/icons/app/original.png",
+          "sha256": "728cac00e03e93cc417d616b67a83804f6b4c16c6f1d1fb5558bf3421800efe2"
+        },
+        {
+          "path": "assets/icons/app/size-review.png",
+          "sha256": "abd72f1560dc23a564aff708fdef9e4bf0d2002dc8a08a7dc367dc3c021e2961"
+        },
+        {
+          "path": "assets/icons/app/chrome-toolbar-plain.png",
+          "sha256": "410c36595994152986124e302b081ee39296f8be536d0d10e891544c78a87301"
+        },
+        {
+          "path": "assets/icons/app/chrome-toolbar-badge.png",
+          "sha256": "580606298d83126d9aa5c165b8559e2a1401714367254fcbc60117b4b516a4c8"
+        },
+        {
+          "path": "assets/icons/app/chrome-popup-review.png",
+          "sha256": "085ee4b792710af247d98376bedc579b575358490cda8bdb8e72f1bf73a5106c"
+        },
+        {
+          "path": "assets/icons/app/baseline/app-media-16.png",
+          "sha256": "00563e1efd0d96751987670d901674f5c21aa64ecf498b641381e91ad7e4e5e7"
+        },
+        {
+          "path": "assets/icons/app/baseline/app-media-24.png",
+          "sha256": "f59de6c8bf543298dd435c043124f5e5ad4679ce07bd86aeeca165ec8d144137"
+        },
+        {
+          "path": "assets/icons/app/baseline/app-media-32.png",
+          "sha256": "7f5e8bd2c18e9486044701e6b804926f2bcf812d1f7c4b76b0d0c79a7eb1460e"
+        },
+        {
+          "path": "assets/icons/app/baseline/app-media-48.png",
+          "sha256": "abf4cc9a3a3aa0ae82536a1e0f316ac330a07ff6321e0c9cc63d4c6d1b2134b6"
+        },
+        {
+          "path": "assets/icons/app/baseline/app-media-128.png",
+          "sha256": "c864fc42d7c186f18f634834c6ff43695d634dfbcb9b73d475a84fff2016c99f"
+        },
+        {
+          "path": "assets/icons/app/references/layout.png",
+          "sha256": "2a3f149a8769a52bd50cc5d1d49715c4d406ddfb1cc07f5294dd8f603aa0e00b"
+        },
+        {
+          "path": "assets/icons/app/references/color.png",
+          "sha256": "ef25eda96e4c9dc8ee2565d0d7bb4aa19cf630d6f5c02680e22d3d354998de23"
+        }
+      ],
+      "sourceCorrection": {
+        "description": "The requested vertical layout changes are part of the generated v7 original. The low-resolution correction operates on RGB only.",
+        "measurement": "Inclusive bounding boxes [left, top, right, bottom] of the two major connected components at alpha >= 160 on the 1254px square originals.",
+        "previous": {
+          "m": [
+            291,
+            267,
+            960,
+            868
+          ],
+          "tray": [
+            47,
+            709,
+            1206,
+            1091
+          ]
+        },
+        "edited": {
+          "m": [
+            287,
+            225,
+            964,
+            839
+          ],
+          "tray": [
+            43,
+            730,
+            1209,
+            1116
+          ]
+        }
+      }
+    },
+    "popup": {
+      "sourceTool": "OpenAI ImageGen, transparent background, one generation per icon",
+      "generation": [
+        {
+          "name": "options",
+          "prompt": "Generate a single flat raster glyph for a compact browser extension UI. The final will be displayed at 18 pixels. Center one isolated pictogram on a genuinely transparent square canvas, with about 15% transparent margin on every side. Optical weight equivalent to about a 2 px stroke at 18 px. Consistent medium-heavy solid round-ended strokes, tidy geometric silhouette, simple edges, generous interior spaces, front-on orthographic. Use only the specified solid foreground color and antialiasing. No text, badge, tile, frame, additional glyph, gradient, noise, highlights, decorative border, drop shadow, or dimensional effects. Render the clearest conventional UI symbol possible. Pictogram: classic six-tooth settings gear with a circular open center, symmetrical teeth, substantial but simple outline. Foreground cool off-white #EDF4F9.",
+          "generatedFile": "exec-fece7163-2dfc-41fe-b593-c0e0635266fd.png"
+        },
+        {
+          "name": "download",
+          "prompt": "Generate a single flat raster glyph for a compact browser extension UI. The final will be displayed at 18 pixels. Center one isolated pictogram on a genuinely transparent square canvas, with about 15% transparent margin on every side. Optical weight equivalent to about a 2 px stroke at 18 px. Consistent medium-heavy solid round-ended strokes, tidy geometric silhouette, simple edges, generous interior spaces, front-on orthographic. Use only the specified solid foreground color and antialiasing. No text, badge, tile, frame, additional glyph, gradient, noise, highlights, decorative border, drop shadow, or dimensional effects. Render the clearest conventional UI symbol possible. Pictogram: a single downward arrow with a vertical shaft and generous chevron above a low open-top U-shaped download tray. Balanced thickness; keep the arrow separated from the tray. Foreground very dark forest ink #10261B, intended for a pale mint button.",
+          "generatedFile": "exec-be8f1625-90af-4e5a-99e2-a964cc4ebaff.png"
+        },
+        {
+          "name": "link",
+          "prompt": "Generate a single flat raster glyph for a compact browser extension UI. The final will be displayed at 18 pixels. Center one isolated pictogram on a genuinely transparent square canvas, with about 15% transparent margin on every side. Optical weight equivalent to about a 2 px stroke at 18 px. Consistent medium-heavy solid round-ended strokes, tidy geometric silhouette, simple edges, generous interior spaces, front-on orthographic. Use only the specified solid foreground color and antialiasing. No text, badge, tile, frame, additional glyph, gradient, noise, highlights, decorative border, drop shadow, or dimensional effects. Render the clearest conventional UI symbol possible. Pictogram: two clearly interlocking diagonal rounded chain links at a 45-degree slope, with the pair centered and readable as a conventional copy-link icon. Foreground cool off-white #EDF4F9.",
+          "generatedFile": "exec-c424e7ac-a883-4e03-be6d-5389a02de468.png"
+        },
+        {
+          "name": "refresh",
+          "prompt": "Generate a single flat raster glyph for a compact browser extension UI. The final will be displayed at 18 pixels. Center one isolated pictogram on a genuinely transparent square canvas, with about 15% transparent margin on every side. Optical weight equivalent to about a 2 px stroke at 18 px. Consistent medium-heavy solid round-ended strokes, tidy geometric silhouette, simple edges, generous interior spaces, front-on orthographic. Use only the specified solid foreground color and antialiasing. No text, badge, tile, frame, additional glyph, gradient, noise, highlights, decorative border, drop shadow, or dimensional effects. Render the clearest conventional UI symbol possible. Pictogram: one clockwise refresh arrow in a nearly complete circular arc with one distinct clean arrowhead at upper right and a visible opening. Foreground cool off-white #EDF4F9.",
+          "generatedFile": "exec-617cbb52-f74d-471f-a1ac-516eaa5c2a1b.png"
+        }
+      ],
+      "processing": "Full-canvas 48 x 48 RGBA resample with System.Drawing HighQualityBicubic, SourceCopy, TileFlipXY. No crop, repositioning, or separate RGB/alpha edits.",
+      "visualReview": {
+        "description": "Gear, download tray, chain links and refresh arrow are distinct at 20 CSS px. The refresh label and single-line candidates fit.",
+        "evidence": [
+          "assets/icons/popup/chrome-popup-review.png"
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "assets/icons/popup/originals/options.png",
+          "sha256": "48dab92c1afc2abc91dbea1e9b8f2b3cd074c9367eafb28cbb3287007d2e5002"
+        },
+        {
+          "path": "assets/icons/popup/originals/download.png",
+          "sha256": "83dafb971bfd3c8c5f09bc401e1ddc9a22c4c541e769d413495ea6653c788b5c"
+        },
+        {
+          "path": "assets/icons/popup/originals/link.png",
+          "sha256": "8b2c57f34f58054c0bb8a178d933115d3716afc5ef7522f384e2a51674ef1a58"
+        },
+        {
+          "path": "assets/icons/popup/originals/refresh.png",
+          "sha256": "65be4026633fae4fb9bbaf30584bb5bce711ee1cf666af24e74976dc9136b1ca"
+        },
+        {
+          "path": "assets/icons/popup/chrome-popup-review.png",
+          "sha256": "356b89222b4a3923e16323b361aacd84214855d60ff205a0cd25b2312721ab0a"
+        }
+      ]
+    },
+    "folder": {
+      "sourceTool": "Built-in OpenAI ImageGen, transparent background",
+      "generation": "Generate a single standalone open-folder icon for the dark toolbar of a Chrome download manager. One flat ivory-white (#F5F7FA) outlined file folder with a recognizable raised tab and slightly angled open front, crisp thick rounded strokes with a visual weight of about 2 px at a displayed 20 px square. Center it symmetrically on a square transparent canvas with tight, even safety margins. Use one color and fully transparent negative space. No background, enclosing button, text, symbol, shading, glow, shadows, gradients, texture or perspective rendering. It must be immediately recognizable at 16–20 px.",
+      "processing": {
+        "baseline": "System.Drawing HighQualityBicubic, HighQuality pixel offset and SourceCopy. Centered full-canvas aspect-fit into 48 x 48. No cropping.",
+        "retouch": "Add 2 to each RGB channel with saturation at 255 for pixels with nonzero alpha. No alpha or geometric edits."
+      },
+      "visualReview": {
+        "description": "Chrome extension download manager at 20 CSS px and Chrome extension page at 16, 24, 32 and 48 CSS px. Folder tab and open front remain legible.",
+        "evidence": [
+          "assets/icons/folder/chrome-display-sizes.png",
+          "assets/icons/folder/chrome-manager-20px.png"
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "assets/icons/folder/originals/folder.png",
+          "sha256": "2ef306137a720fc66e3f76fc8f2f74bc029e8bd0dca7993998646b71257a99b0"
+        },
+        {
+          "path": "assets/icons/folder/baseline/folder-48.png",
+          "sha256": "904818de9878532e1dbb3a95704f99dd2fe154c245ca3001032dbed3e47c038c"
+        },
+        {
+          "path": "assets/icons/folder/chrome-display-sizes.png",
+          "sha256": "e904956878a541fb064b33a917dad6ac26c72fa024143f671e15efa8de8ca1e1"
+        },
+        {
+          "path": "assets/icons/folder/chrome-manager-20px.png",
+          "sha256": "ae564801ab73c4c421381cbe8c5dc67fda92a6313866f3abfa266b79a04d2eda"
+        }
+      ]
+    },
+    "delete": {
+      "sourceTool": "Built-in OpenAI ImageGen with transparent background",
+      "generation": [
+        {
+          "name": "delete",
+          "prompt": "Create one isolated UI icon for a browser extension toolbar: a single upright trash can. Centered symmetrical minimal outline, rounded line ends, lid clearly separated, one small centered handle, tapered can with just one or two inner slots. Light cool near-white monochrome solid strokes (#dce4eb), high contrast, uniform medium-bold stroke intended for actual 16-18px viewing. Silhouette occupies 76% of square canvas. Transparent background including inside outline, no container, no shadow, no glow, no texture, no gradients, no letters or labels. Production-ready flat, clean raster symbol, smooth antialiasing.",
+          "generatedFile": "exec-bea2cbcb-850b-4959-9f5a-187bcf999119.png"
+        },
+        {
+          "name": "delete-all",
+          "prompt": "Create one isolated UI icon for a browser extension toolbar for clearing all download history in a section. Center a compact single glyph with three short horizontal list bars aligned at left and a clearly readable simple small upright trash can on the right slightly overlapping the third line. Distinguishable from a standalone trash can even at actual 16–18px. Light cool near-white monochrome solid strokes (#dce4eb), uniform medium-bold rounded strokes, silhouette occupies 78% of square canvas. Transparent background including inside outline, no container, no shadow, no glow, no texture, no gradients, no letters or labels. Production-ready flat, clean raster symbol, smooth antialiasing.",
+          "generatedFile": "exec-c78efa80-b680-490e-a70a-a1825eab2eed.png"
+        }
+      ],
+      "processing": {
+        "baseline": "System.Drawing HighQualityBicubic with HighQuality pixel offset and SourceCopy. Centered full-canvas aspect fit without cropping.",
+        "retouch": "Add up to 6 per RGB channel only at alpha >= 128. Preserve all alpha values, layout, and silhouette."
+      },
+      "visualReview": {
+        "description": "Inspected both icons at 20 CSS px in the actual 360 CSS px Chrome side panel and compared baseline and retouch at 16, 24, 32 and 48 CSS px.",
+        "evidence": [
+          "assets/icons/delete/chrome-display-sizes.png",
+          "assets/icons/delete/chrome-manager-20px.png"
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "assets/icons/delete/originals/delete.png",
+          "sha256": "232d0ff4affd44c321938e7024be339933ccfca5b4e69289b3f652331768c808"
+        },
+        {
+          "path": "assets/icons/delete/originals/delete-all.png",
+          "sha256": "ec10c9e9cef69acf8b414dcec0df03b2f1d7ec30acd8744acfc04f521dc0d365"
+        },
+        {
+          "path": "assets/icons/delete/baseline/delete-48.png",
+          "sha256": "accd953abf0e6565d9aeff86bd581add808183360c4aa3c8b4725bfcdc1d5e6d"
+        },
+        {
+          "path": "assets/icons/delete/baseline/delete-all-48.png",
+          "sha256": "6cd5569204d3930c651a4a6bab0c9470fd3fff74f78385a6769a4771f45e7314"
+        },
+        {
+          "path": "assets/icons/delete/chrome-display-sizes.png",
+          "sha256": "04159d3fc12a64b5f279c04c508c38124ca4c83cac671729d3a4a024ce79c1b0"
+        },
+        {
+          "path": "assets/icons/delete/chrome-manager-20px.png",
+          "sha256": "5d4d2985859db19f15150202e2b894d39c67bcef32121dd6ea94c8deeb49b07e"
+        }
+      ]
+    },
+    "status": {
+      "sourceTool": "C:\\Users\\evila\\.codex\\generated_images\\01a1b22b-87ba-7c32-ab1c-88d7a171f3a1\\exec-3783520c-061f-49c5-9cea-6ee3135a452a.png",
+      "generation": "Tool: built-in image_gen.imagegen\ntransparent_background: true\n\nOne tiny UI pictogram: a circular refresh arrow crossed out with one diagonal slash. Solid light coral red #ff9999. Bold simple rounded silhouette, even thick strokes. Flat single-color graphic, NO gradients, NO lighting, NO shadows, NO glow, NO haze, NO pale fog, NO textured fill, NO white. The surrounding canvas and every hole inside the symbol must be COMPLETELY TRANSPARENT (alpha zero), with only clean antialiased edges at the symbol. No badge disc, no frame, no text. Centered square, moderate equal padding, made to read at 16px on a dark background. A professional small status icon meaning preview update unavailable.\n\nRuntime mapping:\nextension/lib/preview-status.js creates the status overlay shared by every PreviewTile.\n16 CSS px uses preview-stale-16.png, 2x uses preview-stale-32.png, 3x uses preview-stale-48.png.\nThe 24px derivative is retained for actual-size visual inspection only.\n\nThe initially generated amber icon was rejected after the user's pale-red correction.\nAn intermediate generated recolor introduced background haze and was rejected.\nThese generated originals remain at their tool-provided generated_images paths. Only the final pale-red source was connected.\n",
+      "processing": {
+        "retouch": "RGB +2 on nonzero-alpha pixels, saturation at 255; alpha unchanged"
+      },
+      "visualReview": {
+        "description": "Chrome baseline/final comparison at actual16,24,32,48 CSSpx; pale red refresh/slash readable on dark background. Actual thumbnail overlay16px in20px badge, row44px; retained-image failure and recovery verified.",
+        "evidence": [
+          "assets/icons/status/chrome-display-sizes.png",
+          "assets/icons/status/chrome-stale-overlay.png",
+          "assets/icons/status/chrome-recovered-overlay.png"
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "assets/icons/status/originals/preview-stale-red.png",
+          "sha256": "7a5c67d8adcedf822dde24497d6a82ae69a0d6569db7b5383ec2befe3219d12b"
+        },
+        {
+          "path": "assets/icons/status/prompt.txt",
+          "sha256": "c4fb1c832b5843b62c24ce4d60dc2cfd7a8fe7e6ccc352b1fe182cea23a7fa04"
+        },
+        {
+          "path": "assets/icons/status/baseline/preview-stale-16.png",
+          "sha256": "e7b71b097bc632c8f169756eebd1d4d11b46db2ad28a7afbed6930cba5f0ee8a"
+        },
+        {
+          "path": "assets/icons/status/baseline/preview-stale-24.png",
+          "sha256": "f23828bc06731fb262ee2c85e9b12b07e8ac8b2e5f4f6720279e0f6ced3cc167"
+        },
+        {
+          "path": "assets/icons/status/baseline/preview-stale-32.png",
+          "sha256": "f4d93c0bcaa79656bd35bdf7f4e8f9f0f47e9d7347c3fc179a7b0ed370e7007e"
+        },
+        {
+          "path": "assets/icons/status/baseline/preview-stale-48.png",
+          "sha256": "601a6d9e5c34ef4acbece2b99997305bf06ae264a418691b2647ed9a98cfe91e"
+        },
+        {
+          "path": "assets/icons/status/retouched/preview-stale-24.png",
+          "sha256": "b535dd2c4f5e7a223e6b3c9cd2e33fd05df9e9a58c2e586bdcf33ccad1784d93"
+        },
+        {
+          "path": "assets/icons/status/chrome-display-sizes.png",
+          "sha256": "c961c2dbdac8a96f3e9e910113c973ec77546bc74f9f0061ffe182453e42d0ca"
+        },
+        {
+          "path": "assets/icons/status/chrome-stale-overlay.png",
+          "sha256": "495b22c8e85ca2c19a955d316479031728fb28c369544d36ee04cf7f79840adc"
+        },
+        {
+          "path": "assets/icons/status/chrome-recovered-overlay.png",
+          "sha256": "9adb2b6f0c0c01802a9c1fdda174a5dcdfcc154309d805ad1fcf278c9638ad37"
+        }
+      ]
+    },
+    "actions": {
+      "sourceTool": "Built-in imagegen; System.Drawing HighQualityBicubic resize; alpha-weighted RGB unsharp amount 0.25, delta capped at 6",
+      "generation": "Generated correction increased glyph occupancy and recentered source. Initial and corrected originals are preserved separately. Technical retouch keeps resized alpha and canvas unchanged.",
+      "processing": {
+        "sourceCorrection": "Generated correction increased glyph occupancy and recentered source. Initial and corrected originals are preserved separately. Technical retouch keeps resized alpha and canvas unchanged.",
+        "tool": "Built-in imagegen; System.Drawing HighQualityBicubic resize; alpha-weighted RGB unsharp amount 0.25, delta capped at 6",
+        "displaySize": 20,
+        "runtimeSize": 32,
+        "records": [
+          {
+            "Baseline": "8684BD367D7F0D921E2052A7E0B001B21AE43E516844225E56AB5D93EF3F6202",
+            "Size": 32,
+            "Final": "E86B4E28B8C2590621FC10BD75589F6AB6352218E4D13EF78B3AA21BC12A2944",
+            "AlphaEqual": true,
+            "MaxRgbDelta": 6,
+            "Name": "cancel"
+          },
+          {
+            "Baseline": "40F4D5EB4AC4514C3FA2E20D426840F7115FF0CFAF7B6788C06472DF9B351F98",
+            "Size": 32,
+            "Final": "3017A66121321852D69BD540153C0CAC5FEEDDE28EAF4A20D4177CFBD2C7055B",
+            "AlphaEqual": true,
+            "MaxRgbDelta": 6,
+            "Name": "stop-save"
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "assets/icons/actions/cancel-source.png",
+          "sha256": "4f99a42eef05b4cbdebb4f61843669014401b1fe5ebdb51fb2dcd28d379358e5"
+        },
+        {
+          "path": "assets/icons/actions/cancel-initial.png",
+          "sha256": "955e3fe601a3bad762bae6697625e3cbe40fdb63526cd35a9a2d0944b760223e"
+        },
+        {
+          "path": "assets/icons/actions/cancel-32-baseline.png",
+          "sha256": "8684bd367d7f0d921e2052a7e0b001b21ae43e516844225e56ab5d93ef3f6202"
+        },
+        {
+          "path": "assets/icons/actions/stop-save-source.png",
+          "sha256": "ff98be1c799df7855f47ff7e38a34edd83dc2e07273bdb111dc277c68f85d226"
+        },
+        {
+          "path": "assets/icons/actions/stop-save-initial.png",
+          "sha256": "f85c219c237ea05b0635317b491915aa17a24cd5804e41b7fbb938413699fc1e"
+        },
+        {
+          "path": "assets/icons/actions/stop-save-32-baseline.png",
+          "sha256": "40f4d5eb4ac4514c3fa2e20d426840f7115ff0cfaf7b6788c06472df9b351f98"
+        },
+        {
+          "path": "assets/icons/actions/prompts.json",
+          "sha256": "401bbb121a92bc321e40f8cb63b8ad360faf1b0f75f4555952b23f3e324ffd59"
+        }
+      ],
+      "visualReview": {
+        "description": "Existing native review captures are retained.",
+        "evidence": []
+      }
+    }
+  },
+  "runtime": [
+    {
+      "path": "extension/icons/app-media-128.png",
+      "sha256": "3b3f6bae1a6e7fb4864785b380ea9097977f1f02dc21f61095f3caf02f991369",
+      "group": "app"
+    },
+    {
+      "path": "extension/icons/app-media-16.png",
+      "sha256": "f0f12147cef598d118c07e5de700c825382fcdce42836411f60b9ddccdc7cdba",
+      "group": "app"
+    },
+    {
+      "path": "extension/icons/app-media-24.png",
+      "sha256": "278f73f9826d2d6bdb9b49a6144068030a73aafe530eb97accabed6a95627d73",
+      "group": "app"
+    },
+    {
+      "path": "extension/icons/app-media-32.png",
+      "sha256": "e331a9422ba722a6449660cc2170e82b244fc8a689ca07ce0641bee6c2604379",
+      "group": "app"
+    },
+    {
+      "path": "extension/icons/app-media-48.png",
+      "sha256": "e8c7e03cb9129a241cf70515ddc5102a8886bab9488bda453c88c5795a3cedb9",
+      "group": "app"
+    },
+    {
+      "path": "extension/icons/cancel.png",
+      "sha256": "e86b4e28b8c2590621fc10bd75589f6ab6352218e4d13ef78b3aa21bc12a2944",
+      "group": "actions"
+    },
+    {
+      "path": "extension/icons/delete-all.png",
+      "sha256": "7f3671fc473cecf54dc0747abfaab43b6affb1f534c4bdf0ce463e4a36d092b2",
+      "group": "delete"
+    },
+    {
+      "path": "extension/icons/delete.png",
+      "sha256": "aff897a7ebdddfe1d07fcd22fdc0510021b5bdfb857400379b6b60838220b67b",
+      "group": "delete"
+    },
+    {
+      "path": "extension/icons/download.png",
+      "sha256": "2df61bcfa517dd5e6b2d8180381d0658fc1c6118b63bb727986235c72c5f6f18",
+      "group": "popup"
+    },
+    {
+      "path": "extension/icons/folder.png",
+      "sha256": "8b702e1e9b0d537c529bc6445c16be13e41ed4a20fd4543acd89d0352ed67be7",
+      "group": "folder"
+    },
+    {
+      "path": "extension/icons/link.png",
+      "sha256": "3d55bad5cbbec3b81674d8574a4e0a7a54ab2400af086e42a798ea65b78dad4b",
+      "group": "popup"
+    },
+    {
+      "path": "extension/icons/options.png",
+      "sha256": "6971ee4e9a961d33edd4d431b5e16431af6184a448a01e5502ae3382a0a762ac",
+      "group": "popup"
+    },
+    {
+      "path": "extension/icons/preview-stale-16.png",
+      "sha256": "cfd0ae2b83517c96f71a7619e51633aec64e030abe4dca55ac445c75b12f1501",
+      "group": "status"
+    },
+    {
+      "path": "extension/icons/preview-stale-32.png",
+      "sha256": "8f2d3284f339ed573d3d6b328a964819bdd201694b73de3104899de70bd5c077",
+      "group": "status"
+    },
+    {
+      "path": "extension/icons/preview-stale-48.png",
+      "sha256": "6bf0f6ba9e78033035c28767e77762ee83576fafe6066093b365677d306f788b",
+      "group": "status"
+    },
+    {
+      "path": "extension/icons/refresh.png",
+      "sha256": "000cac9fb6ae29de6ed261176b1e428d4e9c7d3ffba796479661a3835939ec10",
+      "group": "popup"
+    },
+    {
+      "path": "extension/icons/stop-save.png",
+      "sha256": "3017a66121321852d69bd540153c0cac5feedde28eaf4a20d4177cfbd2c7055b",
+      "group": "actions"
+    }
+  ],
+  "sharedFiles": [
+    {
+      "path": "extension/vendor/mediabunny-1.65.2.mjs",
+      "sha256": "08149edcc8cf980da65d94a0a54a8fc0fa85a65f89b66f55c906f33618363919"
+    },
+    {
+      "path": "extension/vendor/mediabunny-LICENSE.txt",
+      "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04"
+    },
+    {
+      "path": "website/assets/icon.png",
+      "sha256": "3b3f6bae1a6e7fb4864785b380ea9097977f1f02dc21f61095f3caf02f991369"
+    },
+    {
+      "path": "website/sample/media/sample-film.mp4",
+      "sha256": "4d3bb83271ef3f72808e6b9d4bb90d2c66e9d51432b7fc2e9442b4c85d580e32"
+    }
+  ]
+}

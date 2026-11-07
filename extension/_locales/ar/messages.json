@@ -1,0 +1,1227 @@
+{
+  "view_stream_live": {
+    "message": "مباشر"
+  },
+  "opt_side_panel": {
+    "message": "اللوحة الجانبية"
+  },
+  "opt_show_panel_media": {
+    "message": "عرض الوسائط المكتشفة في اللوحة الجانبية"
+  },
+  "opt_show_panel_media_help": {
+    "message": "اعرض وسائط علامة التبويب النشطة فوق قائمة التنزيلات."
+  },
+  "opt_download_log": {
+    "message": "سجل التنزيلات"
+  },
+  "opt_log_downloads": {
+    "message": "تسجيل أحداث التنزيل"
+  },
+  "opt_log_help": {
+    "message": "يحتفظ بآخر $LIMIT$ حدثًا على هذا الجهاز. لا يتضمن السجل عناوين URL أو ملفات تعريف الارتباط أو رؤوس الطلبات أو مسارات الملفات.",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_log_empty": {
+    "message": "لا توجد أحداث تنزيل مسجلة."
+  },
+  "opt_log_copy": {
+    "message": "نسخ السجل"
+  },
+  "opt_log_clear": {
+    "message": "مسح السجل"
+  },
+  "opt_log_copied": {
+    "message": "تم نسخ السجل."
+  },
+  "opt_log_copy_failed": {
+    "message": "تعذر نسخ السجل."
+  },
+  "opt_log_cleared": {
+    "message": "تم مسح السجل."
+  },
+  "opt_log_clear_failed": {
+    "message": "تعذر مسح السجل."
+  },
+  "opt_log_read_failed": {
+    "message": "تعذر تحميل السجل."
+  },
+  "opt_log_step_ok": {
+    "message": "اكتملت الخطوة"
+  },
+  "opt_pick_download_folder": {
+    "message": "اختيار مجلد…"
+  },
+  "opt_restore_folder_access": {
+    "message": "استعادة الوصول إلى المجلد"
+  },
+  "opt_picked_folder": {
+    "message": "مجلد التنزيل المحدد: $FOLDER$",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_folder_picker_failed": {
+    "message": "تعذر حفظ المجلد المحدد. أعد اختياره."
+  },
+  "opt_folder_access_restored": {
+    "message": "تمت استعادة الوصول إلى المجلد."
+  },
+  "folder_access_required": {
+    "message": "افتح خيارات الإضافة وامنح إذن الوصول إلى مجلد التنزيل المحدد."
+  },
+  "action_title": {
+    "message": "MDownloader · الصفحة الحالية"
+  },
+  "candidate_changed": {
+    "message": "تغيّرت الصفحة أو الوسائط. أعد الفحص."
+  },
+  "candidate_no_access": {
+    "message": "لا يملك MDownloader إذن رصد عنوان الوسائط. أعد الفحص."
+  },
+  "extension_description": {
+    "message": "اعثر على ملفات الفيديو والصوت وبث HLS وDASH وأدر التنزيلات في اللوحة الجانبية."
+  },
+  "headers_reuse_denied": {
+    "message": "لا يمكن إعادة استخدام ترويسات الطلب لخادم الفيديو هذا."
+  },
+  "headers_too_many": {
+    "message": "عدد عناوين المقاطع التي ستُطبّق عليها ترويسات الطلب كبير جدًا."
+  },
+  "headers_url_outside_cdn": {
+    "message": "عنوان HLS خارج نطاق طلبات CDN المرصودة."
+  },
+  "html_cancel": {
+    "message": "إلغاء"
+  },
+  "html_cancel_capture": {
+    "message": "إلغاء الالتقاط"
+  },
+  "html_choose_quality": {
+    "message": "اختيار جودة التنزيل"
+  },
+  "html_completed_downloads": {
+    "message": "التنزيلات المكتملة"
+  },
+  "html_detected_media": {
+    "message": "الوسائط المكتشفة"
+  },
+  "html_download_manager": {
+    "message": "مدير التنزيلات"
+  },
+  "html_download_selected_quality": {
+    "message": "التنزيل بالجودة المحددة"
+  },
+  "html_downloading": {
+    "message": "جارٍ التنزيل"
+  },
+  "html_extension_options": {
+    "message": "خيارات الإضافة"
+  },
+  "html_hls_playlist_url": {
+    "message": "عنوان قائمة تشغيل HLS"
+  },
+  "html_loading_downloads": {
+    "message": "جارٍ تحميل سجل التنزيلات…"
+  },
+  "html_media_preview": {
+    "message": "معاينة الوسائط"
+  },
+  "html_needs_attention": {
+    "message": "تتطلب الانتباه"
+  },
+  "html_options": {
+    "message": "الخيارات"
+  },
+  "html_options_title": {
+    "message": "MDownloader · الخيارات"
+  },
+  "html_playback_heading": {
+    "message": "حفظ بيانات التشغيل"
+  },
+  "html_playback_instructions": {
+    "message": "أدخل عنوان HLS وابدأ الالتقاط، ثم شغّل الفيديو من البداية في علامة التبويب الحالية. بعد التقاط كل المقاطع، يمكنك حفظ الفيديو بصيغة MP4."
+  },
+  "html_playback_title": {
+    "message": "MDownloader · حفظ بيانات التشغيل"
+  },
+  "html_popup_title": {
+    "message": "MDownloader · الصفحة الحالية"
+  },
+  "html_rescan": {
+    "message": "إعادة البحث"
+  },
+  "html_resolution_bitrate": {
+    "message": "الدقة ومعدل البت"
+  },
+  "html_save_mp4": {
+    "message": "حفظ MP4"
+  },
+  "html_scanning_page": {
+    "message": "جارٍ البحث عن الوسائط في هذه الصفحة…"
+  },
+  "html_sidepanel_title": {
+    "message": "MDownloader · مدير التنزيلات"
+  },
+  "html_start_capture": {
+    "message": "بدء الالتقاط"
+  },
+  "job_browser_error": {
+    "message": "خطأ في تنزيل المتصفح: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "job_browser_start_failed": {
+    "message": "تعذّر على المتصفح بدء التنزيل."
+  },
+  "job_busy": {
+    "message": "المهمة قيد المعالجة. أعد المحاولة بعد قليل."
+  },
+  "job_cancel_first": {
+    "message": "ألغِ مهمة HLS الجارية أولًا."
+  },
+  "job_delete_after_finish": {
+    "message": "يمكنك حذف الملف بعد اكتمال التنزيل."
+  },
+  "job_delete_failed": {
+    "message": "تعذّر حذف الملف المحفوظ. لا يزال العنصر في القائمة."
+  },
+  "job_file_unknown": {
+    "message": "تعذّر العثور على الملف المحفوظ."
+  },
+  "job_hls_not_found": {
+    "message": "لم يُعثر على مهمة HLS."
+  },
+  "job_hls_unsupported": {
+    "message": "طلب HLS هذا غير مدعوم."
+  },
+  "job_hls_wrong_state": {
+    "message": "لا يمكن معالجة مهمة HLS في حالتها الحالية."
+  },
+  "job_invalid_capture": {
+    "message": "بيانات التشغيل الملتقطة غير صالحة."
+  },
+  "job_invalid_mp4_url": {
+    "message": "عنوان ملف MP4 المؤقت غير صالح."
+  },
+  "job_invalid_request": {
+    "message": "طلب التنزيل غير صالح."
+  },
+  "job_not_found": {
+    "message": "لم يُعثر على المهمة في قائمة التنزيلات."
+  },
+  "job_not_video": {
+    "message": "أعاد الخادم صفحة ويب بدلًا من الفيديو."
+  },
+  "job_permission_changed": {
+    "message": "توقف نقل HLS بسبب تغيّر إذن الوصول إلى الموقع."
+  },
+  "job_playlist_denied": {
+    "message": "رفض الخادم الطلب الأول لقائمة التشغيل (HTTP 403)."
+  },
+  "job_runner_closed": {
+    "message": "أُغلق مستند تنزيل HLS."
+  },
+  "job_source_unknown": {
+    "message": "تعذّر العثور على العنوان الأصلي."
+  },
+  "job_state_changed": {
+    "message": "تغيّرت حالة المهمة. راجع قائمة التنزيلات مجددًا."
+  },
+  "offscreen_justification": {
+    "message": "ادمج مقاطع البث في ملف MP4 وأرسله إلى تنزيلات Chrome."
+  },
+  "opt_advanced": {
+    "message": "إعدادات متقدمة"
+  },
+  "opt_all_sites_check_failed": {
+    "message": "تعذّر التحقق من الوصول إلى جميع المواقع."
+  },
+  "opt_all_sites_denied": {
+    "message": "لم يُمنح إذن الوصول إلى جميع المواقع."
+  },
+  "opt_all_sites_granted": {
+    "message": "سُمح بالوصول إلى جميع المواقع. أعد تشغيل الفيديو."
+  },
+  "opt_all_sites_help": {
+    "message": "اسمح بالوصول إلى جميع المواقع لرصد طلبات التشغيل على مواقع HTTP وHTTPS وخوادم الفيديو."
+  },
+  "opt_all_sites_request_failed": {
+    "message": "تعذّر طلب الوصول إلى جميع المواقع."
+  },
+  "opt_all_sites_revoke_failed": {
+    "message": "تعذّر إلغاء الوصول إلى جميع المواقع."
+  },
+  "opt_all_sites_revoked": {
+    "message": "أُلغي الوصول إلى جميع المواقع."
+  },
+  "opt_allow_all_sites": {
+    "message": "السماح لجميع المواقع"
+  },
+  "opt_allow_network": {
+    "message": "السماح بالرصد"
+  },
+  "opt_cdn_url": {
+    "message": "عنوان خادم فيديو منفصل (اختياري)"
+  },
+  "opt_change_browser_location": {
+    "message": "تغيير مكان التنزيل الافتراضي للمتصفح"
+  },
+  "opt_debug": {
+    "message": "وضع تصحيح الأخطاء"
+  },
+  "opt_debug_help": {
+    "message": "يفتح علامة تبويب منفصلة لتشخيص مشكلات التنزيل."
+  },
+  "opt_default_folder": {
+    "message": "مجلد التنزيل الافتراضي"
+  },
+  "opt_default_folder_saved": {
+    "message": "ستُحفظ التنزيلات الجديدة في المكان الافتراضي."
+  },
+  "opt_display_language": {
+    "message": "لغة العرض"
+  },
+  "opt_download_location": {
+    "message": "مكان التنزيل"
+  },
+  "opt_download_settings": {
+    "message": "إعدادات التنزيل"
+  },
+  "opt_extension": {
+    "message": "الإضافة"
+  },
+  "opt_folder_help": {
+    "message": "أدخل مجلدًا فرعيًا داخل مجلد التنزيل الافتراضي، مثل ⁦MDownloader/Videos⁩. اترك الحقل فارغًا لاستخدام المكان الافتراضي."
+  },
+  "opt_folder_read_failed": {
+    "message": "تعذّر قراءة مكان التنزيل."
+  },
+  "opt_folder_save_failed": {
+    "message": "تعذّر حفظ مكان التنزيل."
+  },
+  "opt_folder_saved": {
+    "message": "ستُحفظ التنزيلات الجديدة في هذا المجلد الفرعي."
+  },
+  "opt_invalid_folder": {
+    "message": "أدخل مسار مجلد فرعي من دون حرف محرك أقراص أو إحالة إلى مجلد أعلى."
+  },
+  "opt_invalid_site_url": {
+    "message": "أدخل عنوان موقع يبدأ بـ ⁦http://⁩ أو ⁦https://⁩."
+  },
+  "opt_language": {
+    "message": "اللغة"
+  },
+  "opt_language_auto": {
+    "message": "لغة النظام الافتراضية"
+  },
+  "opt_language_save_failed": {
+    "message": "تعذّر حفظ لغة العرض."
+  },
+  "opt_network_denied": {
+    "message": "لم يُمنح إذن الرصد."
+  },
+  "opt_network_granted": {
+    "message": "سُمح بالرصد. أعد تشغيل الفيديو."
+  },
+  "opt_network_help": {
+    "message": "للسماح بالوصول إلى مواقع محددة، أدخل عناوينها أدناه ثم أعد تشغيل الفيديو."
+  },
+  "opt_network_partially_revoked": {
+    "message": "أُلغيت بعض أذونات الرصد."
+  },
+  "opt_network_permissions": {
+    "message": "أذونات الرصد عبر الشبكة"
+  },
+  "opt_network_request_failed": {
+    "message": "تعذّر طلب إذن الرصد."
+  },
+  "opt_network_revoke_failed": {
+    "message": "تعذّر إلغاء إذن الرصد."
+  },
+  "opt_network_revoked": {
+    "message": "أُلغيت أذونات الرصد للعناوين المحددة."
+  },
+  "opt_network_sites_revoke_failed": {
+    "message": "تعذّر إلغاء أذونات الرصد للعناوين المحددة."
+  },
+  "opt_open_browser_settings_failed": {
+    "message": "تعذّر فتح إعدادات التنزيل في المتصفح."
+  },
+  "opt_page_title": {
+    "message": "استخدام عنوان الصفحة في أسماء الملفات المُنزّلة"
+  },
+  "opt_page_title_help": {
+    "message": "يفصل بشرطة سفلية بين عنوان الصفحة واسم الملف الأصلي. إذا كان الاسم الأصلي index، يُستخدم عنوان الصفحة وحده."
+  },
+  "opt_page_title_short": {
+    "message": "عنوان الصفحة في أسماء الملفات"
+  },
+  "opt_reload": {
+    "message": "إعادة تحميل الإضافة"
+  },
+  "opt_revoke_all_sites": {
+    "message": "إلغاء الوصول إلى جميع المواقع"
+  },
+  "opt_revoke_network": {
+    "message": "إلغاء الإذن"
+  },
+  "opt_save_location": {
+    "message": "حفظ المكان"
+  },
+  "opt_setting_disabled": {
+    "message": "أُوقف إعداد «$arg1$».",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_enabled": {
+    "message": "فُعّل إعداد «$arg1$».",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_read_failed": {
+    "message": "تعذّرت قراءة إعداد «$arg1$».",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_setting_save_failed": {
+    "message": "تعذّر حفظ إعداد «$arg1$».",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_site_url": {
+    "message": "عنوان الموقع الذي يعرض الفيديو"
+  },
+  "opt_version": {
+    "message": "الإصدار"
+  },
+  "request_failed": {
+    "message": "تعذّر إكمال الطلب."
+  },
+  "request_unsupported": {
+    "message": "هذا الطلب غير مدعوم."
+  },
+  "stream_dash_doctype": {
+    "message": "ملفات DASH MPD التي تحتوي على إعلان DOCTYPE غير مدعومة."
+  },
+  "stream_dash_empty_segments": {
+    "message": "قائمة مقاطع DASH فارغة أو ناقصة."
+  },
+  "stream_dash_encrypted": {
+    "message": "مسارات DASH المشفّرة أو المحمية بتقنية DRM غير مدعومة."
+  },
+  "stream_dash_ept_delta": {
+    "message": "ضبط DASH eptDelta لبداية المقطع الأول غير مدعوم."
+  },
+  "stream_dash_index_limit": {
+    "message": "يتجاوز نطاق فهرس مقاطع DASH حد التخزين."
+  },
+  "stream_dash_index_same_file": {
+    "message": "لا يُدعم SegmentBase إلا عندما يكون فهرس DASH SIDX في ملف الوسائط نفسه."
+  },
+  "stream_dash_index_truncated": {
+    "message": "فهرس مقاطع DASH مبتور."
+  },
+  "stream_dash_init_range_missing": {
+    "message": "مقطع تهيئة DASH لا يتضمن نطاق بايتات."
+  },
+  "stream_dash_init_url_missing": {
+    "message": "عنوان URL لمقطع تهيئة DASH مفقود."
+  },
+  "stream_dash_invalid_addressing": {
+    "message": "طريقة عنونة مقاطع DASH غير صالحة."
+  },
+  "stream_dash_invalid_duration": {
+    "message": "مدة تشغيل DASH غير صالحة."
+  },
+  "stream_dash_invalid_index_range": {
+    "message": "نطاق فهرس DASH SIDX مفقود أو أكبر من اللازم."
+  },
+  "stream_dash_invalid_integer": {
+    "message": "قيمة $arg1$ في DASH غير صالحة.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_invalid_mpd": {
+    "message": "لم يُعد الخادم ملف DASH MPD صالحًا."
+  },
+  "stream_dash_invalid_segment_url": {
+    "message": "عنوان URL لمقطع DASH غير صالح."
+  },
+  "stream_dash_invalid_template": {
+    "message": "قالب عناوين DASH غير مدعوم."
+  },
+  "stream_dash_list_timeline_mismatch": {
+    "message": "عدد الإدخالات في قائمة عناوين مقاطع DASH يختلف عنه في المخطط الزمني."
+  },
+  "stream_dash_mpd_size": {
+    "message": "يتجاوز ملف DASH MPD الحد المسموح به للحجم."
+  },
+  "stream_dash_no_addressing": {
+    "message": "لا يحتوي ملف DASH MPD على طريقة عنونة مقاطع مدعومة."
+  },
+  "stream_dash_no_track": {
+    "message": "لم يُعثر على مسار MP4 مدعوم يستخدم برنامج الترميز $arg1$ في ملف DASH MPD.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_dash_overlapping_timeline": {
+    "message": "تتداخل بعض الإدخالات في المخطط الزمني لمقاطع DASH."
+  },
+  "stream_dash_repeat_end_missing": {
+    "message": "وقت انتهاء أحد التكرارات مفقود في المخطط الزمني لمقاطع DASH."
+  },
+  "stream_dash_segment_scheme": {
+    "message": "يجب أن تستخدم عناوين مقاطع DASH بروتوكول HTTP أو HTTPS وألا تتضمن بيانات اعتماد."
+  },
+  "stream_dash_segment_url_missing": {
+    "message": "عنوان URL لأحد مقاطع DASH مفقود."
+  },
+  "stream_dash_sidx_header_truncated": {
+    "message": "ترويسة DASH SIDX مبتورة."
+  },
+  "stream_dash_sidx_hierarchical": {
+    "message": "فهارس DASH SIDX الهرمية غير مدعومة."
+  },
+  "stream_dash_sidx_invalid_segments": {
+    "message": "قائمة مقاطع DASH SIDX غير صالحة."
+  },
+  "stream_dash_sidx_missing": {
+    "message": "لا يحتوي نطاق فهرس DASH على صندوق SIDX صالح."
+  },
+  "stream_dash_sidx_range_mismatch": {
+    "message": "استجابة DASH SIDX لا تطابق نطاق البايتات المطلوب."
+  },
+  "stream_dash_sidx_segment_invalid": {
+    "message": "حجم مقطع DASH SIDX أو مدته غير صالح."
+  },
+  "stream_dash_sidx_segment_range": {
+    "message": "نطاق بايتات أحد مقاطع DASH SIDX أكبر من اللازم."
+  },
+  "stream_dash_sidx_version": {
+    "message": "إصدار DASH SIDX غير مدعوم."
+  },
+  "stream_dash_single_period": {
+    "message": "لا يُدعم إلا DASH VOD الذي يحتوي على عنصر Period واحد."
+  },
+  "stream_dash_static_only": {
+    "message": "لا يُدعم إلا DASH VOD الثابت."
+  },
+  "stream_dash_template_missing": {
+    "message": "لم يُعثر على قالب عناوين لمقاطع DASH مدعوم."
+  },
+  "stream_dash_template_not_unique": {
+    "message": "قالب DASH لا ينشئ عنوان URL فريدًا لكل مقطع."
+  },
+  "stream_dash_too_many_segments": {
+    "message": "يحتوي مسار DASH على أكثر من 5,000 مقطع."
+  },
+  "stream_dash_too_many_tracks": {
+    "message": "يحتوي ملف DASH MPD على أكثر من 200 مسار فيديو وصوت إجمالًا."
+  },
+  "stream_dash_xlink_unsupported": {
+    "message": "ملفات MPD الخاصة بـ DASH التي تحمّل روابط XLink خارجية غير مدعومة."
+  },
+  "stream_download_failed": {
+    "message": "فشل تنزيل البث."
+  },
+  "stream_hls_duplicate_byte_range": {
+    "message": "تم تحديد نطاق بايتات HLS أكثر من مرة."
+  },
+  "stream_hls_empty_segments": {
+    "message": "قائمة مقاطع HLS فارغة أو ناقصة."
+  },
+  "stream_hls_encrypted": {
+    "message": "بث HLS المشفّر غير مدعوم."
+  },
+  "stream_hls_init_scheme": {
+    "message": "لا تُدعم إلا عناوين مقاطع التهيئة التي تستخدم HTTP أو HTTPS."
+  },
+  "stream_hls_invalid_byte_range": {
+    "message": "نطاق البايتات أو إزاحة البداية في HLS غير صالحة."
+  },
+  "stream_hls_invalid_init_attributes": {
+    "message": "سمات مقطع تهيئة HLS غير صالحة."
+  },
+  "stream_hls_invalid_master": {
+    "message": "قائمة تشغيل HLS الرئيسية غير صالحة أو غير مدعومة."
+  },
+  "stream_hls_invalid_master_attributes": {
+    "message": "سمات جودة HLS غير صالحة."
+  },
+  "stream_hls_invalid_playlist_response": {
+    "message": "أعاد الخادم استجابة أخرى بدل قائمة تشغيل HLS."
+  },
+  "stream_hls_invalid_segment_duration": {
+    "message": "مدة مقطع HLS غير صالحة."
+  },
+  "stream_hls_invalid_sequence": {
+    "message": "الرقم التسلسلي لمقطع HLS غير صالح."
+  },
+  "stream_hls_invalid_target_duration": {
+    "message": "المدة المستهدفة لمقاطع HLS غير صالحة."
+  },
+  "stream_hls_no_variants": {
+    "message": "لم يُعثر على أي خيار جودة HLS مدعوم. قد يتطلب البث صوتًا منفصلًا أو برنامج ترميز غير مدعوم."
+  },
+  "stream_hls_partial_only": {
+    "message": "قوائم HLS التي تحتوي على مقاطع جزئية فقط غير مدعومة."
+  },
+  "stream_hls_segment_duration_missing": {
+    "message": "مدة مقطع HLS مفقودة."
+  },
+  "stream_hls_segment_scheme": {
+    "message": "لا تُدعم إلا عناوين المقاطع التي تستخدم HTTP أو HTTPS."
+  },
+  "stream_hls_segment_url_missing": {
+    "message": "عنوان URL لأحد المقاطع مفقود."
+  },
+  "stream_hls_target_duration_missing": {
+    "message": "المدة المستهدفة للمقاطع مفقودة من قائمة HLS للبث المباشر."
+  },
+  "stream_hls_too_many_segments": {
+    "message": "تحتوي قائمة تشغيل HLS على أكثر من 5,000 مقطع."
+  },
+  "stream_hls_too_many_variants": {
+    "message": "تحتوي قائمة تشغيل HLS على أكثر من 100 خيار للجودة."
+  },
+  "stream_hls_ts_only": {
+    "message": "لا تُدعم إلا قوائم HLS المتصلة بتنسيق MPEG-TS وبمستوى جودة واحد."
+  },
+  "stream_hls_unsupported_media": {
+    "message": "قائمة وسائط HLS هذه غير مدعومة."
+  },
+  "stream_hls_unsupported_playlist": {
+    "message": "قائمة تشغيل HLS هذه غير مدعومة."
+  },
+  "stream_hls_variant_bitrate": {
+    "message": "معدل البت لجودة HLS غير صالح."
+  },
+  "stream_hls_variant_info_missing": {
+    "message": "لا توجد سمات مطابقة لعنوان URL لجودة HLS."
+  },
+  "stream_hls_variant_not_found": {
+    "message": "لم يتم العثور على جودة HLS المحددة في قائمة التشغيل."
+  },
+  "stream_hls_variant_url_missing": {
+    "message": "عنوان URL لجودة HLS مفقود."
+  },
+  "stream_hls_vod_end_required": {
+    "message": "لا تُدعم إلا قوائم HLS VOD التي تحتوي على علامة نهاية."
+  },
+  "stream_host_permission": {
+    "message": "اسمح بالوصول إلى خادم البث $arg1$ في النافذة المنبثقة.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_challenge": {
+    "message": "يتطلب الخادم التحقق من المتصفح لتنزيل هذا البث (HTTP 403)."
+  },
+  "stream_http_forbidden": {
+    "message": "رفض الخادم طلب تنزيل البث (HTTP 403)."
+  },
+  "stream_http_missing_resource": {
+    "message": "تعذّر جلب مورد البث (HTTP $arg1$).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_range_mismatch": {
+    "message": "أعاد الخادم نطاق بايتات مختلفًا عن المطلوب لمقطع الوسائط."
+  },
+  "stream_http_resource_limit": {
+    "message": "تجاوز مورد البث حد التخزين."
+  },
+  "stream_http_server_error": {
+    "message": "أعاد خادم الفيديو خطأ (HTTP $arg1$).",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "stream_http_timeout": {
+    "message": "استغرق خادم الفيديو وقتًا طويلًا للرد."
+  },
+  "stream_invalid_host": {
+    "message": "عنوان URL لخادم البث غير مدعوم."
+  },
+  "stream_invalid_mpeg_ts": {
+    "message": "مقطع فيديو MPEG-TS غير صالح."
+  },
+  "stream_live_segment_expired": {
+    "message": "انتهت صلاحية أحد مقاطع قائمة البث المباشر قبل تنزيله."
+  },
+  "stream_no_segments": {
+    "message": "لا توجد مقاطع وسائط لحفظها."
+  },
+  "stream_playback_playlist_url": {
+    "message": "أدخل عنوان قائمة تشغيل يبدأ ببروتوكول HTTP أو HTTPS."
+  },
+  "stream_playback_raw_bytes_missing": {
+    "message": "لم يوفّر Chrome البايتات الأصلية لمقطع الفيديو."
+  },
+  "stream_playback_response_limit": {
+    "message": "تتجاوز استجابة التشغيل حد التخزين."
+  },
+  "stream_playback_segments_missing": {
+    "message": "لم يتم تلقي بعض مقاطع الفيديو بعد."
+  },
+  "stream_playback_storage_limit": {
+    "message": "تم تجاوز حد التخزين المؤقت لبث HLS."
+  },
+  "stream_playback_ts_incomplete": {
+    "message": "مقطع فيديو MPEG-TS فارغ أو مبتور."
+  },
+  "stream_playback_ts_only": {
+    "message": "لا تُدعم إلا مقاطع HLS بتنسيق MPEG-TS."
+  },
+  "stream_playback_unknown_segment": {
+    "message": "مقطع الفيديو هذا غير موجود في قائمة التشغيل."
+  },
+  "stream_preview_empty_segment": {
+    "message": "مقطع المعاينة فارغ."
+  },
+  "stream_preview_host_permission": {
+    "message": "اسمح بالوصول إلى خادم الفيديو لتشغيل المعاينة."
+  },
+  "stream_remux_codecs": {
+    "message": "لا يمكن دمج ترميز الفيديو أو الصوت هذا في ملف MP4."
+  },
+  "stream_remux_decoder_config": {
+    "message": "تعذّرت قراءة إعدادات برنامج الترميز لمسار الفيديو."
+  },
+  "stream_remux_no_packets": {
+    "message": "لا يحتوي مسار HLS على حزم وسائط."
+  },
+  "stream_runner_busy": {
+    "message": "هناك عملية تنزيل بث جارية بالفعل."
+  },
+  "stream_runner_disconnected": {
+    "message": "انقطع الاتصال بمهمة تنزيل البث."
+  },
+  "stream_runner_unavailable": {
+    "message": "لا يمكن لهذا المتصفح بدء معالجة البث."
+  },
+  "stream_segment_incomplete": {
+    "message": "أحد مقاطع الوسائط فارغ أو مبتور."
+  },
+  "stream_start_failed": {
+    "message": "تعذّر بدء تنزيل البث."
+  },
+  "stream_temporary_storage_limit": {
+    "message": "تم تجاوز حد التخزين المؤقت البالغ 2 GiB."
+  },
+  "stream_too_many_segments": {
+    "message": "يوجد أكثر من 5,000 مقطع وسائط."
+  },
+  "view_action_cancel": {
+    "message": "إلغاء"
+  },
+  "view_action_delete_all": {
+    "message": "حذف الكل"
+  },
+  "view_action_delete": {
+    "message": "حذف"
+  },
+  "view_action_finish": {
+    "message": "إيقاف وحفظ"
+  },
+  "view_action_pause": {
+    "message": "إيقاف مؤقت"
+  },
+  "view_action_resume": {
+    "message": "استئناف"
+  },
+  "view_action_show": {
+    "message": "عرض في المجلّد"
+  },
+  "view_candidate_complete": {
+    "message": "اكتمل التنزيل"
+  },
+  "view_candidate_downloading": {
+    "message": "جارٍ التنزيل"
+  },
+  "view_copy_failed": {
+    "message": "تعذّر نسخ الرابط."
+  },
+  "view_copy_link": {
+    "message": "نسخ الرابط"
+  },
+  "view_copy_success": {
+    "message": "نُسخ الرابط."
+  },
+  "view_delete_file_success": {
+    "message": "حُذف الملف المحفوظ وإدخاله من القائمة."
+  },
+  "view_delete_hint": {
+    "message": "انقر لإزالة الإدخال من القائمة. اضغط مطوّلًا على Shift أثناء النقر لحذف الملف المحفوظ أيضًا إذا اكتمل تنزيله."
+  },
+  "view_devtools_panel": {
+    "message": "MDownloader"
+  },
+  "view_diagnostics": {
+    "message": "تشخيص التنزيلات"
+  },
+  "view_diagnostics_http": {
+    "message": "HTTP $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_previous": {
+    "message": "الاستجابة السابقة"
+  },
+  "view_diagnostics_received": {
+    "message": "المقاطع المستلمة: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_diagnostics_title": {
+    "message": "MDownloader · تشخيص التنزيلات"
+  },
+  "view_download": {
+    "message": "تنزيل"
+  },
+  "view_download_check": {
+    "message": "التحقّق من حالة التنزيل"
+  },
+  "view_download_check_manager": {
+    "message": "تحقّق من حالة المهمة في مدير التنزيلات."
+  },
+  "view_download_failed_start": {
+    "message": "تعذّر بدء التنزيل"
+  },
+  "view_download_queueing": {
+    "message": "جارٍ إضافة التنزيل إلى قائمة الانتظار…"
+  },
+  "view_download_started": {
+    "message": "بدأ التنزيل"
+  },
+  "view_download_unsupported": {
+    "message": "$arg1$ · التنزيل غير متاح",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_download_with_permission": {
+    "message": "السماح بالوصول إلى الخادم والتنزيل"
+  },
+  "view_format_unknown": {
+    "message": "تنسيق غير معروف"
+  },
+  "view_job_check_browser": {
+    "message": "تحقّق من هذه المهمة في قائمة تنزيلات المتصفّح."
+  },
+  "view_job_file_missing": {
+    "message": "تعذّر العثور على الملف المحفوظ."
+  },
+  "view_job_mp4_muxing": {
+    "message": "جارٍ تجميع ملف MP4…"
+  },
+  "view_job_mp4_saving": {
+    "message": "جارٍ حفظ ملف MP4…"
+  },
+  "view_job_playlist_check": {
+    "message": "جارٍ التحقق من قائمة التشغيل…"
+  },
+  "view_job_progress": {
+    "message": "تقدّم تنزيل $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_job_rescan": {
+    "message": "أعد فحص الصفحة الأصلية عند الحاجة."
+  },
+  "view_job_server_denied": {
+    "message": "استخدم عنوانًا يسمح خادمه بالتنزيل المباشر."
+  },
+  "view_jobs_active": {
+    "message": "جارٍ التنزيل ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_attention": {
+    "message": "يتطلّب مراجعة ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_complete": {
+    "message": "مكتمل ($arg1$)",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_jobs_empty": {
+    "message": "لا يوجد سجلّ تنزيلات."
+  },
+  "view_jobs_failed": {
+    "message": "تعذّر تحميل سجلّ التنزيلات."
+  },
+  "view_link_loading": {
+    "message": "جارٍ البحث عن العنوان…"
+  },
+  "view_link_unavailable": {
+    "message": "العنوان الأصلي غير متاح."
+  },
+  "view_metric_bytes": {
+    "message": "$arg1$ بايت",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_average_rate": {
+    "message": "المتوسط $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_kilobytes": {
+    "message": "$arg1$ كيلوبايت",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_megabytes": {
+    "message": "$arg1$ ميغابايت",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_metric_progress": {
+    "message": "$arg1$ · $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_metric_rate": {
+    "message": "$arg1$/ث",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_options_failed": {
+    "message": "تعذّر فتح صفحة الإعدادات."
+  },
+  "view_panel_failed": {
+    "message": "تعذّر فتح اللوحة الجانبية. اختر MDownloader من قائمة اللوحة الجانبية في المتصفّح."
+  },
+  "view_panel_use_menu": {
+    "message": "اختر MDownloader من قائمة اللوحة الجانبية في المتصفّح."
+  },
+  "view_permission_denied": {
+    "message": "لم يُمنح إذن الوصول إلى خادم الفيديو."
+  },
+  "view_permission_failed": {
+    "message": "تعذّر طلب إذن الوصول إلى خادم الفيديو."
+  },
+  "view_playback_busy": {
+    "message": "هناك عملية أخرى لالتقاط بيانات التشغيل أو حفظها قيد التنفيذ."
+  },
+  "view_playback_canceled": {
+    "message": "أُلغي الالتقاط."
+  },
+  "view_playback_collected": {
+    "message": "تم استلام كل مقاطع الفيديو. انقر على «حفظ MP4»."
+  },
+  "view_playback_collecting": {
+    "message": "جارٍ جمع المقاطع المستلمة أثناء التشغيل في علامة التبويب هذه."
+  },
+  "view_playback_coverage": {
+    "message": "المقاطع الملتقطة: $arg1$ / $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_playback_page_changed": {
+    "message": "توقّف الالتقاط بسبب تغيّر الصفحة."
+  },
+  "view_playback_preparing": {
+    "message": "جارٍ إعداد الالتقاط…"
+  },
+  "view_playback_saving": {
+    "message": "بدأ حفظ ملف MP4. يمكنك إغلاق علامة تبويب التشغيل ومتابعة الحالة في مدير التنزيلات."
+  },
+  "view_playback_waiting": {
+    "message": "في انتظار قائمة التشغيل المحدّدة في علامة التبويب هذه."
+  },
+  "view_preview": {
+    "message": "معاينة"
+  },
+  "view_preview_loading": {
+    "message": "جارٍ تحميل المعاينة…"
+  },
+  "view_preview_still_alt": {
+    "message": "صورة معاينة الفيديو"
+  },
+  "view_quality_allow_server": {
+    "message": "اسمح بالوصول إلى خادم الفيديو المحدّد."
+  },
+  "view_quality_canceled": {
+    "message": "أُلغي اختيار الجودة."
+  },
+  "view_quality_checking": {
+    "message": "جارٍ التحقق من جودة فيديو HLS…"
+  },
+  "view_quality_details": {
+    "message": "$arg1$ · $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "view_quality_no_resolution": {
+    "message": "الدقة غير معروفة"
+  },
+  "view_scan_empty": {
+    "message": "لم يُعثر على وسائط قابلة للتنزيل."
+  },
+  "view_scan_found": {
+    "message": "التنزيلات المتاحة: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_scan_in_progress": {
+    "message": "جارٍ البحث عن الوسائط في الصفحة الحالية…"
+  },
+  "view_scan_no_tab": {
+    "message": "تعذّر تحديد علامة التبويب الحالية."
+  },
+  "view_scan_page_changed": {
+    "message": "تغيّرت الصفحة. افحصها مرة أخرى."
+  },
+  "view_scan_restricted": {
+    "message": "لا يمكن فحص هذه الصفحة."
+  },
+  "view_stage_browser_save": {
+    "message": "الحفظ على القرص"
+  },
+  "view_stage_master_access": {
+    "message": "الوصول إلى قائمة التشغيل"
+  },
+  "view_stage_master_parse": {
+    "message": "تحليل قائمة التشغيل"
+  },
+  "view_stage_master_request": {
+    "message": "طلب قائمة التشغيل الأولية"
+  },
+  "view_stage_media_parse": {
+    "message": "تحليل قائمة المقاطع"
+  },
+  "view_stage_mp4_mux": {
+    "message": "تجميع ملف MP4"
+  },
+  "view_stage_segments_access": {
+    "message": "الوصول إلى خادم المقاطع"
+  },
+  "view_stage_segments_transfer": {
+    "message": "طلب مقاطع الفيديو"
+  },
+  "view_stage_temporary_storage": {
+    "message": "إعداد التخزين المؤقت"
+  },
+  "view_stage_unknown": {
+    "message": "مرحلة غير معروفة"
+  },
+  "view_stage_variant_access": {
+    "message": "الوصول إلى قائمة تشغيل الجودة المحدّدة"
+  },
+  "view_stage_variant_request": {
+    "message": "طلب قائمة تشغيل الجودة المحدّدة"
+  },
+  "view_stage_variant_selection": {
+    "message": "اختيار الجودة"
+  },
+  "view_state_canceled": {
+    "message": "أُلغي"
+  },
+  "view_state_failed": {
+    "message": "فشل التنزيل"
+  },
+  "view_state_paused": {
+    "message": "متوقف مؤقتًا"
+  },
+  "view_state_starting": {
+    "message": "جارٍ البدء"
+  },
+  "view_state_unknown": {
+    "message": "يتطلّب مراجعة"
+  },
+  "view_unit_kilobits": {
+    "message": "$arg1$ كيلوبت/ث",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_unit_megabits": {
+    "message": "$arg1$ ميغابت/ث",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opt_download_date_time": {
+    "message": "تضمين التاريخ والوقت في اسم الملف"
+  },
+  "opt_download_date_time_help": {
+    "message": "إضافة الوقت المحلي لبدء التنزيل قبل الامتداد: page_file_2026-11-07_09-08-06.mp4."
+  },
+  "view_job_segments": {
+    "message": "المقاطع: $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_preview_playback_failed": {
+    "message": "فشل تشغيل المعاينة"
+  },
+  "view_download_quality_hint": {
+    "message": "$LABEL$ (Shift+نقر: اختيار الجودة)",
+    "placeholders": {
+      "label": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_playback": {
+    "message": "تتطلب بعض مقاطع الفيديو $actions$ لتحديثها وتنزيلها.",
+    "placeholders": {
+      "actions": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_stream_retry": {
+    "message": "إذا فشل التنزيل أو المعاينة، يُرجى $reload$.",
+    "placeholders": {
+      "reload": {
+        "content": "$1"
+      }
+    }
+  },
+  "hint_reload_page": {
+    "message": "تحديث الصفحة"
+  },
+  "hint_playback_actions": {
+    "message": "تشغيلها أو تحريك شريط التقدم"
+  },
+  "view_action_snapshot": {
+    "message": "حفظ الجزء المستلم (متابعة التنزيل)"
+  },
+  "job_snapshot_busy": {
+    "message": "جارٍ بالفعل حفظ الجزء المستلم."
+  },
+  "job_snapshot_unavailable": {
+    "message": "لا يوجد جزء مكتمل متاح بعد أو تغيرت حالة المهمة."
+  },
+  "job_snapshot_metadata": {
+    "message": "لا يحتوي الجزء المستلم على بيانات تشغيل كافية. حاول مجددًا بعد استلام مزيد من البيانات."
+  },
+  "job_snapshot_codecs": {
+    "message": "لا تسمح برامج ترميز هذا الملف بحفظ ملف جزئي."
+  },
+  "job_snapshot_source_changed": {
+    "message": "تغير الملف المصدر أو تعذر التحقق من النطاق المطلوب."
+  },
+  "view_job_snapshot_muxing": {
+    "message": "جارٍ إعداد الملف الجزئي"
+  },
+  "view_job_snapshot_saving": {
+    "message": "جارٍ حفظ الملف الجزئي"
+  },
+  "view_action_snapshot_file": {
+    "message": "حفظ الجزء المستلم (متابعة التنزيل · نقل بيانات إضافية)"
+  },
+  "opt_debug_logging": {
+    "message": "تفعيل سجل التصحيح التفصيلي"
+  },
+  "opt_debug_logging_help": {
+    "message": "يعرض رموز المراحل الآمنة والمدد والأعداد في وحدة تحكم الإضافة. يحتفظ بآخر $LIMIT$ إدخالاً في الذاكرة لكل سياق ويمسحها عند الإيقاف. لا يسجل العناوين أو الترويسات أو نصوص الأخطاء.",
+    "placeholders": {
+      "limit": {
+        "content": "$1"
+      }
+    }
+  }
+}

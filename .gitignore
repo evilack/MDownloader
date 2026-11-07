@@ -1,0 +1,23 @@
+# Local app and editor state
+.codex/
+.idea/
+.vscode/
+
+# Generated verification, captures, and temporary outputs
+artifacts/
+node_modules/
+__pycache__/
+*.py[cod]
+*.log
+*.tmp
+*.bak
+*.zip
+*.crx
+*.pem
+.env
+.env.*
+
+# Operating system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini

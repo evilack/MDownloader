@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="html_sidepanel_title">MDownloader</title>
+<link rel="stylesheet" href="style.css">
+<body class="panel">
+<header class="brand brand-with-options"><strong>MDownloader</strong></header>
+<main>
+  <h1 id="diagnostics-title" data-i18n="view_diagnostics" hidden></h1>
+  <section id="panel-media" hidden>
+    <p class="notice" role="status" data-candidate-status></p>
+    <ul id="candidates" data-i18n-aria-label="html_detected_media"></ul>
+    <div class="actions">
+      <button id="scan" type="button" data-i18n-aria-label="html_rescan" data-i18n-title="html_rescan">
+        <img class="button-icon" src="icons/refresh.png" alt="" width="20" height="20">
+      </button>
+    </div>
+  </section>
+  <hr id="panel-media-divider" hidden>
+  <p id="status" class="notice" role="status"></p>
+  <p id="empty" class="muted" data-i18n="html_loading_downloads"></p>
+  <section id="attention" hidden><header class="job-section-heading"><h2 data-i18n="html_needs_attention"></h2></header><ul></ul></section>
+  <section id="active" hidden><header class="job-section-heading"><h2 data-i18n="html_downloading"></h2></header><ul></ul></section>
+  <section id="complete" hidden><header class="job-section-heading"><h2 data-i18n="html_completed_downloads"></h2></header><ul></ul></section>
+</main>
+<script type="module" src="sidepanel.js"></script>
+</body>
+</html>

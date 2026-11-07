@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "reactPlayback": {
+    "sourceField": "playbackUrl",
+    "pageField": "pageUrl",
+    "typeField": "type",
+    "liveValue": "livestream",
+    "metadataPathPattern": "^/api/v2/channels/[^/]+/info$",
+    "refresh": {
+      "sourcePath": ["playback_url"],
+      "identityPath": ["slug"],
+      "livePath": ["livestream", "is_live"],
+      "streamIdPath": ["livestream", "id"]
+    }
+  },
+  "mouflon": {
+    "configAssignment": "window.CONFIG_PRELOADER_SSR_DATA",
+    "configPath": ["initialStaticConfig", "initialStatic"],
+    "templateField": "hlsStreamUrlTemplate",
+    "hostField": "hlsStreamHost",
+    "resolutionPath": ["featuresConfig", "features", "hlsPlayer", "desktopResolutionType"],
+    "lowLatencyPath": ["featuresConfig", "features", "hlsPlayer", "lowLatencyMode"],
+    "runtimeConfigPath": ["configV3", "initialCommon"],
+    "runtimeResolutionPath": ["featuresConfig", "features", "hlsPlayer", "desktopResolutionType"],
+    "runtimeLowLatencyPath": ["featuresConfig", "features", "hlsPlayer", "lowLatencyMode"],
+    "metadataPathPattern": "^/api/front/v2/broadcasts/[^/]+$",
+    "metadataUrlTemplate": "/api/front/v2/broadcasts/{modelId}",
+    "playerIdentityProperty": "modelId",
+    "playerMarkerProperty": "renderVideoElement",
+    "maxPlayerAncestors": 8,
+    "maxComponentAncestors": 128,
+    "suffixSeparator": "_",
+    "latencyParameter": { "name": "playlistType", "value": "lowLatency" }
+  }
+}

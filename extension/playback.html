@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="html_playback_title">MDownloader</title>
+  <link rel="stylesheet" href="playback.css">
+  <script type="module" src="playback.js"></script>
+</head>
+<body>
+  <main>
+    <h1 data-i18n="html_playback_heading"></h1>
+    <p id="instructions" data-i18n="html_playback_instructions"></p>
+    <form id="capture">
+      <label for="source" data-i18n="html_hls_playlist_url"></label>
+      <input id="source" type="url" dir="ltr" required aria-describedby="instructions" spellcheck="false">
+      <button id="start" type="submit" data-i18n="html_start_capture"></button>
+      <button id="stop" type="button" data-i18n="html_cancel_capture" disabled></button>
+      <button id="save" type="button" data-i18n="html_save_mp4" disabled></button>
+    </form>
+    <p id="coverage" hidden></p>
+    <p id="status" role="status"></p>
+  </main>
+</body>
+</html>
