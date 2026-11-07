@@ -119,7 +119,7 @@ Partial saving can fail when essential media data is missing or the container/co
 
 ## Download manager
 
-- Open the manager from the popup. Received bytes appear immediately above speed beside the action buttons. The thin progress bar below retains its original 8px height and represents progress when the total is known.
+- Open the manager from the popup. Received bytes appear immediately above speed in one rounded box beside the action buttons, matching the popup. The thin progress bar below retains its original 8px height and represents progress when the total is known.
 - Pause or resume a direct browser download when the browser reports that it supports the action.
 - Cancel a selected active job independently of other jobs.
 - Use **Show in folder** for a completed browser download.
