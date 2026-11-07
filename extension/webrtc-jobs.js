@@ -3,6 +3,7 @@ import {WebRtcPageTask} from './lib/webrtc-page.js';
 import {WebRtcQualityTask} from './lib/webrtc-quality-task.js';
 import {RuntimePolicy} from './lib/runtime-policy.js';
 import {LocalizedError, ReceivedError} from './lib/i18n.js';
+import {ResolveCandidate} from './detection.js';
 const Prefix = 'webrtc-control:';
 const CancelPrefix = 'webrtc-canceled:';
 const WasCanceled = async Id => (await chrome.storage.session.get(CancelPrefix + Id))[CancelPrefix + Id] === true;
@@ -31,7 +32,6 @@ async function QualityPage(Source, Fields)
 
 export async function WebRtcQualities(Input)
 {
-	const {ResolveCandidate} = await import('./detection.js');
 	const Item = await ResolveCandidate(Input.tabId, Input.scanId, Input.candidateId, Input.scope);
 	if (Item.format !== 'WEBRTC') throw new LocalizedError('candidate_changed');
 	return (await QualityPage({...Item, tabId: Input.tabId}, {action: 'list'})).qualities;
