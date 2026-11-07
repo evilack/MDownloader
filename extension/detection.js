@@ -127,7 +127,7 @@ export async function FindMedia(TabId)
 	.flatMap(Item => [Item.url, ...(Item.variants ?? [])]).map(MediaResourceKey));
 	const IsCurrentSource = Item => (!Item.page || Item.page === Page) && (!Item.declaredPage || Item.declaredPage === Page);
 	Observed = Observed.filter(IsCurrentSource);
-	if (!SingleWebRtc && await DiscoverNativeHls(TabId, Frame.documentId, Page, Sources, Observed))
+	if (await DiscoverNativeHls(TabId, Frame.documentId, Page, Sources, Observed))
 	{
 		Observed = (await NetworkCandidates(TabId, Frame.documentId)).filter(IsCurrentSource);
 	}
@@ -135,7 +135,13 @@ export async function FindMedia(TabId)
 	// 응답 헤더가 카드 역할 메시지보다 먼저 도착해도, 현재 DOM이 미리보기 전용임을
 	// 확인한 중간 상태의 미분류 주소는 노출하지 않습니다. 다른 문서의 본편은 유지합니다.
 	const AuxiliarySources = new Set((Frame.result.auxiliarySources ?? []).map(MediaResourceKey));
+	// WebRTC 유무로 같은 문서의 HLS 전체를 숨기지 않습니다. 사용자가 확인한
+	// 흐린 대체 프로필만 제외하고, 명시적인 본편 연결이 있으면 그 판정을 우선합니다.
+	const IsBlurredPreview = (Url, DocumentId) => WebRtcItems.length > 0 && DocumentId === Frame.documentId &&
+		Context.byDocument.get(DocumentId)?.get(MediaResourceKey(Url)) !== 'playback' &&
+		/(?:^|[_/])\d+p_blurred(?:[_.-]|$)/i.test(new URL(Url).pathname);
 	const IsAuxiliary = (Url, DocumentId, TimeOrigin, Format) => IsAuxiliaryMedia(Context, Url, DocumentId, TimeOrigin) ||
+	IsBlurredPreview(Url, DocumentId) ||
 	(DocumentId === Frame.documentId && AuxiliarySources.has(MediaResourceKey(Url))) ||
 	(Frame.result.previewOnly && IsStreamFormat(Format ?? ClassifyMediaUrl(Url)?.format) &&
 	(DocumentId === Frame.documentId || (DocumentId === undefined && TimeOrigin === Frame.result.timeOrigin)) &&
@@ -148,7 +154,9 @@ export async function FindMedia(TabId)
 	{
 		Observed = (await NetworkCandidates(TabId, Frame.documentId)).filter(IsCurrentSource);
 	}
-	if (!WebRtcItems.length && Frame.result.liveStream && !Observed.some(Item => IsStreamFormat(Item.format) && !IsAuxiliaryMedia(Context, Item.url, Item.documentId)))
+	if (Frame.result.liveStream && !Observed.some(Item => IsStreamFormat(Item.format) &&
+		!IsAuxiliary(Item.url, Item.documentId, undefined, Item.format) &&
+		(Item.qualities?.length || Item.declaredPage === Page || typeof Item.live === 'boolean')))
 	{
 		await DiscoverDeclaredHls(TabId, Frame.documentId, Page).catch(ErrorValue => ReportDebugFailure(ErrorValue, 'DeclaredSourceFailed'));
 		Observed = (await NetworkCandidates(TabId, Frame.documentId)).filter(IsCurrentSource);
@@ -221,8 +229,7 @@ export async function FindMedia(TabId)
 	}
 	// 같은 문서에서 받은 마스터가 명시한 화질은 별도 영상으로 세지 않습니다.
 	// 원본 관측과 화질 정보는 남겨 다운로드 선택과 요청 문맥 확인에 계속 사용합니다.
-	const Roots = [...Items.values()].filter(Item => !SingleWebRtc ||
-		(Item.documentId ?? Frame.documentId) !== Frame.documentId || !IsStreamFormat(Item.format)).filter(Item => Item.variants?.length || !AllowedObserved.some(Master =>
+	const Roots = [...Items.values()].filter(Item => Item.variants?.length || !AllowedObserved.some(Master =>
 	Master.documentId === (Item.documentId ?? Frame.documentId) && Master.url !== Item.url &&
 	Master.variants?.some(Url => MediaResourceKey(Url) === MediaResourceKey(Item.url))))
 	.filter(Item => !SelectedHls || Item.format !== 'M3U8' || (Item.documentId ?? Frame.documentId) !== Frame.documentId ||
