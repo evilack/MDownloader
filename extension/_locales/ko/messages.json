@@ -1224,6 +1224,91 @@
       }
     }
   },
+  "webrtc_title": {
+    "message": "WebRTC 영상 저장"
+  },
+  "webrtc_instructions": {
+    "message": "원본 영상 탭과 이 녹화 탭을 열어 두세요. 지금부터 수신하는 영상과 음성을 실시간으로 기록합니다. 끝내려면 ‘중지 후 저장’을 누르세요. 원본 탭을 닫거나 다른 영상으로 이동하면 녹화가 중단됩니다. 녹화 한 건의 최대 크기는 2 GiB입니다."
+  },
+  "webrtc_stream": {
+    "message": "저장할 영상"
+  },
+  "webrtc_start": {
+    "message": "녹화 시작"
+  },
+  "webrtc_stop_save": {
+    "message": "중지 후 저장"
+  },
+  "webrtc_retry_save": {
+    "message": "저장 다시 시도"
+  },
+  "webrtc_open": {
+    "message": "현재 WebRTC 본편 저장"
+  },
+  "webrtc_ready": {
+    "message": "실시간 WebRTC 영상을 저장할 수 있습니다."
+  },
+  "webrtc_no_stream": {
+    "message": "재생 중인 WebRTC 영상을 찾지 못했습니다. 원본 탭에서 재생한 뒤 다시 검색하세요."
+  },
+  "webrtc_busy": {
+    "message": "이 원본 영상은 이미 녹화 중입니다."
+  },
+  "webrtc_unsupported": {
+    "message": "이 브라우저에서는 해당 스트림을 녹화할 수 없습니다."
+  },
+  "webrtc_source_changed": {
+    "message": "원본 영상이 바뀌었거나 원본 탭이 닫혔습니다."
+  },
+  "webrtc_buffer_limit": {
+    "message": "대기 데이터 한도에 도달하여 녹화를 중단했습니다."
+  },
+  "webrtc_receiver_lost": {
+    "message": "녹화 화면으로 데이터를 전달하지 못했습니다."
+  },
+  "webrtc_recording_failed": {
+    "message": "녹화에 실패했습니다."
+  },
+  "webrtc_empty": {
+    "message": "수신한 영상 데이터가 없습니다."
+  },
+  "webrtc_save_failed": {
+    "message": "저장에 실패했습니다. 이 탭에 녹화 파일을 보존했으니 다시 시도하세요."
+  },
+  "webrtc_saving": {
+    "message": "녹화 종료 및 파일 저장 중…"
+  },
+  "webrtc_saved": {
+    "message": "녹화 파일을 저장했습니다."
+  },
+  "webrtc_saved_partial": {
+    "message": "중단 전 수신한 영상을 부분 파일로 저장했습니다."
+  },
+  "webrtc_progress": {
+    "message": "수신: $seconds$초 · $size$ MiB",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      },
+      "size": {
+        "content": "$2"
+      }
+    }
+  },
+  "webrtc_recording": {
+    "message": "$width$ × $height$ 녹화 중 · $format$",
+    "placeholders": {
+      "width": {
+        "content": "$1"
+      },
+      "height": {
+        "content": "$2"
+      },
+      "format": {
+        "content": "$3"
+      }
+    }
+  },
   "stream_hls_invalid_key": {
     "message": "HLS 암호화 키·키 형식 또는 IV가 올바르지 않습니다."
   },

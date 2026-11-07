@@ -2,7 +2,7 @@
  * URL 확장자와 응답의 MIME 형식으로 미디어를 분류합니다. 표시용 형식 이름도 이곳에서 관리하므로 화면마다 판단 기준이 달라지지 않습니다.
  */
 /** Chrome 응답 형식과 파일 확장자가 다를 때도 같은 형식 ID를 사용합니다. */
-export const MediaFormat = Object.freeze({ Hls: 'M3U8', Dash: 'MPD', Unknown: 'UNKNOWN' });
+export const MediaFormat = Object.freeze({ Hls: 'M3U8', Dash: 'MPD', WebRtc: 'WEBRTC', Unknown: 'UNKNOWN' });
 const StreamLabels = new Map([[MediaFormat.Hls, 'HLS'], [MediaFormat.Dash, 'DASH']]);
 const AudioFormats = new Set(['MP3', 'M4A', 'WEBA', 'WAV', 'FLAC', 'OGA', 'OPUS', 'OGG']);
 export const HlsReloadParameters = Object.freeze(['_HLS_msn', '_HLS_part', '_HLS_skip']);
@@ -60,7 +60,7 @@ export function IsAudioFormat(Format)
 
 export function GetMediaFormatLabel(Format)
 {
-	return StreamLabels.get(Format) ?? Format;
+	return Format === MediaFormat.WebRtc ? 'WebRTC' : StreamLabels.get(Format) ?? Format;
 }
 
 /** Chrome 권한 검사는 HTTP(S) 호스트만 사용하며 경로나 인증 정보는 포함하지 않습니다. */

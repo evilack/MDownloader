@@ -22,12 +22,24 @@ import {ReadFilePrefix} from './lib/partial-file.js';
 import {RemuxFilePrefix} from './lib/partial-remux.js';
 import {PartialOutputFilename} from './lib/partial-naming.js';
 import { DebugLog } from './lib/debug-log.js';
+import {CreateWebRtcTransfers} from './lib/webrtc-transfers.js';
+import {CreateRecordingStore} from './lib/webrtc-recording.js';
 const ScratchName = 'mdownloader-hls';
 const Workspaces = CreateStreamWorkspaces(ScratchName);
 const Transfers = CreateStreamTransfers((Job, Controller, FinishSignal) =>
 Job.playback ? SavePlayback(Job, Controller) : Download(Job, Controller, FinishSignal));
 const DirectTransfers = new Map();
 const Snapshots = CreateTransferSnapshots(SavePartial);
+const RecordingRoot = async () => (await navigator.storage.getDirectory()).getDirectoryHandle('mdownloader-webrtc', {create: true});
+const Recordings = CreateWebRtcTransfers({extensionId: chrome.runtime.id, report: LocalReport,
+	async createStore(Job) { return CreateRecordingStore(await (await RecordingRoot()).getDirectoryHandle(Job.requestId, {create: true})); },
+	async release(Id)
+	{
+		await (await RecordingRoot()).removeEntry(Id, {recursive: true});
+		await LocalReport(Id, 'recordingReleased').catch(() => {});
+	},
+	saveFile: (Job, File, Signal) => SaveMediaFile(Job, File, Signal, undefined, File.type),
+});
 async function LocalReport(RequestId, Action, Fields = {})
 {
 	if (DebugLog.IsEnabled() && Action === 'progress')
@@ -445,6 +457,23 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	{
 		return;
 	}
+	if (Message.type.startsWith('webrtc'))
+	{
+		// 페이지는 직접 전송 문서를 제어하지 못합니다. SW가 원래 발신 문서를 붙인 릴레이만 검증합니다.
+		if (Sender.tab) return;
+		let Pending;
+		switch (Message.type)
+		{
+			case 'webrtcPrepare': Pending = Recordings.prepare(Message.job).then(() => ({ok: true})); break;
+			case 'webrtcRelay': Pending = Recordings.accept(Message.message, Message.source); break;
+			case 'webrtcCancel': Pending = Recordings.cancel(Message.requestId).then(Ok => ({ok: Ok})); break;
+			case 'webrtcForceFinish': Pending = Recordings.finish(Message.requestId, undefined, 'webrtc_source_changed').then(Ok => ({ok: Ok})); break;
+			case 'webrtcSourceLost': Pending = Recordings.sourceLost(Message.tabId, Message.page).then(() => ({ok: true})); break;
+			default: return;
+		}
+		Pending.then(Respond, ErrorValue => Respond({ok: false, error: SerializeError(ErrorValue)}));
+		return true;
+	}
 	// 이 값은 확장 워커가 기존 실행 메시지에만 넣습니다. 일반 페이지 메시지는 받지 않습니다.
 	if (['hlsRun', 'folderRun', 'hlsSnapshot', 'debugConfiguration'].includes(Message.type))
 	{
@@ -456,7 +485,7 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	}
 	if (Message.type === 'hlsActive')
 	{
-		return Respond({ requestIds: [...Transfers.ids(), ...Snapshots.ids()], directIds: [...DirectTransfers.keys()] });
+		return Respond({ requestIds: [...Transfers.ids(), ...Snapshots.ids()], directIds: [...DirectTransfers.keys()], recordingIds: Recordings.ids() });
 	}
 	if (Message.type === 'hlsSnapshot')
 	{

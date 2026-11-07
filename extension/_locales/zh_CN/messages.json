@@ -1224,6 +1224,91 @@
       }
     }
   },
+  "webrtc_title": {
+    "message": "保存WebRTC视频"
+  },
+  "webrtc_instructions": {
+    "message": "请保持原视频标签页和此录制标签页打开。实时录制从现在开始接收的视频和音频。完成后停止并保存。关闭或切换原标签页将中断录制。每次录制上限为2 GiB。"
+  },
+  "webrtc_stream": {
+    "message": "视频流"
+  },
+  "webrtc_start": {
+    "message": "开始录制"
+  },
+  "webrtc_stop_save": {
+    "message": "停止并保存"
+  },
+  "webrtc_retry_save": {
+    "message": "重试保存"
+  },
+  "webrtc_open": {
+    "message": "保存当前WebRTC视频"
+  },
+  "webrtc_ready": {
+    "message": "可以保存实时WebRTC视频。"
+  },
+  "webrtc_no_stream": {
+    "message": "未找到正在播放的WebRTC视频。请在原标签页播放后重新搜索。"
+  },
+  "webrtc_busy": {
+    "message": "此视频已在录制。"
+  },
+  "webrtc_unsupported": {
+    "message": "此浏览器无法录制该视频流。"
+  },
+  "webrtc_source_changed": {
+    "message": "原视频已改变或原标签页已关闭。"
+  },
+  "webrtc_buffer_limit": {
+    "message": "待处理数据达到上限，录制已停止。"
+  },
+  "webrtc_receiver_lost": {
+    "message": "无法向录制标签页传送数据。"
+  },
+  "webrtc_recording_failed": {
+    "message": "录制失败。"
+  },
+  "webrtc_empty": {
+    "message": "未收到视频数据。"
+  },
+  "webrtc_save_failed": {
+    "message": "保存失败。录制文件保留在此标签页，请重试保存。"
+  },
+  "webrtc_saving": {
+    "message": "正在结束录制并保存…"
+  },
+  "webrtc_saved": {
+    "message": "录制文件已保存。"
+  },
+  "webrtc_saved_partial": {
+    "message": "中断的录制已保存为部分文件。"
+  },
+  "webrtc_progress": {
+    "message": "已接收：$seconds$秒 · $size$ MiB",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      },
+      "size": {
+        "content": "$2"
+      }
+    }
+  },
+  "webrtc_recording": {
+    "message": "正在录制 $width$ × $height$ · $format$",
+    "placeholders": {
+      "width": {
+        "content": "$1"
+      },
+      "height": {
+        "content": "$2"
+      },
+      "format": {
+        "content": "$3"
+      }
+    }
+  },
   "stream_hls_invalid_key": {
     "message": "HLS 加密密钥、密钥格式或 IV 无效。"
   },

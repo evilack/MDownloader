@@ -1224,6 +1224,91 @@
       }
     }
   },
+  "webrtc_title": {
+    "message": "حفظ فيديو WebRTC"
+  },
+  "webrtc_instructions": {
+    "message": "أبقِ تبويب المصدر وتبويب التسجيل مفتوحين. يُسجل الفيديو والصوت الواردان من الآن في الوقت الفعلي. أوقف التسجيل واحفظه عند الانتهاء. إغلاق المصدر أو تغييره يقطع التسجيل. الحد الأقصى لكل تسجيل 2 GiB."
+  },
+  "webrtc_stream": {
+    "message": "بث الفيديو"
+  },
+  "webrtc_start": {
+    "message": "بدء التسجيل"
+  },
+  "webrtc_stop_save": {
+    "message": "إيقاف وحفظ"
+  },
+  "webrtc_retry_save": {
+    "message": "إعادة محاولة الحفظ"
+  },
+  "webrtc_open": {
+    "message": "حفظ فيديو WebRTC الحالي"
+  },
+  "webrtc_ready": {
+    "message": "يتوفر فيديو WebRTC مباشر."
+  },
+  "webrtc_no_stream": {
+    "message": "لم يُعثر على فيديو WebRTC نشط. شغّل الفيديو في تبويب المصدر ثم أعد البحث."
+  },
+  "webrtc_busy": {
+    "message": "يجري تسجيل هذا المصدر بالفعل."
+  },
+  "webrtc_unsupported": {
+    "message": "لا يستطيع هذا المتصفح تسجيل هذا البث."
+  },
+  "webrtc_source_changed": {
+    "message": "تغير الفيديو المصدر أو أُغلق تبويبه."
+  },
+  "webrtc_buffer_limit": {
+    "message": "توقف التسجيل لبلوغ الحد الأقصى للبيانات المعلقة."
+  },
+  "webrtc_receiver_lost": {
+    "message": "تعذر إرسال البيانات إلى تبويب التسجيل."
+  },
+  "webrtc_recording_failed": {
+    "message": "فشل التسجيل."
+  },
+  "webrtc_empty": {
+    "message": "لم يتم تلقي بيانات فيديو."
+  },
+  "webrtc_save_failed": {
+    "message": "فشل الحفظ. التسجيل محفوظ في هذا التبويب؛ أعد المحاولة."
+  },
+  "webrtc_saving": {
+    "message": "جارٍ إنهاء التسجيل وحفظه…"
+  },
+  "webrtc_saved": {
+    "message": "تم حفظ التسجيل."
+  },
+  "webrtc_saved_partial": {
+    "message": "تم حفظ التسجيل المنقطع كملف جزئي."
+  },
+  "webrtc_progress": {
+    "message": "المستلم: $seconds$ ثانية · $size$ MiB",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      },
+      "size": {
+        "content": "$2"
+      }
+    }
+  },
+  "webrtc_recording": {
+    "message": "جارٍ تسجيل $width$ × $height$ · $format$",
+    "placeholders": {
+      "width": {
+        "content": "$1"
+      },
+      "height": {
+        "content": "$2"
+      },
+      "format": {
+        "content": "$3"
+      }
+    }
+  },
   "stream_hls_invalid_key": {
     "message": "مفتاح تشفير HLS أو تنسيق المفتاح أو متجه IV غير صالح."
   },

@@ -248,7 +248,7 @@ export function CreateJobRow(Job, Tile, Context)
 		ControlButton.dataset.action = Action;
 		return ControlButton;
 	}
-	if (Job.state === 'active' && !Job.hls && !Job.pickedDownloadFolder)
+	if (Job.state === 'active' && !Job.hls && !Job.recording && !Job.pickedDownloadFolder)
 	{
 		Actions.append(Control(Translate('view_action_pause'), 'pause', true));
 	}
@@ -280,7 +280,7 @@ export function CreateJobRow(Job, Tile, Context)
 	{
 		Actions.append(CreateButton(Translate('view_copy_link'), () => CopyLink(LoadLink, Announce)));
 	}
-	if (Job.state !== 'starting' && !(Job.hls && ['active', 'paused'].includes(Job.state)))
+	if (Job.state !== 'starting' && !((Job.hls || Job.recording) && ['active', 'paused'].includes(Job.state)))
 	{
 		const Remove = CreateButton('', async UiEvent =>
 		{
@@ -324,7 +324,7 @@ export function CreateJobRow(Job, Tile, Context)
 export function GetJobRowSignature(Job, bShowDiagnostics)
 {
 	return JSON.stringify([Job.filename, Job.state, Job.hasUrl, Job.error, Job.canResume, Job.exists,
-		Job.downloadId, Job.hls, Job.live, Job.live && Job.finished > 0, Job.snapshotAvailable, Job.snapshotPermission, Job.muxing,
+		Job.downloadId, Job.hls, Job.recording, Job.live, Job.live && Job.finished > 0, Job.snapshotAvailable, Job.snapshotPermission, Job.muxing,
 		bShowDiagnostics || Job.state === 'failed' ? Job.diagnostic : undefined, Job.state === 'failed' ? Job.finished : undefined]);
 }
 
@@ -333,7 +333,7 @@ export function UpdateJobRowMetrics(Entry, Job, Now, CountFormat)
 {
 	if (Entry.progress)
 	{
-		const ActiveStream = Job.state === 'active' && Job.hls;
+		const ActiveStream = Job.state === 'active' && (Job.hls || Job.recording);
 		const Value = GetDownloadMetrics(Job, Entry.previous, Now);
 		if (ActiveStream)
 		{
@@ -345,11 +345,11 @@ export function UpdateJobRowMetrics(Entry, Job, Now, CountFormat)
 			{
 				Value.speed = Translate(Job.snapshot ? 'view_job_snapshot_muxing' : 'view_job_mp4_muxing');
 			}
-			else if (Job.live)
+			else if (Job.live && !Job.recording)
 			{
 				Value.progress = Translate('view_job_segments', CountFormat.format(Job.finished ?? 0));
 			}
-			else if (!Job.count)
+			else if (!Job.count && !Job.recording)
 			{
 				Value.speed = Translate('view_job_playlist_check');
 			}

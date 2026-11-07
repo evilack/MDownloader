@@ -1224,6 +1224,91 @@
       }
     }
   },
+  "webrtc_title": {
+    "message": "WebRTC वीडियो सहेजें"
+  },
+  "webrtc_instructions": {
+    "message": "स्रोत टैब और यह रिकॉर्डिंग टैब खुले रखें। अब से मिलने वाले वीडियो और ऑडियो को वास्तविक समय में रिकॉर्ड किया जाता है। पूरा होने पर रोकें और सहेजें। स्रोत बंद करने या बदलने से रिकॉर्डिंग रुक जाती है। हर रिकॉर्डिंग की सीमा 2 GiB है।"
+  },
+  "webrtc_stream": {
+    "message": "वीडियो स्ट्रीम"
+  },
+  "webrtc_start": {
+    "message": "रिकॉर्डिंग शुरू करें"
+  },
+  "webrtc_stop_save": {
+    "message": "रोकें और सहेजें"
+  },
+  "webrtc_retry_save": {
+    "message": "फिर से सहेजें"
+  },
+  "webrtc_open": {
+    "message": "वर्तमान WebRTC वीडियो सहेजें"
+  },
+  "webrtc_ready": {
+    "message": "लाइव WebRTC वीडियो उपलब्ध है।"
+  },
+  "webrtc_no_stream": {
+    "message": "सक्रिय WebRTC वीडियो नहीं मिला। स्रोत टैब में वीडियो चलाकर फिर खोजें।"
+  },
+  "webrtc_busy": {
+    "message": "यह स्रोत पहले से रिकॉर्ड हो रहा है।"
+  },
+  "webrtc_unsupported": {
+    "message": "यह ब्राउज़र इस स्ट्रीम को रिकॉर्ड नहीं कर सकता।"
+  },
+  "webrtc_source_changed": {
+    "message": "स्रोत वीडियो बदल गया या उसका टैब बंद हो गया।"
+  },
+  "webrtc_buffer_limit": {
+    "message": "लंबित डेटा की सीमा पूरी होने पर रिकॉर्डिंग रुक गई।"
+  },
+  "webrtc_receiver_lost": {
+    "message": "रिकॉर्डिंग टैब तक डेटा नहीं पहुँच सका।"
+  },
+  "webrtc_recording_failed": {
+    "message": "रिकॉर्डिंग विफल रही।"
+  },
+  "webrtc_empty": {
+    "message": "कोई वीडियो डेटा नहीं मिला।"
+  },
+  "webrtc_save_failed": {
+    "message": "सहेजना विफल रहा। रिकॉर्डिंग इस टैब में सुरक्षित है; फिर कोशिश करें।"
+  },
+  "webrtc_saving": {
+    "message": "रिकॉर्डिंग समाप्त करके सहेजा जा रहा है…"
+  },
+  "webrtc_saved": {
+    "message": "रिकॉर्डिंग सहेज दी गई।"
+  },
+  "webrtc_saved_partial": {
+    "message": "बाधित रिकॉर्डिंग आंशिक फ़ाइल के रूप में सहेजी गई।"
+  },
+  "webrtc_progress": {
+    "message": "प्राप्त: $seconds$ सेकंड · $size$ MiB",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      },
+      "size": {
+        "content": "$2"
+      }
+    }
+  },
+  "webrtc_recording": {
+    "message": "$width$ × $height$ रिकॉर्ड हो रहा है · $format$",
+    "placeholders": {
+      "width": {
+        "content": "$1"
+      },
+      "height": {
+        "content": "$2"
+      },
+      "format": {
+        "content": "$3"
+      }
+    }
+  },
   "stream_hls_invalid_key": {
     "message": "HLS एन्क्रिप्शन कुंजी, कुंजी प्रारूप या IV अमान्य है।"
   },

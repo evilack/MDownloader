@@ -217,8 +217,8 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 					Row.append(Thumbnail.control, Format, Live, Details);
 					const Actions = CreateElement('div', '', 'actions');
 					const Download = DownloadActions.CreateDownloadButton(Candidate, Input, () => RowContext.generation === Generation);
-					Actions.append(Download,
-					SetButtonIcon(CreateButton('', () => CopyLink(async () =>
+					Actions.append(Download);
+					if (Candidate.format !== 'WEBRTC') Actions.append(SetButtonIcon(CreateButton('', () => CopyLink(async () =>
 					{
 						await WaitForScan();
 						return SendRequest('candidateUrl', Input);

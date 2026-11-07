@@ -1224,6 +1224,91 @@
       }
     }
   },
+  "webrtc_title": {
+    "message": "Salvar vídeo WebRTC"
+  },
+  "webrtc_instructions": {
+    "message": "Mantenha abertas a aba de origem e esta aba de gravação. O vídeo e áudio recebidos a partir de agora são gravados em tempo real. Pare e salve ao terminar. Fechar ou mudar a origem interrompe a gravação. Limite: 2 GiB por gravação."
+  },
+  "webrtc_stream": {
+    "message": "Vídeo"
+  },
+  "webrtc_start": {
+    "message": "Iniciar gravação"
+  },
+  "webrtc_stop_save": {
+    "message": "Parar e salvar"
+  },
+  "webrtc_retry_save": {
+    "message": "Tentar salvar novamente"
+  },
+  "webrtc_open": {
+    "message": "Salvar vídeo WebRTC atual"
+  },
+  "webrtc_ready": {
+    "message": "Há um vídeo WebRTC ao vivo disponível."
+  },
+  "webrtc_no_stream": {
+    "message": "Nenhum vídeo WebRTC ativo. Inicie a reprodução na origem e busque novamente."
+  },
+  "webrtc_busy": {
+    "message": "Esta origem já está sendo gravada."
+  },
+  "webrtc_unsupported": {
+    "message": "Este navegador não pode gravar este fluxo."
+  },
+  "webrtc_source_changed": {
+    "message": "O vídeo de origem mudou ou sua aba foi fechada."
+  },
+  "webrtc_buffer_limit": {
+    "message": "A gravação parou ao atingir o limite de dados pendentes."
+  },
+  "webrtc_receiver_lost": {
+    "message": "Não foi possível enviar dados à aba de gravação."
+  },
+  "webrtc_recording_failed": {
+    "message": "Falha na gravação."
+  },
+  "webrtc_empty": {
+    "message": "Nenhum dado de vídeo foi recebido."
+  },
+  "webrtc_save_failed": {
+    "message": "Falha ao salvar. A gravação está mantida nesta aba; tente novamente."
+  },
+  "webrtc_saving": {
+    "message": "Finalizando e salvando…"
+  },
+  "webrtc_saved": {
+    "message": "Gravação salva."
+  },
+  "webrtc_saved_partial": {
+    "message": "A gravação interrompida foi salva como arquivo parcial."
+  },
+  "webrtc_progress": {
+    "message": "Recebido: $seconds$ s · $size$ MiB",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      },
+      "size": {
+        "content": "$2"
+      }
+    }
+  },
+  "webrtc_recording": {
+    "message": "Gravando $width$ × $height$ · $format$",
+    "placeholders": {
+      "width": {
+        "content": "$1"
+      },
+      "height": {
+        "content": "$2"
+      },
+      "format": {
+        "content": "$3"
+      }
+    }
+  },
   "stream_hls_invalid_key": {
     "message": "A chave, o formato da chave ou o IV de criptografia HLS é inválido."
   },

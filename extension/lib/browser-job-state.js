@@ -31,9 +31,10 @@ export function SummarizeJob(Job, Item, Runners = {}, bRegistering = false)
 {
 	if (!Item)
 	{
-		if ((Job.hls || Job.pickedDownloadFolder) && Job.downloadId === undefined)
+		if ((Job.hls || Job.recording || Job.pickedDownloadFolder) && Job.downloadId === undefined)
 		{
-			const Running = Job.hls ? Runners.requestIds?.includes(Job.requestId) || Runners.requestId === Job.requestId
+			const Running = Job.recording ? Runners.recordingIds?.includes(Job.requestId)
+			: Job.hls ? Runners.requestIds?.includes(Job.requestId) || Runners.requestId === Job.requestId
 			: Runners.directIds?.includes(Job.requestId);
 			if (Job.state !== 'active' || Running || bRegistering)
 			{
@@ -56,9 +57,9 @@ export function SummarizeJob(Job, Item, Runners = {}, bRegistering = false)
 		...Job, filename: Filename, state: State,
 		error: bWrongType ? MessageRef('job_not_video') : Item.error && MessageRef('job_browser_error', Item.error),
 		hasUrl: /^https?:\/\//i.test(Item.url),
-		bytesReceived: Job.hls && State === 'complete' ? Job.bytesReceived : Item.bytesReceived,
+		bytesReceived: (Job.hls || Job.recording) && State === 'complete' ? Job.bytesReceived : Item.bytesReceived,
 		totalBytes: Item.totalBytes,
-		startTime: Job.hls ? new Date(Job.created).toISOString() : Item.startTime,
+		startTime: Job.hls || Job.recording ? new Date(Job.created).toISOString() : Item.startTime,
 		endTime: Item.endTime, paused: Item.paused,
 		canResume: Item.canResume, exists: Item.exists,
 	};

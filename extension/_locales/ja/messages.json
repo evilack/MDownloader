@@ -1224,6 +1224,91 @@
       }
     }
   },
+  "webrtc_title": {
+    "message": "WebRTC動画の保存"
+  },
+  "webrtc_instructions": {
+    "message": "元の動画タブとこの録画タブを開いたままにしてください。今から受信する映像と音声をリアルタイムで記録します。終了時に停止して保存してください。元のタブを閉じるか移動すると中断します。録画ごとの上限は2 GiBです。"
+  },
+  "webrtc_stream": {
+    "message": "動画ストリーム"
+  },
+  "webrtc_start": {
+    "message": "録画開始"
+  },
+  "webrtc_stop_save": {
+    "message": "停止して保存"
+  },
+  "webrtc_retry_save": {
+    "message": "保存を再試行"
+  },
+  "webrtc_open": {
+    "message": "現在のWebRTC動画を保存"
+  },
+  "webrtc_ready": {
+    "message": "ライブWebRTC動画を保存できます。"
+  },
+  "webrtc_no_stream": {
+    "message": "再生中のWebRTC動画がありません。元のタブで再生して再検索してください。"
+  },
+  "webrtc_busy": {
+    "message": "この動画は既に録画中です。"
+  },
+  "webrtc_unsupported": {
+    "message": "このブラウザーでは録画できません。"
+  },
+  "webrtc_source_changed": {
+    "message": "元の動画が変更されたか、タブが閉じられました。"
+  },
+  "webrtc_buffer_limit": {
+    "message": "待機データの上限に達したため録画を停止しました。"
+  },
+  "webrtc_receiver_lost": {
+    "message": "録画タブにデータを送信できませんでした。"
+  },
+  "webrtc_recording_failed": {
+    "message": "録画に失敗しました。"
+  },
+  "webrtc_empty": {
+    "message": "動画データを受信していません。"
+  },
+  "webrtc_save_failed": {
+    "message": "保存に失敗しました。このタブに録画を保持しています。再試行してください。"
+  },
+  "webrtc_saving": {
+    "message": "録画を終了して保存中…"
+  },
+  "webrtc_saved": {
+    "message": "録画を保存しました。"
+  },
+  "webrtc_saved_partial": {
+    "message": "中断した録画を部分ファイルとして保存しました。"
+  },
+  "webrtc_progress": {
+    "message": "受信: $seconds$秒 · $size$ MiB",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      },
+      "size": {
+        "content": "$2"
+      }
+    }
+  },
+  "webrtc_recording": {
+    "message": "$width$ × $height$ 録画中 · $format$",
+    "placeholders": {
+      "width": {
+        "content": "$1"
+      },
+      "height": {
+        "content": "$2"
+      },
+      "format": {
+        "content": "$3"
+      }
+    }
+  },
   "stream_hls_invalid_key": {
     "message": "HLSの暗号化キー、キー形式、またはIVが無効です。"
   },

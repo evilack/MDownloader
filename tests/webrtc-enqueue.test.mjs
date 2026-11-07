@@ -1,0 +1,58 @@
+import Assert from 'node:assert/strict';
+import {test as Test} from 'node:test';
+import {Enqueue, ControlJob, ListJobs} from '../extension/jobs.js';
+
+Test('the existing enqueue registers WebRTC before receiving and controls it from the manager without opening a tab', async T =>
+{
+	const Id = 'a47bd6c7-dd85-4aec-a5de-02157fa036ae', Page = 'https://player.test/live', Doc = 'doc';
+	const Session = {'scan:18': {scanId: 'scan', documentId: Doc, page: Page, candidates: [{id: 0, format: 'WEBRTC',
+		name: 'WebRTC-720x960.mp4', mimeType: 'video/mp4', supported: true, live: true, documentId: Doc, trackId: 'track',
+		url: 'webrtc:track', mediaKey: 'media', page: Page}]}};
+	const Local = {debugDownloads: false}, Controls = [];
+	let Prepared = false, TabsOpened = 0;
+	const Storage = Data => ({async get(Keys)
+	{
+		const Wanted = Keys == null ? Object.keys(Data) : Array.isArray(Keys) ? Keys : [Keys];
+		return Object.fromEntries(Wanted.filter(Key => Key in Data).map(Key => [Key, Data[Key]]));
+	}, async set(Values) { Object.assign(Data, Values); }, async remove(Key) { delete Data[Key]; }});
+	globalThis.chrome = {storage: {local: Storage(Local), session: Storage(Session)}, permissions: {contains: async () => true},
+		tabs: {async create() { TabsOpened++; }}, downloads: {search: async () => []},
+		runtime: {id: 'extension', getURL: Path => 'chrome-extension://extension/' + Path, getContexts: async () => [{}],
+			async sendMessage(Message)
+			{
+				if (Message.type === 'webrtcPrepare') { Prepared = true; return {ok: true}; }
+				if (Message.type === 'webrtcCancel') return {ok: true};
+				if (Message.type === 'hlsActive') return {recordingIds: [Id]};
+				return null;
+			}},
+		scripting: {async executeScript({func, args, target})
+		{
+			if (func.name === 'WebRtcPageTask')
+			{
+				Assert.deepEqual(target.documentIds, [Doc]);
+				if (args[0].action === 'probe') return [{documentId: Doc, result: {page: Page, streams: [{trackId: 'track'}]}}];
+				if (args[0].action === 'start')
+				{
+					Assert.equal(Prepared, true);
+					Assert.equal(Local['job:' + Id].state, 'active');
+					Assert.equal(Local['job:' + Id].recording, true);
+					Assert.equal(args[0].trackId, 'track');
+					return [{documentId: Doc, result: {mimeType: 'video/mp4'}}];
+				}
+				Controls.push(args[0]);
+				return [{documentId: Doc, result: {state: 'stopping'}}];
+			}
+			return [{documentId: Doc, result: {page: Page, active: true, pageTitle: 'live'}}];
+		}}};
+	T.after(() => { delete globalThis.chrome; });
+	Assert.equal((await Enqueue({tabId: 18, scanId: 'scan', candidateId: 0, requestId: Id})).state, 'started');
+	const [Job] = await ListJobs([Id]);
+	Assert.equal(Job.state, 'active');
+	Assert.equal(Job.live, true);
+	Assert.equal(Job.hls, undefined);
+	await ControlJob(Id, 'finish');
+	Assert.equal(Controls.at(-1).action, 'stop');
+	await ControlJob(Id, 'cancel');
+	Assert.equal(Controls.at(-1).reason, 'canceled');
+	Assert.equal(TabsOpened, 0);
+});

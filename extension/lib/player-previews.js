@@ -213,6 +213,7 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 			{
 				const Sources = Player.currentSrc ? [Player.currentSrc] : [Player.src,
 					...[...Player.querySelectorAll('source[src]')].map(Source => Source.src)];
+				for (const Track of Player.srcObject?.getVideoTracks?.() ?? []) Sources.push('webrtc:' + encodeURIComponent(Track.id));
 				for (const Src of Sources)
 				{
 					if (Src && !BySource.has(Src))
@@ -291,6 +292,8 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 						}
 						if (Direct)
 						{
+							if (Url.startsWith('webrtc:')) return Player.srcObject?.getVideoTracks?.().some(Track =>
+								Track.readyState === 'live' && 'webrtc:' + encodeURIComponent(Track.id) === Url);
 							return (Player.currentSrc || Player.src) === Url;
 						}
 						const Latest = Frame.performance.getEntriesByType('resource').findLast(Entry =>

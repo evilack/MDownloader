@@ -18,6 +18,7 @@ import { FinishDownloadNaming, ForgetDownloadFilename } from './lib/browser-down
 import { SyncMediaContext } from './media-context-registration.js';
 import { DebugLog, ReportDebugFailure } from './lib/debug-log.js';
 import { InitializeDebugLogging } from './lib/debug-runtime.js';
+import {RelayWebRtc, WebRtcSourceLost, CancelAllWebRtc} from './webrtc-jobs.js';
 void InitializeDebugLogging(async bEnabled =>
 {
 	// 설정 전환에만 기존 오프스크린 문서에 알립니다. 진단 때문에 문서를 만들거나 깨우지 않습니다.
@@ -75,6 +76,12 @@ async function Route(Message)
 
 chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 {
+	if (Message.type === 'webrtcRecordingData' && Sender.id === chrome.runtime.id && HostPattern(Sender.origin) &&
+		Sender.documentId && Sender.frameId === 0 && Number.isInteger(Sender.tab?.id))
+	{
+		void RelayWebRtc(Message, Sender).then(Respond, () => Respond({ok: false}));
+		return true;
+	}
 	if (Message.type === 'mdownloader-stream-ready' && Sender.id === chrome.runtime.id &&
 	HostPattern(Sender.origin) && Sender.documentId && Sender.frameId === 0 && Number.isInteger(Sender.tab?.id))
 	{
@@ -130,10 +137,12 @@ chrome.tabs.onUpdated.addListener((TabId, Change) =>
 {
 	if (Change.url)
 	{
+		void WebRtcSourceLost(TabId, Change.url);
 		ObservePageUrl(TabId, Change.url);
 	}
 	if (Change.status === 'loading' || Change.discarded)
 	{
+		void WebRtcSourceLost(TabId);
 		void ClearBadge(TabId);
 	}
 	else if (Change.status === 'complete' || Change.url)
@@ -206,6 +215,7 @@ chrome.permissions.onRemoved.addListener(({ origins: Origins }) =>
 	}
 	if (Origins?.length)
 	{
+		void CancelAllWebRtc().catch(ReportDebugFailure);
 		void SyncMediaContext().catch(ReportDebugFailure);
 		void SyncHlsDiscovery().catch(ReportDebugFailure);
 		void ForgetNetwork().then(RefreshOpenBadges).catch(ReportDebugFailure);
@@ -214,6 +224,7 @@ chrome.permissions.onRemoved.addListener(({ origins: Origins }) =>
 });
 chrome.tabs.onRemoved.addListener(TabId =>
 {
+	void WebRtcSourceLost(TabId);
 	ForgetBadge(TabId);
 	void ClearScan(TabId).catch(() =>
 	{

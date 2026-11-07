@@ -22,6 +22,7 @@ import { DownloadNamedFile } from './lib/browser-download.js';
 import { GetBrowserDownload, JobGroup, LoadBrowserDownloads, SummarizeJob } from './lib/browser-job-state.js';
 import {PartialFilename, PartialOutputFilename} from './lib/partial-naming.js';
 import {CanFinishJob} from './lib/job-actions.js';
+import {LaunchWebRtc, ControlWebRtc, ForgetWebRtcControl} from './webrtc-jobs.js';
 const Pending = new Map();
 const Removing = new Set();
 const PendingSnapshots = new Set();
@@ -164,6 +165,25 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 
 	await RecordDownloadLog('started', { requestId: RequestId });
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
+	if (Item.format === 'WEBRTC')
+	{
+		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(Item.name, Item.pageTitle),
+			created: Date.now(), state: 'active', recording: true, live: true, bytesReceived: 0, finished: 0};
+		await RegisterMediaJob(Key, Job, TabId, Item);
+		try { await LaunchWebRtc(Job, Item, TabId); }
+		catch (ErrorValue)
+		{
+			if (ErrorValue.name === 'AbortError')
+			{
+				await WriteJob(Key, {...Job, state: 'canceled'});
+				return {state: 'canceled'};
+			}
+			await WriteJob(Key, {...Job, state: 'failed', error: SerializeError(ErrorValue)});
+			throw ErrorValue;
+		}
+		await OpenDebugView(RequestId);
+		return {state: 'started'};
+	}
 	if (IsStreamFormat(Item.format))
 	{
 		const Observed = VariantUrl === undefined ? Item.observedVariants?.[0]
@@ -263,10 +283,11 @@ export async function UpdateHls(Message)
 {
 	const Key = JobKey(Message.requestId);
 	const Job = await ReadJob(Key);
-	if (!Job?.hls && !Job?.pickedDownloadFolder)
+	if (!Job?.hls && !Job?.recording && !Job?.pickedDownloadFolder)
 	{
 		throw new LocalizedError('job_hls_not_found');
 	}
+	if (Message.action === 'recordingReleased' && Job.recording) return ForgetWebRtcControl(Job.requestId);
 	if (Message.action === 'previewAccess')
 	{
 		return true;
@@ -314,6 +335,14 @@ export async function UpdateHls(Message)
 		const Filename = Job.partial ? Job.filename : PartialFilename(Job.filename);
 		await WriteJob(Key, {...Job, filename: Filename, partial: true});
 		return Filename;
+		case 'recordingFormat':
+		{
+			if (!Job.recording || !/^video\/(mp4|webm)(?:;|$)/.test(Message.mimeType)) throw new LocalizedError('job_hls_wrong_state');
+			let Filename = PartialOutputFilename(Job.filename, Message.mimeType.startsWith('video/mp4') ? '.mp4' : '.webm');
+			if (Message.partial && !Job.partial) Filename = PartialFilename(Filename);
+			await WriteJob(Key, {...Job, filename: Filename, partial: !!Message.partial});
+			return Filename;
+		}
 		case 'access': return RequireHlsHosts(Message.urls);
 		case 'requestHeaders':
 		await RequireHlsHosts(Message.urls);
@@ -341,7 +370,7 @@ export async function UpdateHls(Message)
 		}
 		case 'save':
 		{
-			if (!Job.hls || Job.pickedDownloadFolder || !Message.objectUrl.startsWith('blob:' + chrome.runtime.getURL('')))
+			if ((!Job.hls && !Job.recording) || Job.pickedDownloadFolder || !Message.objectUrl.startsWith('blob:' + chrome.runtime.getURL('')))
 			{
 				throw new LocalizedError('job_invalid_mp4_url');
 			}
@@ -388,7 +417,7 @@ export async function ListJobs(RequestIds, LocalMediaKeys)
 	{
 		Registering.add(Key);
 	}
-	const bNeedsRunner = Jobs.some(Job => (Job.hls || Job.pickedDownloadFolder) &&
+	const bNeedsRunner = Jobs.some(Job => (Job.hls || Job.recording || Job.pickedDownloadFolder) &&
 	Job.state === 'active' && Job.downloadId === undefined &&
 	!Registering.has(JobKey(Job.requestId)));
 	const [Own, Runners] = await Promise.all([LoadBrowserDownloads(Jobs), bNeedsRunner ? ActiveTransfers() : undefined]);
@@ -396,7 +425,7 @@ export async function ListJobs(RequestIds, LocalMediaKeys)
 	{
 		const Item = Own.get(Job.downloadId);
 		const Summary = SummarizeJob(Job, Item, Runners, Registering.has(JobKey(Job.requestId)));
-		if (Job.hls || Job.snapshot || !['active', 'paused'].includes(Summary.state))
+		if (Job.hls || Job.recording || Job.snapshot || !['active', 'paused'].includes(Summary.state))
 		{
 			return Summary;
 		}
@@ -481,9 +510,9 @@ export async function RemoveJob(RequestId, DeleteFile, ExpectedGroup)
 		{
 			return;
 		}
-		if (Job.hls)
+		if (Job.hls || Job.recording)
 		{
-			const bSaving = Job.downloadId === undefined ? await IsHlsActive(RequestId)
+			const bSaving = Job.downloadId === undefined ? Job.recording ? (await ActiveTransfers()).recordingIds?.includes(RequestId) : await IsHlsActive(RequestId)
 			: (ExpectedGroup ? BrowserItem : await GetBrowserDownload(Job.downloadId))?.state === 'in_progress';
 			if (bSaving)
 			{
@@ -558,6 +587,7 @@ export async function ControlJob(RequestId, Action)
 		DebugLog.Record('JobControlRequested', () => ({ requestId: RequestId, action: Action }));
 	}
 	const Job = await ReadJob(JobKey(RequestId));
+	if (Job?.recording && Job.state === 'active' && ['finish', 'cancel'].includes(Action) && await ControlWebRtc(RequestId, Action)) return;
 	if (Action === 'snapshot')
 	{
 		return SaveCurrentJob(Job);

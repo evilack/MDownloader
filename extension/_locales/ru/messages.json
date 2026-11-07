@@ -1224,6 +1224,91 @@
       }
     }
   },
+  "webrtc_title": {
+    "message": "Сохранение видео WebRTC"
+  },
+  "webrtc_instructions": {
+    "message": "Оставьте открытыми исходную вкладку и вкладку записи. Получаемые с этого момента видео и звук записываются в реальном времени. По окончании остановите запись и сохраните файл. Закрытие или смена источника прерывает запись. Лимит одной записи: 2 ГиБ."
+  },
+  "webrtc_stream": {
+    "message": "Видеопоток"
+  },
+  "webrtc_start": {
+    "message": "Начать запись"
+  },
+  "webrtc_stop_save": {
+    "message": "Остановить и сохранить"
+  },
+  "webrtc_retry_save": {
+    "message": "Повторить сохранение"
+  },
+  "webrtc_open": {
+    "message": "Сохранить текущее видео WebRTC"
+  },
+  "webrtc_ready": {
+    "message": "Доступно прямое видео WebRTC."
+  },
+  "webrtc_no_stream": {
+    "message": "Нет активного видео WebRTC. Запустите воспроизведение на исходной вкладке и повторите поиск."
+  },
+  "webrtc_busy": {
+    "message": "Этот источник уже записывается."
+  },
+  "webrtc_unsupported": {
+    "message": "Браузер не может записать этот поток."
+  },
+  "webrtc_source_changed": {
+    "message": "Исходное видео изменилось или его вкладка закрыта."
+  },
+  "webrtc_buffer_limit": {
+    "message": "Запись остановлена: достигнут предел ожидающих данных."
+  },
+  "webrtc_receiver_lost": {
+    "message": "Не удалось передать данные на вкладку записи."
+  },
+  "webrtc_recording_failed": {
+    "message": "Ошибка записи."
+  },
+  "webrtc_empty": {
+    "message": "Видеоданные не получены."
+  },
+  "webrtc_save_failed": {
+    "message": "Ошибка сохранения. Запись сохранена на этой вкладке; повторите попытку."
+  },
+  "webrtc_saving": {
+    "message": "Завершение записи и сохранение…"
+  },
+  "webrtc_saved": {
+    "message": "Запись сохранена."
+  },
+  "webrtc_saved_partial": {
+    "message": "Прерванная запись сохранена как частичный файл."
+  },
+  "webrtc_progress": {
+    "message": "Получено: $seconds$ с · $size$ МиБ",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      },
+      "size": {
+        "content": "$2"
+      }
+    }
+  },
+  "webrtc_recording": {
+    "message": "Запись $width$ × $height$ · $format$",
+    "placeholders": {
+      "width": {
+        "content": "$1"
+      },
+      "height": {
+        "content": "$2"
+      },
+      "format": {
+        "content": "$3"
+      }
+    }
+  },
   "stream_hls_invalid_key": {
     "message": "Недопустимый ключ шифрования HLS, формат ключа или вектор IV."
   },

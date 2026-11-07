@@ -37,7 +37,7 @@ function Size(Bytes)
 
 function TransferPercent(Item)
 {
-	if (Item.state === 'active' && Item.hls)
+	if (Item.state === 'active' && (Item.hls || Item.recording))
 	{
 		if (Item.live || !(Item.count > 0))
 		{

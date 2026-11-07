@@ -127,12 +127,15 @@ Filename examples: `Page title_original.mp4` and `Page title_original_YYYY-MM-DD
 
 ## Supported media
 
+WebRTC appears as a normal media item with a **WebRTC** format badge. Use its regular download button; the existing download manager immediately shows the live job, received bytes and speed. Use the manager's **Stop and save** or **Cancel** controls. Keep the source video tab open; the popup and manager can close while reception continues. This records newly received video/audio in real time, with MP4 preferred and a WebM fallback, up to 2 GiB per recording. [Integration and verification scope](docs/webrtc-integration-2026-11-08.md)
+
 | Media | Support |
 |---|---|
 | Direct files | HTTP(S) video/audio files, including MP4, WebM, MOV, MKV, MP3, M4A, WAV, FLAC, and OGG families; saved in their original format. |
 | HLS | Supported clear or full-segment AES-encrypted MPEG-TS/fMP4 video and audio, including H.264/AAC and supported fMP4 AV1; remuxed without re-encoding. |
 | DASH | Supported static single-period fMP4 representations; remuxed without re-encoding. |
 | Live streams | Supported live HLS with complete segment boundaries. |
+| WebRTC | Normal media item and managed background recording to MP4 or WebM; requires the source video tab to remain open. |
 
 HLS encryption supports `AES-128`, `AES-256` (CBC), `AES-256-CTR`, and `AES-256-GCM` when the playlist supplies a normally accessible `identity` key. Key rotation, explicit IVs, and sequence-number IVs are handled automatically. Encrypted HLS needs no additional setting: use the same Download button. Encrypted low-latency playlists use the complete parent segments.
 

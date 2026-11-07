@@ -1224,6 +1224,91 @@
       }
     }
   },
+  "webrtc_title": {
+    "message": "WebRTC video saving"
+  },
+  "webrtc_instructions": {
+    "message": "Keep the source tab and this recording tab open. Recording saves video and audio received from now on, in real time. Stop and save when finished. Closing or changing the source interrupts recording. Each recording supports up to 2 GiB."
+  },
+  "webrtc_stream": {
+    "message": "Video stream"
+  },
+  "webrtc_start": {
+    "message": "Start recording"
+  },
+  "webrtc_stop_save": {
+    "message": "Stop and save"
+  },
+  "webrtc_retry_save": {
+    "message": "Retry saving"
+  },
+  "webrtc_open": {
+    "message": "Save current WebRTC video"
+  },
+  "webrtc_ready": {
+    "message": "A live WebRTC video is available."
+  },
+  "webrtc_no_stream": {
+    "message": "No active WebRTC video was found. Return to the source, start playback, then refresh."
+  },
+  "webrtc_busy": {
+    "message": "This source is already being recorded."
+  },
+  "webrtc_unsupported": {
+    "message": "This browser cannot record this stream."
+  },
+  "webrtc_source_changed": {
+    "message": "The source video changed or the source tab closed."
+  },
+  "webrtc_buffer_limit": {
+    "message": "Recording stopped because the pending data limit was reached."
+  },
+  "webrtc_receiver_lost": {
+    "message": "The recording tab could not receive data."
+  },
+  "webrtc_recording_failed": {
+    "message": "Recording failed."
+  },
+  "webrtc_empty": {
+    "message": "No video data was received."
+  },
+  "webrtc_save_failed": {
+    "message": "Saving failed. The recording is retained in this tab; retry saving."
+  },
+  "webrtc_saving": {
+    "message": "Finalizing and saving…"
+  },
+  "webrtc_saved": {
+    "message": "Recording saved."
+  },
+  "webrtc_saved_partial": {
+    "message": "Interrupted recording saved as a partial file."
+  },
+  "webrtc_progress": {
+    "message": "Received: $seconds$ s · $size$ MiB",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      },
+      "size": {
+        "content": "$2"
+      }
+    }
+  },
+  "webrtc_recording": {
+    "message": "Recording $width$ × $height$ · $format$",
+    "placeholders": {
+      "width": {
+        "content": "$1"
+      },
+      "height": {
+        "content": "$2"
+      },
+      "format": {
+        "content": "$3"
+      }
+    }
+  },
   "stream_hls_invalid_key": {
     "message": "The HLS encryption key, key format or IV is invalid."
   },

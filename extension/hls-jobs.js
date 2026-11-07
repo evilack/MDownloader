@@ -12,7 +12,7 @@ import { DebugLog } from './lib/debug-log.js';
 const Path = 'hls-runner.html';
 let Creating;
 export const HlsRunnerUrl = () => chrome.runtime.getURL(Path);
-async function EnsureRunner()
+export async function EnsureRunner()
 {
 	if (!Creating)
 	{

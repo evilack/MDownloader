@@ -13,6 +13,7 @@ import { MatchesHlsVariant } from './lib/hls.js';
 import { DiscoverDeclaredHls } from './lib/declared-streams.js';
 import { DiscoverNativeHls } from './lib/native-hls-discovery.js';
 import { DiscoverSelectedHls } from './lib/selected-hls.js';
+import {WebRtcPageTask} from './lib/webrtc-page.js';
 const KeyEncoder = new TextEncoder();
 const MaxPlaybackObservations = MaxObservedMediaPerTab + RuntimePolicy.Detection.MaxMediaContextUrls;
 async function MediaJobKey(Page, Url)
@@ -112,13 +113,21 @@ export async function FindMedia(TabId)
 		});
 	}
 	let Observed = await NetworkCandidates(TabId, Frame.documentId);
+	const WebRtc = Frame.result.liveStream ? await ProbeWebRtc(TabId, Frame.documentId, Page) : null;
+	const WebRtcItems = WebRtc?.mimeType ? WebRtc.streams.map(Stream => ({
+		url: 'webrtc:' + encodeURIComponent(Stream.trackId), trackId: Stream.trackId,
+		name: `WebRTC-${Stream.width}x${Stream.height}.${WebRtc.mimeType.startsWith('video/mp4') ? 'mp4' : 'webm'}`,
+		format: 'WEBRTC', supported: true, live: true, mimeType: WebRtc.mimeType,
+		documentId: Frame.documentId, page: Page,
+	})) : [];
+	const SingleWebRtc = Frame.result.opaquePlayer && WebRtcItems.length === 1;
 	// SPA 전환 전 대체 방송은 리소스 타이밍에도 남습니다. 캐시와 타이밍 양쪽에서 제외해야
 	// 이전 방송이 본편 후보로 되살아나거나 현재 방송의 탐색을 막지 않습니다.
 	const PreviousDeclared = new Set(Observed.filter(Item => (Item.page && Item.page !== Page) || (Item.declaredPage && Item.declaredPage !== Page))
 	.flatMap(Item => [Item.url, ...(Item.variants ?? [])]).map(MediaResourceKey));
 	const IsCurrentSource = Item => (!Item.page || Item.page === Page) && (!Item.declaredPage || Item.declaredPage === Page);
 	Observed = Observed.filter(IsCurrentSource);
-	if (await DiscoverNativeHls(TabId, Frame.documentId, Page, Sources, Observed))
+	if (!SingleWebRtc && await DiscoverNativeHls(TabId, Frame.documentId, Page, Sources, Observed))
 	{
 		Observed = (await NetworkCandidates(TabId, Frame.documentId)).filter(IsCurrentSource);
 	}
@@ -133,13 +142,13 @@ export async function FindMedia(TabId)
 	!Context.byDocument.get(Frame.documentId)?.has(MediaResourceKey(Url)));
 	// 선택 소스가 확인된 단독 워커 플레이어에 한해 같은 문서의 이전 HLS 요청을 표시 대상에서 제외합니다.
 	// 주소는 관측 기록에 보존하며 다른 프레임과 다른 형식의 영상은 유지합니다.
-	const SelectedHls = Frame.result.opaquePlayer ? await DiscoverSelectedHls(TabId, Frame.documentId, Page,
+	const SelectedHls = Frame.result.opaquePlayer && !SingleWebRtc ? await DiscoverSelectedHls(TabId, Frame.documentId, Page,
 	Observed.filter(Item => !IsAuxiliary(Item.url, Item.documentId, undefined, Item.format))) : null;
 	if (SelectedHls)
 	{
 		Observed = (await NetworkCandidates(TabId, Frame.documentId)).filter(IsCurrentSource);
 	}
-	if (Frame.result.liveStream && !Observed.some(Item => IsStreamFormat(Item.format) && !IsAuxiliaryMedia(Context, Item.url, Item.documentId)))
+	if (!WebRtcItems.length && Frame.result.liveStream && !Observed.some(Item => IsStreamFormat(Item.format) && !IsAuxiliaryMedia(Context, Item.url, Item.documentId)))
 	{
 		await DiscoverDeclaredHls(TabId, Frame.documentId, Page).catch(ErrorValue => ReportDebugFailure(ErrorValue, 'DeclaredSourceFailed'));
 		Observed = (await NetworkCandidates(TabId, Frame.documentId)).filter(IsCurrentSource);
@@ -212,12 +221,20 @@ export async function FindMedia(TabId)
 	}
 	// 같은 문서에서 받은 마스터가 명시한 화질은 별도 영상으로 세지 않습니다.
 	// 원본 관측과 화질 정보는 남겨 다운로드 선택과 요청 문맥 확인에 계속 사용합니다.
-	const Roots = [...Items.values()].filter(Item => Item.variants?.length || !AllowedObserved.some(Master =>
+	const Roots = [...Items.values()].filter(Item => !SingleWebRtc ||
+		(Item.documentId ?? Frame.documentId) !== Frame.documentId || !IsStreamFormat(Item.format)).filter(Item => Item.variants?.length || !AllowedObserved.some(Master =>
 	Master.documentId === (Item.documentId ?? Frame.documentId) && Master.url !== Item.url &&
 	Master.variants?.some(Url => MediaResourceKey(Url) === MediaResourceKey(Item.url))))
 	.filter(Item => !SelectedHls || Item.format !== 'M3U8' || (Item.documentId ?? Frame.documentId) !== Frame.documentId ||
 	MediaResourceKey(Item.url) === SelectedHls.url);
-	return { documentId: Frame.documentId, page: Page, observed: AllowedObserved, items: Roots };
+	return { documentId: Frame.documentId, page: Page, observed: AllowedObserved, items: [...WebRtcItems, ...Roots] };
+}
+
+async function ProbeWebRtc(TabId, DocumentId, Page)
+{
+	const [Frame] = await chrome.scripting.executeScript({target: {tabId: TabId, documentIds: [DocumentId]}, func: WebRtcPageTask,
+		args: [{action: 'probe', page: Page, excludedSelector: RuntimePolicy.Detection.AuxiliaryPlayerSelector}]}).catch(() => []);
+	return Frame?.documentId === DocumentId && Frame.result?.page === Page ? Frame.result : null;
 }
 
 export async function Scan(TabId, Scope)
@@ -331,6 +348,12 @@ export async function ResolveCandidate(TabId, ScanId, CandidateId, Scope)
 		throw new LocalizedError('candidate_changed');
 	}
 	const Context = await ReadMediaContext(TabId);
+	if (Candidate.format === 'WEBRTC')
+	{
+		const Current = await ProbeWebRtc(TabId, Candidate.documentId, Saved.page);
+		if (!Current?.streams?.some(Stream => Stream.trackId === Candidate.trackId)) throw new LocalizedError('candidate_changed');
+		return {...Candidate, page: Saved.page, previewPage: Saved.page, pageTitle: Saved.pageTitle};
+	}
 	const Available = [Candidate, ...(Candidate.observedVariants ?? [])].filter(Item => !IsAuxiliaryMedia(
 	Context, Item.url, Item.documentId ?? (Item.fromPlayback ? undefined : Saved.documentId), Item.playbackTimeOrigin,
 	));
@@ -437,7 +460,7 @@ export async function PreviewCandidate({ tabId: TabId, scanId: ScanId, candidate
 	// 마스터와 연결된 화질 중 이 문서에서 성공한 CDN 응답만 보호된 스트림의 미리보기에 사용합니다.
 	const Playback = Item.observedVariants?.[0] ?? (Item.requestContext ? Item : undefined);
 	return {
-		url: Item.url, format: Item.format, still: Preview?.still, resolution: Preview?.resolution,
+		url: Item.format === 'WEBRTC' ? undefined : Item.url, format: Item.format, still: Preview?.still, resolution: Preview?.resolution,
 		live: Preview?.live ?? Item.live, duration: Preview?.duration,
 		streamPath: StreamPreviewPath(Item.url, Item.format),
 		protectedRequest: !!Playback,
@@ -448,7 +471,7 @@ export async function PreviewCandidate({ tabId: TabId, scanId: ScanId, candidate
 export async function CaptureCandidatePreview({ tabId: TabId, scanId: ScanId, candidateId: CandidateId, scope: Scope })
 {
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
-	if (!IsStreamFormat(Item.format))
+	if (!IsStreamFormat(Item.format) && Item.format !== 'WEBRTC')
 	{
 		return null;
 	}

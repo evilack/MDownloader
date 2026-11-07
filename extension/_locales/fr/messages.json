@@ -1224,6 +1224,91 @@
       }
     }
   },
+  "webrtc_title": {
+    "message": "Enregistrer une vidéo WebRTC"
+  },
+  "webrtc_instructions": {
+    "message": "Gardez ouverts l’onglet source et cet onglet d’enregistrement. La vidéo et le son reçus à partir de maintenant sont enregistrés en temps réel. Arrêtez puis sauvegardez à la fin. Fermer ou changer la source interrompt l’enregistrement. Limite : 2 Gio par enregistrement."
+  },
+  "webrtc_stream": {
+    "message": "Flux vidéo"
+  },
+  "webrtc_start": {
+    "message": "Démarrer l’enregistrement"
+  },
+  "webrtc_stop_save": {
+    "message": "Arrêter et sauvegarder"
+  },
+  "webrtc_retry_save": {
+    "message": "Réessayer la sauvegarde"
+  },
+  "webrtc_open": {
+    "message": "Enregistrer la vidéo WebRTC actuelle"
+  },
+  "webrtc_ready": {
+    "message": "Une vidéo WebRTC en direct est disponible."
+  },
+  "webrtc_no_stream": {
+    "message": "Aucune vidéo WebRTC active. Lancez la lecture dans l’onglet source puis relancez la recherche."
+  },
+  "webrtc_busy": {
+    "message": "Cette source est déjà en cours d’enregistrement."
+  },
+  "webrtc_unsupported": {
+    "message": "Ce navigateur ne peut pas enregistrer ce flux."
+  },
+  "webrtc_source_changed": {
+    "message": "La vidéo source a changé ou son onglet a été fermé."
+  },
+  "webrtc_buffer_limit": {
+    "message": "Enregistrement arrêté : limite des données en attente atteinte."
+  },
+  "webrtc_receiver_lost": {
+    "message": "Impossible de transmettre les données à l’onglet d’enregistrement."
+  },
+  "webrtc_recording_failed": {
+    "message": "Échec de l’enregistrement."
+  },
+  "webrtc_empty": {
+    "message": "Aucune donnée vidéo reçue."
+  },
+  "webrtc_save_failed": {
+    "message": "Échec de la sauvegarde. L’enregistrement est conservé dans cet onglet ; réessayez."
+  },
+  "webrtc_saving": {
+    "message": "Finalisation et sauvegarde…"
+  },
+  "webrtc_saved": {
+    "message": "Enregistrement sauvegardé."
+  },
+  "webrtc_saved_partial": {
+    "message": "L’enregistrement interrompu a été sauvegardé comme fichier partiel."
+  },
+  "webrtc_progress": {
+    "message": "Reçu : $seconds$ s · $size$ Mio",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      },
+      "size": {
+        "content": "$2"
+      }
+    }
+  },
+  "webrtc_recording": {
+    "message": "Enregistrement $width$ × $height$ · $format$",
+    "placeholders": {
+      "width": {
+        "content": "$1"
+      },
+      "height": {
+        "content": "$2"
+      },
+      "format": {
+        "content": "$3"
+      }
+    }
+  },
   "stream_hls_invalid_key": {
     "message": "La clé de chiffrement, le format de clé ou le vecteur IV HLS est invalide."
   },

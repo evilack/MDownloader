@@ -318,7 +318,7 @@ export function CreateMediaPreview()
 				{
 					ShowPlayer(Source.file, IsAudioFormat(Source.format), !!Source.sample);
 				}
-				else if (IsStreamFormat(Source.format))
+				else if (IsStreamFormat(Source.format) || Source.format === 'WEBRTC')
 				{
 					if (Source.url && (Source.pageStream || !Source.protectedRequest))
 					{
