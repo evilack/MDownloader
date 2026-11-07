@@ -90,6 +90,8 @@ export const RuntimePolicy = Object.freeze({
 		MaxAttempts: 3,
 		MaxSegments: 5000,
 		MaxScratchBytes: 2048 * Units.BytesPerMebibyte,
+		// 고화질 장편 스트림의 디스크 임시 저장 상한입니다. 실제 브라우저 저장 공간 한도는 별도로 적용됩니다.
+		MaxStreamScratchBytes: 16 * 1024 * Units.BytesPerMebibyte,
 		MaxSegmentBytes: 32 * Units.BytesPerMebibyte,
 		MaxPlaylistBytes: Units.BytesPerMebibyte,
 		MaxDashIndexBytes: Units.BytesPerMebibyte,

@@ -558,7 +558,7 @@
     "message": "قائمة مقاطع HLS فارغة أو ناقصة."
   },
   "stream_hls_encrypted": {
-    "message": "بث HLS المشفّر غير مدعوم."
+    "message": "يستخدم بث HLS هذا حماية DRM أو طريقة تشفير غير مدعومة."
   },
   "stream_hls_init_scheme": {
     "message": "لا تُدعم إلا عناوين مقاطع التهيئة التي تستخدم HTTP أو HTTPS."
@@ -1223,5 +1223,11 @@
         "content": "$1"
       }
     }
+  },
+  "stream_hls_invalid_key": {
+    "message": "مفتاح تشفير HLS أو تنسيق المفتاح أو متجه IV غير صالح."
+  },
+  "stream_hls_decryption_failed": {
+    "message": "فشل فك تشفير HLS. قد يكون المفتاح أو متجه IV أو المقطع المشفر غير صالح."
   }
 }

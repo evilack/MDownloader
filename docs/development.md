@@ -57,6 +57,19 @@ The media goes into `artifacts/media-check/test-media/`. Remove these environmen
 
 `lib/runtime-policy.js` owns tunable runtime limits. `data/source-providers.json` and `data/hls-protocols.json` describe supported external schemas. Standard protocol tokens and Chrome API/message/storage field names are contracts, not arbitrary local naming choices.
 
+### HLS encryption
+
+`lib/hls-encryption.js` handles `KEYFORMAT="identity"` whole-segment encryption with Web Crypto: AES-128-CBC, AES-256-CBC, AES-256-CTR (64-bit counter), and AES-256-GCM (16-byte IV prefix and 16-byte authentication tag). AES-256-GCM follows the HLS second-edition draft; AES-256 and AES-256-CTR are compatibility methods also used by HLS.js. AES-128 follows [RFC 8216](https://www.rfc-editor.org/rfc/rfc8216.html).
+
+- Media key declarations are scoped to their following segments. CBC/CTR use the explicit 128-bit IV or the big-endian media sequence number. Encrypted initialization maps require an explicit IV except for self-contained GCM resources.
+- Keys go through the same host authorization and restricted observed-header path as media. Redirects, cookies/authorization forwarding, and denied access are not bypassed. Each key response is bounded to the expected 16 or 32 bytes.
+- A per-job WeakMap shares imported, non-extractable CryptoKeys across concurrent segments of one declaration. Failed loads are evicted for the existing retry policy. Repeated declarations and live refreshes do not reuse a stale key merely because the URI matches. Downloaded raw key buffers are erased after import; observed playback keys remain in memory until collection completes and are then erased. Keys are never written to scratch files, manifests, diagnostics, or jobs.
+- Decryption happens before TS validation and scratch-file commit, so previews and partial exports read clear media. Encrypted LL-HLS uses complete parent resources instead of treating partial CBC ranges as independent segments. Ordinary complete-segment byte ranges are fetched and validated as ciphertext before decryption; I-frame-only ranges remain unsupported.
+- Master `SESSION-KEY` tags are metadata; media `KEY` tags remain authoritative. Unsupported alternate key formats can coexist with a usable identity declaration.
+- Playback response capture also accepts declared keys already received successfully by the player. It never fetches missing keys or segments; media that arrives before its key waits in a bounded ciphertext queue (four resource limits, currently 128 MiB). This capture path remains finite MPEG-TS only. Repeated encrypted segment URLs and multiple key declarations reusing one key URI are rejected in capture because observed responses alone cannot resolve their association; ordinary downloads use per-declaration requests and support key URI reuse.
+
+Sample encryption (`SAMPLE-AES` / `SAMPLE-AES-CTR`), DRM license acquisition, and encrypted DASH remain unsupported. Resource bodies are bounded at 32 MiB, scratch media at 16 GiB per job, and queues at 5,000 segments; the browser's available storage quota still applies.
+
 ## Settings and diagnostics
 
 `debugDownloads` opens the existing job diagnostics tab. `logDownloads` keeps bounded local result events. `debugLogging` enables detailed console diagnostics and a bounded internal memory buffer. All default to OFF.

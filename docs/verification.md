@@ -16,6 +16,10 @@ Reports and optional media output are generated under Git-ignored `artifacts/<ru
 
 The local suite covers URL/media classification, page/document ownership, source refresh, HLS/DASH parsing, request-header isolation, concurrent jobs, naming, preview state, cancellation, committed partial segments, direct-file prefix remuxing, job deletion, settings, localization, and logging. Media integration tests use the retained local MP4 and real parser/remux code.
 
+Encrypted HLS tests cover all four whole-segment methods, IV derivation, key rotation including a repeated URI during live refresh, clear/encrypted transitions, map key scope, invalid keys/padding/GCM tags, host denial, and observed-response capture. The real fMP4 fixture is tested both clear and AES-128 encrypted through full download, contiguous partial export, preview, and MP4 packet parsing.
+
+For an accessible external **media** playlist, `node tools/checks/verify-encrypted-hls.mjs <https-media-playlist-url>` downloads the first three segments and verifies the resulting MP4. Add `--full` to download the entire finite playlist. Set `MDOWNLOADER_ARTIFACTS` to choose the ignored report/output directory. This is a Node check of transfer/remux behavior; it does not establish installed-extension permissions, browser storage quota, or native playback. Reports contain counts, byte totals, duration, codecs, and packet counts, without raw key data or source URLs.
+
 The project checker validates JavaScript syntax, relative module imports, local manual/website links, manifest entry files, and hashes for retained icon sources/runtime derivatives, vendor files, sample media, and active screenshots. Localization checks render every message in all ten catalogs.
 
 Detailed-log cost checks count lazy evaluations, clock access, serialization, stack construction, timers/observers, log messages, and storage writes on the OFF path. ON burst checks verify throttling. These are Node measurements with a synthetic sink, not Chrome console benchmarks.

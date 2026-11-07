@@ -106,7 +106,7 @@ export async function EnqueuePlayback({ requestId: RequestId, playlist: Playlist
 {
 	if (typeof Playlist !== 'string' || Playlist.length > RuntimePolicy.Transfer.MaxPlaylistBytes ||
 	!Number.isInteger(Count) || Count < 1 || Count > RuntimePolicy.Transfer.MaxSegments ||
-	!Number.isSafeInteger(Bytes) || Bytes < 1 || Bytes > RuntimePolicy.Transfer.MaxScratchBytes)
+	!Number.isSafeInteger(Bytes) || Bytes < 1 || Bytes > RuntimePolicy.Transfer.MaxStreamScratchBytes)
 	{
 		throw new LocalizedError('job_invalid_capture');
 	}

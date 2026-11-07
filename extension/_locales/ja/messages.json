@@ -558,7 +558,7 @@
     "message": "HLSセグメントのリストが空か、不完全です。"
   },
   "stream_hls_encrypted": {
-    "message": "暗号化されたHLSには対応していません。"
+    "message": "このHLSのDRMまたは暗号化方式には対応していません。"
   },
   "stream_hls_init_scheme": {
     "message": "初期化セグメントはHTTPまたはHTTPSのURLにのみ対応しています。"
@@ -1223,5 +1223,11 @@
         "content": "$1"
       }
     }
+  },
+  "stream_hls_invalid_key": {
+    "message": "HLSの暗号化キー、キー形式、またはIVが無効です。"
+  },
+  "stream_hls_decryption_failed": {
+    "message": "HLSの復号に失敗しました。キー、IV、または暗号化セグメントが無効な可能性があります。"
   }
 }

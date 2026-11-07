@@ -558,7 +558,7 @@
     "message": "HLS 分段列表为空或不完整。"
   },
   "stream_hls_encrypted": {
-    "message": "不支持加密的 HLS。"
+    "message": "此 HLS 使用 DRM 或不受支持的加密方式。"
   },
   "stream_hls_init_scheme": {
     "message": "仅支持 HTTP 或 HTTPS 初始化分段地址。"
@@ -1223,5 +1223,11 @@
         "content": "$1"
       }
     }
+  },
+  "stream_hls_invalid_key": {
+    "message": "HLS 加密密钥、密钥格式或 IV 无效。"
+  },
+  "stream_hls_decryption_failed": {
+    "message": "HLS 解密失败。密钥、IV 或加密分片可能无效。"
   }
 }

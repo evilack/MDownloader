@@ -558,7 +558,7 @@
     "message": "HLS सेगमेंट सूची खाली या अधूरी है।"
   },
   "stream_hls_encrypted": {
-    "message": "एन्क्रिप्ट किया गया HLS समर्थित नहीं है।"
+    "message": "यह HLS, DRM या असमर्थित एन्क्रिप्शन विधि का उपयोग करता है।"
   },
   "stream_hls_init_scheme": {
     "message": "आरंभीकरण सेगमेंट के लिए सिर्फ़ HTTP और HTTPS URL समर्थित हैं।"
@@ -1223,5 +1223,11 @@
         "content": "$1"
       }
     }
+  },
+  "stream_hls_invalid_key": {
+    "message": "HLS एन्क्रिप्शन कुंजी, कुंजी प्रारूप या IV अमान्य है।"
+  },
+  "stream_hls_decryption_failed": {
+    "message": "HLS डिक्रिप्शन विफल हुआ। कुंजी, IV या एन्क्रिप्ट किया गया खंड अमान्य हो सकता है।"
   }
 }

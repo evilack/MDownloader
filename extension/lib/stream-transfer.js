@@ -6,10 +6,11 @@ import { RuntimePolicy, Units } from './runtime-policy.js';
 import { LocalizedError } from './i18n.js';
 import { ParseMediaPlaylist } from './hls.js';
 import { TransferSegments } from './segment-transfer.js';
-import { CopyResponse, FetchMedia, ReadPlaylist } from './hls-http.js';
+import { ReadPlaylist } from './hls-http.js';
+import {HlsDecryptor, HlsResourceUrls, ReadHlsBytes, CopyHlsResource} from './hls-encryption.js';
 import { HasTransportStreamSync, MPEG_TS_PACKET_BYTES } from './mpeg-ts.js';
 import {ReadCommittedSnapshot} from './committed-snapshot.js';
-export const InitializationKey = ({ url: Url, range: LocalRange }) => JSON.stringify([Url, LocalRange?.start, LocalRange?.end]);
+export const InitializationKey = ({ url: Url, range: LocalRange, encryption: Encryption }) => JSON.stringify([Url, LocalRange?.start, LocalRange?.end, Encryption?.id]);
 export function LocalPlaylist(Segments)
 {
 	if (!Segments.length)
@@ -61,6 +62,7 @@ export async function DownloadTracks(Sources, {
 })
 {
 	const { signal: Signal } = Controller;
+	const Decryptor = new HlsDecryptor((Resource, Limit) => ReadHlsBytes(Resource, Limit, Signal, ObservedContext));
 	const Tracks = Sources.map(Source => ({ ...Source, saved: [], next: undefined }));
 	// 라이브 저장을 누르면 재생목록 갱신만 중단합니다. 이미 대기 중인 조각은 쓰기를 완료할 수 있습니다.
 	const Stop = AbortSignal.any([Signal, FinishSignal]);
@@ -137,7 +139,7 @@ export async function DownloadTracks(Sources, {
 				// 초기화 파일과 영상 조각이 서로 다른 병렬 작업에서 끝날 수 있습니다. 둘 다 저장되기 전에는 미리보기로 넘기지 않습니다.
 				FirstPreview = { playlist: LocalPlaylist([First]), pending: new Set([First.init, First.path].filter(Boolean)) };
 			}
-			await Authorize(Queue.flatMap(Resource => (Resource.parts ?? [Resource]).map(Part => Part.url)));
+			await Authorize([...new Set(Queue.flatMap(HlsResourceUrls))]);
 			await PublishProgress();
 			await TransferSegments(Queue, Controller, async Resource =>
 			{
@@ -150,8 +152,7 @@ export async function DownloadTracks(Sources, {
 					// 부분 조각은 시퀀스 순서대로 같은 임시 파일에 씁니다. 실패하면 전체 그룹 쓰기를 되돌려 재시도합니다.
 					for (const Part of Resource.parts ?? [Resource])
 					{
-						const HttpResponse = await FetchMedia(Part.url, Signal, ObservedContext, Part.range);
-						const Size = await CopyResponse(HttpResponse, RuntimePolicy.Transfer.MaxSegmentBytes - Written, Signal, async Chunk =>
+						await CopyHlsResource(Part, RuntimePolicy.Transfer.MaxSegmentBytes - Written, Signal, async Chunk =>
 						{
 							if (CheckTs && !HasTransportStreamSync(Chunk, Written))
 							{
@@ -159,7 +160,7 @@ export async function DownloadTracks(Sources, {
 							}
 							Buffered += Chunk.byteLength;
 							Written += Chunk.byteLength;
-							if (Buffered > RuntimePolicy.Transfer.MaxScratchBytes)
+							if (Buffered > RuntimePolicy.Transfer.MaxStreamScratchBytes)
 							{
 								throw new LocalizedError('stream_temporary_storage_limit');
 							}
@@ -168,11 +169,7 @@ export async function DownloadTracks(Sources, {
 							{
 								await PublishProgress();
 							}
-						});
-						if (!Size || (Part.range && Size !== Part.range.end - Part.range.start + 1))
-						{
-							throw new LocalizedError('stream_segment_incomplete');
-						}
+						}, Decryptor, ObservedContext);
 					}
 					if (CheckTs && Written % MPEG_TS_PACKET_BYTES)
 					{

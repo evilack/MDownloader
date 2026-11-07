@@ -558,7 +558,7 @@
     "message": "HLS 세그먼트 목록이 비어 있거나 불완전합니다."
   },
   "stream_hls_encrypted": {
-    "message": "암호화된 HLS는 지원하지 않습니다."
+    "message": "이 HLS의 DRM 또는 암호화 방식은 지원하지 않습니다."
   },
   "stream_hls_init_scheme": {
     "message": "HTTP 또는 HTTPS 초기화 세그먼트만 지원합니다."
@@ -1223,5 +1223,11 @@
         "content": "$1"
       }
     }
+  },
+  "stream_hls_invalid_key": {
+    "message": "HLS 암호화 키·키 형식 또는 IV가 올바르지 않습니다."
+  },
+  "stream_hls_decryption_failed": {
+    "message": "HLS 복호화에 실패했습니다. 키·IV 또는 암호화된 조각이 올바르지 않을 수 있습니다."
   }
 }

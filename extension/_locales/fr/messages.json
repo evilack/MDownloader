@@ -558,7 +558,7 @@
     "message": "La liste des segments HLS est vide ou incomplète."
   },
   "stream_hls_encrypted": {
-    "message": "Les flux HLS chiffrés ne sont pas pris en charge."
+    "message": "Ce flux HLS utilise un DRM ou une méthode de chiffrement non prise en charge."
   },
   "stream_hls_init_scheme": {
     "message": "Seules les URL HTTP ou HTTPS sont prises en charge pour les segments d’initialisation."
@@ -1223,5 +1223,11 @@
         "content": "$1"
       }
     }
+  },
+  "stream_hls_invalid_key": {
+    "message": "La clé de chiffrement, le format de clé ou le vecteur IV HLS est invalide."
+  },
+  "stream_hls_decryption_failed": {
+    "message": "Le déchiffrement HLS a échoué. La clé, le vecteur IV ou le segment chiffré peut être invalide."
   }
 }

@@ -45,7 +45,7 @@ Test('captures only full responses linked to the exact playlist and waits for co
 	Assert.deepEqual(Saved.get('segment-0.ts'), Ts);
 	Assert.deepEqual(Saved.get('segment-1.ts'), Ts);
 });
-Test('ignores missing bodies, rejects invalid packets and never reads an encryption key', async () =>
+Test('ignores missing bodies, rejects invalid packets and reads no unrelated key', async () =>
 {
 	const Capture = new PlaybackHls(Master, async () => Assert.fail('Invalid segment was stored'));
 	await Capture.Accept(Request(Master, '#EXTM3U\n#EXTINF:4,\nfirst.jpeg\n#EXT-X-ENDLIST'));
@@ -56,8 +56,30 @@ Test('ignores missing bodies, rejects invalid packets and never reads an encrypt
 	const Encrypted = new PlaybackHls(Master, async () =>
 	{
 	});
-	await Assert.rejects(Encrypted.Accept(Request(Master,
-	'#EXTM3U\n#EXT-X-KEY:METHOD=AES-128,URI="key"\n#EXTINF:4,\nfirst.jpeg\n#EXT-X-ENDLIST')), { key: 'stream_hls_encrypted' });
+	await Encrypted.Accept(Request(Master,
+	'#EXTM3U\n#EXT-X-KEY:METHOD=AES-128,URI="key"\n#EXTINF:4,\nfirst.jpeg\n#EXT-X-ENDLIST'));
+	await Encrypted.Accept(Request('https://player.test/other-key', '', {read: () => Assert.fail('unrelated key read')}));
+});
+Test('playback capture decrypts only a declared key and successful media already observed by the player', async () =>
+{
+	const Raw = crypto.getRandomValues(new Uint8Array(16));
+	const Key = await crypto.subtle.importKey('raw', Raw, 'AES-CBC', false, ['encrypt']);
+	const Bytes = new Uint8Array(await crypto.subtle.encrypt({name: 'AES-CBC', iv: new Uint8Array(16)}, Key, Ts));
+	const Saved = new Map();
+	const Capture = new PlaybackHls(Master, async (Name, Plain) => Saved.set(Name, Plain));
+	await Capture.Accept(Request(Master, '#EXTM3U\n#EXT-X-KEY:METHOD=AES-128,URI="key"\n#EXTINF:4,\nfirst.jpeg\n#EXT-X-ENDLIST'));
+	await Capture.Accept(Request('https://player.test/first.jpeg', Buffer.from(Bytes).toString('base64'), {encoding: 'base64'}));
+	Assert.equal(Capture.received, 0);
+	await Capture.Accept(Request('https://player.test/key', Buffer.from(Raw).toString('base64'), {encoding: 'base64', status: 403, read: () => Assert.fail('denied key read')}));
+	await Capture.Accept(Request('https://player.test/key', Buffer.from(Raw).toString('base64'), {encoding: 'base64'}));
+	Assert.equal(Capture.complete, true);
+	Assert.deepEqual(Saved.get('segment-0.ts'), Ts);
+	Assert.doesNotMatch(Capture.LocalInput().playlist, /EXT-X-KEY/);
+});
+Test('playback capture rejects ambiguous same-URI key rotation before associating observed key bytes', async () =>
+{
+	const Capture = new PlaybackHls(Master, async () => Assert.fail('ambiguous key stored'));
+	await Assert.rejects(Capture.Accept(Request(Master, '#EXTM3U\n#EXT-X-KEY:METHOD=AES-128,URI="key"\n#EXTINF:4,\na.ts\n#EXT-X-KEY:METHOD=AES-128,URI="key"\n#EXTINF:4,\nb.ts\n#EXT-X-ENDLIST')), {key: 'stream_hls_unsupported_media'});
 });
 Test('counts a repeated segment for each playlist entry while writing one scratch file', async () =>
 {

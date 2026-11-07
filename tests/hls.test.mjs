@@ -27,16 +27,16 @@ hevc.m3u8`;
 		{ url: 'https://cdn.test/hls/external.m3u8', bandwidth: 3000000, resolution: '', audioUrl: 'https://cdn.test/hls/audio.m3u8' },
 	]);
 	Assert.throws(() => ParseMaster(Master.replace('high.m3u8', ''), Base));
-	Assert.throws(() => ParseMaster(Master + '\n#EXT-X-SESSION-KEY:METHOD=AES-128,URI="key"', Base), { key: 'stream_hls_encrypted' });
+	Assert.deepEqual(ParseMaster(Master + '\n#EXT-X-SESSION-KEY:METHOD=AES-128,URI="key"', Base), ParseMaster(Master, Base));
 	Assert.throws(() => ParseMaster(Master + '\n#EXT-X-ENDLIST', Base));
 });
-Test('accepts clear media playlists and rejects encryption, master and live input', () =>
+Test('accepts TS VOD playlists and rejects unsupported encryption, master and live input', () =>
 {
 	const Playlist = '#EXTM3U\n#EXT-X-TARGETDURATION:4\n#EXTINF:4,\npart.ts?key=a%2Bb\n#EXT-X-ENDLIST';
 	const Parsed = ParseVod(Playlist, 'https://cdn.test/abc/stream.m3u8');
 	Assert.deepEqual(Parsed.urls, ['https://cdn.test/abc/part.ts?key=a%2Bb']);
 	Assert.match(Parsed.local, /segment-0\.ts/);
-	for (const Tag of ['#EXT-X-KEY:METHOD=AES-128,URI="key"', '#EXT-X-STREAM-INF:BANDWIDTH=100', '#EXT-X-MAP:URI="init"'])
+	for (const Tag of ['#EXT-X-KEY:METHOD=UNKNOWN,URI="key"', '#EXT-X-STREAM-INF:BANDWIDTH=100', '#EXT-X-MAP:URI="init"'])
 	{
 		Assert.throws(() => ParseVod(Playlist.replace('#EXTINF', Tag + '\n#EXTINF'), Parsed.urls[0]));
 	}
@@ -122,12 +122,12 @@ Test('rejects ranges with invalid sizes or ambiguous implicit offsets', () =>
 		['stream_hls_invalid_byte_range', 'stream_hls_duplicate_byte_range'].includes(Error.key));
 	}
 });
-Test('rejects encrypted, partial-only and delta playlists before they can supply downloads', () =>
+Test('rejects unsupported encryption, partial-only and delta playlists before they can supply downloads', () =>
 {
 	const Base = 'https://cdn.test/live/index.m3u8';
 	const Prefix = '#EXTM3U\n#EXT-X-TARGETDURATION:4\n';
 	for (const Tag of [
-		'#EXT-X-KEY:METHOD=AES-128,URI="key"',
+		'#EXT-X-KEY:METHOD=UNKNOWN,URI="key"',
 		'#EXT-X-KEY:METHOD=SAMPLE-AES,KEYFORMAT="com.apple.streamingkeydelivery",URI="skd://license"',
 		'#EXT-X-SESSION-KEY:METHOD=SAMPLE-AES-CTR,URI="key"',
 	])

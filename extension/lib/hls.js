@@ -4,6 +4,7 @@
  */
 import { RuntimePolicy } from './runtime-policy.js';
 import { LocalizedError } from './i18n.js';
+import {ReadHlsKey} from './hls-encryption.js';
 const StreamTag = '#EXT-X-STREAM-INF:';
 const VideoCodec = /^(?:avc[13](?:\.[\da-f]{6})?|av01(?:\.[a-z\d]+)+)$/i;
 function PlaylistLines(TextValue)
@@ -158,9 +159,17 @@ export function ParseMaster(TextValue, Address, { allowSeparateAudio: bAllowSepa
 	{
 		throw new LocalizedError('stream_hls_invalid_master');
 	}
-	if (Lines.some(Line => /^#EXT-X-(KEY|SESSION-KEY)(?=:|$)/.test(Line)))
+	if (Lines.some(Line => /^#EXT-X-KEY(?=:|$)/.test(Line)))
 	{
 		throw new LocalizedError('stream_hls_encrypted');
+	}
+	// SESSION-KEY는 선행 로딩 힌트입니다. 실제 조각에는 미디어 목록의 KEY 선언을 적용합니다.
+	for (const Line of Lines.filter(Line => Line.startsWith('#EXT-X-SESSION-KEY:')))
+	{
+		if (ReadHlsKey(ReadAttributes(Line.slice(19), 'stream_hls_invalid_key'), Address).method === 'NONE')
+		{
+			throw new LocalizedError('stream_hls_invalid_key');
+		}
 	}
 	const Renditions = Lines.filter(Line => Line.startsWith('#EXT-X-MEDIA:'))
 	.map(Line => ReadAttributes(Line.slice('#EXT-X-MEDIA:'.length)));
@@ -267,6 +276,20 @@ export function ParseMediaPlaylist(TextValue, Address)
 	let bEnded = false;
 	let bPartial = false;
 	let Parts = [];
+	const Keys = new Map();
+	function Encryption()
+	{
+		if (!Keys.size)
+		{
+			return undefined;
+		}
+		const Key = Keys.get('identity');
+		if (!Key || Key.unsupported)
+		{
+			throw new LocalizedError('stream_hls_encrypted');
+		}
+		return Key;
+	}
 	for (let Index = 1; Index < Lines.length; Index++)
 	{
 		const Line = Lines[Index];
@@ -291,13 +314,20 @@ export function ParseMediaPlaylist(TextValue, Address)
 				throw new LocalizedError('stream_hls_segment_scheme');
 			}
 			const Segment = { url: Url, duration: Duration, sequence: Sequence };
+			const Key = Encryption();
+			if (Key)
+			{
+				Segment.encryption = Key;
+			}
 			// 완성된 미디어 시퀀스에 속한 부분 조각만 합칩니다. 아직 완성되지 않은 마지막 그룹은 다음 갱신을 기다립니다.
-			if (Parts.length)
+			if (Parts.length && !Key)
 			{
 				Segment.url = Parts[0].url;
 				Segment.parts = Parts;
 				Parts = [];
 			}
+			// 전체 조각 암호화는 부모 조각의 경계에서 복호화합니다. 부분 조각을 독립 CBC로 오인하지 않습니다.
+			Parts = [];
 			if (Init)
 			{
 				Segment.init = Init;
@@ -325,11 +355,18 @@ export function ParseMediaPlaylist(TextValue, Address)
 		switch (Tag)
 		{
 			case '#EXT-X-KEY':
-			if (Value === 'METHOD=NONE')
 			{
+				const Key = ReadHlsKey(ReadAttributes(Value, 'stream_hls_invalid_key'), Address);
+				if (Key.method === 'NONE')
+				{
+					Keys.clear();
+				}
+				else
+				{
+					Keys.set(Key.format, Key);
+				}
 				break;
 			}
-			throw new LocalizedError('stream_hls_encrypted');
 			case '#EXT-X-SESSION-KEY':
 			throw new LocalizedError('stream_hls_encrypted');
 			case '#EXT-X-STREAM-INF':
@@ -383,6 +420,15 @@ export function ParseMediaPlaylist(TextValue, Address)
 					throw new LocalizedError('stream_hls_init_scheme');
 				}
 				Init = { url: Url };
+				const Key = Encryption();
+				if (Key)
+				{
+					if (!Key.iv && Key.method !== 'AES-256-GCM')
+					{
+						throw new LocalizedError('stream_hls_invalid_key');
+					}
+					Init.encryption = Key;
+				}
 				if (Fields.has('BYTERANGE'))
 				{
 					Init.range = ByteRange(Fields.get('BYTERANGE'));
@@ -457,11 +503,16 @@ export function ParseVod(TextValue, Address)
 	{
 		throw new LocalizedError('stream_hls_vod_end_required');
 	}
+	const Segments = Lines.some(Line => Line.startsWith('#EXT-X-KEY:') && Line !== '#EXT-X-KEY:METHOD=NONE') ? ParseMediaPlaylist(TextValue, Address).segments : undefined;
 	const Urls = [];
 	let bExpectingSegment = false;
 	const Local = Lines.map(Line =>
 	{
-		if (/^#EXT-X-(KEY|SESSION-KEY)(?=:|$)/.test(Line) && !/^#EXT-X-KEY:METHOD=NONE$/.test(Line))
+		if (Line.startsWith('#EXT-X-KEY:'))
+		{
+			return '';
+		}
+		if (/^#EXT-X-SESSION-KEY(?=:|$)/.test(Line))
 		{
 			throw new LocalizedError('stream_hls_encrypted');
 		}
@@ -506,5 +557,5 @@ export function ParseVod(TextValue, Address)
 	{
 		throw new LocalizedError('stream_hls_empty_segments');
 	}
-	return { urls: Urls, local: Local.join('\n') + '\n' };
+	return { urls: Urls, local: Local.join('\n') + '\n', ...(Segments ? {segments: Segments} : {}) };
 }

@@ -5,6 +5,71 @@ import { DownloadTracks } from '../extension/lib/stream-transfer.js';
 const Address = 'https://video.test/live.m3u8';
 const Playlist = (Sequence, ...Parts) => '#EXTM3U\n#EXT-X-TARGETDURATION:1\n#EXT-X-MEDIA-SEQUENCE:' +
 Sequence + '\n' + Parts.map(Part => '#EXTINF:1,\n' + Part + '\n').join('');
+Test('encrypted live refresh uses new keys at the same URI and commits only plaintext', async T =>
+{
+	const Plain = new Uint8Array(376);
+	Plain[0] = Plain[188] = 0x47;
+	const RawKeys = [crypto.getRandomValues(new Uint8Array(16)), crypto.getRandomValues(new Uint8Array(16))];
+	const Cipher = await Promise.all(RawKeys.map(async (Raw, Index) =>
+	{
+		const Iv = new Uint8Array(16);
+		Iv[15] = 20 + Index;
+		return new Uint8Array(await crypto.subtle.encrypt({name: 'AES-CBC', iv: Iv}, await crypto.subtle.importKey('raw', Raw, 'AES-CBC', false, ['encrypt']), Plain));
+	}));
+	const EncryptedPlaylist = (Sequence, Name) => Playlist(Sequence, Name).replace('#EXTINF', '#EXT-X-KEY:METHOD=AES-128,URI="key"\n#EXTINF');
+	let KeyLoads = 0;
+	const Authorizations = [];
+	T.mock.method(globalThis, 'fetch', async (Url, Options) =>
+	{
+		Assert.equal(Options.credentials, 'omit');
+		if (Url === Address)
+		{
+			return new Response(EncryptedPlaylist(21, 'b.ts') + '#EXT-X-ENDLIST');
+		}
+		if (Url.endsWith('/key'))
+		{
+			Assert.equal(Options.cache, 'no-store');
+			return new Response(RawKeys[KeyLoads++]);
+		}
+		return new Response(Cipher[Url.endsWith('a.ts') ? 0 : 1]);
+	});
+	const Target = Workspace();
+	let ReadSnapshot;
+	const Result = await DownloadTracks([{url: Address, playlist: ParseMediaPlaylist(EncryptedPlaylist(20, 'a.ts'), Address)}], {
+		workspace: Target, controller: new AbortController(), finishSignal: new AbortController().signal, observedContext: true,
+		authorize: async Urls => Authorizations.push(Urls), progress: async () =>
+		{
+		}, snapshot: Read =>
+		{
+			ReadSnapshot = Read;
+		},
+	});
+	Assert.equal(KeyLoads, 2);
+	Assert.equal(Authorizations.filter(Urls => Urls.includes('https://video.test/key')).length, 2);
+	Assert.deepEqual([...Target.files.values()], [Plain, Plain]);
+	Assert.equal(Result.progress.received, Plain.length * 2);
+	Assert.equal(ReadSnapshot().video.length, 2);
+	Assert.doesNotMatch(Result.video, /EXT-X-KEY|\/key/);
+});
+Test('encrypted resources wait for host authorization and failed keys commit no media', async T =>
+{
+	const Parsed = ParseMediaPlaylist(Playlist(0, 'a.ts').replace('#EXTINF', '#EXT-X-KEY:METHOD=AES-128,URI="https://keys.test/key"\n#EXTINF') + '#EXT-X-ENDLIST', Address);
+	const Options = {workspace: Workspace(), controller: new AbortController(), finishSignal: new AbortController().signal, progress: async () =>
+		{
+		}};
+	T.mock.method(globalThis, 'fetch', () => Assert.fail('unauthorized request'));
+	await Assert.rejects(DownloadTracks([{playlist: Parsed}], {...Options, authorize: async Urls =>
+		{
+			Assert.ok(Urls.includes('https://keys.test/key'));
+			throw new Error('access denied');
+		}}), /access denied/);
+	T.mock.method(globalThis, 'fetch', async Url => new Response(Url.startsWith('https://keys.test') ? new Uint8Array(15) : new Uint8Array(16)));
+	const Target = Workspace();
+	await Assert.rejects(DownloadTracks([{playlist: Parsed}], {...Options, workspace: Target, authorize: async () =>
+		{
+		}}), {key: 'stream_hls_invalid_key'});
+	Assert.equal(Target.files.size, 0);
+});
 function Workspace()
 {
 	const Files = new Map();

@@ -558,7 +558,7 @@
     "message": "The HLS segment list is empty or incomplete."
   },
   "stream_hls_encrypted": {
-    "message": "Encrypted HLS is not supported."
+    "message": "This HLS uses DRM or an unsupported encryption method."
   },
   "stream_hls_init_scheme": {
     "message": "Only HTTP and HTTPS initialization segment URLs are supported."
@@ -1223,5 +1223,11 @@
         "content": "$1"
       }
     }
+  },
+  "stream_hls_invalid_key": {
+    "message": "The HLS encryption key, key format or IV is invalid."
+  },
+  "stream_hls_decryption_failed": {
+    "message": "HLS decryption failed. The key, IV or encrypted segment may be invalid."
   }
 }

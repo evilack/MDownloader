@@ -8,7 +8,7 @@ Find video and audio on the current page, save supported streams, and manage dow
 
 Chrome · Microsoft Edge · Manifest V3 · English by default · 10 interface languages
 
-MDownloader runs in your browser. It can save direct media files and supported unencrypted HLS/DASH streams without a separate desktop downloader.
+MDownloader runs in your browser. It can save direct media files, supported clear or AES-encrypted HLS, and supported unencrypted DASH streams without a separate desktop downloader.
 
 ## Installation
 
@@ -130,11 +130,13 @@ Filename examples: `Page title_original.mp4` and `Page title_original_YYYY-MM-DD
 | Media | Support |
 |---|---|
 | Direct files | HTTP(S) video/audio files, including MP4, WebM, MOV, MKV, MP3, M4A, WAV, FLAC, and OGG families; saved in their original format. |
-| HLS | Supported unencrypted MPEG-TS/fMP4 video and audio, including H.264/AAC and supported fMP4 AV1; remuxed without re-encoding. |
+| HLS | Supported clear or full-segment AES-encrypted MPEG-TS/fMP4 video and audio, including H.264/AAC and supported fMP4 AV1; remuxed without re-encoding. |
 | DASH | Supported static single-period fMP4 representations; remuxed without re-encoding. |
 | Live streams | Supported live HLS with complete segment boundaries. |
 
-DRM/encrypted media, live DASH, unknown source protocols, unsupported codecs/layouts, redirects required by stream delivery, and incomplete low-latency groups are outside the supported stream path. Stream jobs also have bounded segment, resource-size, and temporary-storage limits. See [Development](docs/development.md) for the implementation boundaries.
+HLS encryption supports `AES-128`, `AES-256` (CBC), `AES-256-CTR`, and `AES-256-GCM` when the playlist supplies a normally accessible `identity` key. Key rotation, explicit IVs, and sequence-number IVs are handled automatically. Encrypted HLS needs no additional setting: use the same Download button. Encrypted low-latency playlists use the complete parent segments.
+
+DRM license systems, sample encryption (`SAMPLE-AES` / `SAMPLE-AES-CTR`), encrypted DASH, live DASH, unknown source protocols, unsupported codecs/layouts, redirects required by stream delivery, and incomplete low-latency groups are outside the supported stream path. A denied or invalid key cannot be used to decrypt media. Stream jobs have a 16 GiB temporary-data ceiling, a 32 MiB resource ceiling, and a 5,000-segment ceiling; browser storage quota may impose a lower limit. See [Development](docs/development.md) for the implementation boundaries.
 
 ## Troubleshooting
 

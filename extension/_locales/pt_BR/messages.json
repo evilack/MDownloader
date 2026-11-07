@@ -558,7 +558,7 @@
     "message": "A lista de segmentos HLS está vazia ou incompleta."
   },
   "stream_hls_encrypted": {
-    "message": "HLS criptografado não é compatível."
+    "message": "Este HLS usa DRM ou um método de criptografia não compatível."
   },
   "stream_hls_init_scheme": {
     "message": "Somente URLs HTTP ou HTTPS são aceitos para segmentos de inicialização."
@@ -1223,5 +1223,11 @@
         "content": "$1"
       }
     }
+  },
+  "stream_hls_invalid_key": {
+    "message": "A chave, o formato da chave ou o IV de criptografia HLS é inválido."
+  },
+  "stream_hls_decryption_failed": {
+    "message": "Falha ao descriptografar o HLS. A chave, o IV ou o segmento criptografado pode ser inválido."
   }
 }

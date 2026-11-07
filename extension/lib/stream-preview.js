@@ -12,6 +12,7 @@ import { InitializationKey, LocalPlaylist } from './stream-transfer.js';
 import { HostPattern } from './media.js';
 import { ReadPagePreviewResource } from './page-preview.js';
 import { NormalizeHlsProtocol } from './hls-protocol.js';
+import {HlsDecryptor, HlsResourceUrls} from './hls-encryption.js';
 async function RequireAccess(Urls)
 {
 	const Origins = [...new Set(Urls.map(HostPattern))];
@@ -63,7 +64,22 @@ export async function StreamPreview({ url: Url, format: Format, pageStream: Page
 	// 첫 조각이 매우 짧으면 다음 조각도 사용합니다. 초기화 데이터를 포함한 전체 미리보기는 메모리 상한 안에서 처리합니다.
 	const Start = Video.ended ? 0 : Math.max(0, Video.segments.length - 2);
 	const Sample = Video.segments.slice(Start, Start + (Video.segments[Start]?.duration < RuntimePolicy.Preview.ShortSegmentSeconds ? 2 : 1));
-	await RequireAccess(Sample.flatMap(Segment => [...(Segment.parts ?? [Segment]).map(Part => Part.url), ...(Segment.init ? [Segment.init.url] : [])]));
+	await RequireAccess(Sample.flatMap(Segment => [...HlsResourceUrls(Segment), ...(Segment.init ? HlsResourceUrls(Segment.init) : [])]));
+	async function ReadResource(Resource, Limit)
+	{
+		if (PageStream && new URL(Resource.url).origin === PageStream.context.serverOrigin)
+		{
+			return ReadPagePreviewResource(PageStream, Resource, Limit, Signal);
+		}
+		const Pieces = [];
+		const Size = await CopyResponse(await FetchMedia(Resource.url, Signal, !!PageStream, Resource.range, true), Limit, Signal, Chunk => Pieces.push(Chunk));
+		if (!Size || Resource.range && Size !== Resource.range.end - Resource.range.start + 1)
+		{
+			throw new LocalizedError('stream_segment_incomplete');
+		}
+		return new Uint8Array(await new Blob(Pieces).arrayBuffer());
+	}
+	const Decryptor = new HlsDecryptor(ReadResource);
 	let Total = 0;
 	const Files = new Map();
 	async function Buffer(Resource, Path)
@@ -82,22 +98,13 @@ export async function StreamPreview({ url: Url, format: Format, pageStream: Page
 			Files.set(Path, new Blob(Pieces));
 			return;
 		}
-		if (PageStream && new URL(Resource.url).origin === PageStream.context.serverOrigin)
-		{
-			const Bytes = await ReadPagePreviewResource(PageStream, Resource, Limit, Signal);
-			Total += Bytes.byteLength;
-			Files.set(Path, new Blob([Bytes]));
-			return;
-		}
-		const Pieces = [];
-		const HttpResponse = await FetchMedia(Resource.url, Signal, !!PageStream, Resource.range, true);
-		const Size = await CopyResponse(HttpResponse, Limit, Signal, Chunk => Pieces.push(Chunk));
-		if (!Size)
+		const Bytes = await Decryptor.Decrypt(Resource, await ReadResource(Resource, Limit), Signal);
+		if (!Bytes.byteLength)
 		{
 			throw new LocalizedError('stream_preview_empty_segment');
 		}
-		Total += Size;
-		Files.set(Path, new Blob(Pieces));
+		Total += Bytes.byteLength;
+		Files.set(Path, new Blob([Bytes]));
 	}
 	const Initializations = new Map();
 	const Segments = [];
