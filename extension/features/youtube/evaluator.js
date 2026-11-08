@@ -1,10 +1,11 @@
 import {LocalizedError} from '../../lib/i18n.js';
+import {CreateSandboxEvaluatorWorker} from './evaluator-frame.js';
 export class YoutubeError extends LocalizedError
 {
 	constructor(Code) { super(Code); this.code = Code; }
 }
-/** Jinter는 보안 sandbox가 아닙니다. 별도 worker를 매번 폐기하고 외부에서 시간을 제한합니다. */
-export function CreateEvaluator({createWorker = () => new Worker(new URL('../../vendor/youtube/evaluator-worker.mjs', import.meta.url), {type: 'module'}), timeoutMs = 2000} = {})
+/** Opaque sandbox의 단발 worker를 매번 폐기하고 권한 있는 부모에서 시간을 제한합니다. */
+export function CreateEvaluator({createWorker = CreateSandboxEvaluatorWorker, timeoutMs = 2000} = {})
 {
 	return async (Data, Environment = {}) =>
 	{
@@ -29,6 +30,6 @@ export function CreateEvaluator({createWorker = () => new Worker(new URL('../../
 				WorkerInstance.postMessage({script: Data.output, environment: Values});
 			});
 		}
-		finally { WorkerInstance.terminate(); }
+		finally { await WorkerInstance.terminate(); }
 	};
 }

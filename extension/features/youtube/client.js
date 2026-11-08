@@ -50,7 +50,7 @@ export function CreateYoutubeClient({createInnertube, hasPermission = DefaultPer
 		return ResponseValue;
 	}
 	return {
-		async DiscoverYoutube({pageUrl: PageUrl}, Signal = new AbortController().signal)
+		async DiscoverYoutube({pageUrl: PageUrl, transport: Transport = 'direct'}, Signal = new AbortController().signal)
 		{
 			if (!CanUseYoutube()) Fail('youtube_distribution_disabled');
 			Signal.throwIfAborted();
@@ -73,15 +73,34 @@ export function CreateYoutubeClient({createInnertube, hasPermission = DefaultPer
 			Signal.throwIfAborted();
 			if (Info.basic_info?.id !== Identity.videoId) Fail('youtube_session_changed');
 			if (Info.playability_status?.status !== 'OK' || Info.basic_info?.is_live || Info.basic_info?.is_upcoming) Fail('youtube_restricted');
+			let Profile;
+			if (Transport === 'sabr')
+			{
+				Profile = (await import('../../vendor/youtube/client-bundle.mjs')).SabrClientProfile;
+				try { Info = await Tube.getBasicInfo(Identity.videoId, {client: Profile.name}); }
+				catch (ErrorValue) { if (ErrorValue instanceof YoutubeError) throw ErrorValue; Fail('youtube_extraction_failed'); }
+				if (Info.basic_info?.id !== Identity.videoId) Fail('youtube_session_changed');
+				if (Info.playability_status?.status !== 'OK' || Info.basic_info?.is_live || Info.basic_info?.is_upcoming) Fail('youtube_restricted');
+			}
 			const Streaming = Info.streaming_data;
-			const Formats = [...(Streaming?.formats ?? []), ...(Streaming?.adaptive_formats ?? [])].filter(Format => !Format.drm_families?.length && !Format.drm_track_type && !Format.fair_play_key_uri && !Format.is_type_otf && (Format.url || Format.signature_cipher || Format.cipher) && (Format.has_audio || Format.has_video));
+			const Formats = [...(Streaming?.formats ?? []), ...(Streaming?.adaptive_formats ?? [])].filter(Format => !Format.drm_families?.length && !Format.drm_track_type && !Format.fair_play_key_uri && !Format.is_type_otf && (Transport === 'sabr' || Format.url || Format.signature_cipher || Format.cipher) && (Format.has_audio || Format.has_video));
 			if (!Formats.length) Fail(Streaming?.server_abr_streaming_url ? 'youtube_sabr_unsupported' : 'youtube_no_clear_formats');
+			let Sabr;
+			if (Transport === 'sabr')
+			{
+				const Url = new URL(Streaming?.server_abr_streaming_url ?? 'about:blank');
+				if (Url.protocol !== 'https:' || !Url.hostname.endsWith('.googlevideo.com')) Fail('youtube_unexpected_host');
+				const Config = Info.player_config?.media_common_config?.media_ustreamer_request_config?.video_playback_ustreamer_config;
+				if (typeof Config !== 'string' || !Config.length || Config.length > 1024 * 1024) Fail('youtube_sabr_config_missing');
+				if (!Number.isFinite(Info.basic_info.duration) || Info.basic_info.duration <= 0) Fail('youtube_session_changed');
+				Sabr = {videoId: Identity.videoId, title: Info.basic_info.title ?? '', duration: Info.basic_info.duration, url: Url.href, ustreamerConfig: Config, formats: Formats, clientInfo: Profile.clientInfo};
+			}
 			const SessionKey = crypto.randomUUID();
-			Sessions.set(SessionKey, {tube: Tube, videoId: Identity.videoId, formats: Formats, created: Date.now()});
+			Sessions.set(SessionKey, {tube: Tube, videoId: Identity.videoId, formats: Formats, created: Date.now(), sabr: Sabr});
 			while (Sessions.size > 8) Sessions.delete(Sessions.keys().next().value);
-			return {...Identity, title: Info.basic_info.title ?? '', duration: Info.basic_info.duration,
+			return {...Identity, ...(Sabr ? {transport: 'sabr'} : {}), title: Info.basic_info.title ?? '', duration: Info.basic_info.duration,
 				thumbnail: Info.basic_info.thumbnail?.[0]?.url, sessionKey: SessionKey,
-				formats: Formats.map(Format => ({id: String(Format.itag), kind: Format.has_video ? Format.has_audio ? 'muxed' : 'video' : 'audio',
+				formats: Formats.map((Format, Index) => ({id: Sabr ? `${Format.itag}:${Index}` : String(Format.itag), kind: Format.has_video ? Format.has_audio ? 'muxed' : 'video' : 'audio',
 					container: Format.mime_type?.split(';')[0].split('/')[1], codecs: Format.mime_type?.match(/codecs="([^"]+)"/)?.[1].split(',').map(Value => Value.trim()) ?? [],
 					width: Format.width, height: Format.height, fps: Format.fps, bitrate: Format.bitrate, contentLength: Format.content_length, language: Format.language}))};
 		},
@@ -92,6 +111,20 @@ export function CreateYoutubeClient({createInnertube, hasPermission = DefaultPer
 			const Session = Sessions.get(Key);
 			if (!Session || Session.videoId !== Id || Date.now() - Session.created > 30 * 60 * 1000) Fail('youtube_session_changed');
 			await Permission('https://www.youtube.com/');
+			if (Session.sabr)
+			{
+				const VideoIndex = Session.formats.findIndex((Format, Index) => `${Format.itag}:${Index}` === Selection.videoFormatId && Format.has_video);
+				const AudioIndex = Session.formats.findIndex((Format, Index) => `${Format.itag}:${Index}` === Selection.audioFormatId && Format.has_audio && !Format.has_video);
+				const Video = Session.formats[VideoIndex], Audio = Session.formats[AudioIndex];
+				if (!Video || !Audio || !Video.mime_type?.includes('avc1') || !Audio.mime_type?.includes('mp4a')) Fail('youtube_format_unavailable');
+				let Url;
+				try { Url = new URL(await Session.tube.session.player.decipher(Session.sabr.url)); }
+				catch (ErrorValue) { if (ErrorValue instanceof YoutubeError) throw ErrorValue; Fail('youtube_evaluator_failed'); }
+				if (Url.protocol !== 'https:' || !Url.hostname.endsWith('.googlevideo.com')) Fail('youtube_unexpected_host');
+				if (Number(Url.searchParams.get('expire') || Infinity) * 1000 <= Date.now() + 30000) Fail('youtube_url_expired');
+				await Permission(Url.href); Signal.throwIfAborted();
+				return {transport: 'sabr', config: {...Session.sabr, url: Url.href}, selection: {video: Video.itag, audio: Audio.itag, videoFormatIndex: VideoIndex, audioFormatIndex: AudioIndex}};
+			}
 			const Tracks = [];
 			for (const [Kind, FormatId] of [['video', Selection.videoFormatId], ['audio', Selection.audioFormatId]])
 			{

@@ -5,6 +5,21 @@ const Id = '-XHx839rSc8';
 const raw = () => ({videoDetails: {videoId: Id, title: 'Fixture', lengthSeconds: '2'}, playabilityStatus: {status: 'OK'},
  streamingData: {serverAbrStreamingUrl: 'https://r1.googlevideo.com/videoplayback?sabr=1', adaptiveFormats: [{itag:134, mimeType:'video/mp4; codecs="avc1.4d401e"', qualityLabel:'360p', bitrate:1, approxDurationMs:'2000'}, {itag:140, mimeType:'audio/mp4; codecs="mp4a.40.2"', audioQuality:'AUDIO_QUALITY_MEDIUM', bitrate:1, approxDurationMs:'2000'}]},
  playerConfig: {mediaCommonConfig: {mediaUstreamerRequestConfig: {videoPlaybackUstreamerConfig:'AA=='}}}});
+
+test('completion uses each selected format duration instead of rounded page seconds',async()=>{
+ const config=NormalizeWatchPlayer(raw(),Id,{});config.duration=623;config.formats[0].approxDurationMs='622567';config.formats[1].approxDurationMs='622853';
+ let videoEnd=622567,closed=0,aborted=0;
+ const createStream=()=>({videoEndTimeMs:videoEnd,audioEndTimeMs:622853,on(){},abort:async()=>{},start(){const stream=()=>new ReadableStream({start(c){c.enqueue(new Uint8Array([1]));c.close();}});return{videoStream:stream(),audioStream:stream(),selectedFormats:{}};}});
+ const options={createStream,createWriter:async()=>({write:async()=>{},close:async()=>closed++,abort:async()=>aborted++})};
+ const result=await ReceiveSabrTracks(config,{video:134,audio:140},options);assert.deepEqual(result.bytes,{video:1,audio:1});assert.equal(closed,2);
+ videoEnd=622000;await assert.rejects(ReceiveSabrTracks(config,{video:134,audio:140},options),{code:'youtube_sabr_receive_failed'});assert.equal(closed,2);assert.equal(aborted,2);
+});
+test('receiver passes the exact indexed language format instead of resolving its duplicate itag again',async()=>{
+ const config=NormalizeWatchPlayer(raw(),Id,{});config.formats.push({...config.formats[1],xtags:'second',language:'en'});const normalized=config.formats.map(f=>({...f}));let selected;
+ const createStream=()=>({formats:normalized,videoEndTimeMs:2000,audioEndTimeMs:2000,on(){},abort:async()=>{},start(options){selected=options.audioFormat;const stream=()=>new ReadableStream({start(c){c.enqueue(new Uint8Array([1]));c.close();}});return{videoStream:stream(),audioStream:stream(),selectedFormats:{}};}});
+ await ReceiveSabrTracks(config,{video:134,audio:140,videoFormatIndex:0,audioFormatIndex:2},{createStream,createWriter:async()=>({write:async()=>{},close:async()=>{},abort:async()=>{}})});
+ assert.equal(selected,normalized[2]);assert.equal(selected.language,'en');
+});
 test('SABR keeps URL-less formats but requires the exact public video and protocol config', () => {
  const result=NormalizeWatchPlayer(raw(),Id,{clientVersion:'2.test'});
  assert.equal(result.formats.length,2); assert.equal(result.videoId,Id);

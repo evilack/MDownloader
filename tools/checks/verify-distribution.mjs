@@ -43,6 +43,8 @@ for (const File of Files) {
 }
 const Manifest = JSON.parse(await readFile(Path.join(Root, 'manifest.json'), 'utf8'));
 for (const Value of [Manifest.background.service_worker, Manifest.action.default_popup, Manifest.options_page, Manifest.side_panel.default_path, Manifest.devtools_page, ...Object.values(Manifest.icons)]) await Reference('manifest.json', Value);
+for(const Value of Manifest.sandbox?.pages??[])await Reference('manifest.json',Value);
+if(Flavor==='chrome-store'&&(Manifest.sandbox||Manifest.content_security_policy?.sandbox))throw Error('YouTube sandbox policy in store');
 const Policy = await import(new URL('../../artifacts/distributions/' + Flavor + '/extension/lib/distribution-policy.js', import.meta.url));
 if (Policy.DistributionPolicy.flavor !== Flavor || Flavor === 'chrome-store' && Policy.CanUseYoutube(undefined, 'edge')) throw new Error('Wrong policy');
 console.log(JSON.stringify({flavor: Flavor, files: Files.length, imports: Imports, verified: true}));

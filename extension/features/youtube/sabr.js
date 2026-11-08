@@ -53,7 +53,18 @@ export async function ReceiveSabrTracks(Config, Selection, {createStream, create
 	let Reserved = 0;
 	try
 	{
-		const Started = Receiver.start({videoFormat: Selection.video, audioFormat: Selection.audio, isPostLiveDvr: false, maxRetries: 0});
+		const ExactFormat = Kind =>
+		{
+			const Index = Selection[Kind + 'FormatIndex'];
+			if (Index !== undefined)
+			{
+				if (!Number.isInteger(Index) || Index < 0 || Config.formats[Index]?.itag !== Selection[Kind] || Receiver.formats?.[Index]?.itag !== Selection[Kind]) Fail('youtube_format_unavailable');
+				return Receiver.formats[Index];
+			}
+			if (Config.formats.filter(Format => Format.itag === Selection[Kind]).length > 1) Fail('youtube_format_unavailable');
+			return Selection[Kind];
+		};
+		const Started = Receiver.start({videoFormat: ExactFormat('video'), audioFormat: ExactFormat('audio'), isPostLiveDvr: false, maxRetries: 0});
 		Copies = ['video', 'audio'].map(async Kind =>
 		{
 			const Writer = await createWriter(Kind); Writers.push(Writer);
@@ -75,8 +86,15 @@ export async function ReceiveSabrTracks(Config, Selection, {createStream, create
 			finally {Reader.releaseLock();}
 		});
 		await Promise.all(Copies);
-		const ExpectedEnd = Config.duration * 1000 - 250;
-		if (Number.isFinite(ExpectedEnd) && (!Number.isFinite(Receiver.videoEndTimeMs) || !Number.isFinite(Receiver.audioEndTimeMs) || Receiver.videoEndTimeMs < ExpectedEnd || Receiver.audioEndTimeMs < ExpectedEnd)) Fail('youtube_sabr_receive_failed');
+		for (const Kind of ['video', 'audio'])
+		{
+			const Format = Started.selectedFormats?.[Kind + 'Format'] ?? Config.formats.find(Item => Item.itag === Selection[Kind]);
+			const Precise = Number(Format?.approxDurationMs ?? Format?.approx_duration_ms);
+			const PageDuration = Config.duration * 1000;
+			if (Precise > 0 && Number.isFinite(PageDuration) && Math.abs(Precise - PageDuration) > 1000) Fail('youtube_sabr_receive_failed');
+			const ExpectedEnd = Precise > 0 ? Precise - 250 : PageDuration - (Number.isInteger(Config.duration) ? 500 : 250);
+			if (Number.isFinite(ExpectedEnd) && (!Number.isFinite(Receiver[Kind + 'EndTimeMs']) || Receiver[Kind + 'EndTimeMs'] < ExpectedEnd)) Fail('youtube_sabr_receive_failed');
+		}
 		await Promise.all(Writers.map(Writer => Writer.close()));
 		return {bytes: Bytes, selectedFormats: Started.selectedFormats};
 	}

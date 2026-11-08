@@ -1,4 +1,4 @@
-// node_modules/googlevideo/dist/src/core/CompositeBuffer.js
+// ../../node_modules/googlevideo/dist/src/core/CompositeBuffer.js
 var CompositeBuffer = class _CompositeBuffer {
   chunks;
   currentChunkOffset;
@@ -108,7 +108,7 @@ var CompositeBuffer = class _CompositeBuffer {
   }
 };
 
-// node_modules/googlevideo/dist/src/core/UmpReader.js
+// ../../node_modules/googlevideo/dist/src/core/UmpReader.js
 var UmpReader = class {
   callbacks;
   compositeBuffer;
@@ -251,7 +251,7 @@ var UmpReader = class {
   }
 };
 
-// node_modules/googlevideo/dist/src/utils/Logger.js
+// ../../node_modules/googlevideo/dist/src/utils/Logger.js
 var LogLevel = {
   NONE: 0,
   0: "NONE",
@@ -333,7 +333,7 @@ var Logger = class _Logger {
   }
 };
 
-// node_modules/googlevideo/dist/src/utils/uint8arrayUtils.js
+// ../../node_modules/googlevideo/dist/src/utils/uint8arrayUtils.js
 function base64ToU8(base64) {
   const standardBase64 = base64.replace(/-/g, "+").replace(/_/g, "/");
   const paddedBase64 = standardBase64.padEnd(standardBase64.length + (4 - standardBase64.length % 4) % 4, "=");
@@ -363,7 +363,7 @@ function decodePart(chunks, decoder) {
   }
 }
 
-// node_modules/googlevideo/dist/src/utils/mediaCapabilityUtils.js
+// ../../node_modules/googlevideo/dist/src/utils/mediaCapabilityUtils.js
 var CODEC_CODES = {
   0: "f",
   160: "h",
@@ -759,7 +759,7 @@ function buildMediaCapabilities(videoFormat, audioFormat, isSurroundSupported = 
   };
 }
 
-// node_modules/@bufbuild/protobuf/dist/esm/wire/varint.js
+// ../../node_modules/@bufbuild/protobuf/dist/esm/wire/varint.js
 function varint64read() {
   const buf = this.buf;
   let pos = this.pos;
@@ -908,7 +908,7 @@ function varint32read() {
   return result >>> 0;
 }
 
-// node_modules/@bufbuild/protobuf/dist/esm/proto-int64.js
+// ../../node_modules/@bufbuild/protobuf/dist/esm/proto-int64.js
 var protoInt64 = /* @__PURE__ */ makeInt64Support();
 function makeInt64Support() {
   const dv = new DataView(new ArrayBuffer(8));
@@ -1011,7 +1011,7 @@ function assertUInt64String(value) {
   }
 }
 
-// node_modules/@bufbuild/protobuf/dist/esm/wire/text-encoding.js
+// ../../node_modules/@bufbuild/protobuf/dist/esm/wire/text-encoding.js
 var te;
 function configureTextEncoding(textEncoding) {
   var _a;
@@ -1074,7 +1074,7 @@ function emulateEncodeInto(encodeUtf8) {
   };
 }
 
-// node_modules/@bufbuild/protobuf/dist/esm/wire/binary-encoding.js
+// ../../node_modules/@bufbuild/protobuf/dist/esm/wire/binary-encoding.js
 var WireType;
 (function(WireType2) {
   WireType2[WireType2["Varint"] = 0] = "Varint";
@@ -1649,7 +1649,7 @@ function assertFloat32(arg) {
   }
 }
 
-// node_modules/googlevideo/dist/protos/generated/misc/common.js
+// ../../node_modules/googlevideo/dist/protos/generated/misc/common.js
 var SeekSource = {
   UNKNOWN: 0,
   0: "UNKNOWN",
@@ -2203,7 +2203,7 @@ var PlaybackAuthorization = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/format_initialization_metadata.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/format_initialization_metadata.js
 function createBaseFormatInitializationMetadata() {
   return {
     videoId: void 0,
@@ -2370,7 +2370,7 @@ var FormatInitializationMetadata = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/time_range.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/time_range.js
 function createBaseTimeRange() {
   return { startTicks: void 0, durationTicks: void 0, timescale: void 0 };
 }
@@ -2434,7 +2434,7 @@ var TimeRange = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/media_header.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/media_header.js
 function createBaseMediaHeader() {
   return {
     headerId: void 0,
@@ -2667,7 +2667,7 @@ var MediaHeader = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/buffered_range.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/buffered_range.js
 function createBaseBufferedRange() {
   return {
     formatId: void 0,
@@ -2957,7 +2957,7 @@ var BufferedRange_UnknownMessage2 = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/cuepoint.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/cuepoint.js
 var Cuepoint_CuepointEvent = {
   UNKNOWN: 0,
   0: "UNKNOWN",
@@ -3111,7 +3111,7 @@ var Cuepoint = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/cuepoint_info.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/cuepoint_info.js
 function createBaseCuepointInfo() {
   return {
     cuepoint: void 0,
@@ -3245,7 +3245,7 @@ var CuepointInfo = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/cuepoint_list.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/cuepoint_list.js
 function createBaseCuepointList() {
   return { ssapInfos: [] };
 }
@@ -3289,7 +3289,7 @@ var CuepointList = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/media_capabilities.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/media_capabilities.js
 function createBaseMediaCapabilities() {
   return {
     videoFormatCapabilities: [],
@@ -3604,7 +3604,7 @@ var MediaCapabilities_AudioFormatCapability = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/client_abr_state.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/client_abr_state.js
 function createBaseClientAbrState() {
   return {
     timeSinceLastManualFormatSelectionMs: void 0,
@@ -4189,7 +4189,7 @@ var ClientAbrState = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/ssap_playback_info.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/ssap_playback_info.js
 var SsapPlaybackInfo_AdState = {
   UNKNOWN: 0,
   0: "UNKNOWN",
@@ -4381,7 +4381,7 @@ var SsapPlaybackInfo = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/streamer_context.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/streamer_context.js
 function createBaseStreamerContext() {
   return {
     clientInfo: void 0,
@@ -4777,7 +4777,7 @@ var StreamerContext_UnknownMessage1_UnknownInnerMessage1 = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/video_playback_abr_request.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/video_playback_abr_request.js
 function createBaseVideoPlaybackAbrRequest() {
   return {
     clientAbrState: void 0,
@@ -5132,7 +5132,7 @@ var UnknownMessage2 = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/next_request_policy.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/next_request_policy.js
 function createBaseNextRequestPolicy() {
   return {
     targetAudioReadaheadMs: void 0,
@@ -5255,7 +5255,7 @@ var NextRequestPolicy = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_error.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_error.js
 function createBaseSabrError() {
   return { type: void 0, code: void 0 };
 }
@@ -5309,7 +5309,7 @@ var SabrError = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_redirect.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_redirect.js
 function createBaseSabrRedirect() {
   return { url: void 0 };
 }
@@ -5353,7 +5353,7 @@ var SabrRedirect = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_seek.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_seek.js
 function createBaseSabrSeek() {
   return { seekMediaTime: void 0, seekMediaTimescale: void 0, seekSource: void 0 };
 }
@@ -5417,7 +5417,7 @@ var SabrSeek = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/reload_player_response.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/reload_player_response.js
 function createBaseReloadPlaybackParams() {
   return { token: void 0 };
 }
@@ -5503,7 +5503,7 @@ var ReloadPlaybackContext = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_context_update.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_context_update.js
 var SabrContextUpdate_SabrContextWritePolicy = {
   UNSPECIFIED: 0,
   0: "UNSPECIFIED",
@@ -5597,7 +5597,7 @@ var SabrContextUpdate = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_context_sending_policy.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_context_sending_policy.js
 function createBaseSabrContextSendingPolicy() {
   return { startPolicy: [], stopPolicy: [], discardPolicy: [] };
 }
@@ -5682,7 +5682,7 @@ var SabrContextSendingPolicy = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_live_metadata.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/sabr_live_metadata.js
 function createBaseSabrLiveMetadata() {
   return {
     broadcastId: void 0,
@@ -5838,7 +5838,7 @@ var SabrLiveMetadata = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/stream_protection_status.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/stream_protection_status.js
 function createBaseStreamProtectionStatus() {
   return { status: void 0, maxRetries: void 0 };
 }
@@ -5892,7 +5892,7 @@ var StreamProtectionStatus = {
   }
 };
 
-// node_modules/googlevideo/dist/protos/generated/video_streaming/ump_part_id.js
+// ../../node_modules/googlevideo/dist/protos/generated/video_streaming/ump_part_id.js
 var UMPPartId = {
   UNKNOWN: 0,
   0: "UNKNOWN",
@@ -5992,7 +5992,7 @@ var UMPPartId = {
   "-1": "UNRECOGNIZED"
 };
 
-// node_modules/googlevideo/dist/src/utils/formatUtils.js
+// ../../node_modules/googlevideo/dist/src/utils/formatUtils.js
 var EnabledTrackTypes = {
   VIDEO_AND_AUDIO: 0,
   0: "VIDEO_AND_AUDIO",
@@ -6129,7 +6129,7 @@ function createFormatKey(input) {
   throw new Error("Unsupported format type");
 }
 
-// node_modules/googlevideo/dist/src/utils/mediaTimeUtils.js
+// ../../node_modules/googlevideo/dist/src/utils/mediaTimeUtils.js
 function ticksToMs(ticks, timescale, round) {
   return round(ticks / timescale * 1e3);
 }
@@ -6154,7 +6154,7 @@ function getStartMs(mediaHeader) {
   return 0;
 }
 
-// node_modules/googlevideo/dist/src/utils/EmsgSegmentMetadata.js
+// ../../node_modules/googlevideo/dist/src/utils/EmsgSegmentMetadata.js
 var EMSG_BOX_TYPE = 1701671783;
 var textDecoder = typeof TextDecoder !== "undefined" ? new TextDecoder() : null;
 function makeBoxReader(data, offset) {
@@ -6282,7 +6282,7 @@ var EmsgSegmentMetadata = class {
   }
 };
 
-// node_modules/googlevideo/dist/src/utils/mediaSegmentUtils.js
+// ../../node_modules/googlevideo/dist/src/utils/mediaSegmentUtils.js
 function stripMp4Init(segment) {
   const view = new DataView(segment.buffer, segment.byteOffset, segment.byteLength);
   let offset = 0;
@@ -6363,7 +6363,7 @@ function parseEmsgSegmentMetadata(buffer) {
     return new EmsgSegmentMetadata(headers, firstBody.schemeIdUri);
 }
 
-// node_modules/googlevideo/dist/src/utils/SabrSegmentBuffer.js
+// ../../node_modules/googlevideo/dist/src/utils/SabrSegmentBuffer.js
 var TAG = "SabrSegmentBuffer";
 var SabrSegmentBuffer = class {
   trackMetadata;
@@ -6444,7 +6444,7 @@ expected=${expectedLengthBytes}, received=${loadedLengthBytes}`);
   }
 };
 
-// node_modules/googlevideo/dist/src/utils/EventEmitterLike.js
+// ../../node_modules/googlevideo/dist/src/utils/EventEmitterLike.js
 var EventEmitterLike = class {
   listeners = /* @__PURE__ */ new Map();
   onceWrappers = /* @__PURE__ */ new Map();
@@ -6510,7 +6510,7 @@ var EventEmitterLike = class {
   }
 };
 
-// node_modules/googlevideo/dist/src/utils/misc.js
+// ../../node_modules/googlevideo/dist/src/utils/misc.js
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -6526,7 +6526,7 @@ function getMediaType(input) {
   return input.mimeType?.includes("audio") ? "audio" : "video";
 }
 
-// node_modules/googlevideo/dist/src/utils/urlUtils.js
+// ../../node_modules/googlevideo/dist/src/utils/urlUtils.js
 function getBroadcastId(url) {
   const idParam = url.searchParams.get("id");
   if (!idParam)
@@ -6555,7 +6555,7 @@ function getNextFallbackUrl(input) {
   return void 0;
 }
 
-// node_modules/googlevideo/dist/src/utils/Track.js
+// ../../node_modules/googlevideo/dist/src/utils/Track.js
 var MAX_TRACKED_SEGMENTS = 64;
 var Track = class {
   type;
@@ -6689,7 +6689,7 @@ var Track = class {
   }
 };
 
-// node_modules/googlevideo/dist/src/utils/TrackCollection.js
+// ../../node_modules/googlevideo/dist/src/utils/TrackCollection.js
 var TrackCollection = class {
   video = new Track("video");
   audio = new Track("audio");
@@ -6776,7 +6776,7 @@ var TrackCollection = class {
   }
 };
 
-// node_modules/googlevideo/dist/src/utils/BandwidthEstimator.js
+// ../../node_modules/googlevideo/dist/src/utils/BandwidthEstimator.js
 var BandwidthEstimator = class {
   halfLifeFastSec;
   halfLifeSlowSec;
@@ -6835,7 +6835,7 @@ var BandwidthEstimator = class {
   }
 };
 
-// node_modules/googlevideo/dist/src/core/SabrStream.js
+// ../../node_modules/googlevideo/dist/src/core/SabrStream.js
 var TAG2 = "SabrStream";
 var MAX_STALLS = 3;
 var DEFAULT_MAX_RETRIES = 10;
@@ -7618,7 +7618,7 @@ var SabrStream = class extends EventEmitterLike {
   }
 };
 
-// node_modules/googlevideo/dist/src/core/UmpWriter.js
+// ../../node_modules/googlevideo/dist/src/core/UmpWriter.js
 var UmpWriter = class {
   compositeBuffer;
   constructor(compositeBuffer) {

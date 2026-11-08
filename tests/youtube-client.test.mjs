@@ -67,3 +67,25 @@ test('actual automated-request 403 is classified without retrying or logging res
  assert.equal(JSON.stringify(events).includes('secret-token'), false);
  assert.equal(events[0].status, 403);
 });
+test('explicit SABR discovery validates WEB first and resolves the exact VISIONOS session',async()=>{
+ const requested=[];const h=harness();const web={...h.info,streaming_data:{server_abr_streaming_url:'https://r1.googlevideo.com/videoplayback?sabr=1'}};
+ const sabr={...h.info,streaming_data:{server_abr_streaming_url:'https://r1.googlevideo.com/videoplayback?sabr=1',adaptive_formats:h.formats},player_config:{media_common_config:{media_ustreamer_request_config:{video_playback_ustreamer_config:'AA=='}}}};
+ const client=CreateYoutubeClient({hasPermission:async()=>true,createInnertube:async()=>({getBasicInfo:async(id,{client})=>{requested.push(client);return client==='WEB'?web:sabr;},session:{player:{decipher:async url=>url}}})});
+ const discovered=await client.DiscoverYoutube({pageUrl:`https://youtu.be/${VideoId}`,transport:'sabr'});
+ assert.deepEqual(requested,['WEB','VISIONOS']);assert.equal(discovered.transport,'sabr');assert.equal(JSON.stringify(discovered).includes('googlevideo'),false);
+ const resolved=await client.ResolveYoutubeSelection({sessionKey:discovered.sessionKey,videoId:VideoId,selection:{videoFormatId:discovered.formats[0].id,audioFormatId:discovered.formats[1].id}});
+ assert.equal(resolved.transport,'sabr');assert.equal(resolved.config.clientInfo.clientName,101);assert.equal(resolved.config.ustreamerConfig,'AA==');assert.deepEqual(resolved.selection,{video:137,audio:140,videoFormatIndex:0,audioFormatIndex:1});
+});
+test('SABR catalog and resolution retain a second language variant sharing the same itag',async()=>{
+ const h=harness();const formats=[h.formats[0],{...h.formats[1],xtags:'original',language:'ko'},{...h.formats[1],xtags:'dubbed',language:'en'}];
+ const info={...h.info,streaming_data:{server_abr_streaming_url:'https://r1.googlevideo.com/videoplayback?sabr=1',adaptive_formats:formats},player_config:{media_common_config:{media_ustreamer_request_config:{video_playback_ustreamer_config:'AA=='}}}};
+ const client=CreateYoutubeClient({hasPermission:async()=>true,createInnertube:async()=>({getBasicInfo:async()=>info,session:{player:{decipher:async u=>u}}})});
+ const discovery=await client.DiscoverYoutube({pageUrl:`https://youtu.be/${VideoId}`,transport:'sabr'});
+ assert.notEqual(discovery.formats[1].id,discovery.formats[2].id);
+ const resolved=await client.ResolveYoutubeSelection({sessionKey:discovery.sessionKey,videoId:VideoId,selection:{videoFormatId:discovery.formats[0].id,audioFormatId:discovery.formats[2].id}});
+ assert.equal(resolved.selection.audioFormatIndex,2);assert.equal(resolved.config.formats[resolved.selection.audioFormatIndex].language,'en');
+});
+test('SABR never switches clients for a restricted public WEB response',async()=>{
+ const requested=[];const client=CreateYoutubeClient({hasPermission:async()=>true,createInnertube:async()=>({getBasicInfo:async(id,{client})=>{requested.push(client);return{basic_info:{id:VideoId},playability_status:{status:'LOGIN_REQUIRED'}};}})});
+ await assert.rejects(client.DiscoverYoutube({pageUrl:`https://youtu.be/${VideoId}`,transport:'sabr'}),{code:'youtube_restricted'});assert.deepEqual(requested,['WEB']);
+});

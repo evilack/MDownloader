@@ -175,3 +175,28 @@ The Node suite reported 344 tests: 343 passed, zero failed, and one opt-in live 
 To use the current source, finish active downloads, reload the extension loaded from this repository's `extension/` folder, refresh the source page, and create a new download. Previously saved files are not modified. Native installed-extension full-video save and subtitle rendering in a user's playback application remain unverified; selectable MP4 WebVTT support depends on that application.
 
 Final yt-dlp candidate checks: **280 tests passed, zero failed**; all 398 messages in each of 10 catalogs matched; generated page policy matched; project verification reported zero failures and preserved 73 retained files; development/store package composition passed. Independent review found three defects (multipart source identity, response cleanup, whole-file hashing memory); RED→GREEN tests and streamed hashing resolved them, and re-review found no remaining important findings. The final staged candidate repeated the full direct Chrome receive/decode/save with the same SHA-256. Concurrent naming/subtitle/HLS changes are excluded.
+
+## Browser-only SABR completion — 2026-11-08
+
+The latest user-selected direction uses only official youtubei.js 18.3.0, googlevideo 5.0.1 SABR/UMP and existing Mediabunny 1.65.2 inside the development extension. No yt-dlp/FFmpeg process, installed helper, external download server, Computer Use or store browser run was used. Distube ytdl-core was read as a reference only.
+
+The official browser example is marked outdated and points to the newer SABR example. Comparing that example identified two separate defects: the local Jinter adapter treated a function body with a final return as a normal script and did not match the current player execution semantics; and the receiver compared an integer-rounded 623-second page duration against exact track ends. The default evaluator is now an opaque sandbox plus a bounded one-shot worker, and completion uses each selected format duration. The explicit production SABR client verifies WEB public playability and uses the upstream VISIONOS constants, then deciphers the streaming URL.
+
+The normal public WEB player itself stalled at about 60 seconds and returned protocol protection 3, even in headed Chrome. Homepage warm-up produced integrity HTTP 200 but did not prevent rejection. These observations locate the WEB failure before independent reception; they do not reveal every server-side rejection criterion. In the working VISIONOS SABR session every protection update was approved (1), without forwarding the rejected WEB token or adding a token-mint callback.
+
+| Native check | Result |
+|---|---|
+| Video | Same `-XHx839rSc8`, 640×360 H.264, 8,432,390 received bytes |
+| Audio | Exact selected AAC format 139, 3,798,832 received bytes |
+| Received track ends | Video 622.567s; audio 622.853s |
+| Complete-tail MP4 | 12,184,692 bytes; 622.852063s (rounds to displayed 623s) |
+| All saved packets | 18,677 video; 13,412 audio, including audio beyond the last video frame |
+| Decode | Video 640×360 and 2,048-frame audio samples at 1s and 620s; nonzero audio RMS |
+| Actual browser save | Chrome downloads reports complete; disk byte count matches remux output; SHA-256 recorded |
+| Sandbox boundary | Privileged-page eval denied, blocked globals absent, infinite-loop timeout, subsequent evaluation recovers, no retained evaluation frames |
+
+[Retained browser-only evidence](evidence/2026-11-08-youtube-browser-only.json) separates native success, negative WEB diagnostics and automated checks. Browser automation still uses a UUID download name; the original and byte-identical title/date export are retained. The test verifies complete bytes/packet timelines and first/tail decoding, not real-time viewing of every frame, all clients/resolutions or product filename acceptance.
+
+Product discovery/manager UI remains gated pending its production permission/header/job integration; this full-reception proof does not claim that UI integration or store publication. The [separate YouTube.js change log](youtube-upstream-changes.md) identifies official pins, MDownloader-owned changes, unchanged upstream source, examples and required upgrade checks.
+
+Final browser-only scoped candidate: **292 tests passed, zero failed**; all ten catalogs contain 398 messages with zero missing references; generated policy matched; project checks had zero failures and preserved 73 files; development/store physical composition and import graphs passed. The exact staged candidate repeated native full reception, complete-tail save and both-track decoding. Independent review's duplicate-itag identity finding and additional prototype/disposal regressions were fixed RED→GREEN. An inspector-listed worker descriptor was checked and its runtime session was already closed; the report does not claim zero inspector descriptors.

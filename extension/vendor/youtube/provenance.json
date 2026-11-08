@@ -14,13 +14,13 @@
     "acorn-LICENSE": "76a876cf886ff9be2a8b5e2e86514fed06223c8c9f0c1e9ee9606e93841e00b7",
     "bufbuild-protobuf-LICENSE-APACHE": "c04b4216f1cd4c5a4f7fb2f2a1b0ae70d847e9e0cac7c9dee9bf8cc03177c449",
     "bufbuild-protobuf-LICENSE-BSD": "182a1bc8985a586e8e0ca3b5a3af1ff3c28bd3475833a07f50b42b53dd7ac889",
-    "client-bundle.mjs": "93386ec2a992f83201ee5c1661d0a669d8db2567d7b890ddc2f7fb74ba6aa37e",
-    "evaluator-worker.mjs": "c1f8c64dd43228aec32715c9b11cf1a2c74c26163dcd2ac7a586fe6c5b6633a4",
+    "client-bundle.mjs": "ff2f3b6c458e2978dd655b134d4eb45bf3e24c790b7ab1f20f46712a44cd35e2",
+    "evaluator-worker.mjs": "2b2ebbd1f4bfd9c81c1a78ad2658efc9d5597079a2e7762a5904ed37a761b4d7",
     "fflate-LICENSE": "0a1df3a083d0c010560aa342e87959c8c1070e6fd54545741f083f22d0c8b551",
     "googlevideo-LICENSE": "69bb14fee2d102583d6cccdf1e0e2ced4d2bbfd3c42b172e0a9f4e32a9c48c88",
     "jintr-LICENSE": "680452b767b11016d24f73a9f43e756e5b077a66afc7914b42f4a31cb8ad00ab",
     "meriyah-LICENSE.md": "e9a5df5a6ae5cd51ca430715f4c62fb5424946e8da07b7caa058a1ba0582a848",
-    "sabr-bundle.mjs": "800efff402d5ee4356c83e3b681689455a0c189a7f8201bdaf94ce23a1f62329",
+    "sabr-bundle.mjs": "a5b35597a1c5a9919e001abb12ae82155de1f513b5cfd96b1db61c06883f211f",
     "youtubei.js-LICENSE": "bf82e28381c6256138322a79da2082db5ddb040b4b7009b520f08a419d722c69"
   }
 }

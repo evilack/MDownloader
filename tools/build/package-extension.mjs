@@ -18,6 +18,7 @@ if (Flavor === 'chrome-store' || Args.includes('--block-chrome'))
 	const Manifest = JSON.parse(await readFile(ManifestPath, 'utf8'));
 	// block 규칙은 대상 host permission이 없어도 작동해야 합니다. 헤더 수정은 여전히 host 권한을 요구합니다.
 	Manifest.permissions = Manifest.permissions.map(Value => Value === 'declarativeNetRequestWithHostAccess' ? 'declarativeNetRequest' : Value);
+	if(Flavor==='chrome-store'){delete Manifest.sandbox;if(Manifest.content_security_policy){delete Manifest.content_security_policy.sandbox;if(!Object.keys(Manifest.content_security_policy).length)delete Manifest.content_security_policy;}}
 	await writeFile(ManifestPath, JSON.stringify(Manifest, null, 2) + '\n');
 }
 if (Flavor === 'chrome-store')

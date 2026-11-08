@@ -18,3 +18,11 @@ test('a later audio start preserves the leading video keyframe and audio offset'
  const result=await RemuxYoutubeTracks(blob,new Blob([target.buffer]),new BufferTarget(),new AbortController().signal);
  assert.ok(result.videoPackets>0);assert.ok(result.audioPackets>0);
 });
+test('complete reception preserves every audio packet beyond the video end',async()=>{
+ const blob=new Blob([await readFile(new URL('../website/sample/media/sample-film.mp4',import.meta.url))]);
+ const input=new Input({formats:ALL_FORMATS,source:new BlobSource(blob)}),audio=await input.getPrimaryAudioTrack();
+ const target=new BufferTarget(),out=new Output({format:new Mp4OutputFormat(),target}),packets=new EncodedAudioPacketSource('aac');out.addAudioTrack(packets);await out.start();
+ let count=0;for await(const packet of new EncodedPacketSink(audio).packets()){await packets.add(packet.clone({timestamp:packet.timestamp+0.5}),count?undefined:{decoderConfig:await audio.getDecoderConfig()});count++;}packets.close();await out.finalize();input.dispose();
+ const result=await RemuxYoutubeTracks(blob,new Blob([target.buffer]),new BufferTarget(),new AbortController().signal,{preserveTrackEnds:true});
+ assert.equal(result.audioPackets,count);
+});

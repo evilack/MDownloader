@@ -1,7 +1,7 @@
 import {ALL_FORMATS,BlobSource,Input,EncodedPacketSink,EncodedVideoPacketSource,EncodedAudioPacketSource,Mp4OutputFormat,Output,StreamTarget} from '../../vendor/mediabunny-1.65.2.mjs';
 import {YoutubeError} from './evaluator.js';
 /** 독립 fMP4 트랙을 재인코딩 없이 병합합니다. 공통으로 받은 구간 밖의 패킷은 저장하지 않습니다. */
-export async function RemuxYoutubeTracks(VideoFile,AudioFile,Destination,Signal)
+export async function RemuxYoutubeTracks(VideoFile,AudioFile,Destination,Signal,{preserveTrackEnds:PreserveTrackEnds=false}={})
 {
 	const VideoInput=new Input({formats:ALL_FORMATS,source:new BlobSource(VideoFile)});
 	const AudioInput=new Input({formats:ALL_FORMATS,source:new BlobSource(AudioFile)});
@@ -16,7 +16,7 @@ export async function RemuxYoutubeTracks(VideoFile,AudioFile,Destination,Signal)
 		if(!Key)throw new YoutubeError('youtube_sabr_receive_failed');
 		// 겹치는 구간 직전의 키프레임은 디코딩에 필요합니다. 오디오의 실제 시각 차이는 유지합니다.
 		const Start=Key.timestamp;
-		const End=Math.min(await Video.computeDuration(),await Audio.computeDuration());
+		const End=(PreserveTrackEnds?Math.max:Math.min)(await Video.computeDuration(),await Audio.computeDuration());
 		if(!(End>Start))throw new YoutubeError('youtube_sabr_receive_failed');
 		Result=new Output({format:new Mp4OutputFormat({fastStart:false}),target:Destination instanceof WritableStream?new StreamTarget(Destination,{chunked:true,chunkSize:1024*1024}):Destination});
 		const VideoOut=new EncodedVideoPacketSource('avc'),AudioOut=new EncodedAudioPacketSource('aac');

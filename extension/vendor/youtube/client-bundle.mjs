@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// node_modules/youtubei.js/dist/src/utils/Log.js
+// ../../node_modules/youtubei.js/dist/src/utils/Log.js
 var Log_exports = {};
 __export(Log_exports, {
   Level: () => Level,
@@ -53,7 +53,7 @@ function setLevel(...args) {
   log_level = args;
 }
 
-// node_modules/youtubei.js/dist/src/parser/helpers.js
+// ../../node_modules/youtubei.js/dist/src/parser/helpers.js
 var isObserved = /* @__PURE__ */ Symbol("ObservedArray.isObserved");
 var YTNode = class {
   static type = "YTNode";
@@ -404,7 +404,7 @@ var Memo = class extends Map {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/AccessibilityContext.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/AccessibilityContext.js
 var AccessibilityContext = class {
   label;
   constructor(data) {
@@ -412,7 +412,7 @@ var AccessibilityContext = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/AccessibilityData.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/AccessibilityData.js
 var AccessibilityData = class {
   accessibility_identifier;
   identifier;
@@ -432,7 +432,7 @@ var AccessibilityData = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/parser.js
+// ../../node_modules/youtubei.js/dist/src/parser/parser.js
 var parser_exports = {};
 __export(parser_exports, {
   addRuntimeParser: () => addRuntimeParser,
@@ -457,7 +457,7 @@ __export(parser_exports, {
   shouldIgnore: () => shouldIgnore
 });
 
-// node_modules/youtubei.js/dist/src/parser/nodes.js
+// ../../node_modules/youtubei.js/dist/src/parser/nodes.js
 var nodes_exports = {};
 __export(nodes_exports, {
   AboutChannel: () => AboutChannel,
@@ -1035,7 +1035,7 @@ __export(nodes_exports, {
   YpcTrailer: () => YpcTrailer
 });
 
-// node_modules/youtubei.js/dist/src/utils/Constants.js
+// ../../node_modules/youtubei.js/dist/src/utils/Constants.js
 var Constants_exports = {};
 __export(Constants_exports, {
   CLIENTS: () => CLIENTS,
@@ -1188,7 +1188,7 @@ var INNERTUBE_HEADERS_BASE = {
 };
 var SUPPORTED_CLIENTS = ["IOS", "WEB", "MWEB", "YTKIDS", "YTMUSIC", "ANDROID", "ANDROID_VR", "VISIONOS", "YTSTUDIO_ANDROID", "YTMUSIC_ANDROID", "TV", "TV_SIMPLY", "TV_EMBEDDED", "WEB_EMBEDDED", "WEB_CREATOR"];
 
-// node_modules/youtubei.js/dist/src/utils/EventEmitterLike.js
+// ../../node_modules/youtubei.js/dist/src/utils/EventEmitterLike.js
 var EventEmitterLike = class {
   listeners = /* @__PURE__ */ new Map();
   onceWrappers = /* @__PURE__ */ new Map();
@@ -1254,7 +1254,7 @@ var EventEmitterLike = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/utils/FormatUtils.js
+// ../../node_modules/youtubei.js/dist/src/utils/FormatUtils.js
 var FormatUtils_exports = {};
 __export(FormatUtils_exports, {
   chooseFormat: () => chooseFormat,
@@ -1262,7 +1262,7 @@ __export(FormatUtils_exports, {
   toDash: () => toDash
 });
 
-// node_modules/youtubei.js/dist/src/utils/DashUtils.js
+// ../../node_modules/youtubei.js/dist/src/utils/DashUtils.js
 var XML_CHARACTER_MAP = {
   "&": "&amp;",
   '"': "&quot;",
@@ -1319,7 +1319,7 @@ function Fragment(props) {
   return props.children;
 }
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerStoryboardSpec.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerStoryboardSpec.js
 var PlayerStoryboardSpec = class extends YTNode {
   static type = "PlayerStoryboardSpec";
   boards = [];
@@ -1349,7 +1349,7 @@ var PlayerStoryboardSpec = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/package.json
+// ../../node_modules/youtubei.js/dist/package.json
 var package_default = {
   name: "youtubei.js",
   version: "18.3.0",
@@ -1492,7 +1492,7 @@ var package_default = {
   ]
 };
 
-// node_modules/youtubei.js/dist/src/utils/StreamingInfo.js
+// ../../node_modules/youtubei.js/dist/src/utils/StreamingInfo.js
 var TAG_ = "StreamingInfo";
 function getFormatGroupings(formats, is_post_live_dvr) {
   const group_info = /* @__PURE__ */ new Map();
@@ -2005,7 +2005,7 @@ async function getStreamingInfo(streaming_data, is_post_live_dvr = false, url_tr
   return info2;
 }
 
-// node_modules/youtubei.js/dist/src/utils/DashManifest.js
+// ../../node_modules/youtubei.js/dist/src/utils/DashManifest.js
 async function OTFPostLiveDvrSegmentInfo({ info: info2 }) {
   if (!info2.is_oft && !info2.is_post_live_dvr)
     return null;
@@ -2106,7 +2106,7 @@ function toDash(streaming_data, is_post_live_dvr = false, url_transformer = (url
   return renderToString(createElement(DashManifest, { streamingData: streaming_data, isPostLiveDvr: is_post_live_dvr, transformURL: url_transformer, options, rejectFormat: format_filter, cpn, player, actions, storyboards, captionTracks: caption_tracks }));
 }
 
-// node_modules/youtubei.js/dist/src/utils/FormatUtils.js
+// ../../node_modules/youtubei.js/dist/src/utils/FormatUtils.js
 async function download(options, actions, playability_status, streaming_data, player, cpn) {
   if (playability_status?.status === "UNPLAYABLE")
     throw new InnertubeError("Video is unplayable", { error_type: "UNPLAYABLE" });
@@ -2255,7 +2255,7 @@ function chooseFormat(options, streaming_data) {
   return candidates[0];
 }
 
-// node_modules/youtubei.js/dist/src/utils/HTTPClient.js
+// ../../node_modules/youtubei.js/dist/src/utils/HTTPClient.js
 var HTTPClient = class {
   #session;
   #cookie;
@@ -2522,7 +2522,7 @@ var HTTPClient = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/utils/BinarySerializer.js
+// ../../node_modules/youtubei.js/dist/src/utils/BinarySerializer.js
 var BinarySerializer_exports = {};
 __export(BinarySerializer_exports, {
   MAGIC_HEADER: () => MAGIC_HEADER,
@@ -2531,7 +2531,7 @@ __export(BinarySerializer_exports, {
   serialize: () => serialize
 });
 
-// node_modules/fflate/esm/browser.js
+// ../../node_modules/fflate/esm/browser.js
 var u8 = Uint8Array;
 var u16 = Uint16Array;
 var i32 = Int32Array;
@@ -3281,7 +3281,7 @@ try {
 } catch (e) {
 }
 
-// node_modules/youtubei.js/dist/src/utils/BinarySerializer.js
+// ../../node_modules/youtubei.js/dist/src/utils/BinarySerializer.js
 var MAGIC_HEADER = 5849684;
 var VERSION = 2;
 function serialize(data) {
@@ -3319,7 +3319,7 @@ function deserialize(buffer) {
   return JSON.parse(json);
 }
 
-// node_modules/youtubei.js/dist/src/utils/ProtoUtils.js
+// ../../node_modules/youtubei.js/dist/src/utils/ProtoUtils.js
 var ProtoUtils_exports = {};
 __export(ProtoUtils_exports, {
   decodeVisitorData: () => decodeVisitorData,
@@ -3328,7 +3328,7 @@ __export(ProtoUtils_exports, {
   encodeVisitorData: () => encodeVisitorData
 });
 
-// node_modules/@bufbuild/protobuf/dist/esm/wire/varint.js
+// ../../node_modules/@bufbuild/protobuf/dist/esm/wire/varint.js
 function varint64read() {
   const buf = this.buf;
   let pos = this.pos;
@@ -3477,7 +3477,7 @@ function varint32read() {
   return result >>> 0;
 }
 
-// node_modules/@bufbuild/protobuf/dist/esm/proto-int64.js
+// ../../node_modules/@bufbuild/protobuf/dist/esm/proto-int64.js
 var protoInt64 = /* @__PURE__ */ makeInt64Support();
 function makeInt64Support() {
   const dv = new DataView(new ArrayBuffer(8));
@@ -3580,7 +3580,7 @@ function assertUInt64String(value) {
   }
 }
 
-// node_modules/@bufbuild/protobuf/dist/esm/wire/text-encoding.js
+// ../../node_modules/@bufbuild/protobuf/dist/esm/wire/text-encoding.js
 var te;
 function configureTextEncoding(textEncoding) {
   var _a2;
@@ -3643,7 +3643,7 @@ function emulateEncodeInto(encodeUtf8) {
   };
 }
 
-// node_modules/@bufbuild/protobuf/dist/esm/wire/binary-encoding.js
+// ../../node_modules/@bufbuild/protobuf/dist/esm/wire/binary-encoding.js
 var WireType;
 (function(WireType2) {
   WireType2[WireType2["Varint"] = 0] = "Varint";
@@ -4218,7 +4218,7 @@ function assertFloat32(arg) {
   }
 }
 
-// node_modules/youtubei.js/dist/protos/generated/misc/params.js
+// ../../node_modules/youtubei.js/dist/protos/generated/misc/params.js
 var SearchFilter_Prioritize = {
   RELEVANCE: 0,
   0: "RELEVANCE",
@@ -6022,7 +6022,7 @@ var CommunityPostCommentsParam_CommentDataContainer_CommentData = {
   }
 };
 
-// node_modules/youtubei.js/dist/src/utils/ProtoUtils.js
+// ../../node_modules/youtubei.js/dist/src/utils/ProtoUtils.js
 function encodeVisitorData(id, timestamp) {
   const writer = VisitorData.encode({ id, timestamp });
   return encodeURIComponent(u8ToBase64(writer.finish()).replace(/\+/g, "-").replace(/\//g, "_"));
@@ -6061,7 +6061,7 @@ function encodeNextParams(video_ids, playlist_title) {
   return encodeURIComponent(u8ToBase64(writer.finish()).replace(/\+/g, "-").replace(/\//g, "_"));
 }
 
-// node_modules/youtubei.js/dist/src/utils/javascript/helpers.js
+// ../../node_modules/youtubei.js/dist/src/utils/javascript/helpers.js
 var WALK_STOP = /* @__PURE__ */ Symbol("WALK_STOP");
 var jsBuiltIns = /* @__PURE__ */ new Set([
   "AbortController",
@@ -6349,7 +6349,7 @@ function parseFunctionArguments(analyzer, args) {
   return params;
 }
 
-// node_modules/youtubei.js/dist/src/utils/javascript/matchers.js
+// ../../node_modules/youtubei.js/dist/src/utils/javascript/matchers.js
 function nsigMatcher(node) {
   if (node.type !== "VariableDeclarator")
     return false;
@@ -6407,7 +6407,7 @@ function timestampMatcher(node) {
   return foundObject || false;
 }
 
-// node_modules/meriyah/dist/meriyah.mjs
+// ../../node_modules/meriyah/dist/meriyah.mjs
 var version$1 = "7.4.2";
 var packageJson = {
   version: version$1
@@ -13877,7 +13877,7 @@ function parseScript(source, options) {
   return parseSource(source, { ...options, sourceType: "script" });
 }
 
-// node_modules/youtubei.js/dist/src/utils/javascript/JsAnalyzer.js
+// ../../node_modules/youtubei.js/dist/src/utils/javascript/JsAnalyzer.js
 var JsAnalyzer = class {
   source;
   programAst;
@@ -14371,7 +14371,7 @@ var JsAnalyzer = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/utils/javascript/JsExtractor.js
+// ../../node_modules/youtubei.js/dist/src/utils/javascript/JsExtractor.js
 var JsExtractor = class {
   analyzer;
   constructor(analyzer) {
@@ -14725,7 +14725,7 @@ ${rawJsonLines.slice(1).map((line) => indent + line).join("\n")}`;
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/actions/OpenPopupAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/actions/OpenPopupAction.js
 var OpenPopupAction = class extends YTNode {
   static type = "OpenPopupAction";
   popup;
@@ -14737,7 +14737,7 @@ var OpenPopupAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Button.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Button.js
 var Button = class extends YTNode {
   static type = "Button";
   text;
@@ -14778,7 +14778,7 @@ var Button = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DropdownItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DropdownItem.js
 var DropdownItem = class extends YTNode {
   static type = "DropdownItem";
   label;
@@ -14808,7 +14808,7 @@ var DropdownItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Dropdown.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Dropdown.js
 var Dropdown = class extends YTNode {
   static type = "Dropdown";
   label;
@@ -14820,7 +14820,7 @@ var Dropdown = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CreatePlaylistDialog.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CreatePlaylistDialog.js
 var CreatePlaylistDialog = class extends YTNode {
   static type = "CreatePlaylistDialog";
   title;
@@ -14838,7 +14838,7 @@ var CreatePlaylistDialog = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/commands/CommandExecutorCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/commands/CommandExecutorCommand.js
 var CommandExecutorCommand = class extends YTNode {
   static type = "CommandExecutorCommand";
   commands;
@@ -14848,7 +14848,7 @@ var CommandExecutorCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/NavigationEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/NavigationEndpoint.js
 var NavigationEndpoint = class _NavigationEndpoint extends YTNode {
   static type = "NavigationEndpoint";
   name;
@@ -14951,7 +14951,7 @@ var NavigationEndpoint = class _NavigationEndpoint extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/Thumbnail.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/Thumbnail.js
 var Thumbnail = class _Thumbnail {
   url;
   width;
@@ -14988,7 +14988,7 @@ var Thumbnail = class _Thumbnail {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/EmojiRun.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/EmojiRun.js
 var EmojiRun = class {
   text;
   emoji;
@@ -15011,7 +15011,7 @@ var EmojiRun = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/TextRun.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/TextRun.js
 var TextRun = class {
   text;
   text_color;
@@ -15094,7 +15094,7 @@ var TextRun = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/Text.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/Text.js
 function escape(text) {
   return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
@@ -15320,7 +15320,7 @@ function insertSubRun(runs, original_run, response_run, properties_to_add) {
   runs.splice(replace_index, 1, ...replacement_runs);
 }
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelExternalLinkView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelExternalLinkView.js
 var ChannelExternalLinkView = class extends YTNode {
   static type = "ChannelExternalLinkView";
   title;
@@ -15334,7 +15334,7 @@ var ChannelExternalLinkView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AboutChannelView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AboutChannelView.js
 var AboutChannelView = class extends YTNode {
   static type = "AboutChannelView";
   description;
@@ -15400,7 +15400,7 @@ var AboutChannelView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AboutChannel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AboutChannel.js
 var AboutChannel = class extends YTNode {
   static type = "AboutChannel";
   metadata;
@@ -15412,7 +15412,7 @@ var AboutChannel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AccountChannel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AccountChannel.js
 var AccountChannel = class extends YTNode {
   static type = "AccountChannel";
   title;
@@ -15424,7 +15424,7 @@ var AccountChannel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AccountItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AccountItem.js
 var AccountItem = class extends YTNode {
   static type = "AccountItem";
   account_name;
@@ -15448,7 +15448,7 @@ var AccountItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AccountItemSectionHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AccountItemSectionHeader.js
 var AccountItemSectionHeader = class extends YTNode {
   static type = "AccountItemSectionHeader";
   title;
@@ -15458,7 +15458,7 @@ var AccountItemSectionHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CompactLink.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CompactLink.js
 var CompactLink = class extends YTNode {
   static type = "CompactLink";
   title;
@@ -15481,7 +15481,7 @@ var CompactLink = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AccountItemSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AccountItemSection.js
 var AccountItemSection = class extends YTNode {
   static type = "AccountItemSection";
   contents;
@@ -15493,7 +15493,7 @@ var AccountItemSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AccountSectionList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AccountSectionList.js
 var AccountSectionList = class extends YTNode {
   static type = "AccountSectionList";
   contents;
@@ -15505,7 +15505,7 @@ var AccountSectionList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/actions/AppendContinuationItemsAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/actions/AppendContinuationItemsAction.js
 var AppendContinuationItemsAction = class extends YTNode {
   static type = "AppendContinuationItemsAction";
   contents;
@@ -15517,7 +15517,7 @@ var AppendContinuationItemsAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/actions/ChangeEngagementPanelVisibilityAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/actions/ChangeEngagementPanelVisibilityAction.js
 var ChangeEngagementPanelVisibilityAction = class extends YTNode {
   static type = "ChangeEngagementPanelVisibilityAction";
   target_id;
@@ -15529,7 +15529,7 @@ var ChangeEngagementPanelVisibilityAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/MultiPageMenu.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/MultiPageMenu.js
 var MultiPageMenu = class extends YTNode {
   static type = "MultiPageMenu";
   header;
@@ -15543,7 +15543,7 @@ var MultiPageMenu = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/actions/GetMultiPageMenuAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/actions/GetMultiPageMenuAction.js
 var GetMultiPageMenuAction = class extends YTNode {
   static type = "GetMultiPageMenuAction";
   menu;
@@ -15553,7 +15553,7 @@ var GetMultiPageMenuAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/actions/SendFeedbackAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/actions/SendFeedbackAction.js
 var SendFeedbackAction = class extends YTNode {
   static type = "SendFeedbackAction";
   bucket;
@@ -15563,7 +15563,7 @@ var SendFeedbackAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/actions/SignalAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/actions/SignalAction.js
 var SignalAction = class extends YTNode {
   static type = "SignalAction";
   signal;
@@ -15573,7 +15573,7 @@ var SignalAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelSwitcherPage.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelSwitcherPage.js
 var ChannelSwitcherPage = class extends YTNode {
   static type = "ChannelSwitcherPage";
   header;
@@ -15585,7 +15585,7 @@ var ChannelSwitcherPage = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/actions/UpdateChannelSwitcherPageAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/actions/UpdateChannelSwitcherPageAction.js
 var UpdateChannelSwitcherPageAction = class extends YTNode {
   static type = "UpdateChannelSwitcherPageAction";
   header;
@@ -15600,7 +15600,7 @@ var UpdateChannelSwitcherPageAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SortFilterSubMenu.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SortFilterSubMenu.js
 var SortFilterSubMenu = class extends YTNode {
   static type = "SortFilterSubMenu";
   title;
@@ -15639,7 +15639,7 @@ var SortFilterSubMenu = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TranscriptFooter.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TranscriptFooter.js
 var TranscriptFooter = class extends YTNode {
   static type = "TranscriptFooter";
   language_menu;
@@ -15649,7 +15649,7 @@ var TranscriptFooter = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TranscriptSearchBox.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TranscriptSearchBox.js
 var TranscriptSearchBox = class extends YTNode {
   static type = "TranscriptSearchBox";
   formatted_placeholder;
@@ -15665,7 +15665,7 @@ var TranscriptSearchBox = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TranscriptSectionHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TranscriptSectionHeader.js
 var TranscriptSectionHeader = class extends YTNode {
   static type = "TranscriptSectionHeader";
   start_ms;
@@ -15679,7 +15679,7 @@ var TranscriptSectionHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TranscriptSegment.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TranscriptSegment.js
 var TranscriptSegment = class extends YTNode {
   static type = "TranscriptSegment";
   start_ms;
@@ -15697,7 +15697,7 @@ var TranscriptSegment = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TranscriptSegmentList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TranscriptSegmentList.js
 var TranscriptSegmentList = class extends YTNode {
   static type = "TranscriptSegmentList";
   initial_segments;
@@ -15713,7 +15713,7 @@ var TranscriptSegmentList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TranscriptSearchPanel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TranscriptSearchPanel.js
 var TranscriptSearchPanel = class extends YTNode {
   static type = "TranscriptSearchPanel";
   header;
@@ -15729,7 +15729,7 @@ var TranscriptSearchPanel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Transcript.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Transcript.js
 var Transcript = class extends YTNode {
   static type = "Transcript";
   content;
@@ -15739,7 +15739,7 @@ var Transcript = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/actions/UpdateEngagementPanelAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/actions/UpdateEngagementPanelAction.js
 var UpdateEngagementPanelAction = class extends YTNode {
   static type = "UpdateEngagementPanelAction";
   target_id;
@@ -15751,7 +15751,7 @@ var UpdateEngagementPanelAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/actions/UpdateSubscribeButtonAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/actions/UpdateSubscribeButtonAction.js
 var UpdateSubscribeButtonAction = class extends YTNode {
   static type = "UpdateSubscribeButtonAction";
   channel_id;
@@ -15763,7 +15763,7 @@ var UpdateSubscribeButtonAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ActiveAccountHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ActiveAccountHeader.js
 var ActiveAccountHeader = class extends YTNode {
   static type = "ActiveAccountHeader";
   account_name;
@@ -15781,7 +15781,7 @@ var ActiveAccountHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MenuTitle.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MenuTitle.js
 var MenuTitle = class extends YTNode {
   static type = "MenuTitle";
   title;
@@ -15791,7 +15791,7 @@ var MenuTitle = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistAddToOption.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistAddToOption.js
 var PlaylistAddToOption = class extends YTNode {
   static type = "PlaylistAddToOption";
   add_to_playlist_service_endpoint;
@@ -15813,7 +15813,7 @@ var PlaylistAddToOption = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AddToPlaylist.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AddToPlaylist.js
 var AddToPlaylist = class extends YTNode {
   static type = "AddToPlaylist";
   actions;
@@ -15825,7 +15825,7 @@ var AddToPlaylist = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Alert.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Alert.js
 var Alert = class extends YTNode {
   static type = "Alert";
   text;
@@ -15837,7 +15837,7 @@ var Alert = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AlertWithButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AlertWithButton.js
 var AlertWithButton = class extends YTNode {
   static type = "AlertWithButton";
   text;
@@ -15851,7 +15851,7 @@ var AlertWithButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AnimatedThumbnailOverlayView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AnimatedThumbnailOverlayView.js
 var AnimatedThumbnailOverlayView = class extends YTNode {
   static type = "AnimatedThumbnailOverlayView";
   thumbnail;
@@ -15861,7 +15861,7 @@ var AnimatedThumbnailOverlayView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AttributionView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AttributionView.js
 var AttributionView = class extends YTNode {
   static type = "AttributionView";
   text;
@@ -15873,7 +15873,7 @@ var AttributionView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AudioOnlyPlayability.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AudioOnlyPlayability.js
 var AudioOnlyPlayability = class extends YTNode {
   static type = "AudioOnlyPlayability";
   audio_only_availability;
@@ -15883,7 +15883,7 @@ var AudioOnlyPlayability = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AutomixPreviewVideo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AutomixPreviewVideo.js
 var AutomixPreviewVideo = class extends YTNode {
   static type = "AutomixPreviewVideo";
   playlist_video;
@@ -15897,7 +15897,7 @@ var AutomixPreviewVideo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AvatarView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AvatarView.js
 var AvatarView = class extends YTNode {
   static type = "AvatarView";
   image;
@@ -15917,7 +15917,7 @@ var AvatarView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/CommandContext.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/CommandContext.js
 var CommandContext = class {
   on_focus;
   on_hidden;
@@ -15953,7 +15953,7 @@ var CommandContext = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/RendererContext.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/RendererContext.js
 var RendererContext = class {
   command_context;
   accessibility_context;
@@ -15969,7 +15969,7 @@ var RendererContext = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/AvatarStackView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/AvatarStackView.js
 var AvatarStackView = class extends YTNode {
   static type = "AvatarStackView";
   avatars;
@@ -15993,7 +15993,7 @@ var AvatarStackView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ButtonView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ButtonView.js
 var ButtonView = class extends YTNode {
   static type = "ButtonView";
   secondary_icon_image;
@@ -16085,7 +16085,7 @@ var ButtonView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/BackgroundPromo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/BackgroundPromo.js
 var BackgroundPromo = class extends YTNode {
   static type = "BackgroundPromo";
   body_text;
@@ -16102,7 +16102,7 @@ var BackgroundPromo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/BackstageImage.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/BackstageImage.js
 var BackstageImage = class extends YTNode {
   static type = "BackstageImage";
   image;
@@ -16114,7 +16114,7 @@ var BackstageImage = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ToggleButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ToggleButton.js
 var ToggleButton = class extends YTNode {
   static type = "ToggleButton";
   text;
@@ -16155,7 +16155,7 @@ var ToggleButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CreatorHeart.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CreatorHeart.js
 var CreatorHeart = class extends YTNode {
   static type = "CreatorHeart";
   creator_thumbnail;
@@ -16183,7 +16183,7 @@ var CreatorHeart = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentActionButtons.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentActionButtons.js
 var CommentActionButtons = class extends YTNode {
   static type = "CommentActionButtons";
   like_button;
@@ -16199,7 +16199,7 @@ var CommentActionButtons = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ToggleButtonView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ToggleButtonView.js
 var ToggleButtonView = class extends YTNode {
   static type = "ToggleButtonView";
   default_button;
@@ -16219,7 +16219,7 @@ var ToggleButtonView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LikeButtonView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LikeButtonView.js
 var LikeButtonView = class extends YTNode {
   static type = "LikeButtonView";
   toggle_button;
@@ -16236,7 +16236,7 @@ var LikeButtonView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DislikeButtonView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DislikeButtonView.js
 var DislikeButtonView = class extends YTNode {
   static type = "DislikeButtonView";
   toggle_button;
@@ -16248,7 +16248,7 @@ var DislikeButtonView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SegmentedLikeDislikeButtonView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SegmentedLikeDislikeButtonView.js
 var SegmentedLikeDislikeButtonView = class extends YTNode {
   static type = "SegmentedLikeDislikeButtonView";
   like_button;
@@ -16287,7 +16287,7 @@ var SegmentedLikeDislikeButtonView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/MenuServiceItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/MenuServiceItem.js
 var MenuServiceItem = class extends Button {
   static type = "MenuServiceItem";
   constructor(data) {
@@ -16295,7 +16295,7 @@ var MenuServiceItem = class extends Button {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DownloadButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DownloadButton.js
 var DownloadButton = class extends YTNode {
   static type = "DownloadButton";
   style;
@@ -16312,7 +16312,7 @@ var DownloadButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/MenuServiceItemDownload.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/MenuServiceItemDownload.js
 var MenuServiceItemDownload = class extends YTNode {
   static type = "MenuServiceItemDownload";
   has_separator;
@@ -16324,7 +16324,7 @@ var MenuServiceItemDownload = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SubscribeButtonView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SubscribeButtonView.js
 var SubscribeButtonView = class extends YTNode {
   static type = "SubscribeButtonView";
   subscribe_button_content;
@@ -16377,7 +16377,7 @@ var SubscribeButtonView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ListItemView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ListItemView.js
 var ListItemView = class extends YTNode {
   static type = "ListItemView";
   title;
@@ -16417,7 +16417,7 @@ var ListItemView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/MenuFlexibleItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/MenuFlexibleItem.js
 var MenuFlexibleItem = class extends YTNode {
   static type = "MenuFlexibleItem";
   menu_item;
@@ -16429,7 +16429,7 @@ var MenuFlexibleItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LikeButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LikeButton.js
 var LikeButton = class extends YTNode {
   static type = "LikeButton";
   target;
@@ -16449,7 +16449,7 @@ var LikeButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/FlexibleActionsView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/FlexibleActionsView.js
 var FlexibleActionsView = class extends YTNode {
   static type = "FlexibleActionsView";
   actions_rows;
@@ -16463,7 +16463,7 @@ var FlexibleActionsView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/Menu.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/Menu.js
 var Menu = class extends YTNode {
   static type = "Menu";
   items;
@@ -16490,7 +16490,7 @@ var Menu = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/BackstagePost.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/BackstagePost.js
 var BackstagePost = class extends YTNode {
   static type = "BackstagePost";
   id;
@@ -16543,7 +16543,7 @@ var BackstagePost = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/BackstagePostThread.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/BackstagePostThread.js
 var BackstagePostThread = class extends YTNode {
   static type = "BackstagePostThread";
   post;
@@ -16553,7 +16553,7 @@ var BackstagePostThread = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/BadgeView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/BadgeView.js
 var BadgeView = class extends YTNode {
   text;
   style;
@@ -16566,7 +16566,7 @@ var BadgeView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SubFeedOption.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SubFeedOption.js
 var SubFeedOption = class extends YTNode {
   static type = "SubFeedOption";
   name;
@@ -16580,7 +16580,7 @@ var SubFeedOption = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SubFeedSelector.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SubFeedSelector.js
 var SubFeedSelector = class extends YTNode {
   static type = "SubFeedSelector";
   title;
@@ -16592,7 +16592,7 @@ var SubFeedSelector = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/EomSettingsDisclaimer.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/EomSettingsDisclaimer.js
 var EomSettingsDisclaimer = class extends YTNode {
   static type = "EomSettingsDisclaimer";
   disclaimer;
@@ -16608,7 +16608,7 @@ var EomSettingsDisclaimer = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SearchBox.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SearchBox.js
 var SearchBox = class extends YTNode {
   static type = "SearchBox";
   endpoint;
@@ -16624,7 +16624,7 @@ var SearchBox = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/BrowseFeedActions.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/BrowseFeedActions.js
 var BrowseFeedActions = class extends YTNode {
   static type = "BrowseFeedActions";
   contents;
@@ -16634,7 +16634,7 @@ var BrowseFeedActions = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/BrowserMediaSession.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/BrowserMediaSession.js
 var BrowserMediaSession = class extends YTNode {
   static type = "BrowserMediaSession";
   album;
@@ -16646,7 +16646,7 @@ var BrowserMediaSession = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ButtonCardView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ButtonCardView.js
 var ButtonCardView = class extends YTNode {
   static type = "ButtonCardView";
   title;
@@ -16660,7 +16660,7 @@ var ButtonCardView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelHeaderLinks.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelHeaderLinks.js
 var HeaderLink = class extends YTNode {
   static type = "HeaderLink";
   endpoint;
@@ -16684,7 +16684,7 @@ var ChannelHeaderLinks = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelHeaderLinksView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelHeaderLinksView.js
 var ChannelHeaderLinksView = class extends YTNode {
   static type = "ChannelHeaderLinksView";
   first_link;
@@ -16700,7 +16700,7 @@ var ChannelHeaderLinksView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ClipCreationTextInput.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ClipCreationTextInput.js
 var ClipCreationTextInput = class extends YTNode {
   static type = "ClipCreationTextInput";
   placeholder_text;
@@ -16712,7 +16712,7 @@ var ClipCreationTextInput = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ClipCreationScrubber.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ClipCreationScrubber.js
 var ClipCreationScrubber = class extends YTNode {
   static type = "ClipCreationScrubber";
   length_template;
@@ -16736,7 +16736,7 @@ var ClipCreationScrubber = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ClipAdState.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ClipAdState.js
 var ClipAdState = class extends YTNode {
   static type = "ClipAdState";
   title;
@@ -16748,7 +16748,7 @@ var ClipAdState = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ClipCreation.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ClipCreation.js
 var ClipCreation = class extends YTNode {
   static type = "ClipCreation";
   user_avatar;
@@ -16776,7 +16776,7 @@ var ClipCreation = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ClipSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ClipSection.js
 var ClipSection = class extends YTNode {
   static type = "ClipSection";
   contents;
@@ -16786,7 +16786,7 @@ var ClipSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ContinuationItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ContinuationItem.js
 var ContinuationItem = class extends YTNode {
   static type = "ContinuationItem";
   trigger;
@@ -16802,7 +16802,7 @@ var ContinuationItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/EngagementPanelTitleHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/EngagementPanelTitleHeader.js
 var EngagementPanelTitleHeader = class extends YTNode {
   static type = "EngagementPanelTitleHeader";
   title;
@@ -16818,7 +16818,7 @@ var EngagementPanelTitleHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MacroMarkersInfoItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MacroMarkersInfoItem.js
 var MacroMarkersInfoItem = class extends YTNode {
   static type = "MacroMarkersInfoItem";
   info_text;
@@ -16830,7 +16830,7 @@ var MacroMarkersInfoItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MacroMarkersListItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MacroMarkersListItem.js
 var MacroMarkersListItem = class extends YTNode {
   static type = "MacroMarkersListItem";
   title;
@@ -16850,7 +16850,7 @@ var MacroMarkersListItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MacroMarkersList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MacroMarkersList.js
 var MacroMarkersList = class extends YTNode {
   static type = "MacroMarkersList";
   contents;
@@ -16862,7 +16862,7 @@ var MacroMarkersList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ContentListItemView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ContentListItemView.js
 var ContentListItemView = class extends YTNode {
   static type = "ContentListItemView";
   title;
@@ -16884,7 +16884,7 @@ var ContentListItemView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/PlaylistCollaborationFormSchema.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/PlaylistCollaborationFormSchema.js
 var PlaylistCollaborationFormSchema = class {
   id;
   initial_values;
@@ -16901,7 +16901,7 @@ var PlaylistCollaborationFormSchema = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/PlaylistCollaborationViewModelPlaylistCollaboratorData.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/PlaylistCollaborationViewModelPlaylistCollaboratorData.js
 var PlaylistCollaborationViewModelPlaylistCollaboratorData = class {
   remove_collaborator_confirmation_dialog;
   external_channel_id;
@@ -16913,7 +16913,7 @@ var PlaylistCollaborationViewModelPlaylistCollaboratorData = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistCollaborationView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistCollaborationView.js
 var PlaylistCollaborationView = class extends YTNode {
   static type = "PlaylistCollaborationView";
   playlist_collaborators;
@@ -16949,7 +16949,7 @@ var PlaylistCollaborationView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ProductList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ProductList.js
 var ProductList = class extends YTNode {
   static type = "ProductList";
   contents;
@@ -16959,7 +16959,7 @@ var ProductList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SectionList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SectionList.js
 var SectionList = class extends YTNode {
   static type = "SectionList";
   contents;
@@ -16989,7 +16989,7 @@ var SectionList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ExpandableVideoDescriptionBody.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ExpandableVideoDescriptionBody.js
 var ExpandableVideoDescriptionBody = class extends YTNode {
   static type = "ExpandableVideoDescriptionBody";
   show_more_text;
@@ -17005,7 +17005,7 @@ var ExpandableVideoDescriptionBody = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SearchRefinementCard.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SearchRefinementCard.js
 var SearchRefinementCard = class extends YTNode {
   static type = "SearchRefinementCard";
   thumbnails;
@@ -17019,7 +17019,7 @@ var SearchRefinementCard = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GameCard.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GameCard.js
 var GameCard = class extends YTNode {
   static type = "GameCard";
   game;
@@ -17029,7 +17029,7 @@ var GameCard = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HorizontalList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HorizontalList.js
 var HorizontalList = class extends YTNode {
   static type = "HorizontalList";
   visible_item_count;
@@ -17045,7 +17045,7 @@ var HorizontalList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoSummaryParagraphView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoSummaryParagraphView.js
 var VideoSummaryParagraphView = class extends YTNode {
   static type = "VideoSummaryParagraphView";
   text;
@@ -17055,7 +17055,7 @@ var VideoSummaryParagraphView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoSummaryContentView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoSummaryContentView.js
 var VideoSummaryContentView = class extends YTNode {
   static type = "VideoSummaryContentView";
   dislike_button_view;
@@ -17073,7 +17073,7 @@ var VideoSummaryContentView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ExpandableMetadata.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ExpandableMetadata.js
 var ExpandableMetadata = class extends YTNode {
   static type = "ExpandableMetadata";
   header;
@@ -17096,7 +17096,7 @@ var ExpandableMetadata = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MetadataBadge.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MetadataBadge.js
 var MetadataBadge = class extends YTNode {
   static type = "MetadataBadge";
   icon_type;
@@ -17120,7 +17120,7 @@ var MetadataBadge = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayTimeStatus.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayTimeStatus.js
 var ThumbnailOverlayTimeStatus = class extends YTNode {
   static type = "ThumbnailOverlayTimeStatus";
   text;
@@ -17136,7 +17136,7 @@ var ThumbnailOverlayTimeStatus = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Video.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Video.js
 var Video = class extends YTNode {
   static type = "Video";
   video_id;
@@ -17259,7 +17259,7 @@ var Video = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoCard.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoCard.js
 var VideoCard = class extends Video {
   static type = "VideoCard";
   metadata_text;
@@ -17278,7 +17278,7 @@ var VideoCard = class extends Video {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ContentPreviewImageView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ContentPreviewImageView.js
 var ContentPreviewImageView = class extends YTNode {
   static type = "ContentPreviewImageView";
   image;
@@ -17290,7 +17290,7 @@ var ContentPreviewImageView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoAttributeView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoAttributeView.js
 var VideoAttributeView = class extends YTNode {
   static type = "VideoAttributeView";
   image;
@@ -17324,7 +17324,7 @@ var VideoAttributeView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HorizontalCardList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HorizontalCardList.js
 var HorizontalCardList = class extends YTNode {
   static type = "HorizontalCardList";
   cards;
@@ -17340,7 +17340,7 @@ var HorizontalCardList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Factoid.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Factoid.js
 var Factoid = class extends YTNode {
   static type = "Factoid";
   label;
@@ -17354,7 +17354,7 @@ var Factoid = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/UploadTimeFactoid.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/UploadTimeFactoid.js
 var UploadTimeFactoid = class extends YTNode {
   static type = "UploadTimeFactoid";
   factoid;
@@ -17364,7 +17364,7 @@ var UploadTimeFactoid = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ViewCountFactoid.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ViewCountFactoid.js
 var ViewCountFactoid = class extends YTNode {
   static type = "ViewCountFactoid";
   view_count_entity_key;
@@ -17378,7 +17378,7 @@ var ViewCountFactoid = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HypePointsFactoid.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HypePointsFactoid.js
 var HypePointsFactoid = class extends YTNode {
   static type = "HypePointsFactoid";
   factoid;
@@ -17388,7 +17388,7 @@ var HypePointsFactoid = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionHeader.js
 var VideoDescriptionHeader = class extends YTNode {
   static type = "VideoDescriptionHeader";
   channel;
@@ -17410,7 +17410,7 @@ var VideoDescriptionHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionInfocardsSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionInfocardsSection.js
 var VideoDescriptionInfocardsSection = class extends YTNode {
   static type = "VideoDescriptionInfocardsSection";
   section_title;
@@ -17434,7 +17434,7 @@ var VideoDescriptionInfocardsSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/InfoRow.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/InfoRow.js
 var InfoRow = class extends YTNode {
   static type = "InfoRow";
   title;
@@ -17456,7 +17456,7 @@ var InfoRow = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CompactVideo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CompactVideo.js
 var CompactVideo = class extends YTNode {
   static type = "CompactVideo";
   video_id;
@@ -17545,7 +17545,7 @@ var CompactVideo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CarouselLockup.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CarouselLockup.js
 var CarouselLockup = class extends YTNode {
   static type = "CarouselLockup";
   info_rows;
@@ -17557,7 +17557,7 @@ var CarouselLockup = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionMusicSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionMusicSection.js
 var VideoDescriptionMusicSection = class extends YTNode {
   static type = "VideoDescriptionMusicSection";
   carousel_lockups;
@@ -17569,7 +17569,7 @@ var VideoDescriptionMusicSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionTranscriptSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionTranscriptSection.js
 var VideoDescriptionTranscriptSection = class extends YTNode {
   static type = "VideoDescriptionTranscriptSection";
   section_title;
@@ -17583,7 +17583,7 @@ var VideoDescriptionTranscriptSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/StructuredDescriptionPlaylistLockup.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/StructuredDescriptionPlaylistLockup.js
 var StructuredDescriptionPlaylistLockup = class extends YTNode {
   static type = "StructuredDescriptionPlaylistLockup";
   thumbnail;
@@ -17611,7 +17611,7 @@ var StructuredDescriptionPlaylistLockup = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionCourseSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionCourseSection.js
 var VideoDescriptionCourseSection = class extends YTNode {
   static type = "VideoDescriptionCourseSection";
   section_title;
@@ -17623,7 +17623,7 @@ var VideoDescriptionCourseSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoAttributesSectionView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoAttributesSectionView.js
 var VideoAttributesSectionView = class extends YTNode {
   static type = "VideoAttributesSectionView";
   header_title;
@@ -17641,7 +17641,7 @@ var VideoAttributesSectionView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HowThisWasMadeSectionView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HowThisWasMadeSectionView.js
 var HowThisWasMadeSectionView = class extends YTNode {
   static type = "HowThisWasMadeSectionView";
   section_title;
@@ -17661,7 +17661,7 @@ var HowThisWasMadeSectionView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ReelShelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ReelShelf.js
 var ReelShelf = class extends YTNode {
   static type = "ReelShelf";
   title;
@@ -17681,7 +17681,7 @@ var ReelShelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MerchandiseShelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MerchandiseShelf.js
 var MerchandiseShelf = class extends YTNode {
   static type = "MerchandiseShelf";
   title;
@@ -17699,7 +17699,7 @@ var MerchandiseShelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SectionHeaderView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SectionHeaderView.js
 var SectionHeaderView = class extends YTNode {
   static type = "SectionHeaderView";
   headline;
@@ -17709,7 +17709,7 @@ var SectionHeaderView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HypeFanCreditsSectionView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HypeFanCreditsSectionView.js
 var HypeFanCreditsSectionView = class extends YTNode {
   static type = "HypeFanCreditsSectionView";
   header;
@@ -17719,7 +17719,7 @@ var HypeFanCreditsSectionView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionYouchatSectionView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionYouchatSectionView.js
 var VideoDescriptionYouchatSectionView = class extends YTNode {
   static type = "VideoDescriptionYouchatSectionView";
   section_title;
@@ -17737,7 +17737,7 @@ var VideoDescriptionYouchatSectionView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ItemSectionHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ItemSectionHeader.js
 var ItemSectionHeader = class extends YTNode {
   static type = "ItemSectionHeader";
   title;
@@ -17747,7 +17747,7 @@ var ItemSectionHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ItemSectionTab.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ItemSectionTab.js
 var ItemSectionTab = class extends YTNode {
   static type = "Tab";
   title;
@@ -17761,7 +17761,7 @@ var ItemSectionTab = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ItemSectionTabbedHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ItemSectionTabbedHeader.js
 var ItemSectionTabbedHeader = class extends YTNode {
   static type = "ItemSectionTabbedHeader";
   title;
@@ -17777,7 +17777,7 @@ var ItemSectionTabbedHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentsHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentsHeader.js
 var CommentsHeader = class extends YTNode {
   static type = "CommentsHeader";
   title;
@@ -17805,7 +17805,7 @@ var CommentsHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SortFilterHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SortFilterHeader.js
 var SortFilterHeader = class extends YTNode {
   static type = "SortFilterHeader";
   filter_menu;
@@ -17815,7 +17815,7 @@ var SortFilterHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChipCloudChip.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChipCloudChip.js
 var ChipCloudChip = class extends YTNode {
   static type = "ChipCloudChip";
   is_selected;
@@ -17831,7 +17831,7 @@ var ChipCloudChip = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/FeedFilterChipBar.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/FeedFilterChipBar.js
 var FeedFilterChipBar = class extends YTNode {
   static type = "FeedFilterChipBar";
   contents;
@@ -17841,7 +17841,7 @@ var FeedFilterChipBar = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChipView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChipView.js
 var ChipView = class extends YTNode {
   static type = "ChipView";
   accessibility_hint;
@@ -17898,7 +17898,7 @@ var ChipView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChipBarView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChipBarView.js
 var ChipBarView = class extends YTNode {
   static type = "ChipBarView";
   chips;
@@ -17914,7 +17914,7 @@ var ChipBarView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/RelatedChipCloud.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/RelatedChipCloud.js
 var RelatedChipCloud = class extends YTNode {
   static type = "RelatedChipCloud";
   content;
@@ -17926,7 +17926,7 @@ var RelatedChipCloud = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ItemSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ItemSection.js
 var ItemSection = class extends YTNode {
   static type = "ItemSection";
   header;
@@ -17946,7 +17946,7 @@ var ItemSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoTitleHeaderView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoTitleHeaderView.js
 var VideoTitleHeaderView = class extends YTNode {
   static type = "VideoTitleHeaderView";
   video_title;
@@ -17962,7 +17962,7 @@ var VideoTitleHeaderView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionGamingSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoDescriptionGamingSection.js
 var VideoDescriptionGamingSection = class extends YTNode {
   static type = "VideoDescriptionGamingSection";
   media_lockups;
@@ -17977,7 +17977,7 @@ var VideoDescriptionGamingSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CourseProgressView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CourseProgressView.js
 var CourseProgressView = class extends YTNode {
   static type = "CourseProgressView";
   title;
@@ -17994,7 +17994,7 @@ var CourseProgressView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/StructuredDescriptionContent.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/StructuredDescriptionContent.js
 var StructuredDescriptionContent = class extends YTNode {
   static type = "StructuredDescriptionContent";
   items;
@@ -18023,7 +18023,7 @@ var StructuredDescriptionContent = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/EngagementPanelSectionList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/EngagementPanelSectionList.js
 var EngagementPanelSectionList = class extends YTNode {
   static type = "EngagementPanelSectionList";
   header;
@@ -18057,7 +18057,7 @@ var EngagementPanelSectionList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelTagline.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelTagline.js
 var ChannelTagline = class extends YTNode {
   static type = "ChannelTagline";
   content;
@@ -18086,7 +18086,7 @@ var ChannelTagline = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SubscriptionNotificationToggleButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SubscriptionNotificationToggleButton.js
 var SubscriptionNotificationToggleButton = class extends YTNode {
   static type = "SubscriptionNotificationToggleButton";
   states;
@@ -18104,7 +18104,7 @@ var SubscriptionNotificationToggleButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SubscribeButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SubscribeButton.js
 var SubscribeButton = class extends YTNode {
   static type = "SubscribeButton";
   button_text;
@@ -18156,7 +18156,7 @@ var SubscribeButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/C4TabbedHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/C4TabbedHeader.js
 var C4TabbedHeader = class extends YTNode {
   static type = "C4TabbedHeader";
   author;
@@ -18213,7 +18213,7 @@ var C4TabbedHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CallToActionButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CallToActionButton.js
 var CallToActionButton = class extends YTNode {
   static type = "CallToActionButton";
   label;
@@ -18227,7 +18227,7 @@ var CallToActionButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Card.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Card.js
 var Card = class extends YTNode {
   static type = "Card";
   teaser;
@@ -18254,7 +18254,7 @@ var Card = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CardCollection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CardCollection.js
 var CardCollection = class extends YTNode {
   static type = "CardCollection";
   cards;
@@ -18268,7 +18268,7 @@ var CardCollection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CarouselHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CarouselHeader.js
 var CarouselHeader = class extends YTNode {
   static type = "CarouselHeader";
   contents;
@@ -18278,7 +18278,7 @@ var CarouselHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CarouselItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CarouselItem.js
 var CarouselItem = class extends YTNode {
   static type = "CarouselItem";
   items;
@@ -18300,7 +18300,7 @@ var CarouselItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TextCarouselItemView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TextCarouselItemView.js
 var TextCarouselItemView = class extends YTNode {
   static type = "TextCarouselItemView";
   icon_name;
@@ -18316,7 +18316,7 @@ var TextCarouselItemView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CarouselItemView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CarouselItemView.js
 var CarouselItemView = class extends YTNode {
   static type = "CarouselItemView";
   item_type;
@@ -18328,7 +18328,7 @@ var CarouselItemView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CarouselTitleView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CarouselTitleView.js
 var CarouselTitleView = class extends YTNode {
   static type = "CarouselTitleView";
   title;
@@ -18342,7 +18342,7 @@ var CarouselTitleView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Channel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Channel.js
 var Channel = class extends YTNode {
   static type = "Channel";
   id;
@@ -18371,7 +18371,7 @@ var Channel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelAboutFullMetadata.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelAboutFullMetadata.js
 var ChannelAboutFullMetadata = class extends YTNode {
   static type = "ChannelAboutFullMetadata";
   id;
@@ -18407,7 +18407,7 @@ var ChannelAboutFullMetadata = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelAgeGate.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelAgeGate.js
 var ChannelAgeGate = class extends YTNode {
   static type = "ChannelAgeGate";
   channel_title;
@@ -18427,7 +18427,7 @@ var ChannelAgeGate = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelFeaturedContent.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelFeaturedContent.js
 var ChannelFeaturedContent = class extends YTNode {
   static type = "ChannelFeaturedContent";
   title;
@@ -18439,7 +18439,7 @@ var ChannelFeaturedContent = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelMetadata.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelMetadata.js
 var ChannelMetadata = class extends YTNode {
   static type = "ChannelMetadata";
   title;
@@ -18475,7 +18475,7 @@ var ChannelMetadata = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelMobileHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelMobileHeader.js
 var ChannelMobileHeader = class extends YTNode {
   static type = "ChannelMobileHeader";
   title;
@@ -18485,7 +18485,7 @@ var ChannelMobileHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelOptions.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelOptions.js
 var ChannelOptions = class extends YTNode {
   static type = "ChannelOptions";
   avatar;
@@ -18501,7 +18501,7 @@ var ChannelOptions = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelOwnerEmptyState.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelOwnerEmptyState.js
 var ChannelOwnerEmptyState = class extends YTNode {
   static type = "ChannelOwnerEmptyState";
   illustration;
@@ -18513,7 +18513,7 @@ var ChannelOwnerEmptyState = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelSubMenu.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelSubMenu.js
 var ChannelSubMenu = class extends YTNode {
   static type = "ChannelSubMenu";
   content_type_sub_menu_items;
@@ -18529,7 +18529,7 @@ var ChannelSubMenu = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelSwitcherHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelSwitcherHeader.js
 var ChannelSwitcherHeader = class extends YTNode {
   static type = "ChannelSwitcherHeader";
   title;
@@ -18543,7 +18543,7 @@ var ChannelSwitcherHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelThumbnailWithLink.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelThumbnailWithLink.js
 var ChannelThumbnailWithLink = class extends YTNode {
   static type = "ChannelThumbnailWithLink";
   thumbnails;
@@ -18564,7 +18564,7 @@ var ChannelThumbnailWithLink = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChannelVideoPlayer.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChannelVideoPlayer.js
 var ChannelVideoPlayer = class extends YTNode {
   static type = "ChannelVideoPlayer";
   id;
@@ -18582,7 +18582,7 @@ var ChannelVideoPlayer = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Chapter.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Chapter.js
 var Chapter = class extends YTNode {
   static type = "Chapter";
   title;
@@ -18596,7 +18596,7 @@ var Chapter = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChildVideo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChildVideo.js
 var ChildVideo = class extends YTNode {
   static type = "ChildVideo";
   id;
@@ -18615,7 +18615,7 @@ var ChildVideo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ChipCloud.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ChipCloud.js
 var ChipCloud = class extends YTNode {
   static type = "ChipCloud";
   chips;
@@ -18631,7 +18631,7 @@ var ChipCloud = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ClientSideToggleMenuItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ClientSideToggleMenuItem.js
 var ClientSideToggleMenuItem = class extends YTNode {
   static type = "ClientSideToggleMenuItem";
   text;
@@ -18664,7 +18664,7 @@ var ClientSideToggleMenuItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CollaboratorInfoCardContent.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CollaboratorInfoCardContent.js
 var CollaboratorInfoCardContent = class extends YTNode {
   static type = "CollaboratorInfoCardContent";
   channel_avatar;
@@ -18682,7 +18682,7 @@ var CollaboratorInfoCardContent = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CollageHeroImage.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CollageHeroImage.js
 var CollageHeroImage = class extends YTNode {
   static type = "CollageHeroImage";
   left;
@@ -18698,7 +18698,7 @@ var CollageHeroImage = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailHoverOverlayView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailHoverOverlayView.js
 var ThumbnailHoverOverlayView = class extends YTNode {
   static type = "ThumbnailHoverOverlayView";
   icon_name;
@@ -18712,7 +18712,7 @@ var ThumbnailHoverOverlayView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailBadgeView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailBadgeView.js
 var ThumbnailBadgeView = class extends YTNode {
   static type = "ThumbnailBadgeView";
   icon_name;
@@ -18735,7 +18735,7 @@ var ThumbnailBadgeView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayBadgeView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayBadgeView.js
 var ThumbnailOverlayBadgeView = class extends YTNode {
   static type = "ThumbnailOverlayBadgeView";
   badges;
@@ -18747,7 +18747,7 @@ var ThumbnailOverlayBadgeView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailHoverOverlayToggleActionsView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailHoverOverlayToggleActionsView.js
 var ThumbnailHoverOverlayToggleActionsView = class extends YTNode {
   static type = "ThumbnailHoverOverlayToggleActionsView";
   buttons;
@@ -18757,7 +18757,7 @@ var ThumbnailHoverOverlayToggleActionsView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayProgressBarView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayProgressBarView.js
 var ThumbnailOverlayProgressBarView = class extends YTNode {
   static type = "ThumbnailOverlayProgressBarView";
   start_percent;
@@ -18767,7 +18767,7 @@ var ThumbnailOverlayProgressBarView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailBottomOverlayView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailBottomOverlayView.js
 var ThumbnailBottomOverlayView = class extends YTNode {
   static type = "ThumbnailBottomOverlayView";
   progress_bar;
@@ -18779,7 +18779,7 @@ var ThumbnailBottomOverlayView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailView.js
 var ThumbnailView = class extends YTNode {
   static type = "ThumbnailView";
   image;
@@ -18804,7 +18804,7 @@ var ThumbnailView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CollectionThumbnailView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CollectionThumbnailView.js
 var CollectionThumbnailView = class extends YTNode {
   static type = "CollectionThumbnailView";
   primary_thumbnail;
@@ -18821,7 +18821,7 @@ var CollectionThumbnailView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/commands/AddToPlaylistCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/commands/AddToPlaylistCommand.js
 var AddToPlaylistCommand = class extends YTNode {
   static type = "AddToPlaylistCommand";
   open_miniplayer;
@@ -18839,7 +18839,7 @@ var AddToPlaylistCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/commands/ContinuationCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/commands/ContinuationCommand.js
 var ContinuationCommand = class extends YTNode {
   static type = "ContinuationCommand";
   #data;
@@ -18888,7 +18888,7 @@ var ContinuationCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/commands/GetKidsBlocklistPickerCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/commands/GetKidsBlocklistPickerCommand.js
 var API_PATH = "kids/get_kids_blocklist_picker";
 var GetKidsBlocklistPickerCommand = class extends YTNode {
   static type = "GetKidsBlocklistPickerCommand";
@@ -18908,7 +18908,7 @@ var GetKidsBlocklistPickerCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/commands/RunAttestationCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/commands/RunAttestationCommand.js
 var RunAttestationCommand = class extends YTNode {
   static type = "RunAttestationCommand";
   engagement_type;
@@ -18931,7 +18931,7 @@ var RunAttestationCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/commands/ShowDialogCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/commands/ShowDialogCommand.js
 var ShowDialogCommand = class extends YTNode {
   static type = "ShowDialogCommand";
   inline_content;
@@ -18943,7 +18943,7 @@ var ShowDialogCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/commands/ShowSheetCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/commands/ShowSheetCommand.js
 var ShowSheetCommand = class extends YTNode {
   static type = "ShowSheetCommand";
   inline_content;
@@ -18955,7 +18955,7 @@ var ShowSheetCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/commands/UpdateEngagementPanelContentCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/commands/UpdateEngagementPanelContentCommand.js
 var UpdateEngagementPanelContentCommand = class extends YTNode {
   static type = "UpdateEngagementPanelContentCommand";
   content_source_panel_identifier;
@@ -18967,7 +18967,7 @@ var UpdateEngagementPanelContentCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/AuthorCommentBadge.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/AuthorCommentBadge.js
 var AuthorCommentBadge = class extends YTNode {
   static type = "AuthorCommentBadge";
   #data;
@@ -18991,7 +18991,7 @@ var AuthorCommentBadge = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/EmojiPicker.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/EmojiPicker.js
 var EmojiPicker = class extends YTNode {
   static type = "EmojiPicker";
   id;
@@ -19025,7 +19025,7 @@ var EmojiPicker = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentDialog.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentDialog.js
 var CommentDialog = class extends YTNode {
   static type = "CommentDialog";
   editable_text;
@@ -19047,7 +19047,7 @@ var CommentDialog = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentImageAttachmentView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentImageAttachmentView.js
 var CommentImageAttachmentView = class extends YTNode {
   static type = "CommentImageAttachmentView";
   width;
@@ -19085,7 +19085,7 @@ var CommentImageAttachmentView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentReplyDialog.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentReplyDialog.js
 var CommentReplyDialog = class extends YTNode {
   static type = "CommentReplyDialog";
   reply_button;
@@ -19103,7 +19103,7 @@ var CommentReplyDialog = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/VoiceReplyContainerView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/VoiceReplyContainerView.js
 var VoiceReplyContainerView = class extends YTNode {
   static type = "VoiceReplyContainerView";
   voice_reply_unavailable_text;
@@ -19115,7 +19115,7 @@ var VoiceReplyContainerView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentView.js
 var CommentView = class extends YTNode {
   static type = "CommentView";
   #actions;
@@ -19324,7 +19324,7 @@ var CommentView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/CommentsContinuation.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/CommentsContinuation.js
 var CommentsContinuation = class _CommentsContinuation {
   replies = observe([]);
   #actions;
@@ -19367,7 +19367,7 @@ var CommentsContinuation = class _CommentsContinuation {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentThread.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentThread.js
 var CommentThread = class _CommentThread extends YTNode {
   static type = "CommentThread";
   comment;
@@ -19471,7 +19471,7 @@ var CommentThread = class _CommentThread extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentReplies.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentReplies.js
 var CommentReplies = class extends YTNode {
   static type = "CommentReplies";
   contents;
@@ -19491,7 +19491,7 @@ var CommentReplies = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentsSimplebox.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentsSimplebox.js
 var CommentsSimplebox = class extends YTNode {
   static type = "CommentsSimplebox";
   simplebox_avatar;
@@ -19503,7 +19503,7 @@ var CommentsSimplebox = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentsEntryPointTeaser.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentsEntryPointTeaser.js
 var CommentsEntryPointTeaser = class extends YTNode {
   static type = "CommentsEntryPointTeaser";
   teaser_avatar;
@@ -19519,7 +19519,7 @@ var CommentsEntryPointTeaser = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentsEntryPointHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentsEntryPointHeader.js
 var CommentsEntryPointHeader = class extends YTNode {
   static type = "CommentsEntryPointHeader";
   header;
@@ -19551,7 +19551,7 @@ var CommentsEntryPointHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/CommentSimplebox.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/CommentSimplebox.js
 var CommentSimplebox = class extends YTNode {
   static type = "CommentSimplebox";
   submit_button;
@@ -19569,7 +19569,7 @@ var CommentSimplebox = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/PdgCommentChip.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/PdgCommentChip.js
 var PdgCommentChip = class extends YTNode {
   static type = "PdgCommentChip";
   text;
@@ -19588,7 +19588,7 @@ var PdgCommentChip = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/comments/SponsorCommentBadge.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/comments/SponsorCommentBadge.js
 var SponsorCommentBadge = class extends YTNode {
   static type = "SponsorCommentBadge";
   custom_badge;
@@ -19600,7 +19600,7 @@ var SponsorCommentBadge = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CompactChannel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CompactChannel.js
 var CompactChannel = class extends YTNode {
   static type = "CompactChannel";
   title;
@@ -19626,7 +19626,7 @@ var CompactChannel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CompactInfocard.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CompactInfocard.js
 var CompactInfocard = class extends YTNode {
   static type = "CompactInfocard";
   content;
@@ -19636,7 +19636,7 @@ var CompactInfocard = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistCustomThumbnail.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistCustomThumbnail.js
 var PlaylistCustomThumbnail = class extends YTNode {
   static type = "PlaylistCustomThumbnail";
   thumbnail;
@@ -19646,7 +19646,7 @@ var PlaylistCustomThumbnail = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistVideoThumbnail.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistVideoThumbnail.js
 var PlaylistVideoThumbnail = class extends YTNode {
   static type = "PlaylistVideoThumbnail";
   thumbnail;
@@ -19656,7 +19656,7 @@ var PlaylistVideoThumbnail = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Playlist.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Playlist.js
 var Playlist = class extends YTNode {
   static type = "Playlist";
   id;
@@ -19696,7 +19696,7 @@ var Playlist = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CompactMix.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CompactMix.js
 var CompactMix = class extends Playlist {
   static type = "CompactMix";
   constructor(data) {
@@ -19704,7 +19704,7 @@ var CompactMix = class extends Playlist {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CompactMovie.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CompactMovie.js
 var CompactMovie = class extends YTNode {
   static type = "CompactMovie";
   id;
@@ -19739,7 +19739,7 @@ var CompactMovie = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CompactPlaylist.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CompactPlaylist.js
 var CompactPlaylist = class extends Playlist {
   static type = "CompactPlaylist";
   constructor(data) {
@@ -19748,7 +19748,7 @@ var CompactPlaylist = class extends Playlist {
 };
 var CompactPlaylist_default = CompactPlaylist;
 
-// node_modules/youtubei.js/dist/src/parser/classes/CompactStation.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CompactStation.js
 var CompactStation = class extends YTNode {
   static type = "CompactStation";
   title;
@@ -19766,7 +19766,7 @@ var CompactStation = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CompositeVideoPrimaryInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CompositeVideoPrimaryInfo.js
 var CompositeVideoPrimaryInfo = class extends YTNode {
   static type = "CompositeVideoPrimaryInfo";
   composite_source_video_primary_info_renderers;
@@ -19776,7 +19776,7 @@ var CompositeVideoPrimaryInfo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ConfirmDialog.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ConfirmDialog.js
 var ConfirmDialog = class extends YTNode {
   static type = "ConfirmDialog";
   title;
@@ -19797,7 +19797,7 @@ var ConfirmDialog = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ContentMetadataView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ContentMetadataView.js
 var ContentMetadataView = class extends YTNode {
   static type = "ContentMetadataView";
   metadata_rows;
@@ -19816,7 +19816,7 @@ var ContentMetadataView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ContinuationItemView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ContinuationItemView.js
 var ContinuationItemView = class extends YTNode {
   static type = "ContinuationItemView";
   trigger;
@@ -19828,7 +19828,7 @@ var ContinuationItemView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Message.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Message.js
 var Message = class extends YTNode {
   static type = "Message";
   text;
@@ -19838,7 +19838,7 @@ var Message = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ConversationBar.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ConversationBar.js
 var ConversationBar = class extends YTNode {
   static type = "ConversationBar";
   availability_message;
@@ -19848,7 +19848,7 @@ var ConversationBar = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CopyLink.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CopyLink.js
 var CopyLink = class extends YTNode {
   static type = "CopyLink";
   copy_button;
@@ -19862,7 +19862,7 @@ var CopyLink = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DropdownView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DropdownView.js
 var DropdownView = class extends YTNode {
   static type = "DropdownView";
   label;
@@ -19891,7 +19891,7 @@ var DropdownView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TextFieldView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TextFieldView.js
 var TextFieldView = class extends YTNode {
   static type = "TextFieldView";
   display_properties;
@@ -19927,7 +19927,7 @@ var TextFieldView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/CreatePlaylistDialogFormView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/CreatePlaylistDialogFormView.js
 var CreatePlaylistDialogFormView = class extends YTNode {
   static type = "CreatePlaylistDialogFormView";
   playlist_title;
@@ -19947,7 +19947,7 @@ var CreatePlaylistDialogFormView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DecoratedAvatarView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DecoratedAvatarView.js
 var DecoratedAvatarView = class extends YTNode {
   static type = "DecoratedAvatarView";
   avatar;
@@ -19961,7 +19961,7 @@ var DecoratedAvatarView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HeatMarker.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HeatMarker.js
 var HeatMarker = class extends YTNode {
   static type = "HeatMarker";
   time_range_start_millis;
@@ -19975,7 +19975,7 @@ var HeatMarker = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TimedMarkerDecoration.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TimedMarkerDecoration.js
 var TimedMarkerDecoration = class extends YTNode {
   static type = "TimedMarkerDecoration";
   visible_time_range_start_millis;
@@ -19993,7 +19993,7 @@ var TimedMarkerDecoration = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Heatmap.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Heatmap.js
 var Heatmap = class extends YTNode {
   static type = "Heatmap";
   max_height_dp;
@@ -20011,7 +20011,7 @@ var Heatmap = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MultiMarkersPlayerBar.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MultiMarkersPlayerBar.js
 var Marker = class extends YTNode {
   static type = "Marker";
   marker_key;
@@ -20039,7 +20039,7 @@ var MultiMarkersPlayerBar = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DecoratedPlayerBar.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DecoratedPlayerBar.js
 var DecoratedPlayerBar = class extends YTNode {
   static type = "DecoratedPlayerBar";
   player_bar;
@@ -20051,7 +20051,7 @@ var DecoratedPlayerBar = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DefaultPromoPanel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DefaultPromoPanel.js
 var DefaultPromoPanel = class extends YTNode {
   static type = "DefaultPromoPanel";
   title;
@@ -20081,7 +20081,7 @@ var DefaultPromoPanel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DescriptionPreviewView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DescriptionPreviewView.js
 var DescriptionPreviewView = class extends YTNode {
   static type = "DescriptionPreviewView";
   description;
@@ -20116,7 +20116,7 @@ var DescriptionPreviewView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DialogHeaderView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DialogHeaderView.js
 var DialogHeaderView = class extends YTNode {
   static type = "DialogHeaderView";
   headline;
@@ -20126,7 +20126,7 @@ var DialogHeaderView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PanelFooterView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PanelFooterView.js
 var PanelFooterView = class extends YTNode {
   static type = "PanelFooterView";
   primary_button;
@@ -20140,7 +20140,7 @@ var PanelFooterView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/FormFooterView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/FormFooterView.js
 var FormFooterView = class extends YTNode {
   static type = "FormFooterView";
   panel_footer;
@@ -20154,7 +20154,7 @@ var FormFooterView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DownloadListItemView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DownloadListItemView.js
 var DownloadListItemView = class extends YTNode {
   static type = "DownloadListItemView";
   renderer_context;
@@ -20166,7 +20166,7 @@ var DownloadListItemView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ToggleableListItemView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ToggleableListItemView.js
 var ToggleableListItemView = class extends YTNode {
   static type = "ToggleableListItemView";
   default_list_item;
@@ -20195,7 +20195,7 @@ var ToggleableListItemView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ListView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ListView.js
 var ListView = class extends YTNode {
   static type = "ListView";
   items;
@@ -20209,7 +20209,7 @@ var ListView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DialogView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DialogView.js
 var DialogView = class extends YTNode {
   static type = "DialogView";
   header;
@@ -20223,7 +20223,7 @@ var DialogView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DidYouMean.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DidYouMean.js
 var DidYouMean = class extends YTNode {
   static type = "DidYouMean";
   text;
@@ -20237,7 +20237,7 @@ var DidYouMean = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DismissableDialogContentSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DismissableDialogContentSection.js
 var DismissableDialogContentSection = class extends YTNode {
   static type = "DismissableDialogContentSection";
   title;
@@ -20249,7 +20249,7 @@ var DismissableDialogContentSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DismissableDialog.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DismissableDialog.js
 var DismissableDialog = class extends YTNode {
   static type = "DismissableDialog";
   title;
@@ -20265,7 +20265,7 @@ var DismissableDialog = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/DynamicTextView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/DynamicTextView.js
 var DynamicTextView = class extends YTNode {
   static type = "DynamicTextView";
   text;
@@ -20277,7 +20277,7 @@ var DynamicTextView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/ChildElement.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/ChildElement.js
 var ChildElement = class _ChildElement extends YTNode {
   static type = "ChildElement";
   text;
@@ -20295,7 +20295,7 @@ var ChildElement = class _ChildElement extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Element.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Element.js
 var Element = class _Element extends YTNode {
   static type = "Element";
   model;
@@ -20313,7 +20313,7 @@ var Element = class _Element extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/EmergencyOnebox.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/EmergencyOnebox.js
 var EmergencyOnebox = class extends YTNode {
   static type = "EmergencyOnebox";
   title;
@@ -20327,7 +20327,7 @@ var EmergencyOnebox = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/EmojiPickerCategory.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/EmojiPickerCategory.js
 var EmojiPickerCategory = class extends YTNode {
   static type = "EmojiPickerCategory";
   category_id;
@@ -20345,7 +20345,7 @@ var EmojiPickerCategory = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/EmojiPickerCategoryButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/EmojiPickerCategoryButton.js
 var EmojiPickerCategoryButton = class extends YTNode {
   static type = "EmojiPickerCategoryButton";
   category_id;
@@ -20361,7 +20361,7 @@ var EmojiPickerCategoryButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/EmojiPickerUpsellCategory.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/EmojiPickerUpsellCategory.js
 var EmojiPickerUpsellCategory = class extends YTNode {
   static type = "EmojiPickerUpsellCategory";
   category_id;
@@ -20381,7 +20381,7 @@ var EmojiPickerUpsellCategory = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/AddToPlaylistServiceEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/AddToPlaylistServiceEndpoint.js
 var API_PATH2 = "playlist/get_add_to_playlist";
 var AddToPlaylistServiceEndpoint = class extends YTNode {
   static type = "AddToPlaylistServiceEndpoint";
@@ -20405,7 +20405,7 @@ var AddToPlaylistServiceEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/AddToPlaylistEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/AddToPlaylistEndpoint.js
 var AddToPlaylistEndpoint = class extends AddToPlaylistServiceEndpoint {
   static type = "AddToPlaylistEndpoint";
   constructor(data) {
@@ -20413,7 +20413,7 @@ var AddToPlaylistEndpoint = class extends AddToPlaylistServiceEndpoint {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/BrowseEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/BrowseEndpoint.js
 var API_PATH3 = "browse";
 var BrowseEndpoint = class extends YTNode {
   static type = "BrowseEndpoint";
@@ -20456,7 +20456,7 @@ var BrowseEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/ConfirmDialogEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/ConfirmDialogEndpoint.js
 var ConfirmDialogEndpoint = class extends YTNode {
   static type = "ConfirmDialogEndpoint";
   content;
@@ -20466,7 +20466,7 @@ var ConfirmDialogEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/CreateCommentEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/CreateCommentEndpoint.js
 var API_PATH4 = "comment/create_comment";
 var CreateCommentEndpoint = class extends YTNode {
   static type = "CreateCommentEndpoint";
@@ -20502,7 +20502,7 @@ var CreateCommentEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/CreatePlaylistServiceEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/CreatePlaylistServiceEndpoint.js
 var API_PATH5 = "playlist/create";
 var CreatePlaylistServiceEndpoint = class extends YTNode {
   static type = "CreatePlaylistServiceEndpoint";
@@ -20532,7 +20532,7 @@ var CreatePlaylistServiceEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/DeletePlaylistEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/DeletePlaylistEndpoint.js
 var API_PATH6 = "playlist/delete";
 var DeletePlaylistEndpoint = class extends YTNode {
   static type = "DeletePlaylistEndpoint";
@@ -20552,7 +20552,7 @@ var DeletePlaylistEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/FeedbackEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/FeedbackEndpoint.js
 var API_PATH7 = "feedback";
 var FeedbackEndpoint = class extends YTNode {
   static type = "FeedbackEndpoint";
@@ -20581,7 +20581,7 @@ var FeedbackEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/GetAccountsListInnertubeEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/GetAccountsListInnertubeEndpoint.js
 var API_PATH8 = "account/accounts_list";
 var GetAccountsListInnertubeEndpoint = class extends YTNode {
   static type = "GetAccountsListInnertubeEndpoint";
@@ -20622,7 +20622,7 @@ var GetAccountsListInnertubeEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/HideEngagementPanelEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/HideEngagementPanelEndpoint.js
 var HideEngagementPanelEndpoint = class extends YTNode {
   static type = "HideEngagementPanelEndpoint";
   panel_identifier;
@@ -20632,7 +20632,7 @@ var HideEngagementPanelEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/LikeEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/LikeEndpoint.js
 var LIKE_API_PATH = "like/like";
 var DISLIKE_API_PATH = "like/dislike";
 var REMOVE_LIKE_API_PATH = "like/removelike";
@@ -20669,7 +20669,7 @@ var LikeEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/LiveChatItemContextMenuEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/LiveChatItemContextMenuEndpoint.js
 var API_PATH9 = "live_chat/get_item_context_menu";
 var LiveChatItemContextMenuEndpoint = class extends YTNode {
   static type = "LiveChatItemContextMenuEndpoint";
@@ -20689,7 +20689,7 @@ var LiveChatItemContextMenuEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/ModifyChannelNotificationPreferenceEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/ModifyChannelNotificationPreferenceEndpoint.js
 var API_PATH10 = "notification/modify_channel_preference";
 var ModifyChannelNotificationPreferenceEndpoint = class extends YTNode {
   static type = "ModifyChannelNotificationPreferenceEndpoint";
@@ -20711,7 +20711,7 @@ var ModifyChannelNotificationPreferenceEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/PerformCommentActionEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/PerformCommentActionEndpoint.js
 var API_PATH11 = "comment/perform_comment_action";
 var PerformCommentActionEndpoint = class extends YTNode {
   static type = "PerformCommentActionEndpoint";
@@ -20733,7 +20733,7 @@ var PerformCommentActionEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/PlaylistEditEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/PlaylistEditEndpoint.js
 var API_PATH12 = "browse/edit_playlist";
 var PlaylistEditEndpoint = class extends YTNode {
   static type = "PlaylistEditEndpoint";
@@ -20757,7 +20757,7 @@ var PlaylistEditEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/WatchEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/WatchEndpoint.js
 var API_PATH13 = "player";
 var WatchEndpoint = class extends YTNode {
   static type = "WatchEndpoint";
@@ -20789,7 +20789,7 @@ var WatchEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/PrefetchWatchCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/PrefetchWatchCommand.js
 var PrefetchWatchCommand = class extends WatchEndpoint {
   static type = "PrefetchWatchCommand";
   constructor(data) {
@@ -20797,7 +20797,7 @@ var PrefetchWatchCommand = class extends WatchEndpoint {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/ReelWatchEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/ReelWatchEndpoint.js
 var API_PATH14 = "reel/reel_item_watch";
 var ReelWatchEndpoint = class extends YTNode {
   static type = "ReelWatchEndpoint";
@@ -20833,7 +20833,7 @@ var ReelWatchEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/SearchEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/SearchEndpoint.js
 var API_PATH15 = "search";
 var SearchEndpoint = class extends YTNode {
   static type = "SearchEndpoint";
@@ -20859,7 +20859,7 @@ var SearchEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/ShareEntityServiceEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/ShareEntityServiceEndpoint.js
 var API_PATH16 = "share/get_share_panel";
 var ShareEntityServiceEndpoint = class extends YTNode {
   static type = "ShareEntityServiceEndpoint";
@@ -20881,7 +20881,7 @@ var ShareEntityServiceEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/ShareEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/ShareEndpoint.js
 var ShareEndpoint = class extends ShareEntityServiceEndpoint {
   static type = "ShareEndpoint";
   constructor(data) {
@@ -20889,7 +20889,7 @@ var ShareEndpoint = class extends ShareEntityServiceEndpoint {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/ShareEntityEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/ShareEntityEndpoint.js
 var ShareEntityEndpoint = class extends ShareEntityServiceEndpoint {
   static type = "ShareEntityEndpoint";
   constructor(data) {
@@ -20897,7 +20897,7 @@ var ShareEntityEndpoint = class extends ShareEntityServiceEndpoint {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/ShowEngagementPanelEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/ShowEngagementPanelEndpoint.js
 var API_PATH17 = "get_panel";
 var ShowEngagementPanelEndpoint = class extends YTNode {
   static type = "ShowEngagementPanelEndpoint";
@@ -20924,7 +20924,7 @@ var ShowEngagementPanelEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/SignalServiceEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/SignalServiceEndpoint.js
 var SignalServiceEndpoint = class extends YTNode {
   static type = "SignalServiceEndpoint";
   actions;
@@ -20941,7 +20941,7 @@ var SignalServiceEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/SubscribeEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/SubscribeEndpoint.js
 var API_PATH18 = "subscription/subscribe";
 var SubscribeEndpoint = class extends YTNode {
   static type = "SubscribeEndpoint";
@@ -20969,7 +20969,7 @@ var SubscribeEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/UnsubscribeEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/UnsubscribeEndpoint.js
 var API_PATH19 = "subscription/unsubscribe";
 var UnsubscribeEndpoint = class extends YTNode {
   static type = "UnsubscribeEndpoint";
@@ -20993,7 +20993,7 @@ var UnsubscribeEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/endpoints/WatchNextEndpoint.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/endpoints/WatchNextEndpoint.js
 var API_PATH20 = "next";
 var WatchNextEndpoint = class extends YTNode {
   static type = "WatchNextEndpoint";
@@ -21021,7 +21021,7 @@ var WatchNextEndpoint = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Endscreen.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Endscreen.js
 var Endscreen = class extends YTNode {
   static type = "Endscreen";
   elements;
@@ -21033,7 +21033,7 @@ var Endscreen = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/EndscreenElement.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/EndscreenElement.js
 var EndscreenElement = class extends YTNode {
   static type = "EndscreenElement";
   style;
@@ -21093,7 +21093,7 @@ var EndscreenElement = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/EndScreenPlaylist.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/EndScreenPlaylist.js
 var EndScreenPlaylist = class extends YTNode {
   static type = "EndScreenPlaylist";
   id;
@@ -21113,7 +21113,7 @@ var EndScreenPlaylist = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/EndScreenVideo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/EndScreenVideo.js
 var EndScreenVideo = class extends YTNode {
   static type = "EndScreenVideo";
   id;
@@ -21142,7 +21142,7 @@ var EndScreenVideo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ExpandableTab.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ExpandableTab.js
 var ExpandableTab = class extends YTNode {
   static type = "ExpandableTab";
   title;
@@ -21158,7 +21158,7 @@ var ExpandableTab = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ExpandedShelfContents.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ExpandedShelfContents.js
 var ExpandedShelfContents = class extends YTNode {
   static type = "ExpandedShelfContents";
   items;
@@ -21172,7 +21172,7 @@ var ExpandedShelfContents = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/FancyDismissibleDialog.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/FancyDismissibleDialog.js
 var FancyDismissibleDialog = class extends YTNode {
   static type = "FancyDismissibleDialog";
   dialog_message;
@@ -21184,7 +21184,7 @@ var FancyDismissibleDialog = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/FeedNudge.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/FeedNudge.js
 var FeedNudge = class extends YTNode {
   static type = "FeedNudge";
   title;
@@ -21204,7 +21204,7 @@ var FeedNudge = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/FeedTabbedHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/FeedTabbedHeader.js
 var FeedTabbedHeader = class extends YTNode {
   static type = "FeedTabbedHeader";
   title;
@@ -21214,7 +21214,7 @@ var FeedTabbedHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ToggleFormField.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ToggleFormField.js
 var ToggleFormField = class extends YTNode {
   static type = "ToggleFormField";
   label;
@@ -21232,7 +21232,7 @@ var ToggleFormField = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Form.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Form.js
 var Form = class extends YTNode {
   static type = "Form";
   fields;
@@ -21242,7 +21242,7 @@ var Form = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/FormPopup.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/FormPopup.js
 var FormPopup = class extends YTNode {
   static type = "FormPopup";
   title;
@@ -21256,7 +21256,7 @@ var FormPopup = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GameDetails.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GameDetails.js
 var GameDetails = class extends YTNode {
   static type = "GameDetails";
   title;
@@ -21274,7 +21274,7 @@ var GameDetails = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Grid.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Grid.js
 var Grid = class extends YTNode {
   static type = "Grid";
   items;
@@ -21306,7 +21306,7 @@ var Grid = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GridChannel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GridChannel.js
 var GridChannel = class extends YTNode {
   static type = "GridChannel";
   id;
@@ -21329,7 +21329,7 @@ var GridChannel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GridHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GridHeader.js
 var GridHeader = class extends YTNode {
   static type = "GridHeader";
   title;
@@ -21339,7 +21339,7 @@ var GridHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GridMix.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GridMix.js
 var GridMix = class extends YTNode {
   static type = "GridMix";
   id;
@@ -21365,7 +21365,7 @@ var GridMix = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GridMovie.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GridMovie.js
 var GridMovie = class extends YTNode {
   static type = "GridMovie";
   id;
@@ -21390,7 +21390,7 @@ var GridMovie = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GridPlaylist.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GridPlaylist.js
 var GridPlaylist = class extends YTNode {
   static type = "GridPlaylist";
   id;
@@ -21424,7 +21424,7 @@ var GridPlaylist = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GridShelfView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GridShelfView.js
 var GridShelfView = class extends YTNode {
   static type = "GridShelfView";
   contents;
@@ -21446,7 +21446,7 @@ var GridShelfView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ShowCustomThumbnail.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ShowCustomThumbnail.js
 var ShowCustomThumbnail = class extends YTNode {
   static type = "ShowCustomThumbnail";
   thumbnail;
@@ -21456,7 +21456,7 @@ var ShowCustomThumbnail = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayBottomPanel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayBottomPanel.js
 var ThumbnailOverlayBottomPanel = class extends YTNode {
   static type = "ThumbnailOverlayBottomPanel";
   text;
@@ -21472,7 +21472,7 @@ var ThumbnailOverlayBottomPanel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GridShow.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GridShow.js
 var GridShow = class extends YTNode {
   static type = "GridShow";
   title;
@@ -21492,7 +21492,7 @@ var GridShow = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GridVideo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GridVideo.js
 var GridVideo = class extends YTNode {
   static type = "GridVideo";
   video_id;
@@ -21546,7 +21546,7 @@ var GridVideo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GuideEntry.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GuideEntry.js
 var GuideEntry = class extends YTNode {
   static type = "GuideEntry";
   title;
@@ -21572,7 +21572,7 @@ var GuideEntry = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GuideCollapsibleEntry.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GuideCollapsibleEntry.js
 var GuideCollapsibleEntry = class extends YTNode {
   static type = "GuideCollapsibleEntry";
   expander_item;
@@ -21586,7 +21586,7 @@ var GuideCollapsibleEntry = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GuideCollapsibleSectionEntry.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GuideCollapsibleSectionEntry.js
 var GuideCollapsibleSectionEntry = class extends YTNode {
   static type = "GuideCollapsibleSectionEntry";
   header_entry;
@@ -21602,7 +21602,7 @@ var GuideCollapsibleSectionEntry = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GuideDownloadsEntry.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GuideDownloadsEntry.js
 var GuideDownloadsEntry = class extends GuideEntry {
   static type = "GuideDownloadsEntry";
   always_show;
@@ -21612,7 +21612,7 @@ var GuideDownloadsEntry = class extends GuideEntry {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GuideSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GuideSection.js
 var GuideSection = class extends YTNode {
   static type = "GuideSection";
   title;
@@ -21626,12 +21626,12 @@ var GuideSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/GuideSubscriptionsSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/GuideSubscriptionsSection.js
 var GuideSubscriptionsSection = class extends GuideSection {
   static type = "GuideSubscriptionsSection";
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HashtagHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HashtagHeader.js
 var HashtagHeader = class extends YTNode {
   static type = "HashtagHeader";
   hashtag;
@@ -21643,7 +21643,7 @@ var HashtagHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HashtagTile.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HashtagTile.js
 var HashtagTile = class extends YTNode {
   static type = "HashtagTile";
   hashtag;
@@ -21665,7 +21665,7 @@ var HashtagTile = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HeroPlaylistThumbnail.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HeroPlaylistThumbnail.js
 var HeroPlaylistThumbnail = class extends YTNode {
   static type = "HeroPlaylistThumbnail";
   thumbnails;
@@ -21677,7 +21677,7 @@ var HeroPlaylistThumbnail = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HighlightsCarousel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HighlightsCarousel.js
 var Panel = class extends YTNode {
   static type = "Panel";
   thumbnail;
@@ -21724,7 +21724,7 @@ var HighlightsCarousel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SearchSuggestion.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SearchSuggestion.js
 var SearchSuggestion = class extends YTNode {
   static type = "SearchSuggestion";
   suggestion;
@@ -21744,7 +21744,7 @@ var SearchSuggestion = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HistorySuggestion.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HistorySuggestion.js
 var HistorySuggestion = class extends SearchSuggestion {
   static type = "HistorySuggestion";
   constructor(data) {
@@ -21752,7 +21752,7 @@ var HistorySuggestion = class extends SearchSuggestion {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/HorizontalMovieList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/HorizontalMovieList.js
 var HorizontalMovieList = class extends YTNode {
   static type = "HorizontalMovieList";
   items;
@@ -21770,7 +21770,7 @@ var HorizontalMovieList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/IconLink.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/IconLink.js
 var IconLink = class extends YTNode {
   static type = "IconLink";
   icon_type;
@@ -21786,7 +21786,7 @@ var IconLink = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ImageBannerView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ImageBannerView.js
 var ImageBannerView = class extends YTNode {
   static type = "ImageBannerView";
   image;
@@ -21798,7 +21798,7 @@ var ImageBannerView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/IncludingResultsFor.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/IncludingResultsFor.js
 var IncludingResultsFor = class extends YTNode {
   static type = "IncludingResultsFor";
   including_results_for;
@@ -21818,7 +21818,7 @@ var IncludingResultsFor = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/InfoPanelContent.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/InfoPanelContent.js
 var InfoPanelContent = class extends YTNode {
   static type = "InfoPanelContent";
   title;
@@ -21848,7 +21848,7 @@ var InfoPanelContent = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/InfoPanelContainer.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/InfoPanelContainer.js
 var InfoPanelContainer = class extends YTNode {
   static type = "InfoPanelContainer";
   title;
@@ -21873,7 +21873,7 @@ var InfoPanelContainer = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/InteractiveTabbedHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/InteractiveTabbedHeader.js
 var InteractiveTabbedHeader = class extends YTNode {
   static type = "InteractiveTabbedHeader";
   header_type;
@@ -21899,7 +21899,7 @@ var InteractiveTabbedHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/InterstitialView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/InterstitialView.js
 var InterstitialView = class extends YTNode {
   static type = "InterstitialView";
   title;
@@ -21917,7 +21917,7 @@ var InterstitialView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LinearLayoutView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LinearLayoutView.js
 var LinearLayoutView = class extends YTNode {
   static type = "LinearLayoutView";
   items;
@@ -21930,7 +21930,7 @@ var LinearLayoutView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LiveChat.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LiveChat.js
 var LiveChat = class extends YTNode {
   static type = "LiveChat";
   header;
@@ -21954,7 +21954,7 @@ var LiveChat = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatBannerHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatBannerHeader.js
 var LiveChatBannerHeader = class extends YTNode {
   static type = "LiveChatBannerHeader";
   text;
@@ -21970,7 +21970,7 @@ var LiveChatBannerHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatBanner.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatBanner.js
 var LiveChatBanner = class extends YTNode {
   static type = "LiveChatBanner";
   header;
@@ -22006,7 +22006,7 @@ var LiveChatBanner = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/AddBannerToLiveChatCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/AddBannerToLiveChatCommand.js
 var AddBannerToLiveChatCommand = class extends YTNode {
   static type = "AddBannerToLiveChatCommand";
   banner;
@@ -22016,7 +22016,7 @@ var AddBannerToLiveChatCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/AddChatItemAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/AddChatItemAction.js
 var AddChatItemAction = class extends YTNode {
   static type = "AddChatItemAction";
   item;
@@ -22030,7 +22030,7 @@ var AddChatItemAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/AddLiveChatTickerItemAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/AddLiveChatTickerItemAction.js
 var AddLiveChatTickerItemAction = class extends YTNode {
   static type = "AddLiveChatTickerItemAction";
   item;
@@ -22043,7 +22043,7 @@ var AddLiveChatTickerItemAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/DimChatItemAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/DimChatItemAction.js
 var DimChatItemAction = class extends YTNode {
   static type = "DimChatItemAction";
   client_assigned_id;
@@ -22053,7 +22053,7 @@ var DimChatItemAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/BumperUserEduContentView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/BumperUserEduContentView.js
 var BumperUserEduContentView = class extends YTNode {
   static type = "BumperUserEduContentView";
   text;
@@ -22067,7 +22067,7 @@ var BumperUserEduContentView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/CreatorHeartView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/CreatorHeartView.js
 var CreatorHeartView = class extends YTNode {
   static type = "CreatorHeartView";
   creator_thumbnail;
@@ -22097,7 +22097,7 @@ var CreatorHeartView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatAutoModMessage.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatAutoModMessage.js
 var LiveChatAutoModMessage = class extends YTNode {
   static type = "LiveChatAutoModMessage";
   menu_endpoint;
@@ -22117,7 +22117,7 @@ var LiveChatAutoModMessage = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatBannerChatSummary.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatBannerChatSummary.js
 var LiveChatBannerChatSummary = class extends YTNode {
   static type = "LiveChatBannerChatSummary";
   id;
@@ -22135,7 +22135,7 @@ var LiveChatBannerChatSummary = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatBannerPoll.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatBannerPoll.js
 var LiveChatBannerPoll = class extends YTNode {
   static type = "LiveChatBannerPoll";
   poll_question;
@@ -22159,7 +22159,7 @@ var LiveChatBannerPoll = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatBannerRedirect.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatBannerRedirect.js
 var LiveChatBannerRedirect = class extends YTNode {
   static type = "LiveChatBannerRedirect";
   banner_message;
@@ -22175,7 +22175,7 @@ var LiveChatBannerRedirect = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatItemBumperView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatItemBumperView.js
 var LiveChatItemBumperView = class extends YTNode {
   static type = "LiveChatItemBumperView";
   content;
@@ -22185,7 +22185,7 @@ var LiveChatItemBumperView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatMembershipItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatMembershipItem.js
 var LiveChatMembershipItem = class extends YTNode {
   static type = "LiveChatMembershipItem";
   id;
@@ -22219,7 +22219,7 @@ var LiveChatMembershipItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatModeChangeMessage.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatModeChangeMessage.js
 var LiveChatModeChangeMessage = class extends YTNode {
   static type = "LiveChatModeChangeMessage";
   id;
@@ -22241,7 +22241,7 @@ var LiveChatModeChangeMessage = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/PdgReplyButtonView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/PdgReplyButtonView.js
 var PdgReplyButtonView = class extends YTNode {
   static type = "PdgReplyButtonView";
   reply_button;
@@ -22255,7 +22255,7 @@ var PdgReplyButtonView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatPaidMessage.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatPaidMessage.js
 var LiveChatPaidMessage = class extends YTNode {
   static type = "LiveChatPaidMessage";
   id;
@@ -22309,7 +22309,7 @@ var LiveChatPaidMessage = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatPaidSticker.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatPaidSticker.js
 var LiveChatPaidSticker = class extends YTNode {
   static type = "LiveChatPaidSticker";
   id;
@@ -22351,7 +22351,7 @@ var LiveChatPaidSticker = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatPlaceholderItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatPlaceholderItem.js
 var LiveChatPlaceholderItem = class extends YTNode {
   static type = "LiveChatPlaceholderItem";
   id;
@@ -22363,7 +22363,7 @@ var LiveChatPlaceholderItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatProductItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatProductItem.js
 var LiveChatProductItem = class extends YTNode {
   static type = "LiveChatProductItem";
   title;
@@ -22399,7 +22399,7 @@ var LiveChatProductItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatRestrictedParticipation.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatRestrictedParticipation.js
 var LiveChatRestrictedParticipation = class extends YTNode {
   static type = "LiveChatRestrictedParticipation";
   message;
@@ -22413,7 +22413,7 @@ var LiveChatRestrictedParticipation = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LiveChatAuthorBadge.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LiveChatAuthorBadge.js
 var LiveChatAuthorBadge = class extends MetadataBadge {
   static type = "LiveChatAuthorBadge";
   custom_thumbnail;
@@ -22423,7 +22423,7 @@ var LiveChatAuthorBadge = class extends MetadataBadge {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatSponsorshipsHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatSponsorshipsHeader.js
 var LiveChatSponsorshipsHeader = class extends YTNode {
   static type = "LiveChatSponsorshipsHeader";
   author_name;
@@ -22445,7 +22445,7 @@ var LiveChatSponsorshipsHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatSponsorshipsGiftPurchaseAnnouncement.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatSponsorshipsGiftPurchaseAnnouncement.js
 var LiveChatSponsorshipsGiftPurchaseAnnouncement = class extends YTNode {
   static type = "LiveChatSponsorshipsGiftPurchaseAnnouncement";
   id;
@@ -22461,7 +22461,7 @@ var LiveChatSponsorshipsGiftPurchaseAnnouncement = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatSponsorshipsGiftRedemptionAnnouncement.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatSponsorshipsGiftRedemptionAnnouncement.js
 var LiveChatSponsorshipsGiftRedemptionAnnouncement = class extends YTNode {
   static type = "LiveChatSponsorshipsGiftRedemptionAnnouncement";
   id;
@@ -22483,7 +22483,7 @@ var LiveChatSponsorshipsGiftRedemptionAnnouncement = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatTextMessage.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatTextMessage.js
 var LiveChatTextMessage = class extends YTNode {
   static type = "LiveChatTextMessage";
   id;
@@ -22517,7 +22517,7 @@ var LiveChatTextMessage = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatTickerPaidMessageItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatTickerPaidMessageItem.js
 var LiveChatTickerPaidMessageItem = class extends YTNode {
   static type = "LiveChatTickerPaidMessageItem";
   id;
@@ -22551,7 +22551,7 @@ var LiveChatTickerPaidMessageItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatTickerPaidStickerItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatTickerPaidStickerItem.js
 var LiveChatTickerPaidStickerItem = class extends YTNode {
   static type = "LiveChatTickerPaidStickerItem";
   id;
@@ -22582,7 +22582,7 @@ var LiveChatTickerPaidStickerItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatTickerSponsorItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatTickerSponsorItem.js
 var LiveChatTickerSponsorItem = class extends YTNode {
   static type = "LiveChatTickerSponsorItem";
   id;
@@ -22598,7 +22598,7 @@ var LiveChatTickerSponsorItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatViewerEngagementMessage.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/LiveChatViewerEngagementMessage.js
 var LiveChatViewerEngagementMessage = class extends YTNode {
   static type = "LiveChatViewerEngagementMessage";
   id;
@@ -22630,7 +22630,7 @@ var LiveChatViewerEngagementMessage = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/items/PollHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/items/PollHeader.js
 var PollHeader = class extends YTNode {
   static type = "PollHeader";
   poll_question;
@@ -22648,7 +22648,7 @@ var PollHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/LiveChatActionPanel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/LiveChatActionPanel.js
 var LiveChatActionPanel = class extends YTNode {
   static type = "LiveChatActionPanel";
   id;
@@ -22662,7 +22662,7 @@ var LiveChatActionPanel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/MarkChatItemAsDeletedAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/MarkChatItemAsDeletedAction.js
 var MarkChatItemAsDeletedAction = class extends YTNode {
   static type = "MarkChatItemAsDeletedAction";
   deleted_state_message;
@@ -22674,7 +22674,7 @@ var MarkChatItemAsDeletedAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/MarkChatItemsByAuthorAsDeletedAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/MarkChatItemsByAuthorAsDeletedAction.js
 var MarkChatItemsByAuthorAsDeletedAction = class extends YTNode {
   static type = "MarkChatItemsByAuthorAsDeletedAction";
   deleted_state_message;
@@ -22686,7 +22686,7 @@ var MarkChatItemsByAuthorAsDeletedAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/RemoveBannerForLiveChatCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/RemoveBannerForLiveChatCommand.js
 var RemoveBannerForLiveChatCommand = class extends YTNode {
   static type = "RemoveBannerForLiveChatCommand";
   target_action_id;
@@ -22696,7 +22696,7 @@ var RemoveBannerForLiveChatCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/RemoveChatItemAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/RemoveChatItemAction.js
 var RemoveChatItemAction = class extends YTNode {
   static type = "RemoveChatItemAction";
   target_item_id;
@@ -22706,7 +22706,7 @@ var RemoveChatItemAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/RemoveChatItemByAuthorAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/RemoveChatItemByAuthorAction.js
 var RemoveChatItemByAuthorAction = class extends YTNode {
   static type = "RemoveChatItemByAuthorAction";
   external_channel_id;
@@ -22716,7 +22716,7 @@ var RemoveChatItemByAuthorAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/ReplaceChatItemAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/ReplaceChatItemAction.js
 var ReplaceChatItemAction = class extends YTNode {
   static type = "ReplaceChatItemAction";
   target_item_id;
@@ -22728,7 +22728,7 @@ var ReplaceChatItemAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/ReplaceLiveChatAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/ReplaceLiveChatAction.js
 var ReplaceLiveChatAction = class extends YTNode {
   static type = "ReplaceLiveChatAction";
   to_replace;
@@ -22740,7 +22740,7 @@ var ReplaceLiveChatAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/ReplayChatItemAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/ReplayChatItemAction.js
 var ReplayChatItemAction = class extends YTNode {
   static type = "ReplayChatItemAction";
   actions;
@@ -22755,7 +22755,7 @@ var ReplayChatItemAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/ShowLiveChatActionPanelAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/ShowLiveChatActionPanelAction.js
 var ShowLiveChatActionPanelAction = class extends YTNode {
   static type = "ShowLiveChatActionPanelAction";
   panel_to_show;
@@ -22765,7 +22765,7 @@ var ShowLiveChatActionPanelAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/ShowLiveChatDialogAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/ShowLiveChatDialogAction.js
 var ShowLiveChatDialogAction = class extends YTNode {
   static type = "ShowLiveChatDialogAction";
   dialog;
@@ -22775,7 +22775,7 @@ var ShowLiveChatDialogAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/ShowLiveChatTooltipCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/ShowLiveChatTooltipCommand.js
 var ShowLiveChatTooltipCommand = class extends YTNode {
   static type = "ShowLiveChatTooltipCommand";
   tooltip;
@@ -22785,7 +22785,7 @@ var ShowLiveChatTooltipCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateDateTextAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateDateTextAction.js
 var UpdateDateTextAction = class extends YTNode {
   static type = "UpdateDateTextAction";
   date_text;
@@ -22795,7 +22795,7 @@ var UpdateDateTextAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateDescriptionAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateDescriptionAction.js
 var UpdateDescriptionAction = class extends YTNode {
   static type = "UpdateDescriptionAction";
   description;
@@ -22805,7 +22805,7 @@ var UpdateDescriptionAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateLiveChatPollAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateLiveChatPollAction.js
 var UpdateLiveChatPollAction = class extends YTNode {
   static type = "UpdateLiveChatPollAction";
   poll_to_update;
@@ -22815,7 +22815,7 @@ var UpdateLiveChatPollAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateTitleAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateTitleAction.js
 var UpdateTitleAction = class extends YTNode {
   static type = "UpdateTitleAction";
   title;
@@ -22825,7 +22825,7 @@ var UpdateTitleAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateToggleButtonTextAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateToggleButtonTextAction.js
 var UpdateToggleButtonTextAction = class extends YTNode {
   static type = "UpdateToggleButtonTextAction";
   default_text;
@@ -22839,7 +22839,7 @@ var UpdateToggleButtonTextAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoViewCount.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoViewCount.js
 var VideoViewCount = class extends YTNode {
   static type = "VideoViewCount";
   original_view_count;
@@ -22869,7 +22869,7 @@ var VideoViewCount = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateViewershipAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/livechat/UpdateViewershipAction.js
 var UpdateViewershipAction = class extends YTNode {
   static type = "UpdateViewershipAction";
   view_count_node;
@@ -22915,7 +22915,7 @@ var UpdateViewershipAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LiveChatDialog.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LiveChatDialog.js
 var LiveChatDialog = class extends YTNode {
   static type = "LiveChatDialog";
   confirm_button;
@@ -22927,7 +22927,7 @@ var LiveChatDialog = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LiveChatHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LiveChatHeader.js
 var LiveChatHeader = class extends YTNode {
   static type = "LiveChatHeader";
   overflow_menu;
@@ -22941,7 +22941,7 @@ var LiveChatHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LiveChatItemList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LiveChatItemList.js
 var LiveChatItemList = class extends YTNode {
   static type = "LiveChatItemList";
   max_items_to_display;
@@ -22953,7 +22953,7 @@ var LiveChatItemList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LiveChatMessageInput.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LiveChatMessageInput.js
 var LiveChatMessageInput = class extends YTNode {
   static type = "LiveChatMessageInput";
   author_name;
@@ -22969,7 +22969,7 @@ var LiveChatMessageInput = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LiveChatParticipant.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LiveChatParticipant.js
 var LiveChatParticipant = class extends YTNode {
   static type = "LiveChatParticipant";
   name;
@@ -22983,7 +22983,7 @@ var LiveChatParticipant = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LiveChatParticipantsList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LiveChatParticipantsList.js
 var LiveChatParticipantsList = class extends YTNode {
   static type = "LiveChatParticipantsList";
   title;
@@ -22995,7 +22995,7 @@ var LiveChatParticipantsList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LiveStreamOfflineSlate.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LiveStreamOfflineSlate.js
 var LiveStreamOfflineSlate = class extends YTNode {
   static type = "LiveStreamOfflineSlate";
   main_text;
@@ -23011,7 +23011,7 @@ var LiveStreamOfflineSlate = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LiveStreamability.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LiveStreamability.js
 var LiveStreamability = class extends YTNode {
   static type = "LiveStreamability";
   video_id;
@@ -23053,7 +23053,7 @@ var LiveStreamability = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LockupMetadataView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LockupMetadataView.js
 var LockupMetadataView = class extends YTNode {
   static type = "LockupMetadataView";
   title;
@@ -23071,7 +23071,7 @@ var LockupMetadataView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/LockupView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/LockupView.js
 var LockupView = class extends YTNode {
   static type = "LockupView";
   content_image;
@@ -23113,7 +23113,7 @@ var LockupView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MacroMarkersListEntity.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MacroMarkersListEntity.js
 var MacroMarkersListEntity = class extends YTNode {
   static type = "MacroMarkersListEntity";
   marker_entity_key;
@@ -23171,7 +23171,7 @@ var MacroMarkersListEntity = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MediaLockup.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MediaLockup.js
 var MediaLockup = class extends YTNode {
   static type = "MediaLockup";
   title;
@@ -23202,7 +23202,7 @@ var MediaLockup = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MenuCustomIconItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MenuCustomIconItem.js
 var MenuCustomIconItem = class extends YTNode {
   static type = "MenuCustomIconItem";
   action_text;
@@ -23215,7 +23215,7 @@ var MenuCustomIconItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/MenuNavigationItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/MenuNavigationItem.js
 var MenuNavigationItem = class extends Button {
   static type = "MenuNavigationItem";
   constructor(data) {
@@ -23223,7 +23223,7 @@ var MenuNavigationItem = class extends Button {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/MenuPopup.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/MenuPopup.js
 var MenuPopup = class extends YTNode {
   static type = "MenuPopup";
   items;
@@ -23233,7 +23233,7 @@ var MenuPopup = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Notification.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Notification.js
 var Notification = class extends YTNode {
   static type = "Notification";
   thumbnails;
@@ -23259,7 +23259,7 @@ var Notification = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/MultiPageMenuNotificationSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/MultiPageMenuNotificationSection.js
 var MultiPageMenuNotificationSection = class extends YTNode {
   static type = "MultiPageMenuNotificationSection";
   notification_section_title;
@@ -23277,7 +23277,7 @@ var MultiPageMenuNotificationSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/MusicMenuItemDivider.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/MusicMenuItemDivider.js
 var MusicMenuItemDivider = class extends YTNode {
   static type = "MusicMenuItemDivider";
   constructor(_data) {
@@ -23285,7 +23285,7 @@ var MusicMenuItemDivider = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/MusicMultiSelectMenuItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/MusicMultiSelectMenuItem.js
 var MusicMultiSelectMenuItem = class extends YTNode {
   static type = "MusicMultiSelectMenuItem";
   title;
@@ -23307,7 +23307,7 @@ var MusicMultiSelectMenuItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/MusicMultiSelectMenu.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/MusicMultiSelectMenu.js
 var MusicMultiSelectMenu = class extends YTNode {
   static type = "MusicMultiSelectMenu";
   title;
@@ -23321,7 +23321,7 @@ var MusicMultiSelectMenu = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/menus/SimpleMenuHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/menus/SimpleMenuHeader.js
 var SimpleMenuHeader = class extends YTNode {
   static type = "SimpleMenuHeader";
   title;
@@ -23333,7 +23333,7 @@ var SimpleMenuHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MerchandiseItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MerchandiseItem.js
 var MerchandiseItem = class extends YTNode {
   static type = "MerchandiseItem";
   title;
@@ -23363,7 +23363,7 @@ var MerchandiseItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MetadataRow.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MetadataRow.js
 var MetadataRow = class extends YTNode {
   static type = "MetadataRow";
   title;
@@ -23375,7 +23375,7 @@ var MetadataRow = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MetadataRowContainer.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MetadataRowContainer.js
 var MetadataRowContainer = class extends YTNode {
   static type = "MetadataRowContainer";
   rows;
@@ -23387,7 +23387,7 @@ var MetadataRowContainer = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MetadataRowHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MetadataRowHeader.js
 var MetadataRowHeader = class extends YTNode {
   static type = "MetadataRowHeader";
   content;
@@ -23399,7 +23399,7 @@ var MetadataRowHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MetadataScreen.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MetadataScreen.js
 var MetadataScreen = class extends YTNode {
   static type = "MetadataScreen";
   section_list;
@@ -23409,7 +23409,7 @@ var MetadataScreen = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MicroformatData.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MicroformatData.js
 var MicroformatData = class extends YTNode {
   static type = "MicroformatData";
   url_canonical;
@@ -23463,7 +23463,7 @@ var MicroformatData = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Mix.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Mix.js
 var Mix = class extends Playlist {
   static type = "Mix";
   constructor(data) {
@@ -23471,7 +23471,7 @@ var Mix = class extends Playlist {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ModalWithTitleAndButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ModalWithTitleAndButton.js
 var ModalWithTitleAndButton = class extends YTNode {
   static type = "ModalWithTitleAndButton";
   title;
@@ -23485,7 +23485,7 @@ var ModalWithTitleAndButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Movie.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Movie.js
 var Movie = class extends YTNode {
   static type = "Movie";
   id;
@@ -23525,7 +23525,7 @@ var Movie = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MovingThumbnail.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MovingThumbnail.js
 var MovingThumbnail = class extends YTNode {
   static type = "MovingThumbnail";
   constructor(data) {
@@ -23534,7 +23534,7 @@ var MovingThumbnail = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicCardShelfHeaderBasic.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicCardShelfHeaderBasic.js
 var MusicCardShelfHeaderBasic = class extends YTNode {
   static type = "MusicCardShelfHeaderBasic";
   title;
@@ -23544,7 +23544,7 @@ var MusicCardShelfHeaderBasic = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicInlineBadge.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicInlineBadge.js
 var MusicInlineBadge = class extends YTNode {
   static type = "MusicInlineBadge";
   icon_type;
@@ -23563,7 +23563,7 @@ var MusicInlineBadge = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicPlayButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicPlayButton.js
 var MusicPlayButton = class extends YTNode {
   static type = "MusicPlayButton";
   endpoint;
@@ -23597,7 +23597,7 @@ var MusicPlayButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicItemThumbnailOverlay.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicItemThumbnailOverlay.js
 var MusicItemThumbnailOverlay = class extends YTNode {
   static type = "MusicItemThumbnailOverlay";
   content;
@@ -23611,7 +23611,7 @@ var MusicItemThumbnailOverlay = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicThumbnail.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicThumbnail.js
 var MusicThumbnail = class extends YTNode {
   static type = "MusicThumbnail";
   contents;
@@ -23621,7 +23621,7 @@ var MusicThumbnail = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicCardShelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicCardShelf.js
 var MusicCardShelf = class extends YTNode {
   static type = "MusicCardShelf";
   thumbnail;
@@ -23655,7 +23655,7 @@ var MusicCardShelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicCarouselShelfBasicHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicCarouselShelfBasicHeader.js
 var MusicCarouselShelfBasicHeader = class extends YTNode {
   static type = "MusicCarouselShelfBasicHeader";
   title;
@@ -23681,7 +23681,7 @@ var MusicCarouselShelfBasicHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicMultiRowListItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicMultiRowListItem.js
 var MusicMultiRowListItem = class extends YTNode {
   static type = "MusicMultiRowListItem";
   thumbnail;
@@ -23713,7 +23713,7 @@ var MusicMultiRowListItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicNavigationButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicNavigationButton.js
 var MusicNavigationButton = class extends YTNode {
   static type = "MusicNavigationButton";
   button_text;
@@ -23725,7 +23725,7 @@ var MusicNavigationButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItemFixedColumn.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItemFixedColumn.js
 var MusicResponsiveListItemFixedColumn = class extends YTNode {
   static type = "musicResponsiveListItemFlexColumnRenderer";
   title;
@@ -23737,7 +23737,7 @@ var MusicResponsiveListItemFixedColumn = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItemFlexColumn.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItemFlexColumn.js
 var MusicResponsiveListItemFlexColumn = class extends YTNode {
   static type = "MusicResponsiveListItemFlexColumn";
   title;
@@ -23749,7 +23749,7 @@ var MusicResponsiveListItemFlexColumn = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveListItem.js
 var DURATION_TEXT = /^\d+(?::[0-5]\d)+$/;
 function findDurationText(runs) {
   return runs?.findLast((run) => DURATION_TEXT.test(run.text))?.text;
@@ -23971,7 +23971,7 @@ var MusicResponsiveListItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicTwoRowItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicTwoRowItem.js
 var MusicTwoRowItem = class extends YTNode {
   static type = "MusicTwoRowItem";
   title;
@@ -24066,7 +24066,7 @@ var MusicTwoRowItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicCarouselShelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicCarouselShelf.js
 var MusicCarouselShelf = class extends YTNode {
   static type = "MusicCarouselShelf";
   header;
@@ -24082,7 +24082,7 @@ var MusicCarouselShelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicDescriptionShelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicDescriptionShelf.js
 var MusicDescriptionShelf = class extends YTNode {
   static type = "MusicDescriptionShelf";
   description;
@@ -24102,7 +24102,7 @@ var MusicDescriptionShelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicDetailHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicDetailHeader.js
 var MusicDetailHeader = class extends YTNode {
   static type = "MusicDetailHeader";
   title;
@@ -24139,7 +24139,7 @@ var MusicDetailHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicDownloadStateBadge.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicDownloadStateBadge.js
 var MusicDownloadStateBadge = class extends YTNode {
   static type = "MusicDownloadStateBadge";
   playlist_id;
@@ -24151,7 +24151,7 @@ var MusicDownloadStateBadge = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicEditablePlaylistDetailHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicEditablePlaylistDetailHeader.js
 var MusicEditablePlaylistDetailHeader = class extends YTNode {
   static type = "MusicEditablePlaylistDetailHeader";
   header;
@@ -24165,7 +24165,7 @@ var MusicEditablePlaylistDetailHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicElementHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicElementHeader.js
 var MusicElementHeader = class extends YTNode {
   static type = "MusicElementHeader";
   element;
@@ -24175,7 +24175,7 @@ var MusicElementHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicHeader.js
 var MusicHeader = class extends YTNode {
   static type = "MusicHeader";
   header;
@@ -24191,7 +24191,7 @@ var MusicHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicImmersiveHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicImmersiveHeader.js
 var MusicImmersiveHeader = class extends YTNode {
   static type = "MusicImmersiveHeader";
   title;
@@ -24218,7 +24218,7 @@ var MusicImmersiveHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicLargeCardItemCarousel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicLargeCardItemCarousel.js
 var ActionButton = class {
   static type = "ActionButton";
   icon_name;
@@ -24260,7 +24260,7 @@ var MusicLargeCardItemCarousel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicPlaylistEditHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicPlaylistEditHeader.js
 var MusicPlaylistEditHeader = class extends YTNode {
   static type = "MusicPlaylistEditHeader";
   title;
@@ -24282,7 +24282,7 @@ var MusicPlaylistEditHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicPlaylistShelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicPlaylistShelf.js
 var MusicPlaylistShelf = class extends YTNode {
   static type = "MusicPlaylistShelf";
   playlist_id;
@@ -24298,7 +24298,7 @@ var MusicPlaylistShelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistPanelVideo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistPanelVideo.js
 var PlaylistPanelVideo = class extends YTNode {
   static type = "PlaylistPanelVideo";
   title;
@@ -24348,7 +24348,7 @@ var PlaylistPanelVideo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistPanelVideoWrapper.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistPanelVideoWrapper.js
 var PlaylistPanelVideoWrapper = class extends YTNode {
   static type = "PlaylistPanelVideoWrapper";
   primary;
@@ -24362,7 +24362,7 @@ var PlaylistPanelVideoWrapper = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistPanel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistPanel.js
 var PlaylistPanel = class extends YTNode {
   static type = "PlaylistPanel";
   title;
@@ -24388,7 +24388,7 @@ var PlaylistPanel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicQueue.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicQueue.js
 var MusicQueue = class extends YTNode {
   static type = "MusicQueue";
   content;
@@ -24398,7 +24398,7 @@ var MusicQueue = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicResponsiveHeader.js
 var MusicResponsiveHeader = class extends YTNode {
   static type = "MusicResponsiveHeader";
   thumbnail;
@@ -24428,7 +24428,7 @@ var MusicResponsiveHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicShelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicShelf.js
 var MusicShelf = class extends YTNode {
   static type = "MusicShelf";
   title;
@@ -24460,7 +24460,7 @@ var MusicShelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicSideAlignedItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicSideAlignedItem.js
 var MusicSideAlignedItem = class extends YTNode {
   static type = "MusicSideAlignedItem";
   start_items;
@@ -24476,7 +24476,7 @@ var MusicSideAlignedItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicSortFilterButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicSortFilterButton.js
 var MusicSortFilterButton = class extends YTNode {
   static type = "MusicSortFilterButton";
   title;
@@ -24492,7 +24492,7 @@ var MusicSortFilterButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicTastebuilderShelfThumbnail.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicTastebuilderShelfThumbnail.js
 var MusicTastebuilderShelfThumbnail = class extends YTNode {
   static type = "MusicTastebuilderShelfThumbnail";
   thumbnail;
@@ -24502,7 +24502,7 @@ var MusicTastebuilderShelfThumbnail = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicTastebuilderShelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicTastebuilderShelf.js
 var MusicTasteBuilderShelf = class extends YTNode {
   static type = "MusicTasteBuilderShelf";
   thumbnail;
@@ -24520,7 +24520,7 @@ var MusicTasteBuilderShelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/MusicVisualHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/MusicVisualHeader.js
 var MusicVisualHeader = class extends YTNode {
   static type = "MusicVisualHeader";
   title;
@@ -24536,7 +24536,7 @@ var MusicVisualHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/mweb/MobileTopbar.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/mweb/MobileTopbar.js
 var MobileTopbar = class extends YTNode {
   static type = "MobileTopbar";
   placeholder_text;
@@ -24551,7 +24551,7 @@ var MobileTopbar = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/mweb/MultiPageMenuSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/mweb/MultiPageMenuSection.js
 var MultiPageMenuSection = class extends YTNode {
   static type = "MultiPageMenuSection";
   items;
@@ -24561,7 +24561,7 @@ var MultiPageMenuSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/mweb/PivotBar.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/mweb/PivotBar.js
 var PivotBar = class extends YTNode {
   static type = "PivotBar";
   items;
@@ -24571,7 +24571,7 @@ var PivotBar = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/mweb/PivotBarItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/mweb/PivotBarItem.js
 var PivotBarItem = class extends YTNode {
   static type = "PivotBarItem";
   pivot_identifier;
@@ -24598,7 +24598,7 @@ var PivotBarItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/mweb/TopbarMenuButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/mweb/TopbarMenuButton.js
 var TopbarMenuButton = class extends YTNode {
   static type = "TopbarMenuButton";
   icon_type;
@@ -24613,7 +24613,7 @@ var TopbarMenuButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/NotificationAction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/NotificationAction.js
 var NotificationAction = class extends YTNode {
   static type = "NotificationAction";
   response_text;
@@ -24623,7 +24623,7 @@ var NotificationAction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/OpenOnePickAddVideoModalCommand.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/OpenOnePickAddVideoModalCommand.js
 var OpenOnePickAddVideoModalCommand = class extends YTNode {
   static type = "OpenOnePickAddVideoModalCommand";
   list_id;
@@ -24637,7 +24637,7 @@ var OpenOnePickAddVideoModalCommand = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PageHeaderView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PageHeaderView.js
 var PageHeaderView = class extends YTNode {
   static type = "PageHeaderView";
   title;
@@ -24663,7 +24663,7 @@ var PageHeaderView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PageHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PageHeader.js
 var PageHeader = class extends YTNode {
   static type = "PageHeader";
   page_title;
@@ -24675,7 +24675,7 @@ var PageHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PageIndicatorView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PageIndicatorView.js
 var PageIndicatorView = class extends YTNode {
   static type = "PageIndicatorView";
   indicator_count;
@@ -24687,7 +24687,7 @@ var PageIndicatorView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PageIntroduction.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PageIntroduction.js
 var PageIntroduction = class extends YTNode {
   static type = "PageIntroduction";
   header_text;
@@ -24703,7 +24703,7 @@ var PageIntroduction = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PivotButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PivotButton.js
 var PivotButton = class extends YTNode {
   static type = "PivotButton";
   thumbnail;
@@ -24725,7 +24725,7 @@ var PivotButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerAnnotationsExpanded.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerAnnotationsExpanded.js
 var PlayerAnnotationsExpanded = class extends YTNode {
   static type = "PlayerAnnotationsExpanded";
   featured_channel;
@@ -24748,7 +24748,7 @@ var PlayerAnnotationsExpanded = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerCaptchaView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerCaptchaView.js
 var PlayerCaptchaView = class extends YTNode {
   static type = "PlayerCaptchaView";
   captcha_loading_message;
@@ -24776,7 +24776,7 @@ var PlayerCaptchaView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerCaptionsTracklist.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerCaptionsTracklist.js
 var PlayerCaptionsTracklist = class extends YTNode {
   static type = "PlayerCaptionsTracklist";
   caption_tracks;
@@ -24817,7 +24817,7 @@ var PlayerCaptionsTracklist = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerOverflow.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerOverflow.js
 var PlayerOverflow = class extends YTNode {
   static type = "PlayerOverflow";
   endpoint;
@@ -24829,7 +24829,7 @@ var PlayerOverflow = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerControlsOverlay.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerControlsOverlay.js
 var PlayerControlsOverlay = class extends YTNode {
   static type = "PlayerControlsOverlay";
   overflow;
@@ -24839,7 +24839,7 @@ var PlayerControlsOverlay = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerErrorMessage.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerErrorMessage.js
 var PlayerErrorMessage = class extends YTNode {
   static type = "PlayerErrorMessage";
   subreason;
@@ -24859,7 +24859,7 @@ var PlayerErrorMessage = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerInterstitial.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerInterstitial.js
 var PlayerInterstitial = class extends YTNode {
   static type = "PlayerInterstitial";
   content;
@@ -24873,7 +24873,7 @@ var PlayerInterstitial = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerLegacyDesktopYpcOffer.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerLegacyDesktopYpcOffer.js
 var PlayerLegacyDesktopYpcOffer = class extends YTNode {
   static type = "PlayerLegacyDesktopYpcOffer";
   title;
@@ -24889,7 +24889,7 @@ var PlayerLegacyDesktopYpcOffer = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/YpcTrailer.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/YpcTrailer.js
 var YpcTrailer = class extends YTNode {
   static type = "YpcTrailer";
   video_message;
@@ -24901,7 +24901,7 @@ var YpcTrailer = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerLegacyDesktopYpcTrailer.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerLegacyDesktopYpcTrailer.js
 var PlayerLegacyDesktopYpcTrailer = class extends YTNode {
   static type = "PlayerLegacyDesktopYpcTrailer";
   video_id;
@@ -24927,7 +24927,7 @@ var PlayerLegacyDesktopYpcTrailer = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerLiveStoryboardSpec.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerLiveStoryboardSpec.js
 var PlayerLiveStoryboardSpec = class extends YTNode {
   static type = "PlayerLiveStoryboardSpec";
   board;
@@ -24945,7 +24945,7 @@ var PlayerLiveStoryboardSpec = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerMicroformat.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerMicroformat.js
 var PlayerMicroformat = class extends YTNode {
   static type = "PlayerMicroformat";
   title;
@@ -24997,7 +24997,7 @@ var PlayerMicroformat = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerOverlayAutoplay.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerOverlayAutoplay.js
 var PlayerOverlayAutoplay = class extends YTNode {
   static type = "PlayerOverlayAutoplay";
   title;
@@ -25032,7 +25032,7 @@ var PlayerOverlayAutoplay = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerOverlayVideoDetails.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerOverlayVideoDetails.js
 var PlayerOverlayVideoDetails = class extends YTNode {
   static type = "PlayerOverlayVideoDetails";
   title;
@@ -25044,7 +25044,7 @@ var PlayerOverlayVideoDetails = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/WatchNextEndScreen.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/WatchNextEndScreen.js
 var WatchNextEndScreen = class extends YTNode {
   static type = "WatchNextEndScreen";
   results;
@@ -25056,7 +25056,7 @@ var WatchNextEndScreen = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlayerOverlay.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlayerOverlay.js
 var PlayerOverlay = class extends YTNode {
   static type = "PlayerOverlay";
   end_screen;
@@ -25082,7 +25082,7 @@ var PlayerOverlay = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistHeader.js
 var PlaylistHeader = class extends YTNode {
   static type = "PlaylistHeader";
   id;
@@ -25124,7 +25124,7 @@ var PlaylistHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistInfoCardContent.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistInfoCardContent.js
 var PlaylistInfoCardContent = class extends YTNode {
   static type = "PlaylistInfoCardContent";
   title;
@@ -25142,7 +25142,7 @@ var PlaylistInfoCardContent = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistMetadata.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistMetadata.js
 var PlaylistMetadata = class extends YTNode {
   static type = "PlaylistMetadata";
   title;
@@ -25154,7 +25154,7 @@ var PlaylistMetadata = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistSidebar.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistSidebar.js
 var PlaylistSidebar = class extends YTNode {
   static type = "PlaylistSidebar";
   items;
@@ -25168,7 +25168,7 @@ var PlaylistSidebar = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistSidebarPrimaryInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistSidebarPrimaryInfo.js
 var PlaylistSidebarPrimaryInfo = class extends YTNode {
   static type = "PlaylistSidebarPrimaryInfo";
   stats;
@@ -25188,7 +25188,7 @@ var PlaylistSidebarPrimaryInfo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistSidebarSecondaryInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistSidebarSecondaryInfo.js
 var PlaylistSidebarSecondaryInfo = class extends YTNode {
   static type = "PlaylistSidebarSecondaryInfo";
   owner;
@@ -25200,7 +25200,7 @@ var PlaylistSidebarSecondaryInfo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistThumbnailOverlay.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistThumbnailOverlay.js
 var PlaylistThumbnailOverlay = class extends YTNode {
   static type = "PlaylistThumbnailOverlay";
   icon_type;
@@ -25213,7 +25213,7 @@ var PlaylistThumbnailOverlay = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistVideo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistVideo.js
 var PlaylistVideo = class extends YTNode {
   static type = "PlaylistVideo";
   id;
@@ -25265,7 +25265,7 @@ var PlaylistVideo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PlaylistVideoList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PlaylistVideoList.js
 var PlaylistVideoList = class extends YTNode {
   static type = "PlaylistVideoList";
   id;
@@ -25281,7 +25281,7 @@ var PlaylistVideoList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Poll.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Poll.js
 var Poll = class extends YTNode {
   static type = "Poll";
   choices;
@@ -25309,7 +25309,7 @@ var Poll = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Post.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Post.js
 var Post = class extends BackstagePost {
   static type = "Post";
   constructor(data) {
@@ -25317,7 +25317,7 @@ var Post = class extends BackstagePost {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PostMultiImage.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PostMultiImage.js
 var PostMultiImage = class extends YTNode {
   static type = "PostMultiImage";
   images;
@@ -25327,7 +25327,7 @@ var PostMultiImage = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/PremiereTrailerBadge.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/PremiereTrailerBadge.js
 var PremiereTrailerBadge = class extends YTNode {
   static type = "PremiereTrailerBadge";
   label;
@@ -25337,7 +25337,7 @@ var PremiereTrailerBadge = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ProductListHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ProductListHeader.js
 var ProductListHeader = class extends YTNode {
   static type = "ProductListHeader";
   title;
@@ -25349,7 +25349,7 @@ var ProductListHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ProductListItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ProductListItem.js
 var ProductListItem = class extends YTNode {
   static type = "ProductListItem";
   title;
@@ -25373,7 +25373,7 @@ var ProductListItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ProfileColumn.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ProfileColumn.js
 var ProfileColumn = class extends YTNode {
   static type = "ProfileColumn";
   items;
@@ -25387,7 +25387,7 @@ var ProfileColumn = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ProfileColumnStats.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ProfileColumnStats.js
 var ProfileColumnStats = class extends YTNode {
   static type = "ProfileColumnStats";
   items;
@@ -25401,7 +25401,7 @@ var ProfileColumnStats = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ProfileColumnStatsEntry.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ProfileColumnStatsEntry.js
 var ProfileColumnStatsEntry = class extends YTNode {
   static type = "ProfileColumnStatsEntry";
   label;
@@ -25413,7 +25413,7 @@ var ProfileColumnStatsEntry = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ProfileColumnUserInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ProfileColumnUserInfo.js
 var ProfileColumnUserInfo = class extends YTNode {
   static type = "ProfileColumnUserInfo";
   title;
@@ -25425,7 +25425,7 @@ var ProfileColumnUserInfo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Quiz.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Quiz.js
 var Quiz = class extends YTNode {
   static type = "Quiz";
   choices;
@@ -25440,7 +25440,7 @@ var Quiz = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/RecognitionShelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/RecognitionShelf.js
 var RecognitionShelf = class extends YTNode {
   static type = "RecognitionShelf";
   title;
@@ -25458,7 +25458,7 @@ var RecognitionShelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ReelItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ReelItem.js
 var ReelItem = class extends YTNode {
   static type = "ReelItem";
   id;
@@ -25485,7 +25485,7 @@ var ReelItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ReelPlayerHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ReelPlayerHeader.js
 var ReelPlayerHeader = class extends YTNode {
   static type = "ReelPlayerHeader";
   reel_title_text;
@@ -25503,7 +25503,7 @@ var ReelPlayerHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ReelPlayerOverlay.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ReelPlayerOverlay.js
 var ReelPlayerOverlay = class extends YTNode {
   static type = "ReelPlayerOverlay";
   like_button;
@@ -25533,7 +25533,7 @@ var ReelPlayerOverlay = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/RichGrid.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/RichGrid.js
 var RichGrid = class extends YTNode {
   static type = "RichGrid";
   header;
@@ -25548,7 +25548,7 @@ var RichGrid = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/RichItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/RichItem.js
 var RichItem = class extends YTNode {
   static type = "RichItem";
   content;
@@ -25558,7 +25558,7 @@ var RichItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/RichListHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/RichListHeader.js
 var RichListHeader = class extends YTNode {
   static type = "RichListHeader";
   title;
@@ -25578,7 +25578,7 @@ var RichListHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/RichMetadata.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/RichMetadata.js
 var RichMetadata = class extends YTNode {
   static type = "RichMetadata";
   thumbnail;
@@ -25600,7 +25600,7 @@ var RichMetadata = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/RichMetadataRow.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/RichMetadataRow.js
 var RichMetadataRow = class extends YTNode {
   static type = "RichMetadataRow";
   contents;
@@ -25610,7 +25610,7 @@ var RichMetadataRow = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/RichSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/RichSection.js
 var RichSection = class extends YTNode {
   static type = "RichSection";
   content;
@@ -25626,7 +25626,7 @@ var RichSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/RichShelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/RichShelf.js
 var RichShelf = class extends YTNode {
   static type = "RichShelf";
   title;
@@ -25666,7 +25666,7 @@ var RichShelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SearchFilter.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SearchFilter.js
 var SearchFilter2 = class extends YTNode {
   static type = "SearchFilter";
   label;
@@ -25690,7 +25690,7 @@ var SearchFilter2 = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SearchFilterGroup.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SearchFilterGroup.js
 var SearchFilterGroup = class extends YTNode {
   static type = "SearchFilterGroup";
   title;
@@ -25702,7 +25702,7 @@ var SearchFilterGroup = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SearchFilterOptionsDialog.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SearchFilterOptionsDialog.js
 var SearchFilterOptionsDialog = class extends YTNode {
   static type = "SearchFilterOptionsDialog";
   title;
@@ -25714,7 +25714,7 @@ var SearchFilterOptionsDialog = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SearchHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SearchHeader.js
 var SearchHeader = class extends YTNode {
   static type = "SearchHeader";
   chip_bar;
@@ -25726,7 +25726,7 @@ var SearchHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SearchSubMenu.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SearchSubMenu.js
 var SearchSubMenu = class extends YTNode {
   static type = "SearchSubMenu";
   title;
@@ -25743,7 +25743,7 @@ var SearchSubMenu = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SearchSuggestionsSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SearchSuggestionsSection.js
 var SearchSuggestionsSection = class extends YTNode {
   static type = "SearchSuggestionsSection";
   contents;
@@ -25753,7 +25753,7 @@ var SearchSuggestionsSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/UniversalWatchCard.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/UniversalWatchCard.js
 var UniversalWatchCard = class extends YTNode {
   static type = "UniversalWatchCard";
   header;
@@ -25771,7 +25771,7 @@ var UniversalWatchCard = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SecondarySearchContainer.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SecondarySearchContainer.js
 var SecondarySearchContainer = class extends YTNode {
   static type = "SecondarySearchContainer";
   target_id;
@@ -25782,7 +25782,7 @@ var SecondarySearchContainer = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SegmentedLikeDislikeButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SegmentedLikeDislikeButton.js
 var SegmentedLikeDislikeButton = class extends YTNode {
   static type = "SegmentedLikeDislikeButton";
   like_button;
@@ -25794,7 +25794,7 @@ var SegmentedLikeDislikeButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SettingBoolean.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SettingBoolean.js
 var SettingBoolean = class extends YTNode {
   static type = "SettingBoolean";
   title;
@@ -25820,7 +25820,7 @@ var SettingBoolean = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SettingsCheckbox.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SettingsCheckbox.js
 var SettingsCheckbox = class extends YTNode {
   static type = "SettingsCheckbox";
   title;
@@ -25838,7 +25838,7 @@ var SettingsCheckbox = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SettingsSwitch.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SettingsSwitch.js
 var SettingsSwitch = class extends YTNode {
   static type = "SettingsSwitch";
   title;
@@ -25856,7 +25856,7 @@ var SettingsSwitch = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SettingsOptions.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SettingsOptions.js
 var SettingsOptions = class extends YTNode {
   static type = "SettingsOptions";
   title;
@@ -25880,7 +25880,7 @@ var SettingsOptions = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SettingsSidebar.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SettingsSidebar.js
 var SettingsSidebar = class extends YTNode {
   static type = "SettingsSidebar";
   title;
@@ -25896,7 +25896,7 @@ var SettingsSidebar = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SharedPost.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SharedPost.js
 var SharedPost = class extends YTNode {
   static type = "SharedPost";
   thumbnail;
@@ -25922,7 +25922,7 @@ var SharedPost = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SharePanelHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SharePanelHeader.js
 var SharePanelHeader = class extends YTNode {
   static type = "SharePanelHeader";
   title;
@@ -25932,7 +25932,7 @@ var SharePanelHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SharePanelTitleV15.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SharePanelTitleV15.js
 var SharePanelTitleV15 = class extends YTNode {
   static type = "SharePanelTitleV15";
   title;
@@ -25942,7 +25942,7 @@ var SharePanelTitleV15 = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ShareTarget.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ShareTarget.js
 var ShareTarget = class extends YTNode {
   static type = "ShareTarget";
   endpoint;
@@ -25961,7 +25961,7 @@ var ShareTarget = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SheetView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SheetView.js
 var SheetView = class extends YTNode {
   static type = "SheetView";
   content;
@@ -25979,7 +25979,7 @@ var SheetView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Shelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Shelf.js
 var Shelf = class extends YTNode {
   static type = "Shelf";
   title;
@@ -26011,7 +26011,7 @@ var Shelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ShortsLockupView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ShortsLockupView.js
 var ShortsLockupView = class extends YTNode {
   static type = "ShortsLockupView";
   entity_id;
@@ -26048,7 +26048,7 @@ var ShortsLockupView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ShowingResultsFor.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ShowingResultsFor.js
 var ShowingResultsFor = class extends YTNode {
   static type = "ShowingResultsFor";
   corrected_query;
@@ -26068,7 +26068,7 @@ var ShowingResultsFor = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SimpleCardContent.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SimpleCardContent.js
 var SimpleCardContent = class extends YTNode {
   static type = "SimpleCardContent";
   image;
@@ -26088,7 +26088,7 @@ var SimpleCardContent = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SimpleCardTeaser.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SimpleCardTeaser.js
 var SimpleCardTeaser = class extends YTNode {
   static type = "SimpleCardTeaser";
   message;
@@ -26101,7 +26101,7 @@ var SimpleCardTeaser = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SimpleTextSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SimpleTextSection.js
 var SimpleTextSection = class extends YTNode {
   static type = "SimpleTextSection";
   lines;
@@ -26113,7 +26113,7 @@ var SimpleTextSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SingleActionEmergencySupport.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SingleActionEmergencySupport.js
 var SingleActionEmergencySupport = class extends YTNode {
   static type = "SingleActionEmergencySupport";
   action_text;
@@ -26131,7 +26131,7 @@ var SingleActionEmergencySupport = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Tab.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Tab.js
 var Tab = class extends YTNode {
   static type = "Tab";
   title;
@@ -26147,7 +26147,7 @@ var Tab = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SingleColumnBrowseResults.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SingleColumnBrowseResults.js
 var SingleColumnBrowseResults = class extends YTNode {
   static type = "SingleColumnBrowseResults";
   tabs;
@@ -26157,7 +26157,7 @@ var SingleColumnBrowseResults = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SingleColumnMusicWatchNextResults.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SingleColumnMusicWatchNextResults.js
 var SingleColumnMusicWatchNextResults = class extends YTNode {
   static type = "SingleColumnMusicWatchNextResults";
   contents;
@@ -26167,7 +26167,7 @@ var SingleColumnMusicWatchNextResults = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SingleHeroImage.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SingleHeroImage.js
 var SingleHeroImage = class extends YTNode {
   static type = "SingleHeroImage";
   thumbnails;
@@ -26179,7 +26179,7 @@ var SingleHeroImage = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SlimOwner.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SlimOwner.js
 var SlimOwner = class extends YTNode {
   static type = "SlimOwner";
   thumbnail;
@@ -26195,7 +26195,7 @@ var SlimOwner = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/SlimVideoMetadata.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/SlimVideoMetadata.js
 var SlimVideoMetadata = class extends YTNode {
   static type = "SlimVideoMetadata";
   title;
@@ -26217,7 +26217,7 @@ var SlimVideoMetadata = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/StartAt.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/StartAt.js
 var StartAt = class extends YTNode {
   static type = "StartAt";
   start_at_option_label;
@@ -26227,7 +26227,7 @@ var StartAt = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/StructuredDescriptionVideoLockup.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/StructuredDescriptionVideoLockup.js
 var StructuredDescriptionVideoLockup = class extends YTNode {
   static type = "StructuredDescriptionVideoLockup";
   thumbnail;
@@ -26266,7 +26266,7 @@ var StructuredDescriptionVideoLockup = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Tabbed.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Tabbed.js
 var Tabbed = class extends YTNode {
   static type = "Tabbed";
   contents;
@@ -26276,7 +26276,7 @@ var Tabbed = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TabbedSearchResults.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TabbedSearchResults.js
 var TabbedSearchResults = class extends YTNode {
   static type = "TabbedSearchResults";
   tabs;
@@ -26286,7 +26286,7 @@ var TabbedSearchResults = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TextHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TextHeader.js
 var TextHeader = class extends YTNode {
   static type = "TextHeader";
   title;
@@ -26298,7 +26298,7 @@ var TextHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThirdPartyShareTargetSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThirdPartyShareTargetSection.js
 var ThirdPartyShareTargetSection = class extends YTNode {
   static type = "ThirdPartyShareTargetSection";
   share_targets;
@@ -26308,7 +26308,7 @@ var ThirdPartyShareTargetSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailLandscapePortrait.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailLandscapePortrait.js
 var ThumbnailLandscapePortrait = class extends YTNode {
   static type = "ThumbnailLandscapePortrait";
   landscape;
@@ -26320,7 +26320,7 @@ var ThumbnailLandscapePortrait = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayAvatarStackView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayAvatarStackView.js
 var ThumbnailOverlayAvatarStackView = class extends YTNode {
   static type = "ThumbnailOverlayAvatarStackView";
   avatar_stack;
@@ -26330,7 +26330,7 @@ var ThumbnailOverlayAvatarStackView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayEndorsement.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayEndorsement.js
 var ThumbnailOverlayEndorsement = class extends YTNode {
   static type = "ThumbnailOverlayEndorsement";
   text;
@@ -26340,7 +26340,7 @@ var ThumbnailOverlayEndorsement = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayHoverText.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayHoverText.js
 var ThumbnailOverlayHoverText = class extends YTNode {
   static type = "ThumbnailOverlayHoverText";
   text;
@@ -26352,7 +26352,7 @@ var ThumbnailOverlayHoverText = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayInlineUnplayable.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayInlineUnplayable.js
 var ThumbnailOverlayInlineUnplayable = class extends YTNode {
   static type = "ThumbnailOverlayInlineUnplayable";
   text;
@@ -26364,7 +26364,7 @@ var ThumbnailOverlayInlineUnplayable = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayLoadingPreview.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayLoadingPreview.js
 var ThumbnailOverlayLoadingPreview = class extends YTNode {
   static type = "ThumbnailOverlayLoadingPreview";
   text;
@@ -26374,7 +26374,7 @@ var ThumbnailOverlayLoadingPreview = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayNowPlaying.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayNowPlaying.js
 var ThumbnailOverlayNowPlaying = class extends YTNode {
   static type = "ThumbnailOverlayNowPlaying";
   text;
@@ -26384,7 +26384,7 @@ var ThumbnailOverlayNowPlaying = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayPinking.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayPinking.js
 var ThumbnailOverlayPinking = class extends YTNode {
   static type = "ThumbnailOverlayPinking";
   hack;
@@ -26394,7 +26394,7 @@ var ThumbnailOverlayPinking = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayPlaybackStatus.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayPlaybackStatus.js
 var ThumbnailOverlayPlaybackStatus = class extends YTNode {
   static type = "ThumbnailOverlayPlaybackStatus";
   texts;
@@ -26404,7 +26404,7 @@ var ThumbnailOverlayPlaybackStatus = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayResumePlayback.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayResumePlayback.js
 var ThumbnailOverlayResumePlayback = class extends YTNode {
   static type = "ThumbnailOverlayResumePlayback";
   percent_duration_watched;
@@ -26414,7 +26414,7 @@ var ThumbnailOverlayResumePlayback = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlaySidePanel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlaySidePanel.js
 var ThumbnailOverlaySidePanel = class extends YTNode {
   static type = "ThumbnailOverlaySidePanel";
   text;
@@ -26426,7 +26426,7 @@ var ThumbnailOverlaySidePanel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayTitleView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayTitleView.js
 var ThumbnailOverlayTitleView = class extends YTNode {
   static type = "ThumbnailOverlayTitleView";
   title;
@@ -26438,7 +26438,7 @@ var ThumbnailOverlayTitleView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayToggleButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ThumbnailOverlayToggleButton.js
 var ThumbnailOverlayToggleButton = class extends YTNode {
   static type = "ThumbnailOverlayToggleButton";
   is_toggled;
@@ -26466,7 +26466,7 @@ var ThumbnailOverlayToggleButton = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TicketEvent.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TicketEvent.js
 var TicketEvent = class extends YTNode {
   static type = "TicketEvent";
   title;
@@ -26500,7 +26500,7 @@ var TicketEvent = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TicketShelf.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TicketShelf.js
 var TicketShelf = class extends YTNode {
   static type = "TicketShelf";
   title;
@@ -26516,7 +26516,7 @@ var TicketShelf = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TitleAndButtonListHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TitleAndButtonListHeader.js
 var TitleAndButtonListHeader = class extends YTNode {
   static type = "TitleAndButtonListHeader";
   title;
@@ -26526,7 +26526,7 @@ var TitleAndButtonListHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ToggleMenuServiceItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ToggleMenuServiceItem.js
 var ToggleMenuServiceItem = class extends YTNode {
   static type = "ToggleMenuServiceItem";
   text;
@@ -26546,7 +26546,7 @@ var ToggleMenuServiceItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/Tooltip.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/Tooltip.js
 var Tooltip = class extends YTNode {
   static type = "Tooltip";
   promo_config;
@@ -26571,7 +26571,7 @@ var Tooltip = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TopicChannelDetails.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TopicChannelDetails.js
 var TopicChannelDetails = class extends YTNode {
   static type = "TopicChannelDetails";
   title;
@@ -26589,7 +26589,7 @@ var TopicChannelDetails = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TwoColumnBrowseResults.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TwoColumnBrowseResults.js
 var TwoColumnBrowseResults = class extends YTNode {
   static type = "TwoColumnBrowseResults";
   tabs;
@@ -26601,7 +26601,7 @@ var TwoColumnBrowseResults = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TwoColumnSearchResults.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TwoColumnSearchResults.js
 var TwoColumnSearchResults = class extends YTNode {
   static type = "TwoColumnSearchResults";
   header;
@@ -26619,7 +26619,7 @@ var TwoColumnSearchResults = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/TwoColumnWatchNextResults.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/TwoColumnWatchNextResults.js
 var TwoColumnWatchNextResults = class extends YTNode {
   static type = "TwoColumnWatchNextResults";
   results;
@@ -26668,7 +26668,7 @@ var TwoColumnWatchNextResults = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/UnifiedSharePanel.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/UnifiedSharePanel.js
 var UnifiedSharePanel = class extends YTNode {
   static type = "UnifiedSharePanel";
   third_party_network_section;
@@ -26694,7 +26694,7 @@ var UnifiedSharePanel = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/UpsellDialog.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/UpsellDialog.js
 var UpsellDialog = class extends YTNode {
   static type = "UpsellDialog";
   message_title;
@@ -26712,7 +26712,7 @@ var UpsellDialog = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VerticalList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VerticalList.js
 var VerticalList = class extends YTNode {
   static type = "VerticalList";
   items;
@@ -26731,7 +26731,7 @@ var VerticalList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VerticalWatchCardList.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VerticalWatchCardList.js
 var VerticalWatchCardList = class extends YTNode {
   static type = "VerticalWatchCardList";
   items;
@@ -26749,7 +26749,7 @@ var VerticalWatchCardList = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoInfoCardContent.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoInfoCardContent.js
 var VideoInfoCardContent = class extends YTNode {
   static type = "VideoInfoCardContent";
   title;
@@ -26769,7 +26769,7 @@ var VideoInfoCardContent = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoMetadataCarouselView.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoMetadataCarouselView.js
 var VideoMetadataCarouselView = class extends YTNode {
   static type = "VideoMetadataCarouselView";
   carousel_titles;
@@ -26781,7 +26781,7 @@ var VideoMetadataCarouselView = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/SubscriptionButton.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/SubscriptionButton.js
 var SubscriptionButton = class {
   static type = "SubscriptionButton";
   text;
@@ -26800,7 +26800,7 @@ var SubscriptionButton = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoOwner.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoOwner.js
 var VideoOwner = class extends YTNode {
   static type = "VideoOwner";
   title;
@@ -26833,7 +26833,7 @@ var VideoOwner = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoPrimaryInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoPrimaryInfo.js
 var VideoPrimaryInfo = class extends YTNode {
   static type = "VideoPrimaryInfo";
   title;
@@ -26859,7 +26859,7 @@ var VideoPrimaryInfo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/VideoSecondaryInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/VideoSecondaryInfo.js
 var VideoSecondaryInfo = class extends YTNode {
   static type = "VideoSecondaryInfo";
   owner;
@@ -26888,7 +26888,7 @@ var VideoSecondaryInfo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/WatchCardCompactVideo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/WatchCardCompactVideo.js
 var WatchCardCompactVideo = class extends YTNode {
   static type = "WatchCardCompactVideo";
   title;
@@ -26907,7 +26907,7 @@ var WatchCardCompactVideo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/WatchCardHeroVideo.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/WatchCardHeroVideo.js
 var WatchCardHeroVideo = class extends YTNode {
   static type = "WatchCardHeroVideo";
   endpoint;
@@ -26923,7 +26923,7 @@ var WatchCardHeroVideo = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/WatchCardRichHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/WatchCardRichHeader.js
 var WatchCardRichHeader = class extends YTNode {
   static type = "WatchCardRichHeader";
   title;
@@ -26942,7 +26942,7 @@ var WatchCardRichHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/WatchCardSectionSequence.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/WatchCardSectionSequence.js
 var WatchCardSectionSequence = class extends YTNode {
   static type = "WatchCardSectionSequence";
   lists;
@@ -26952,7 +26952,7 @@ var WatchCardSectionSequence = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/WatchNextTabbedResults.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/WatchNextTabbedResults.js
 var WatchNextTabbedResults = class extends TwoColumnBrowseResults {
   static type = "WatchNextTabbedResults";
   constructor(data) {
@@ -26960,7 +26960,7 @@ var WatchNextTabbedResults = class extends TwoColumnBrowseResults {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ytkids/AnchoredSection.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ytkids/AnchoredSection.js
 var AnchoredSection = class extends YTNode {
   static type = "AnchoredSection";
   title;
@@ -26981,7 +26981,7 @@ var AnchoredSection = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ytkids/KidsBlocklistPickerItem.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ytkids/KidsBlocklistPickerItem.js
 var KidsBlocklistPickerItem = class extends YTNode {
   static type = "KidsBlocklistPickerItem";
   #actions;
@@ -27014,7 +27014,7 @@ var KidsBlocklistPickerItem = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ytkids/KidsBlocklistPicker.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ytkids/KidsBlocklistPicker.js
 var KidsBlocklistPicker = class extends YTNode {
   static type = "KidsBlocklistPicker";
   title;
@@ -27030,7 +27030,7 @@ var KidsBlocklistPicker = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ytkids/KidsCategoryTab.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ytkids/KidsCategoryTab.js
 var KidsCategoryTab = class extends YTNode {
   static type = "KidsCategoryTab";
   title;
@@ -27049,7 +27049,7 @@ var KidsCategoryTab = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ytkids/KidsCategoriesHeader.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ytkids/KidsCategoriesHeader.js
 var KidsCategoriesHeader = class extends YTNode {
   static type = "kidsCategoriesHeader";
   category_tabs;
@@ -27061,7 +27061,7 @@ var KidsCategoriesHeader = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/ytkids/KidsHomeScreen.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/ytkids/KidsHomeScreen.js
 var KidsHomeScreen = class extends YTNode {
   static type = "kidsHomeScreen";
   anchors;
@@ -27071,7 +27071,7 @@ var KidsHomeScreen = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/generator.js
+// ../../node_modules/youtubei.js/dist/src/parser/generator.js
 var IGNORED_KEYS = /* @__PURE__ */ new Set([
   "trackingParams",
   "accessibility",
@@ -27812,7 +27812,7 @@ function mergeKeyInfo(key_info, new_key_info) {
   };
 }
 
-// node_modules/youtubei.js/dist/src/parser/continuations.js
+// ../../node_modules/youtubei.js/dist/src/parser/continuations.js
 var ItemSectionContinuation = class extends YTNode {
   static type = "itemSectionContinuation";
   contents;
@@ -27977,7 +27977,7 @@ var ContinuationCommand2 = class extends YTNode {
   }
 };
 
-// node_modules/youtubei.js/dist/protos/generated/misc/common.js
+// ../../node_modules/youtubei.js/dist/protos/generated/misc/common.js
 function createBaseKeyValuePair() {
   return { key: void 0, value: void 0 };
 }
@@ -28055,7 +28055,7 @@ var FormatXTags = {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/Format.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/Format.js
 var Format = class {
   #this_response_nsig_cache;
   itag;
@@ -28235,7 +28235,7 @@ var Format = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/VideoDetails.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/VideoDetails.js
 var VideoDetails = class {
   id;
   channel_id;
@@ -28281,7 +28281,7 @@ var VideoDetails = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/parser.js
+// ../../node_modules/youtubei.js/dist/src/parser/parser.js
 var TAG2 = "Parser";
 var IGNORED_LIST = /* @__PURE__ */ new Set([
   "AdSlot",
@@ -28895,7 +28895,7 @@ function applyCommentsMutations(memo, mutations) {
   }
 }
 
-// node_modules/youtubei.js/dist/src/parser/youtube/AccountInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/AccountInfo.js
 var AccountInfo = class {
   #page;
   contents;
@@ -28913,7 +28913,7 @@ var AccountInfo = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/mixins/Feed.js
+// ../../node_modules/youtubei.js/dist/src/core/mixins/Feed.js
 var Feed = class _Feed {
   #page;
   #actions;
@@ -29066,7 +29066,7 @@ var Feed = class _Feed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/mixins/FilterableFeed.js
+// ../../node_modules/youtubei.js/dist/src/core/mixins/FilterableFeed.js
 var FilterableFeed = class _FilterableFeed extends Feed {
   #filter_nodes;
   constructor(actions, data, already_parsed = false) {
@@ -29185,7 +29185,7 @@ var FilterableFeed = class _FilterableFeed extends Feed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/mixins/MediaInfo.js
+// ../../node_modules/youtubei.js/dist/src/core/mixins/MediaInfo.js
 var MediaInfo = class {
   #page;
   #actions;
@@ -29358,7 +29358,7 @@ var MediaInfo = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/mixins/TabbedFeed.js
+// ../../node_modules/youtubei.js/dist/src/core/mixins/TabbedFeed.js
 var TabbedFeed = class _TabbedFeed extends Feed {
   #actions;
   #tabs;
@@ -29396,7 +29396,7 @@ var TabbedFeed = class _TabbedFeed extends Feed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/Channel.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/Channel.js
 var Channel2 = class _Channel extends TabbedFeed {
   header;
   metadata;
@@ -29763,7 +29763,7 @@ var FilteredChannelList = class _FilteredChannelList extends FilterableFeed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/Comments.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/Comments.js
 var Comments = class _Comments {
   #page;
   #actions;
@@ -29845,7 +29845,7 @@ var Comments = class _Comments {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/Guide.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/Guide.js
 var Guide = class {
   #page;
   contents;
@@ -29859,7 +29859,7 @@ var Guide = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/History.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/History.js
 var History = class _History extends Feed {
   sections;
   feed_actions;
@@ -29991,7 +29991,7 @@ var History = class _History extends Feed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/HomeFeed.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/HomeFeed.js
 var HomeFeed = class _HomeFeed extends FilterableFeed {
   contents;
   header;
@@ -30020,7 +30020,7 @@ var HomeFeed = class _HomeFeed extends FilterableFeed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/HashtagFeed.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/HashtagFeed.js
 var HashtagFeed = class _HashtagFeed extends FilterableFeed {
   header;
   contents;
@@ -30046,7 +30046,7 @@ var HashtagFeed = class _HashtagFeed extends FilterableFeed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/ItemMenu.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/ItemMenu.js
 var ItemMenu = class {
   #page;
   #actions;
@@ -30089,7 +30089,7 @@ var ItemMenu = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/Playlist.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/Playlist.js
 var Playlist2 = class _Playlist extends Feed {
   info;
   menu;
@@ -30169,7 +30169,7 @@ var Playlist2 = class _Playlist extends Feed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/Library.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/Library.js
 var Library = class extends Feed {
   header;
   sections;
@@ -30222,7 +30222,7 @@ var Library = class extends Feed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/SmoothedQueue.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/SmoothedQueue.js
 function flattenQueue(queue) {
   const nodes = [];
   for (const group of queue) {
@@ -30344,7 +30344,7 @@ var SmoothedQueue = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/LiveChat.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/LiveChat.js
 var LiveChat2 = class extends EventEmitterLike {
   #actions;
   #video_id;
@@ -30538,7 +30538,7 @@ var LiveChat2 = class extends EventEmitterLike {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/NotificationsMenu.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/NotificationsMenu.js
 var NotificationsMenu = class _NotificationsMenu {
   #page;
   #actions;
@@ -30564,7 +30564,7 @@ var NotificationsMenu = class _NotificationsMenu {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/Search.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/Search.js
 var Search = class _Search extends Feed {
   header;
   results;
@@ -30645,7 +30645,7 @@ var Search = class _Search extends Feed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/Settings.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/Settings.js
 var Settings = class _Settings {
   #page;
   #actions;
@@ -30738,7 +30738,7 @@ var Settings = class _Settings {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/VideoInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/VideoInfo.js
 var VideoInfo = class _VideoInfo extends MediaInfo {
   primary_info;
   secondary_info;
@@ -31084,7 +31084,7 @@ var VideoInfo = class _VideoInfo extends MediaInfo {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/youtube/TranscriptInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/TranscriptInfo.js
 var TranscriptInfo = class _TranscriptInfo {
   #page;
   #actions;
@@ -31128,7 +31128,7 @@ var TranscriptInfo = class _TranscriptInfo {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytmusic/Album.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytmusic/Album.js
 var Album = class {
   #page;
   header;
@@ -31151,7 +31151,7 @@ var Album = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytmusic/Artist.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytmusic/Artist.js
 var Artist = class {
   #page;
   #actions;
@@ -31182,7 +31182,7 @@ var Artist = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytmusic/Explore.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytmusic/Explore.js
 var Explore = class {
   #page;
   top_buttons;
@@ -31203,7 +31203,7 @@ var Explore = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytmusic/HomeFeed.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytmusic/HomeFeed.js
 var HomeFeed2 = class _HomeFeed {
   #page;
   #actions;
@@ -31268,7 +31268,7 @@ var HomeFeed2 = class _HomeFeed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytmusic/Library.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytmusic/Library.js
 var Library2 = class _Library {
   #page;
   #actions;
@@ -31392,7 +31392,7 @@ var LibraryContinuation = class _LibraryContinuation {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytmusic/Playlist.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytmusic/Playlist.js
 var Playlist3 = class _Playlist {
   #page;
   #actions;
@@ -31509,7 +31509,7 @@ var Playlist3 = class _Playlist {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytmusic/Recap.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytmusic/Recap.js
 var Recap = class {
   #page;
   #actions;
@@ -31542,7 +31542,7 @@ var Recap = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytmusic/Search.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytmusic/Search.js
 var Search2 = class _Search {
   #page;
   #actions;
@@ -31672,7 +31672,7 @@ var SearchContinuation = class _SearchContinuation {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytmusic/TrackInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytmusic/TrackInfo.js
 var TrackInfo = class extends MediaInfo {
   tabs;
   current_video_endpoint;
@@ -31775,7 +31775,7 @@ var TrackInfo = class extends MediaInfo {
 };
 var TrackInfo_default = TrackInfo;
 
-// node_modules/youtubei.js/dist/src/parser/ytkids/Channel.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytkids/Channel.js
 var Channel3 = class _Channel extends Feed {
   header;
   contents;
@@ -31804,7 +31804,7 @@ var Channel3 = class _Channel extends Feed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytkids/HomeFeed.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytkids/HomeFeed.js
 var HomeFeed3 = class _HomeFeed extends Feed {
   header;
   contents;
@@ -31836,7 +31836,7 @@ var HomeFeed3 = class _HomeFeed extends Feed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytkids/Search.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytkids/Search.js
 var Search3 = class extends Feed {
   estimated_results;
   contents;
@@ -31850,7 +31850,7 @@ var Search3 = class extends Feed {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytkids/VideoInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytkids/VideoInfo.js
 var VideoInfo2 = class extends MediaInfo {
   slim_video_metadata;
   watch_next_feed;
@@ -31871,7 +31871,7 @@ var VideoInfo2 = class extends MediaInfo {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/ytshorts/ShortFormVideoInfo.js
+// ../../node_modules/youtubei.js/dist/src/parser/ytshorts/ShortFormVideoInfo.js
 var ShortFormVideoInfo = class extends MediaInfo {
   #watch_next_continuation;
   watch_next_feed;
@@ -31907,7 +31907,7 @@ var ShortFormVideoInfo = class extends MediaInfo {
   }
 };
 
-// node_modules/youtubei.js/dist/src/parser/classes/misc/Author.js
+// ../../node_modules/youtubei.js/dist/src/parser/classes/misc/Author.js
 var Author = class {
   id;
   name;
@@ -31982,7 +31982,7 @@ var Author = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/utils/user-agents.js
+// ../../node_modules/youtubei.js/dist/src/utils/user-agents.js
 var user_agents_default = {
   "desktop": [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0",
@@ -32042,7 +32042,7 @@ var user_agents_default = {
   ]
 };
 
-// node_modules/youtubei.js/dist/src/utils/Utils.js
+// ../../node_modules/youtubei.js/dist/src/utils/Utils.js
 var shim;
 var Platform = class {
   static load(platform) {
@@ -32217,7 +32217,7 @@ function getNsigProcessorFn(n, sp, s) {
 return process("${n || ""}", "${sp || ""}", "${s || ""}");`;
 }
 
-// node_modules/youtubei.js/dist/src/platform/polyfills/web-crypto.js
+// ../../node_modules/youtubei.js/dist/src/platform/polyfills/web-crypto.js
 async function sha1Hash(str) {
   const byteToHex = [
     "00",
@@ -32487,12 +32487,12 @@ async function sha1Hash(str) {
   return hex(await crypto.subtle.digest("SHA-1", new TextEncoder().encode(str)));
 }
 
-// node_modules/youtubei.js/dist/src/platform/jsruntime/default.js
+// ../../node_modules/youtubei.js/dist/src/platform/jsruntime/default.js
 function evaluate(_data, _env) {
   throw new Error("To decipher URLs, you must provide your own JavaScript evaluator. See https://ytjs.dev/guide/getting-started.html#providing-a-custom-javascript-interpreter for more details.");
 }
 
-// node_modules/youtubei.js/dist/src/core/Actions.js
+// ../../node_modules/youtubei.js/dist/src/core/Actions.js
 var Actions = class {
   session;
   constructor(session) {
@@ -32597,7 +32597,7 @@ var Actions = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/OAuth2.js
+// ../../node_modules/youtubei.js/dist/src/core/OAuth2.js
 var TAG3 = "OAuth2";
 var OAuth2 = class {
   #session;
@@ -32816,7 +32816,7 @@ var OAuth2 = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/Player.js
+// ../../node_modules/youtubei.js/dist/src/core/Player.js
 var TAG4 = "Player";
 var Player = class _Player {
   player_id;
@@ -33016,7 +33016,7 @@ ${getNsigProcessorFn(eval_args.n, eval_args.sp, eval_args.sig)}`;
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/Session.js
+// ../../node_modules/youtubei.js/dist/src/core/Session.js
 var ClientType = {
   WEB: "WEB",
   MWEB: "MWEB",
@@ -33368,7 +33368,7 @@ var Session = class _Session extends EventEmitterLike {
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/clients/Kids.js
+// ../../node_modules/youtubei.js/dist/src/core/clients/Kids.js
 var Kids = class {
   #session;
   constructor(session) {
@@ -33455,7 +33455,7 @@ var Kids = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/clients/Music.js
+// ../../node_modules/youtubei.js/dist/src/core/clients/Music.js
 var Music = class {
   #session;
   #actions;
@@ -33667,7 +33667,7 @@ var Music = class {
   }
 };
 
-// node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/capability_info.js
+// ../../node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/capability_info.js
 function createBaseCapabilityInfo() {
   return { profile: void 0, supportedCapabilities: [], disabledCapabilities: [], snapshot: void 0 };
 }
@@ -33785,7 +33785,7 @@ var InnerTubeCapability = {
   }
 };
 
-// node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/client_info.js
+// ../../node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/client_info.js
 function createBaseClientInfo() {
   return {
     hl: void 0,
@@ -36039,7 +36039,7 @@ function longToNumber(int64) {
   return num;
 }
 
-// node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/attestation_response_data.js
+// ../../node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/attestation_response_data.js
 function createBaseAttestationResponseData() {
   return {
     challenge: void 0,
@@ -36184,7 +36184,7 @@ function longToNumber2(int64) {
   return num;
 }
 
-// node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/request_info.js
+// ../../node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/request_info.js
 function createBaseRequestInfo() {
   return {
     thirdPartyDigest: void 0,
@@ -36518,7 +36518,7 @@ var RequestInfo_ReauthRequestInfo = {
   }
 };
 
-// node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/third_party_info.js
+// ../../node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/third_party_info.js
 function createBaseThirdPartyInfo() {
   return {
     developerKey: void 0,
@@ -36663,7 +36663,7 @@ var ThirdPartyInfo_EmbeddedPlayerContext = {
   }
 };
 
-// node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/user_info.js
+// ../../node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/user_info.js
 function createBaseUserInfo() {
   return {
     onBehalfOfUser: void 0,
@@ -36880,7 +36880,7 @@ var UserInfo_CredentialTransferToken = {
   }
 };
 
-// node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/innertube_context.js
+// ../../node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/innertube_context.js
 function createBaseInnerTubeContext() {
   return {
     client: void 0,
@@ -37227,7 +37227,7 @@ var InnerTubeContext_AdSignalsInfo = {
   }
 };
 
-// node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/metadata_update_request.js
+// ../../node_modules/youtubei.js/dist/protos/generated/youtube/api/pfiinnertube/metadata_update_request.js
 function createBaseMetadataUpdateRequest() {
   return {
     context: void 0,
@@ -37891,7 +37891,7 @@ function longToNumber3(int64) {
   return num;
 }
 
-// node_modules/youtubei.js/dist/src/core/clients/Studio.js
+// ../../node_modules/youtubei.js/dist/src/core/clients/Studio.js
 var Studio = class {
   #session;
   constructor(session) {
@@ -38085,7 +38085,7 @@ var Studio = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/managers/AccountManager.js
+// ../../node_modules/youtubei.js/dist/src/core/managers/AccountManager.js
 var AccountManager = class {
   #actions;
   constructor(actions) {
@@ -38119,7 +38119,7 @@ var AccountManager = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/managers/PlaylistManager.js
+// ../../node_modules/youtubei.js/dist/src/core/managers/PlaylistManager.js
 var PlaylistManager = class {
   #actions;
   constructor(actions) {
@@ -38358,7 +38358,7 @@ var PlaylistManager = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/core/managers/InteractionManager.js
+// ../../node_modules/youtubei.js/dist/src/core/managers/InteractionManager.js
 var InteractionManager = class {
   #actions;
   constructor(actions) {
@@ -38519,7 +38519,7 @@ var InteractionManager = class {
   }
 };
 
-// node_modules/youtubei.js/dist/src/Innertube.js
+// ../../node_modules/youtubei.js/dist/src/Innertube.js
 var Innertube = class _Innertube {
   #session;
   constructor(session) {
@@ -38980,7 +38980,7 @@ var Innertube = class _Innertube {
   }
 };
 
-// node_modules/youtubei.js/dist/src/platform/web.js
+// ../../node_modules/youtubei.js/dist/src/platform/web.js
 var CACHE_TAG = "Cache";
 var Cache = class {
   #persistent_directory;
@@ -39081,11 +39081,13 @@ Platform.load({
 });
 
 // tools/build/youtube-client-entry.mjs
+var SabrClientProfile = Object.freeze({ name: "VISIONOS", clientInfo: Object.freeze({ clientName: Number(Constants_exports.CLIENT_NAME_IDS.VISIONOS), clientVersion: Constants_exports.CLIENTS.VISIONOS.VERSION }) });
 Log_exports.setLevel(Log_exports.Level.NONE);
 async function CreateInnertube({ fetch, evaluate: evaluate2 }) {
   Platform.shim.eval = evaluate2;
   return Innertube.create({ fetch, retrieve_player: true, enable_session_cache: false, generate_session_locally: false, fail_fast: true });
 }
 export {
-  CreateInnertube
+  CreateInnertube,
+  SabrClientProfile
 };

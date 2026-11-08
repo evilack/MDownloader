@@ -21,11 +21,13 @@ test('flavor is mandatory, independent packages exclude executable YouTube files
    const manifest = JSON.parse(await readFile(`${root}/manifest.json`, 'utf8'));
    assert.ok(manifest.permissions.includes('declarativeNetRequest'));
    assert.ok(!manifest.permissions.includes('declarativeNetRequestWithHostAccess'));
+   assert.equal(manifest.sandbox,undefined);assert.equal(manifest.content_security_policy?.sandbox,undefined);
    assert.deepEqual(await readdir(`${root}/features/youtube`), ['entry.js']);
    const entry = await import(`../${root}/features/youtube/entry.js`);
    assert.equal(entry.YoutubeAvailable(), false);
    await assert.rejects(entry.DiscoverYoutube(), {key: 'youtube_distribution_disabled'});
   }
+  else{const manifest=JSON.parse(await readFile(`${root}/manifest.json`,'utf8'));assert.deepEqual(manifest.sandbox.pages,['features/youtube/evaluator-sandbox.html']);assert.ok(manifest.content_security_policy.sandbox.includes("connect-src 'none'"));assert.ok(!(manifest.content_security_policy.extension_pages??"script-src 'self'").includes('unsafe-eval'));}
  }
  assert.equal(await readFile('extension/lib/distribution-policy.js', 'utf8'), original);
 });
