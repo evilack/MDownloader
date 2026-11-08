@@ -4,9 +4,12 @@ import {ReceiveSabrTracks} from './sabr.js';
 import {RemuxYoutubeTracks} from './remux.js';
 import {LocalizedError, SerializeError} from '../../lib/i18n.js';
 import {CreateStreamWorkspaces} from '../../lib/stream-workspaces.js';
+import {ReceiveYoutubeCaptions} from './captions.js';
+import {MuxSubtitles} from '../../lib/subtitle-mux.js';
 const HasPermission = async Url => (await chrome.runtime.sendMessage({type: 'youtubePermission', origin: new URL(Url).origin})).allowed === true;
 export function CreateYoutubeRunner({client: Client = CreateYoutubeClient({hasPermission: HasPermission}),
 	receive: Receive = ReceiveSabrTracks, remux: Remux = RemuxYoutubeTracks,
+	receiveCaptions: ReceiveCaptions = ReceiveYoutubeCaptions, muxCaptions: MuxCaptions = MuxSubtitles,
 	workspaces: Workspaces = CreateStreamWorkspaces('mdownloader-youtube')} = {})
 {
 const Active = new Map();
@@ -32,6 +35,10 @@ async function Run(Job, Quality, Controller, {report: Report, saveFile: SaveFile
 	{
 		const Resolved = await Client.ResolveYoutubeSelection(Quality, Signal);
 		Directory = await Workspaces.create(Job.requestId);
+		const Captions = await ReceiveCaptions(Client, Quality, Signal, {hasPermission: HasPermission,
+			report: Receipt => Report(Job.requestId, 'youtubeCaptions', {receipt: Receipt})});
+		await Report(Job.requestId, 'youtubeCaptions', {receipt: Captions.receipt});
+		Signal.throwIfAborted();
 		let LastReport = 0;
 		const Received = await Receive(Resolved.config, Resolved.selection, {
 			signal: Signal, hasPermission: HasPermission,
@@ -55,7 +62,16 @@ async function Run(Job, Quality, Controller, {report: Report, saveFile: SaveFile
 		try { await Remux(Video, Audio, Writer, Signal, {preserveTrackEnds: true}); }
 		catch (ErrorValue) { await Writer.abort().catch(() => {}); throw ErrorValue; }
 		Signal.throwIfAborted();
-		await SaveFile(Job, await Output.getFile(), Signal, undefined, 'video/mp4');
+		let MediaFile = await Output.getFile();
+		if (Captions.tracks.length)
+		{
+			const Subtitled = await Directory.getFileHandle('subtitled.mp4', {create: true});
+			const SubtitleWriter = await Subtitled.createWritable();
+			try { await MuxCaptions(MediaFile, Captions.tracks, SubtitleWriter, Signal); }
+			catch (ErrorValue) { await SubtitleWriter.abort().catch(() => {}); throw ErrorValue instanceof LocalizedError ? ErrorValue : new LocalizedError('subtitle_mux_failed'); }
+			Signal.throwIfAborted(); MediaFile = await Subtitled.getFile();
+		}
+		await SaveFile(Job, MediaFile, Signal, undefined, 'video/mp4');
 	}
 	catch (ErrorValue)
 	{

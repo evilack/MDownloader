@@ -1398,5 +1398,20 @@
   },
   "view_youtube_quality_checking": {
     "message": "Verificando a qualidade do YouTube…"
+  },
+  "subtitle_invalid": {
+    "message": "Os dados das legendas são inválidos. O arquivo sem as legendas não foi salvo."
+  },
+  "subtitle_unsupported": {
+    "message": "Este formato de legenda ainda não pode ser incorporado. O arquivo sem as legendas não foi salvo."
+  },
+  "subtitle_limit": {
+    "message": "O tamanho ou o número de faixas de legendas excedeu o limite."
+  },
+  "subtitle_download_failed": {
+    "message": "Não foi possível baixar uma legenda ($1). O arquivo sem as legendas não foi salvo."
+  },
+  "subtitle_mux_failed": {
+    "message": "Não foi possível incorporar todas as legendas ao MP4. O arquivo sem elas não foi salvo."
   }
 }

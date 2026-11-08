@@ -1398,5 +1398,20 @@
   },
   "view_youtube_quality_checking": {
     "message": "جارٍ التحقق من جودة YouTube…"
+  },
+  "subtitle_invalid": {
+    "message": "بيانات الترجمة غير صالحة. لم يُحفظ الملف بدون ترجماته."
+  },
+  "subtitle_unsupported": {
+    "message": "لا يمكن تضمين تنسيق الترجمة هذا بعد. لم يُحفظ الملف بدون ترجماته."
+  },
+  "subtitle_limit": {
+    "message": "تجاوزت معالجة الترجمة حد الحجم أو عدد المسارات."
+  },
+  "subtitle_download_failed": {
+    "message": "تعذّر تنزيل ترجمة ($1). لم يُحفظ الملف بدون ترجماته."
+  },
+  "subtitle_mux_failed": {
+    "message": "تعذّر تضمين كل الترجمات في ملف MP4. لم يُحفظ الملف بدونها."
   }
 }

@@ -1398,5 +1398,20 @@
   },
   "view_youtube_quality_checking": {
     "message": "正在检查 YouTube 画质…"
+  },
+  "subtitle_invalid": {
+    "message": "字幕数据无效。未保存缺少字幕的文件。"
+  },
+  "subtitle_unsupported": {
+    "message": "暂不支持嵌入此字幕格式。未保存缺少字幕的文件。"
+  },
+  "subtitle_limit": {
+    "message": "字幕处理超出大小或轨道数量限制。"
+  },
+  "subtitle_download_failed": {
+    "message": "无法下载字幕（$1）。未保存缺少字幕的文件。"
+  },
+  "subtitle_mux_failed": {
+    "message": "无法将所有字幕嵌入MP4。未保存缺少字幕的文件。"
   }
 }

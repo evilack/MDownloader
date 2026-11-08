@@ -236,3 +236,5 @@ Mediabunny is bundled under MPL 2.0. See [Third-party notices](THIRD_PARTY_NOTIC
 ## Support
 
 [Support development through Ev-Cabinet](https://evilack.github.io/donate.html).
+
+Development YouTube downloads also acquire available original captions and embed selectable MP4 timed-text tracks. The same VOD was saved with English and Korean automatic captions, with independent saved-file text/timing equality and complete AV verification. See [caption verification](docs/verification.md#youtube-captions--2026-11-09).

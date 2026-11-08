@@ -1398,5 +1398,20 @@
   },
   "view_youtube_quality_checking": {
     "message": "YouTube 화질을 확인하는 중입니다…"
+  },
+  "subtitle_invalid": {
+    "message": "자막 데이터가 올바르지 않습니다. 자막을 누락한 파일로 저장하지 않았습니다."
+  },
+  "subtitle_unsupported": {
+    "message": "아직 내장할 수 없는 자막 형식입니다. 자막을 누락한 파일로 저장하지 않았습니다."
+  },
+  "subtitle_limit": {
+    "message": "자막 처리의 용량 또는 트랙 수 제한을 초과했습니다."
+  },
+  "subtitle_download_failed": {
+    "message": "자막을 다운로드할 수 없습니다($1). 자막을 누락한 파일로 저장하지 않았습니다."
+  },
+  "subtitle_mux_failed": {
+    "message": "MP4에 모든 자막을 내장하지 못했습니다. 자막을 누락한 파일로 저장하지 않았습니다."
   }
 }

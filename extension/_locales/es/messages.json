@@ -1398,5 +1398,20 @@
   },
   "view_youtube_quality_checking": {
     "message": "Comprobando la calidad de YouTube…"
+  },
+  "subtitle_invalid": {
+    "message": "Los datos de subtítulos no son válidos. No se guardó el archivo sin sus subtítulos."
+  },
+  "subtitle_unsupported": {
+    "message": "Este formato de subtítulos aún no se puede incrustar. No se guardó el archivo sin sus subtítulos."
+  },
+  "subtitle_limit": {
+    "message": "Se superó el límite de tamaño o pistas de subtítulos."
+  },
+  "subtitle_download_failed": {
+    "message": "No se pudo descargar un subtítulo ($1). No se guardó el archivo sin sus subtítulos."
+  },
+  "subtitle_mux_failed": {
+    "message": "No se pudieron incrustar todos los subtítulos en el MP4. No se guardó el archivo sin ellos."
   }
 }

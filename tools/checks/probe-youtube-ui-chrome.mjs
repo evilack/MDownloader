@@ -3,6 +3,7 @@ import {mkdir,writeFile,copyFile,readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import Path from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import {InspectMp4Subtitles} from '../lib/inspect-mp4-subtitles.mjs';
 const Root=fileURLToPath(new URL('../../',import.meta.url));
 const {chromium}=await import(pathToFileURL(process.env.MDOWNLOADER_PLAYWRIGHT_MODULE||Path.resolve(Path.dirname(process.execPath),'../node_modules/playwright/index.mjs')));
 const Artifact=Path.join(Root,'artifacts/youtube-ui/chrome-'+Date.now());await mkdir(Artifact,{recursive:true});
@@ -65,11 +66,16 @@ try{
   await new Promise(r=>setTimeout(r,250));
  }while(Date.now()<deadline);
  if(Report.download?.state!=='complete')throw Error('full-save-timeout');
- Report.job={youtube:Job.youtube,hls:!!Job.hls,filename:Job.filename,bytesReceived:Job.bytesReceived,receipt:Job.receipt};
+ Report.job={youtube:Job.youtube,hls:!!Job.hls,filename:Job.filename,bytesReceived:Job.bytesReceived,receipt:Job.receipt,captionReceipt:Job.captionReceipt};
  await UI.locator('#complete li.job').first().waitFor({timeout:15000});Report.stages.push('manager-complete');await UI.screenshot({path:Path.join(Artifact,'manager-complete.png'),fullPage:true});
  const Original=Path.resolve(Report.download.filename);if(!Original.startsWith(Path.resolve(Artifact)+Path.sep))throw Error('unexpected-output');
  const Output=Path.join(Artifact,Path.basename(Job.filename));await copyFile(Original,Output);const Data=await readFile(Output);
  Report.save={output:Output,bytes:Data.length,sha256:createHash('sha256').update(Data).digest('hex'),browserFilename:Path.basename(Original)};delete Report.download.filename;
+ if(process.argv.includes('--captions')){
+  Report.subtitles=InspectMp4Subtitles(Data);const receipt=Job.captionReceipt;
+  const languageCode={en:'eng',ko:'kor'};
+  Report.captionsPassed=!!(receipt?.phase==='ready'&&receipt.httpResponses===receipt.count&&receipt.count>0&&Report.subtitles.length===receipt.count&&receipt.tracks.every((t,i)=>Report.subtitles[i].language===languageCode[t.language]&&Report.subtitles[i].nonemptySamples>0&&Report.subtitles[i].linesHash===t.linesHash&&Report.subtitles[i].timelineHash===t.timelineHash&&Report.subtitles[i].firstStartMs===t.firstStartMs&&Report.subtitles[i].lastEndMs===t.lastEndMs));
+ }
  await Options.evaluate(()=>{const i=document.createElement('input');i.type='file';i.id='verified-output';document.body.append(i);});await Options.locator('#verified-output').setInputFiles(Output);
  Report.decode=await Options.evaluate(async()=>{
   const {Input,BlobSource,ALL_FORMATS,EncodedPacketSink,VideoSampleSink,AudioSampleSink}=await import('./vendor/mediabunny-1.65.2.mjs');
@@ -80,8 +86,9 @@ try{
    const duration=await input.computeDuration();return{ok:Math.round(duration)===623&&Math.round(packets.video.end)===623&&Math.round(packets.audio.end)===623&&samples.every(s=>s.rms>0.0001),duration,packets,samples};
   }finally{input.dispose();}
  });
- Report.persistence=await Options.evaluate(async()=>{const all=JSON.stringify(await chrome.storage.local.get(null));const session=JSON.stringify(await chrome.storage.session.get(null));return{noSignedMedia:!all.includes('googlevideo.com')&&!session.includes('googlevideo.com'),noSabrConfig:!all.includes('ustreamerConfig')&&!session.includes('ustreamerConfig'),apiContextReleased:!(await chrome.declarativeNetRequest.getSessionRules()).some(r=>r.id===2146999997)};});
+ Report.persistence=await Options.evaluate(async()=>{const all=JSON.stringify(await chrome.storage.local.get(null));const session=JSON.stringify(await chrome.storage.session.get(null));return{noSignedMedia:!all.includes('googlevideo.com')&&!session.includes('googlevideo.com'),noSabrConfig:!all.includes('ustreamerConfig')&&!session.includes('ustreamerConfig'),noCaptionSourceOrBody:![all,session].some(s=>s.includes('/api/timedtext')||s.includes('WEBVTT')),apiContextReleased:!(await chrome.declarativeNetRequest.getSessionRules()).some(r=>r.id===2146999997)};});
  Report.passed=!!(Report.decode.ok&&Report.save.bytes===Report.download.bytes&&Report.job.receipt?.videoEndMs>622000&&Report.job.receipt?.audioEndMs>622000&&!Report.job.hls&&Object.values(Report.persistence).every(Boolean));
+ if(process.argv.includes('--captions'))Report.passed&&=Report.captionsPassed;
 }catch(e){Report.failure=String(e.message).slice(0,400);if(UI){Report.events=await UI.evaluate(()=>globalThis.ProbeEvents).catch(()=>null);Report.status=await UI.locator('[data-candidate-status]').textContent().catch(()=>null);await UI.screenshot({path:Path.join(Artifact,'failure.png'),fullPage:true}).catch(()=>{});}}
 finally{await writeFile(Path.join(Artifact,'result.json'),JSON.stringify(Report,null,2));console.log(JSON.stringify({artifact:Artifact,...Report}));await Context.close();}
 if(!Report.passed)process.exitCode=2;

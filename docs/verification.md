@@ -226,3 +226,30 @@ Independent review found and fixed two important issues RED→GREEN: a first nor
 Automated scoped checks: 302 tests passed, zero failed; ten catalogs contain 399 messages each, no missing references. Development/Store package composition and import graphs are checked separately from browser acceptance. Official upstream packages/bundles remain unchanged; MDownloader-only integration and upgrade checks are recorded in [YouTube.js changes](youtube-upstream-changes.md). Shared picked-folder save is connected but was not separately native-tested here; this acceptance is for Chrome native downloads.
 
 The exact staged extension tree `03b1a1f7d3ed3c45d4bed4813e8f030819402db1` repeated native automatic-best-quality full reception/save and disk-file decoding after review fixes. Final scoped candidate: 302/302 tests; 399 messages × 10 locales; zero project failures, 73 preserved files; development 159 files/366 imports and Store 135 files/338 imports verified. The separately merged working folder, including pre-existing subtitle/translation changes outside this commit, passed 382 tests, skipped one supplied-HTML fixture, and had zero failures.
+
+## YouTube captions — 2026-11-09
+
+Actual development/manual Chrome 157.0.8103.39, a fresh isolated profile and the normal side-panel download UI saved the same -XHx839rSc8 VOD with all available original captions. English and Korean automatic-caption responses were HTTP 200, nonempty WebVTT. An initial isolated extraction inspection measured 110,632 and 89,654 UTF-8 bytes respectively. No synthetic captions or injected cue text were used for native acceptance.
+
+| Native same-video acceptance | Result |
+|---|---|
+| Original caption cues | English 645 / Korean 545 |
+| Saved subtitle tracks | 2, sbtl handler and tx3g/mov_text sample entry |
+| MP4 language codes | eng / kor |
+| Saved timed-text samples | English 646 (644 nonempty) / Korean 546 (545 nonempty) |
+| Saved caption intervals | English 1.888–622.300s / Korean 2.080–622.320s |
+| Caption equality | Both full text hashes and every nonempty cue's text/start/end timeline hash match independent MP4 extraction |
+| Complete AV | 1920×1080 H.264 and AAC, 622.689524s (displayed 623s), 18,677 video / 26,817 AAC packets |
+| Decode actual saved file | Video/audio at 1s and 620s, nonzero audio RMS |
+| Native MP4 save | 92,736,458 bytes, Chrome complete, same disk byte count |
+| Privacy | No caption URL/body, signed media URL or SABR config in local/session job storage; scoped API rule released |
+
+The differing cue/sample counts include the initial empty interval and clearing text. Independent ISO BMFF sample-table inspection reads the actual saved file, not the muxer's internal result. Same-video ASR cues are nonoverlapping; arbitrary overlapping source cues become composited samples and are covered by separate shared mux tests, not this direct timeline-hash comparison.
+
+Two native failures exposed the common WebVTT splitter treating space-only payload lines as separators and rejecting empty cues. Regression tests failed before the shared reader/mux corrections and passed afterward. A fresh reviewer found that a partial VISIONOS catalog replaced the WEB languages; union-by-identity now preserves the catalog and prefers only matching VISIONOS addresses, with RED→GREEN coverage. Source/session expiry and mux-failure/no-save ownership also have explicit tests.
+
+A genuinely absent catalog is explicitly unavailable and may preserve normal AV downloading; this is not successful caption acceptance. Any declared track that fails receiving or muxing fails the job. This scoped interpretation preserves downloading of videos that never offered captions. No missing-caption execution substitutes for the two-track native proof above.
+
+349 scoped tests passed; 404 messages × 10 locales, no missing references. Required shared subtitle modules and tests are included as integration dependencies; unrelated translation/UI changes remain outside the commit. Official upstream packages/bundles are unchanged. Small deferred review improvement: explicitly rejecting non-default HTTPS ports in caption URL normalization. The tested official sources use default HTTPS. Computer Use, user's Chrome profile, Store browser execution, external extractor/program installation and publication were excluded. Exact host permissions were preapproved in the test profile; this is not manual OS-prompt acceptance or external-player visual subtitle selection acceptance. Chrome automation saves a UUID filename; the original and byte-identical title export are retained. See [retained evidence](evidence/2026-11-09-youtube-captions-development.json) and [upstream changes](youtube-upstream-changes.md).
+
+The exact staged extension tree `d6b6ba3ee8b778d003e9743608f87fb5c658ccb5` repeated full native UI caption receipt/mux/save and independent disk-file comparison after review. Final MP4 SHA-256: `c30e52f43c0e21f200b217051b5da4712050555d2ecd29d9320425fed3ae3d63`. Final scoped checks: 349/349 tests, 404 messages × 10 locales, zero project failures and 73 preserved files; development 163 files/375 imports, Store 138 files/343 imports. The separately merged working folder passed 395 tests, skipped one retained supplied-HTML fixture, and failed zero tests.

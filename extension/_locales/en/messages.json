@@ -1398,5 +1398,20 @@
   },
   "view_youtube_quality_checking": {
     "message": "Checking YouTube quality…"
+  },
+  "subtitle_invalid": {
+    "message": "Subtitle data is invalid. The file was not saved without its captions."
+  },
+  "subtitle_unsupported": {
+    "message": "This subtitle format cannot be embedded yet. The file was not saved without its captions."
+  },
+  "subtitle_limit": {
+    "message": "Subtitle processing exceeded a size or track limit."
+  },
+  "subtitle_download_failed": {
+    "message": "A subtitle could not be downloaded ($1). The file was not saved without its captions."
+  },
+  "subtitle_mux_failed": {
+    "message": "Unable to embed all subtitles in the MP4. The file was not saved without its captions."
   }
 }

@@ -70,3 +70,17 @@
 이전 WEB protection 3의 모든 서버 원인을 해결한 것은 아니다. 공개 WEB의 제한 여부를 먼저 확인한 뒤 공식 VISIONOS SABR 세션으로 성공한 범위를 유지한다. [실제 UI 검증](verification.md#youtube-ui-integration--2026-11-09)을 참조한다.
 
 독립 검토 후 첫 일반 클릭의 새 CDN 권한은 최고 화질 1개가 선택된 기존 확인 창에서 직접 요청하도록 변경했다. 비동기 추출 뒤 원래 클릭의 사용자 제스처에 의존하지 않는다. runner 종료 시에는 진행 보고 체인을 먼저 기다려 늦은 active 스냅샷이 canceled/failed 상태를 덮어쓰지 않도록 했다. 두 항목 모두 실패 재현 → 수정 후 통과 검사와 실제 1080p UI 수신·저장 재검사를 남겼다.
+
+## 2026-11-09: YouTube 원본 자막 수신과 MP4 트랙 저장
+
+공식 youtubei.js 18.3.0·googlevideo 5.0.1·Mediabunny 1.65.2의 원본과 번들은 수정하지 않았다. 이번 변경은 MDownloader adapter와 기존 공통 자막 모듈이다.
+
+- `features/youtube/client.js`: 공식 `captions.caption_tracks`의 `base_url`, `language_code`, `name`, `kind`, `vss_id`를 읽는다. WEB/VISIONOS 목록을 언어·종류·vss ID의 합집합으로 보존하고, 같은 identity에만 VISIONOS 주소를 우선한다. 공개 목록에 URL을 내보내지 않는다. 자막 해석도 세션·영상 ID·서명 만료·권한을 재검사한다.
+- `features/youtube/captions.js`: 기존 `ReadSubtitles`의 트랙·리소스·합계 바이트·큐·시간·동시성 제한을 재사용한다. YouTube 요청은 credentials omit이며 원본 언어를 모두 보존한다. 작업에는 개수·언어·시각·해시만 전달하며 본문과 signed URL은 offscreen 메모리 밖에 기록하지 않는다.
+- `lib/subtitles.js`, `subtitle-mux.js`, `mp4-timed-text.js`: 기존 공통 수신·MP4 tx3g 병합기를 사용한다. WebVTT의 공백만 있는 payload 줄을 자막 구분자로 오인하지 않으며, 실제 빈 줄만 구분한다. 빈 payload 큐도 허용한다. SRT 구분 방식과 일반 수신의 credentials include 기본값은 유지한다.
+- `runner.js`/`jobs.js`: 자막 수신 → 전체 AV 수신·병합 → 공통 자막 병합 → native/folder 저장 순서다. 제공된 자막의 수신·병합 오류는 작업 실패로 남긴다. 자막이 원래 없는 영상은 unavailable/개수 0을 명시해 기존 AV 다운로드를 허용하며 자막 검증 합격으로 보지 않는다.
+- `probe-youtube-ui-chrome.mjs --auto --captions`: 실제 개발판 Chrome 사이드 패널에서 저장한 파일을 독립 ISO BMFF 파서로 읽는다. sbtl/tx3g·언어·sample tables·UTF-8 본문과 전체 문구/시각 해시를 수신 결과와 대조하고 전체 AV와 첫/끝 디코딩을 재검사한다.
+
+업데이트 때 WEB/VISIONOS 일부 언어 차이, 자동/수동 자막 구분, 만료·권한 철회, 빈/공백 payload, 잘린 응답, mux 실패·취소를 반복 검사한다. 새 YouTube 자막 adapter도 스토어판에서는 feature 폴더와 함께 제외한다. 기존 공통 모듈에는 YouTube 추출 로직을 넣지 않는다. 같은 영상의 ASR 큐는 겹치지 않아 전체 cue 시각/본문 해시를 직접 비교했다. 겹치는 일반 자막은 합성된 tx3g 샘플과 달라질 수 있으며 별도 공통 병합 테스트에서 다룬다. 자동 번역 기능은 이번 변경에 추가하지 않았다.
+
+작은 후속 개선: 비표준 HTTPS 포트를 가진 YouTube timedtext URL의 명시적 거부를 강화할 수 있다. 현재 실제 공식 자막은 기본 HTTPS origin이며 이 항목은 독립 검토의 Minor로 남겼다. [자막 검증](verification.md#youtube-captions--2026-11-09)을 참조한다.

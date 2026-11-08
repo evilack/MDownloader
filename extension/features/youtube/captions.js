@@ -1,0 +1,35 @@
+import {ReadSubtitles, ParseVtt} from '../../lib/subtitles.js';
+import {LocalizedError} from '../../lib/i18n.js';
+function Plain(Value)
+{
+	const Entities = {amp:'&',lt:'<',gt:'>',quot:'"',apos:"'",nbsp:'\u00a0',lrm:'\u200e',rlm:'\u200f'};
+	return Value.replace(/<[^>]*>/g, '').replace(/&(#x[\da-f]+|#\d+|amp|lt|gt|quot|apos|nbsp|lrm|rlm);/gi, (_Match, Key) =>
+		Key[0] === '#' ? String.fromCodePoint(Key[1].toLowerCase() === 'x' ? parseInt(Key.slice(2),16) : Number(Key.slice(1))) : Entities[Key.toLowerCase()]);
+}
+/** Bounded shared subtitle acquisition. Only count/language/timing/hash receipts leave offscreen memory. */
+export async function ReceiveYoutubeCaptions(Client, Quality, Signal, {hasPermission: HasPermission, fetch: Fetch = globalThis.fetch, report: Report = async () => {}} = {})
+{
+	const Sources = await Client.ResolveYoutubeCaptions(Quality, Signal);
+	let HttpResponses = 0, Completed = 0;
+	if (Sources.length) await Report({phase:'collecting',count:Sources.length,completed:0});
+	const Tracks = await ReadSubtitles(Sources, {signal: Signal,
+		authorize: async Urls => {for (const Url of Urls) if (!await HasPermission(Url)) throw new LocalizedError('youtube_permission_denied');},
+		fetch: async (Url, Init) => {const Response = await Fetch(Url, {...Init, credentials:'omit'}); if (Response.ok) HttpResponses++; return Response;},
+		onProgress: async ({completed}) => {Completed = completed; await Report({phase:'collecting',count:Sources.length,completed});},
+	});
+	const Receipt = [];
+	for (const Track of Tracks)
+	{
+		const Cues = ParseVtt(Track.content).cues;
+		if (!Cues.length || !Cues.some(Cue => Plain(Cue.text).trim())) throw new LocalizedError('subtitle_invalid');
+		const Lines = [...new Set(Cues.flatMap(Cue => Plain(Cue.text).split('\n').map(Line => Line.trim()).filter(Boolean)))].sort();
+		const Hash = await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(Lines)));
+		const Timeline = Cues.map(Cue => [Math.round(Cue.start*1000),Math.round(Cue.end*1000),Plain(Cue.text).split('\n').map(Line=>Line.trim()).filter(Boolean).join('\n')]).filter(Cue=>Cue[2]);
+		const TimingHash = await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(Timeline)));
+		Receipt.push({language:Track.language,label:Track.label,cues:Cues.length,firstStartMs:Math.round(Cues[0].start*1000),lastEndMs:Math.round(Math.max(...Cues.map(Cue=>Cue.end))*1000),
+			timelineHash:Array.from(new Uint8Array(TimingHash),Byte=>Byte.toString(16).padStart(2,'0')).join(''),
+			linesHash:Array.from(new Uint8Array(Hash),Byte=>Byte.toString(16).padStart(2,'0')).join('')});
+	}
+	const Result = {phase: Tracks.length ? 'ready' : 'unavailable',count:Tracks.length,completed:Completed,httpResponses:HttpResponses,tracks:Receipt};
+	return {tracks:Tracks,receipt:Result};
+}

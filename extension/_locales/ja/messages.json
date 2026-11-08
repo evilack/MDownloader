@@ -1398,5 +1398,20 @@
   },
   "view_youtube_quality_checking": {
     "message": "YouTube の画質を確認しています…"
+  },
+  "subtitle_invalid": {
+    "message": "字幕データが無効です。字幕が欠落したファイルは保存していません。"
+  },
+  "subtitle_unsupported": {
+    "message": "この字幕形式にはまだ対応していません。字幕が欠落したファイルは保存していません。"
+  },
+  "subtitle_limit": {
+    "message": "字幕のサイズまたはトラック数の上限を超えました。"
+  },
+  "subtitle_download_failed": {
+    "message": "字幕をダウンロードできませんでした（$1）。字幕が欠落したファイルは保存していません。"
+  },
+  "subtitle_mux_failed": {
+    "message": "MP4にすべての字幕を埋め込めませんでした。字幕が欠落したファイルは保存していません。"
   }
 }

@@ -353,6 +353,11 @@ export async function UpdateHls(Message)
 		case 'youtubeReceived':
 		if (!Job.youtube) throw new LocalizedError('job_hls_wrong_state');
 		return WriteJob(Key, {...Job, receipt: Message.receipt});
+		case 'youtubeCaptions':
+		if (!Job.youtube) throw new LocalizedError('job_hls_wrong_state');
+		return WriteJob(Key, {...Job, captionReceipt: Message.receipt, subtitleCount: Message.receipt.count,
+			subtitleStatus: {phase:Message.receipt.phase === 'unavailable' ? 'undetected' : Message.receipt.phase,
+				count:Message.receipt.count,completed:Message.receipt.completed,languages:(Message.receipt.tracks ?? []).map(Track=>Track.language),targetLanguage:'',translation:'off'}});
 		case 'streamPartial':
 		if (!Job.hls || Job.snapshot || Job.muxing)
 		{
