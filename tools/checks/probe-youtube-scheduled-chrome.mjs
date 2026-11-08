@@ -7,7 +7,7 @@ import {InspectMp4Subtitles} from '../lib/inspect-mp4-subtitles.mjs';
 const Root=fileURLToPath(new URL('../../',import.meta.url));
 const {chromium}=await import(pathToFileURL(process.env.MDOWNLOADER_PLAYWRIGHT_MODULE||Path.resolve(Path.dirname(process.execPath),'../node_modules/playwright/index.mjs')));
 const Artifact=Path.join(Root,'artifacts/youtube-scheduled/chrome-'+Date.now());await mkdir(Artifact,{recursive:true});
-const Context=await chromium.launchPersistentContext(Path.join(Artifact,'profile'),{executablePath:process.env.MDOWNLOADER_BROWSER_PATH||'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true,ignoreDefaultArgs:['--disable-extensions'],args:['--enable-unsafe-extension-debugging','--autoplay-policy=no-user-gesture-required']});
+const Context=await chromium.launchPersistentContext(Path.join(Artifact,'profile'),{executablePath:process.env.MDOWNLOADER_BROWSER_PATH||'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:false,ignoreDefaultArgs:['--disable-extensions'],args:['--enable-unsafe-extension-debugging','--autoplay-policy=no-user-gesture-required']});
 const ScheduledId=process.env.MDOWNLOADER_SCHEDULED_VIDEO_ID;if(!/^[A-Za-z0-9_-]{11}$/.test(ScheduledId))throw Error('invalid-id');
 const Report={videoId:ScheduledId,flavor:'development',computerUse:false,externalExtractor:false,stages:[]};
 Report.downloadAction='scheduled-register-with-permission-confirm';
@@ -54,8 +54,8 @@ try{
  // First request exposes only the exact CDN origin in the normal quality model. Approve that host in this isolated profile before the UI confirm click.
  await Download.click({modifiers:process.argv.includes('--auto')?[]:['Shift']});
  await new Promise(r=>setTimeout(r,1000));console.log(JSON.stringify({stage:'download-click',events:await UI.evaluate(()=>ProbeEvents),status:await UI.locator('[data-candidate-status]').textContent()}));
- await UI.locator('#quality-dialog[open]').waitFor({timeout:30000});
- Report.qualities=await UI.locator('#quality option').allTextContents();
+ await UI.locator('dialog.download-options-dialog[open]').waitFor({timeout:30000});
+ Report.qualities=await UI.locator('dialog.download-options-dialog select[name="html_resolution_bitrate"] option').allTextContents();
  const permission=await UI.evaluate(async()=>{const data=await chrome.storage.session.get(null);return Object.values(data).flatMap(v=>v?.candidates??[]).filter(c=>c.format==='YOUTUBE').map(c=>({url:c.url}));});
  if(permission.length!==1)throw Error('candidate-count');
  // Inspect optional request origin through the UI's authenticated provider route; no direct client or receiver invocation.
@@ -64,7 +64,7 @@ try{
  if(host){if(!/^https:\/\/[^/]+\.googlevideo\.com\/\*$/.test(host))throw Error('unexpected-cdn');await Approve([host]);Report.liveCdnPermissionApproved=true;}
  const ReceiverTarget=(await Browser.send('Target.getTargets')).targetInfos.find(t=>t.url===`chrome-extension://${id}/hls-runner.html`);if(!ReceiverTarget)throw Error('offscreen-missing');
  const Receiver=await Panel(Browser,ReceiverTarget);await Receiver.send('Network.enable');await Receiver.send('Network.emulateNetworkConditions',{offline:false,latency:20,downloadThroughput:800000,uploadThroughput:-1});Report.receiverThrottledBytesPerSecond=800000;
- await UI.locator('#confirm-quality').click();
+ await UI.locator('dialog.download-options-dialog button[type="submit"]').click();
  const readJobs=()=>Options.evaluate(async()=>Object.entries(await chrome.storage.local.get(null)).filter(([k,v])=>k.startsWith('job:')&&v.youtube).map(([,v])=>v));
  async function until(read,predicate,label,timeout=120000){const end=Date.now()+timeout;while(Date.now()<end){const value=await read();if(predicate(value))return value;await new Promise(r=>setTimeout(r,200));}throw Error('timeout:'+label);}
  const job=await until(readJobs,js=>js.some(j=>j.waiting&&j.state==='active'),'queued-waiting').then(js=>js.find(j=>j.waiting));

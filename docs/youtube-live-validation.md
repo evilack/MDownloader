@@ -12,11 +12,23 @@ User-supplied JXR579POAu4 is currently an ended SBS live archive: isLiveNow=fals
 
 ## Scheduled waiting and user hold
 
-An actual Studio webcam test broadcast FwuPrgVPmis was created as unlisted for05:20KST, with Iriun Webcam and its microphone selected. Start was never clicked. An isolated development Chrome registered that watch page through the normal quality/confirm/enqueue UI and showed waiting, zero bytes and no downloadId.
+An actual Studio webcam test broadcast FwuPrgVPmis was created as unlisted for05:20KST, with Iriun Webcam and its microphone selected. At that preparation stage, Start had not been clicked. An isolated development Chrome registered that watch page through the normal quality/confirm/enqueue UI and showed waiting, zero bytes and no downloadId.
 
-The user then explicitly deferred actual scheduled broadcasting until later work and requested all prepared windows closed. Studio/test watch tabs, camera preview and the owned failed-login window were closed. The headless scheduled observation was stopped on that request. No webcam broadcast was started. Cloud schedules were neither deleted nor rescheduled.
+The user then explicitly deferred actual scheduled broadcasting until later work and requested all prepared windows closed. Studio/test watch tabs, camera preview and the owned failed-login window were closed. The headless scheduled observation was stopped on that request. No webcam broadcast was started during that preparation. Cloud schedules were neither deleted nor rescheduled.
 
-Actual upcoming-to-live broadcast transition and natural-end acceptance are deferred by the user. Identity-pinned polling, fresh format choice and cancellation without scratch allocation are unit tested; these do not replace that external acceptance. The implementation requires Chrome to remain running; it does not wake a closed browser or sleeping computer.
+That hold was subsequently lifted for actual-start validation. The controlled upcoming-to-live transition is now verified below. Natural-end automatic download completion remains unverified: this test explicitly used the download manager's Save and finish action. The implementation requires Chrome to remain running; it does not wake a closed browser or sleeping computer.
+
+## Actual scheduled start, resumed 2026-11-09
+
+The user explicitly approved sending Iriun Webcam video and microphone audio to the existing unlisted FwuPrgVPmis broadcast for approximately one minute. Studio was controlled through browser DOM APIs in the existing logged-in Chrome; Computer Use was not used. An isolated normal (headless=false) development Chrome157.0.8103.39 registered that exact watch page through Shift-click Download options and confirmed the scheduled choice. The manager first showed active/waiting, zero bytes and no downloadId.
+
+Only after that waiting state was saved did Studio Start get clicked (2026-11-09 08:46:16.196 KST). Studio reported that live streaming had started. The same queued request automatically switched to live=true/waiting=false and received 114874 bytes before its first ready snapshot, without re-enqueue or a direct receiver call. The manager's Save and finish action then produced a 384967-byte MP4. Native Chrome download bytes matched the copied file and SHA-256 was 6efaf1a3f8a915c4b396e1d0bb7d7c77450be138d0cbfcdd377015fce960643d.
+
+Mediabunny inside the actual development Chrome measured an MP4 duration of 13.981179 seconds and decoded beginning/tail video and audio samples at 1920×1080. At 1s and 13.681s, audio RMS was 0.0025304 and 0.0030852 respectively (1024 decoded audio frames at each point), establishing non-silent microphone signal rather than only an empty audio track. This is a short Save and finish capture, not a full-broadcast or natural-end download assertion. The scheduled entry advertised no captions; live-caption ingestion is not claimed.
+
+Studio End was confirmed at 08:47:31.452 KST. The live/end controls were subsequently replaced by New stream, and the owned Studio tab was closed to stop preview camera/microphone use. The unlisted ended broadcast remains in the user's account; it was not deleted. Raw MP4/screenshots remain in ignored local artifacts, not the commit. [Distilled evidence](evidence/2026-11-09-youtube-scheduled-start-development.json).
+
+The maintained scheduled probe was updated from the retired quality-dialog selectors to the current Download options dialog and runs normal Chrome. No extension runtime, official YouTube.js/googlevideo/Mediabunny source or vendor bundle changed. Store YouTube exclusion remains physical; Store Chrome is not run.
 
 ## Native Explorer registration
 

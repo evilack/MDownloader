@@ -172,3 +172,7 @@ Folder selection now gates Windows setup and preserves the previous directory on
 # Windows helper removal — 2026-11-09
 
 Windows settings removal, Installed Apps registration, safe file/registry removal and authenticated download-location reset are shared saved-file changes. Official YouTube.js, googlevideo and Mediabunny sources, pinned versions and generated vendor bundles are unchanged. Media and subtitle data are preserved. Store YouTube code/vendor exclusion remains physical; only development Chrome is run for acceptance.
+
+# Real scheduled start validation — 2026-11-09
+
+The user-approved unlisted Iriun webcam broadcast FwuPrgVPmis was started in Studio after a normal development Chrome job reached scheduled waiting. That job automatically received live AV and saved a 13.981179-second MP4 via Save and finish; actual Chrome decoded beginning/tail 1920x1080 video and non-silent audio samples. Studio was ended and its owned preview tab closed. The maintained scheduled test probe now targets Download options rather than the retired quality dialog and uses normal Chrome. Only the validation probe/docs/evidence changed; official YouTube.js, googlevideo and Mediabunny sources, versions and vendor bundles remain unchanged. This is real startup acceptance, not full-broadcast/natural-end completion or live-caption acceptance. Store YouTube exclusion remains unchanged; no Store browser run.
