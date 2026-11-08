@@ -368,3 +368,11 @@ Review findings were reproduced and fixed: stream subtitle IDs are filtered afte
 Final scoped candidate: extension tree `1f0d6fbde1e51adf1808f32046911030d76b54cf`; Chrome157.0.8103.39. Tests438 passed/1 skipped/0 failed; project0 failures/73 preserved files;10 locales×477 messages/0 missing references. Development182 files/441 imports; Store155/398 verified (inspection only). Actual Chrome assertions passed; screenshots and logs retained under artifacts/download-options/verified.
 
 Merged working-folder suite:447 passed/1 skipped/0 failed; unrelated uncommitted work remains separate.
+
+# Registered Explorer repair — 2026-11-09
+
+Refreshed the already-approved HKCU host for the actual development extension. File fingerprint errors no longer become false missing-helper advice; a native port keeps the worker alive while the first folder chooser is open. The chooser uses Chrome's parent HWND and a topmost owner. A native ping verifies connection without a picker. User explicitly rejected an additional connection-confirmation popup; none is included. Original normal-click reveal and Shift-click browser playback remain.
+
+Actual Chrome157 completed-row click reached the installed host, validated an owned prelinked file and opened an Explorer window observed through Shell.Application. Shift replay decoded320px video. No Computer Use, alternate folder page or native picker selection. This tests an owned fixture folder; the user's current file/folder association is not observed. First association still needs a saved-folder choice when no binding exists. Installed host/dialog hashes match source. [Evidence](evidence/2026-11-09-explorer-repair-development.json); screenshots/logs under artifacts/explorer-repair/chrome-1794172795677.
+
+Scoped441 passed/1 skipped/0 failed; merged450 passed/1 skipped/0 failed. Project0 failures/73 preserved files;10 locales×477 messages/0 missing references. Development182 files/441 imports; Store155/398 verified, no Store browser run. Upstream/vendor code is unchanged.

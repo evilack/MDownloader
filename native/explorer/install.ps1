@@ -6,6 +6,7 @@ $Registry='HKCU:\Software\Google\Chrome\NativeMessagingHosts\com.mdownloader.exp
 if(Test-Path -LiteralPath $Registry){$Existing=(Get-Item -LiteralPath $Registry).GetValue('');if($Existing -ne $Manifest){throw 'Another Explorer bridge registration exists; inspect it before replacing.'}}
 New-Item -ItemType Directory -Path $Destination -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'host.ps1') -Destination (Join-Path $Destination 'host.ps1') -Force
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'dialog.ps1') -Destination (Join-Path $Destination 'dialog.ps1') -Force
 $Launcher=Join-Path $Destination 'host.cmd'
 [IO.File]::WriteAllText($Launcher,('@echo off'+"`r`n"+'"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -STA -File "%~dp0host.ps1" %*'+"`r`n"),[Text.Encoding]::ASCII)
 $Config=@{name='com.mdownloader.explorer';description='MDownloader Windows Explorer file reveal';path=$Launcher;type='stdio';allowed_origins=@($ExtensionId | ForEach-Object {'chrome-extension://'+$_+'/'})}

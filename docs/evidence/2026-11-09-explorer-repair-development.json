@@ -1,0 +1,77 @@
+{
+  "scope": "Registered Windows Explorer helper repair; no new confirmation popup",
+  "computerUse": false,
+  "fixtureBoundary": "Actual Chrome completed-row normal click, real saved sample, real registered native host, prelinked owned fixture directory, Explorer observed through Shell.Application; no OS picker selection or user-current-file acceptance",
+  "red": [
+    "file read failure incorrectly becomes explorer_bridge_required",
+    "missing Chrome HWND/modal-owner handling"
+  ],
+  "changes": [
+    "native connection kept alive through response",
+    "fingerprint failures preserve file-read error",
+    "native ping handshake",
+    "Chrome-owned first folder chooser",
+    "approved registration refreshed without another approval"
+  ],
+  "chrome": {
+    "artifact": "E:\\Project\\MDownloader\\artifacts\\explorer-repair\\chrome-1794172795677",
+    "computerUse": false,
+    "actualChrome": true,
+    "fixture": "real saved file, registered native helper, prelinked owned fixture folder; no OS picker automation",
+    "confirmationPopup": false,
+    "browser": "Chrome/157.0.8103.39",
+    "extensionId": "eaimflahgdgfehekmdefignmffapamjk",
+    "connected": {
+      "connected": true
+    },
+    "explorerObserved": true,
+    "managerError": "",
+    "noSubstitutePage": true,
+    "noConfirmationDialog": true,
+    "shiftReplay": {
+      "width": 320,
+      "time": 0.307648
+    },
+    "passed": true
+  },
+  "artifacts": "E:\\Project\\MDownloader\\artifacts\\explorer-repair\\chrome-1794172795677",
+  "probe": "node tools/checks/probe-explorer-chrome.mjs",
+  "remainingBoundary": "User's current saved-folder native association has not been supplied or observed. The first folder-link chooser remains necessary if that directory key has no binding.",
+  "tests": {
+    "scoped": {
+      "passed": 441,
+      "skipped": 1,
+      "failed": 0
+    },
+    "merged": {
+      "passed": 450,
+      "skipped": 1,
+      "failed": 0
+    }
+  },
+  "project": {
+    "failures": 0,
+    "preservedFiles": 73
+  },
+  "locales": {
+    "count": 10,
+    "messages": 477,
+    "missing": 0
+  },
+  "distributions": {
+    "development": {
+      "files": 182,
+      "imports": 441,
+      "verified": true
+    },
+    "store": {
+      "files": 155,
+      "imports": 398,
+      "verified": true,
+      "executed": false
+    }
+  },
+  "scopedExtensionTree": "9b8f970df9727f46e7a78b63ba36d39ff88dc37b",
+  "actualChromeSourceBoundary": "Main extension includes separate uncommitted work; changed bridge and native files exactly match the scoped source",
+  "bridgeSha256": "50f07853451b16fd50c9a065e13e94018710814031c58d5bc9ae82fc735ca51c"
+}

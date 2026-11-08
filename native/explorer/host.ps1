@@ -41,6 +41,11 @@ try {
     $Header=Read-Exact $InputStream 4;$Size=[BitConverter]::ToUInt32($Header,0)
     if($Size -eq 0 -or $Size -gt 16384){throw 'invalid_message'}
     $Message=[Text.Encoding]::UTF8.GetString((Read-Exact $InputStream ([int]$Size))) | ConvertFrom-Json
+    if($Message.action -ceq 'ping'){
+        $Payload=[Text.Encoding]::UTF8.GetBytes('{"ok":true,"protocol":1}')
+        $Header=[BitConverter]::GetBytes([uint32]$Payload.Length);$OutputStream.Write($Header,0,4);$OutputStream.Write($Payload,0,$Payload.Length);$OutputStream.Flush()
+        return
+    }
     $ParsedGuid=[Guid]::Empty
     if($Message.action -cne 'reveal' -or -not [Guid]::TryParse([string]$Message.folderKey,[ref]$ParsedGuid)){throw 'invalid_message'}
     $Name=[string]$Message.filename
@@ -62,7 +67,8 @@ try {
             try {
                 $Picker.Description="Choose the saved file's folder once to link Windows Explorer: "+$Message.folderName
                 $Picker.ShowNewFolderButton=$false
-                if($Picker.ShowDialog() -ne [Windows.Forms.DialogResult]::OK){throw 'canceled'}
+                . (Join-Path $PSScriptRoot 'dialog.ps1')
+                if((Invoke-SavedFolderPicker $Picker (Get-ChromeParentWindow $ExtraArguments)) -ne [Windows.Forms.DialogResult]::OK){throw 'canceled'}
                 $Directory=$Picker.SelectedPath
             } finally {$Picker.Dispose()}
         }
