@@ -109,9 +109,9 @@ function Harness(T, Play = async() =>
 			delete globalThis[Key];
 		}
 	});
-	return {view: View, trigger: Trigger, players: Players, async open(Load, States)
+	return {view: View, trigger: Trigger, players: Players, async open(Load, States, Capture)
 		{
-			View.attach(Trigger, Load, () => undefined, undefined, State => States.push(State));
+			View.attach(Trigger, Load, () => undefined, Capture, State => States.push(State));
 			Trigger.dispatchEvent(Object.assign(new Event('pointerenter'), {pointerType: 'mouse', clientX: 20, clientY: 20}));
 			T.mock.timers.tick(RuntimePolicy.Preview.HoverOpenDelayMs);
 			await Settle();
@@ -134,6 +134,12 @@ Test('reports actual play rejection after hovering rather than thumbnail availab
 	await H.open(async() => ({url: 'https://media.test/clip.mp4', format: 'MP4'}), States);
 	Assert.deepEqual(States, ['loading', 'failed']);
 	Assert.equal(DebugLog.Snapshot().find(Entry => Entry.event === 'PreviewFinished')?.result, 'failed');
+});
+Test('YouTube watch candidates use the bounded page capture and wait for real preview playback',async T=>{
+	const H=Harness(T),States=[];let Captures=0;
+	await H.open(async()=>({format:'YOUTUBE'}),States,async()=>{Captures++;return'data:video/webm;base64,fixture';});
+	Assert.equal(Captures,1);Assert.equal(H.players.length,1);Assert.deepEqual(States,['loading']);
+	Assert.equal(H.players[0].src,'data:video/webm;base64,fixture');H.players[0].dispatchEvent(new Event('playing'));Assert.deepEqual(States,['loading','playing']);
 });
 Test('reports playing and later media errors, while metadata loading alone is not success', async T =>
 {

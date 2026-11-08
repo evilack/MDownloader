@@ -17,6 +17,7 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 	const Variants = new Map(Candidates.map(Item => [Item.id, Item.variants ?? []]));
 	const SingleStreams = new Set(Candidates.filter(Item => Item.singleStream).map(Item => Item.id));
 	const SelectedSources = new Set(Candidates.filter(Item => Item.selectedSource).map(Item => Item.id));
+	const PageSources = new Set(Candidates.filter(Item => Item.pagePlayer === true).map(Item => Item.id));
 	const Results = new Map();
 
 	// 주입 함수는 모듈을 가져올 수 없으므로, 워커가 넘긴 표준 갱신 쿼리 이름으로 비교 키를 만듭니다.
@@ -64,6 +65,8 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 			{
 				if (!IsCurrent())
 				{
+					bReadable = false;
+					if (Recorder?.state === 'recording') Recorder.stop();
 					return;
 				}
 				try
@@ -242,6 +245,11 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 			// 정적 썸네일 조회 한 번에서는 같은 프레임의 관측 스냅샷을 공유합니다.
 			// 아래 RecordClip의 실시간 소유권 검사는 캡처 도중 문서 전환을 잡아야 하므로 별도로 유지합니다.
 			const ResourceEntries = StreamPlayer ? Frame.performance.getEntriesByType('resource') : [];
+			// A provider may bind its canonical page (not a media URL) to one decoded visible player.
+			// The worker must have validated this exact top-level document; never borrow child/ambiguous players.
+			const PagePlayers = Page && Frame === window && PageSources.size === 1 && Candidates.length === 1
+				? Players.filter(Player => Player.videoWidth > 0 && Player.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA &&
+					Player.getBoundingClientRect().width > 0 && Player.getBoundingClientRect().height > 0) : [];
 			for (const [Id, Url] of Pending)
 			{
 				const Related = new Set([Url, ...(Capture?.variants ?? Variants.get(Id))].map(PlaybackKey));
@@ -257,7 +265,8 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 				// 이전 서명 주소의 요청 기록 때문에 현재 프레임을 버리지 않습니다. 이 보충 연결은
 				// 정확한 문서의 단일 재생 요소에서 이미지·제목을 읽을 때만 쓰며 녹화에는 쓰지 않습니다.
 				const bWorkerSource = (bSingleStream || SingleStreams.has(Id)) && (!Latest || SelectedSources.has(Id)) && !Capture && Frame === window && Active.length === 1 && Active[0] === StreamPlayer;
-				const Player = Direct ?? (FromPlayback || bWorkerSource ? StreamPlayer : undefined);
+				const PagePlayer = PageSources.has(Id) && PagePlayers.length === 1 ? PagePlayers[0] : undefined;
+				const Player = Direct ?? PagePlayer ?? (FromPlayback || bWorkerSource ? StreamPlayer : undefined);
 				if (!Player)
 				{
 					continue;
@@ -281,6 +290,7 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 				}
 				if (Capture)
 				{
+					const PageSource = Player.currentSrc || Player.src, PageObject = Player.srcObject;
 					const Manifest = Capture.format === 'MPD' ? /\.mpd(?:[?#]|$)/i : /\.m3u8(?:[?#]|$)/i;
 					// 플레이어가 다른 영상을 틀어도 이전 리소스 기록은 남습니다.
 					// 가장 최근에 요청한 화질만 현재 영상으로 보고 녹화합니다.
@@ -289,6 +299,16 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 						if (Page && location.href !== Page)
 						{
 							return false;
+						}
+						if (PagePlayer)
+						{
+							const CurrentPlayers = [...Frame.document.querySelectorAll('video, audio')].filter(Entry =>
+								(!ExcludedSelector || !Entry.closest(ExcludedSelector)) && Entry.videoWidth > 0 &&
+								Entry.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && Entry.getBoundingClientRect().width > 0 && Entry.getBoundingClientRect().height > 0);
+							const CurrentOwner = Frame.MDownloaderMediaPage?.players.get(Player);
+							return CurrentPlayers.length === 1 && CurrentPlayers[0] === Player && Player.isConnected !== false &&
+								(Player.currentSrc || Player.src) === PageSource && Player.srcObject === PageObject &&
+								(!CurrentOwner || CurrentOwner.page === Frame.location.href);
 						}
 						if (Direct)
 						{

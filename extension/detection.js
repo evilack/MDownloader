@@ -349,6 +349,8 @@ async function CurrentScan(TabId, ScanId, Scope)
 /** 실제 문서의 전체 후보에서 유일성을 검사합니다. 화면에 보이는 일부 항목만으로 단정하지 않습니다. */
 function IsSingleDocumentStream(Saved, Candidate)
 {
+	if (Candidate.format === 'YOUTUBE') return !!IdentifyYoutubeUrl(Saved.page) && IdentifyYoutubeUrl(Saved.page).videoId === IdentifyYoutubeUrl(Candidate.url)?.videoId &&
+		Saved.candidates.filter(Entry => Entry.supported && Entry.format === 'YOUTUBE').length === 1;
 	return IsStreamFormat(Candidate.format) && Saved.candidates.filter(Entry => Entry.supported && IsStreamFormat(Entry.format) &&
 	(Entry.documentId ?? Saved.documentId) === (Candidate.documentId ?? Saved.documentId)).length === 1;
 }
@@ -362,8 +364,12 @@ export async function ResolveCandidate(TabId, ScanId, CandidateId, Scope)
 		throw new LocalizedError('candidate_changed');
 	}
 	AssertMediaAllowed({...Candidate, pageUrl: Saved.page});
-	if (Candidate.format === 'YOUTUBE') return {...Candidate, page: Saved.page, previewPage: Saved.page,
-		documentId: Saved.documentId, singleStream: true, pageTitle: Saved.pageTitle};
+	if (Candidate.format === 'YOUTUBE')
+	{
+		if (!IsSingleDocumentStream(Saved, Candidate)) throw new LocalizedError('candidate_changed');
+		return {...Candidate, page: Saved.page, previewPage: Saved.page,
+			documentId: Saved.documentId, singleStream: true, pageTitle: Saved.pageTitle};
+	}
 	const Context = await ReadMediaContext(TabId);
 	if (Candidate.format === 'WEBRTC')
 	{
@@ -438,7 +444,7 @@ async function ReadPreviews(TabId, DocumentId, Candidates, FrameSize, Page = nul
 
 export async function ReadCandidateThumbnail(TabId, Item)
 {
-	const Previews = await ReadPreviews(TabId, Item.documentId, [{ id: Item.id, url: Item.url, variants: Item.variants ?? [], singleStream: Item.singleStream, selectedSource: Item.selectedSource }], ThumbnailFrame, Item.previewPage);
+	const Previews = await ReadPreviews(TabId, Item.documentId, [{ id: Item.id, url: Item.url, variants: Item.variants ?? [], singleStream: Item.singleStream, ...(Item.format === 'YOUTUBE' ? {pagePlayer: true} : {}), selectedSource: Item.selectedSource }], ThumbnailFrame, Item.previewPage);
 	return Array.isArray(Previews) ? Previews[0] : undefined;
 }
 
@@ -464,7 +470,7 @@ export async function CandidatePreviews({ tabId: TabId, scanId: ScanId, candidat
 		{
 			Documents.set(DocumentId, []);
 		}
-		Documents.get(DocumentId).push({ id: Id, url: Url, ...(Variants ? { variants: Variants } : {}), singleStream: IsSingleDocumentStream(Saved, Item), ...(Item.selectedSource ? { selectedSource: true } : {}) });
+		Documents.get(DocumentId).push({ id: Id, url: Url, ...(Variants ? { variants: Variants } : {}), singleStream: IsSingleDocumentStream(Saved, Item), ...(Item.format === 'YOUTUBE' ? {pagePlayer: true} : {}), ...(Item.selectedSource ? { selectedSource: true } : {}) });
 	}
 	const Previews = await Promise.all([...Documents].map(([DocumentId, Candidates]) =>
 	ReadPreviews(TabId, DocumentId, Candidates, ThumbnailFrame, DocumentId === Saved.documentId ? Saved.page : null)));
@@ -474,7 +480,7 @@ export async function CandidatePreviews({ tabId: TabId, scanId: ScanId, candidat
 export async function PreviewCandidate({ tabId: TabId, scanId: ScanId, candidateId: CandidateId, scope: Scope })
 {
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
-	const [Preview] = await ReadPreviews(TabId, Item.documentId, [{ id: Item.id, url: Item.url, variants: Item.variants ?? [], singleStream: Item.singleStream, selectedSource: Item.selectedSource }], RuntimePolicy.Preview.HoverFrame, Item.previewPage);
+	const [Preview] = await ReadPreviews(TabId, Item.documentId, [{ id: Item.id, url: Item.url, variants: Item.variants ?? [], singleStream: Item.singleStream, ...(Item.format === 'YOUTUBE' ? {pagePlayer: true} : {}), selectedSource: Item.selectedSource }], RuntimePolicy.Preview.HoverFrame, Item.previewPage);
 	// 마스터와 연결된 화질 중 이 문서에서 성공한 CDN 응답만 보호된 스트림의 미리보기에 사용합니다.
 	const Playback = Item.observedVariants?.[0] ?? (Item.requestContext ? Item : undefined);
 	return {
@@ -489,14 +495,14 @@ export async function PreviewCandidate({ tabId: TabId, scanId: ScanId, candidate
 export async function CaptureCandidatePreview({ tabId: TabId, scanId: ScanId, candidateId: CandidateId, scope: Scope })
 {
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
-	if (!IsStreamFormat(Item.format) && Item.format !== 'WEBRTC')
+	if (!IsStreamFormat(Item.format) && !['WEBRTC', 'YOUTUBE'].includes(Item.format))
 	{
 		return null;
 	}
 	const [Frame] = await chrome.scripting.executeScript({
 		target: Item.documentId ? { tabId: TabId, documentIds: [Item.documentId] } : { tabId: TabId },
 		func: CollectPlayerPreviews,
-		args: [[{ id: Item.id, url: Item.url }], {...RuntimePolicy.Preview.HoverFrame, excludedSelector: RuntimePolicy.Detection.AuxiliaryPlayerSelector}, Item.previewPage, {
+		args: [[{ id: Item.id, url: Item.url, pagePlayer: Item.format === 'YOUTUBE' }], {...RuntimePolicy.Preview.HoverFrame, excludedSelector: RuntimePolicy.Detection.AuxiliaryPlayerSelector}, Item.previewPage, {
 				...RuntimePolicy.Preview.PlaybackCapture, format: Item.format, variants: Item.variants ?? [],
 				reloadParameters: HlsReloadParameters,
 			}],

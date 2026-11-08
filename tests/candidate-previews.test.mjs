@@ -1,9 +1,49 @@
 import Assert from 'node:assert/strict';
 import { test as Test } from 'node:test';
-import { CandidatePreviews, ClearScan, FindMedia, PreviewCandidate, ResolveCandidate, Scan } from '../extension/detection.js';
+import { CandidatePreviews, CaptureCandidatePreview, ClearScan, FindMedia, PreviewCandidate, ResolveCandidate, Scan } from '../extension/detection.js';
 import { CollectPlayerPreviews } from '../extension/lib/player-previews.js';
 import { ReadPagePreviewResource } from '../extension/lib/page-preview.js';
 import { HlsReloadParameters } from '../extension/lib/media.js';
+Test('YouTube capture passes a page-bound player hint only after current document validation',async T=>{
+	const Page='https://www.youtube.com/watch?v=FACJInvEmY8',Saved={scanId:'scan',documentId:'doc',page:Page,candidates:[{id:0,url:Page,format:'YOUTUBE',supported:true}]};let Capture;
+	globalThis.chrome={storage:{session:{get:async Key=>({[Key]:Saved})}},scripting:{executeScript:async({func,args})=>{if(func===CollectPlayerPreviews){Capture=args;return[{documentId:'doc',result:'data:video/webm;base64,clip'}];}return[{documentId:'doc',result:{page:Page,active:true}}];}}};T.after(()=>delete globalThis.chrome);
+	Assert.equal(await CaptureCandidatePreview({tabId:7,scanId:'scan',candidateId:0}),'data:video/webm;base64,clip');Assert.equal(Capture[0][0].pagePlayer,true);Assert.equal(Capture[2],Page);Assert.equal(Capture[3].format,'YOUTUBE');
+	Saved.candidates[0].url='https://www.youtube.com/watch?v=-XHx839rSc8';await Assert.rejects(CaptureCandidatePreview({tabId:7,scanId:'scan',candidateId:0}),{key:'candidate_changed'});
+});
+Test('document-bound opaque previews never borrow a different frame or ambiguous visible player',async T=>{
+	const Page='https://www.youtube.com/watch?v=FACJInvEmY8';let Attempts=0;
+	const Player={currentSrc:'blob:https://www.youtube.com/player',currentTime:5,paused:false,ended:false,videoWidth:640,videoHeight:360,readyState:4,querySelectorAll:()=>[],getBoundingClientRect:()=>({width:640,height:360}),requestVideoFrameCallback:()=>1,cancelVideoFrameCallback(){},captureStream(){Assert.fail('must not capture primary tracks');},
+		ownerDocument:{createElement:()=>({getContext:()=>({drawImage(){}}),captureStream(){Attempts++;throw Error('capture boundary');}})}};
+	let Players=[Player];globalThis.HTMLMediaElement={HAVE_CURRENT_DATA:2};globalThis.location={href:Page};globalThis.window={document:{querySelectorAll:()=>Players},location:globalThis.location,performance:{getEntriesByType:()=>[],getEntriesByName:()=>[]},length:0};T.after(()=>{for(const k of['window','location','HTMLMediaElement'])delete globalThis[k];});
+	const Candidate=[{id:0,url:Page,pagePlayer:true}],Options={format:'YOUTUBE'};
+	await CollectPlayerPreviews(Candidate,{},Page,Options);Assert.equal(Attempts,1);
+	Players=[Player,{...Player,currentSrc:'blob:https://www.youtube.com/other'}];await CollectPlayerPreviews(Candidate,{},Page,Options);Assert.equal(Attempts,1);
+	Players=[Player];await CollectPlayerPreviews(Candidate,{},Page+'&different=1',Options);Assert.equal(Attempts,1);
+	await CollectPlayerPreviews([{id:0,url:Page}],{},Page,Options);Assert.equal(Attempts,1);
+	Players=[];window.length=1;window.frames=[{...window,document:{querySelectorAll:()=>[Player]},length:0}];await CollectPlayerPreviews(Candidate,{},Page,Options);Assert.equal(Attempts,1,'a child player is not the validated top-level page player');
+});
+Test('recording rejects even transient page/source/object/owner/ambiguity changes and stops only canvas tracks',async T=>{
+	const Page='https://www.youtube.com/watch?v=FACJInvEmY8';let OwnStops=0,RecorderStops=0,Frame;
+	const Owner={page:Page},Player={currentSrc:'blob:https://www.youtube.com/source',srcObject:undefined,currentTime:5,paused:false,ended:false,readyState:4,videoWidth:640,videoHeight:360,isConnected:true,
+		querySelectorAll:()=>[],getBoundingClientRect:()=>({width:640,height:360}),requestVideoFrameCallback:Callback=>(Frame=Callback,1),cancelVideoFrameCallback(){},captureStream(){Assert.fail('primary stream must not be captured');}};
+	const Track={muted:false,readyState:'live',stop(){OwnStops++;}};let Players=[Player],Mutate,Restore;
+	Player.ownerDocument={createElement:()=>({getContext:()=>({drawImage(){}}),captureStream:()=>({getVideoTracks:()=>[Track],getTracks:()=>[Track]})})};
+	globalThis.location={href:Page};globalThis.HTMLMediaElement={HAVE_CURRENT_DATA:2};globalThis.window={location,document:{querySelectorAll:()=>Players},performance:{getEntriesByType:()=>[],getEntriesByName:()=>[]},MDownloaderMediaPage:{players:new Map([[Player,Owner]])},length:0};
+	globalThis.MediaStream=class{};globalThis.MediaRecorder=class extends EventTarget{
+		state='inactive';start(){this.state='recording';queueMicrotask(()=>{Mutate();Frame();Restore();});}
+		stop(){if(this.state==='inactive')return;this.state='inactive';RecorderStops++;queueMicrotask(()=>{Player.currentTime++;this.dispatchEvent(Object.assign(new Event('dataavailable'),{data:new Blob(['fixture frame'])}));this.dispatchEvent(new Event('stop'));});}
+	};globalThis.FileReader=class{readAsDataURL(){this.result='data:video/webm;base64,fixture';queueMicrotask(()=>this.onload());}};
+	T.after(()=>{for(const Key of['window','location','HTMLMediaElement','MediaStream','MediaRecorder','FileReader'])delete globalThis[Key];});
+	const Cases=[
+		[()=>location.href=Page+'&changed=1',()=>location.href=Page],
+		[()=>Player.currentSrc='blob:https://www.youtube.com/changed',()=>Player.currentSrc='blob:https://www.youtube.com/source'],
+		[()=>Player.srcObject={},()=>Player.srcObject=undefined],
+		[()=>Owner.page=Page+'&changed=1',()=>Owner.page=Page],
+		[()=>Players=[Player,{...Player}],()=>Players=[Player]],
+	];
+	for([Mutate,Restore]of Cases)Assert.equal(await CollectPlayerPreviews([{id:0,url:Page,pagePlayer:true}],{maxWidth:480,maxHeight:270},Page,{durationMs:10,timeoutMs:100,maxBytes:1024,format:'YOUTUBE'}),null);
+	Assert.equal(OwnStops,Cases.length);Assert.equal(RecorderStops,Cases.length);
+});
 Test('resolves the current page title together with standard media session broadcast metadata', async T =>
 {
 	const Page = 'https://player.test/channel';

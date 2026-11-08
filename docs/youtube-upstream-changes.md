@@ -95,3 +95,9 @@
 - `captions.js`: 미포함으로 선택 가능한 자막이 없으면 `not-selected`, 개수 0·자막 HTTP 0을 기록하고 정상 AV 저장을 유지한다. 자막 내용이나 signed URL은 저장하지 않는다.
 
 기존 같은 영상의 영어·한국어는 모두 자동 생성 자막이다. 실제 개발판 Chrome에서 포함은 자막 2개, 미포함은 자막 HTTP 0회/MP4 자막 0개로 확인했다. 이 영상에는 수동 자막이 없어 수동+자동 혼합 보존은 fixture 회귀 검사로 구분해 검증했다. [옵션 검증](verification.md#automatic-caption-option--2026-11-09)을 참조한다.
+
+## 2026-11-09: YouTube 페이지 플레이어 미리보기 연결
+
+공식 YouTube.js 원본·번들·클라이언트 추출/자막 계약은 수정하지 않았다. canonical watch URL을 미디어 주소로 사용하지 않는다. `detection.js`에서 현재 scan/document/video identity를 확인한 YouTube 후보에만 pagePlayer 힌트를 부여하고, `media-preview.js`의 기존 짧은 캔버스 클립 경로에 연결했다. `player-previews.js`는 정확한 문서의 단일 표시 플레이어만 읽으며 녹화 중 주소·srcObject·소유권·모호성 변화가 있으면 결과를 폐기한다. 원본 트랙을 캡처/종료하거나 원본 재생 위치를 변경하지 않는다.
+
+업데이트 후 `node tools/checks/probe-youtube-preview-chrome.mjs`로 사용자 영상 FACJInvEmY8의 실제 움직이는 hover 재생, 원본의 계속 재생, 빠른 닫기와 문서 이동 중 정리를 검사한다. 정지 이미지만 보이거나 원본만 움직이는 것은 통과가 아니다. 스토어판의 미디어 출처 차단은 이 경로에도 적용한다. [검증 기록](verification.md#youtube-hover-preview--2026-11-09)을 참조한다.
