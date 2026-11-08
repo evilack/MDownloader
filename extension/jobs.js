@@ -574,6 +574,15 @@ export async function CaptureJobPreview(RequestId)
 	return CaptureResolvedCandidatePreview(Source.pageCandidate.tabId, Source.pageCandidate.item);
 }
 
+export async function SavedLocation(RequestId)
+{
+	if (typeof RequestId !== 'string' || !/^[a-f\d-]{36}$/i.test(RequestId)) throw new LocalizedError('job_invalid_request');
+	const Job = await ReadJob(JobKey(RequestId));
+	if (!Job?.pickedDownloadFolder || !['complete', 'interrupted'].includes(Job.state) || !Job.exists) throw new LocalizedError('job_state_changed');
+	AssertMediaAllowed({...Job, youtubeSource: Job.youtube || Job.youtubeSource});
+	return {folder: Job.pickedDownloadFolder, name: Job.filename};
+}
+
 export async function RemoveJob(RequestId, DeleteFile, ExpectedGroup)
 {
 	const Key = JobKey(RequestId);
@@ -677,6 +686,11 @@ export async function ControlJob(RequestId, Action)
 		DebugLog.Record('JobControlRequested', () => ({ requestId: RequestId, action: Action }));
 	}
 	const Job = await ReadJob(JobKey(RequestId));
+	if (Action === 'show' && Job?.pickedDownloadFolder)
+	{
+		await SavedLocation(RequestId);
+		return chrome.tabs.create({url: chrome.runtime.getURL('saved-folder.html') + '?job=' + encodeURIComponent(RequestId)});
+	}
 	if (Job?.youtube && Job.state === 'active' && Action === 'cancel' && await CancelYoutube(RequestId)) return;
 	if (Job?.youtube && CanFinishJob(Job) && Action === 'finish' && await FinishYoutube(RequestId)) return;
 	if (Job?.recording && Job.state === 'active' && ['finish', 'cancel'].includes(Action) && await ControlWebRtc(RequestId, Action)) return;

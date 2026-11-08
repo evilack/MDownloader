@@ -767,6 +767,12 @@
   "view_action_resume": {
     "message": "Reanudar"
   },
+  "view_open_saved_file": {
+    "message": "Abrir archivo guardado"
+  },
+  "view_folder_list_limit": {
+    "message": "Se muestran las primeras 1.000 entradas."
+  },
   "view_action_show": {
     "message": "Mostrar en carpeta"
   },

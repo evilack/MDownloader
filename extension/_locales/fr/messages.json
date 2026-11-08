@@ -767,6 +767,12 @@
   "view_action_resume": {
     "message": "Reprendre"
   },
+  "view_open_saved_file": {
+    "message": "Ouvrir le fichier enregistré"
+  },
+  "view_folder_list_limit": {
+    "message": "Les 1 000 premières entrées sont affichées."
+  },
   "view_action_show": {
     "message": "Afficher dans le dossier"
   },

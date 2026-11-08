@@ -767,6 +767,12 @@
   "view_action_resume": {
     "message": "जारी रखें"
   },
+  "view_open_saved_file": {
+    "message": "सहेजी गई फ़ाइल खोलें"
+  },
+  "view_folder_list_limit": {
+    "message": "पहली 1,000 प्रविष्टियाँ दिखाई गई हैं।"
+  },
   "view_action_show": {
     "message": "फ़ोल्डर में दिखाएँ"
   },

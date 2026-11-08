@@ -1,0 +1,65 @@
+{
+  "developmentOnly": true,
+  "computerUse": false,
+  "fixture": "real OPFS saved media + registered completed job",
+  "nativeExplorerAutomated": false,
+  "browser": "Chrome/157.0.8103.39",
+  "browserSettingsButtonRemoved": true,
+  "shortcutVisible": true,
+  "folder": "saved-media",
+  "highlight": "saved.mp4",
+  "linkReleased": true,
+  "linkRestored": true,
+  "media": {
+    "width": 320,
+    "height": 184,
+    "time": 0.302676,
+    "ready": 4,
+    "duration": 10.031066
+  },
+  "passed": true,
+  "sourceExtensionTree": "7db3fc0ddf361d82401b14cf98b83ad8fb98b9a0",
+  "validation": {
+    "scoped": {
+      "passed": 376,
+      "failed": 0
+    },
+    "mergedRoot": {
+      "passed": 425,
+      "skipped": 1,
+      "failed": 0
+    },
+    "project": {
+      "failures": 0,
+      "preservedFiles": 73
+    },
+    "locales": {
+      "count": 10,
+      "messages": 409,
+      "missingReferences": 0
+    },
+    "packages": {
+      "development": {
+        "files": 169,
+        "imports": 384
+      },
+      "chromeStore": {
+        "files": 143,
+        "imports": 350,
+        "browserExecuted": false
+      }
+    },
+    "review": {
+      "targetedPassed": 14,
+      "fixed": [
+        "strict MIME allowlist",
+        "selected file retained before enumeration cap"
+      ],
+      "remaining": 0
+    },
+    "baseline": {
+      "shortcutVisible": false,
+      "browserSettingsButtonRemoved": false
+    }
+  }
+}

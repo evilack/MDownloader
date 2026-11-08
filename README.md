@@ -136,6 +136,7 @@ Open **Download manager** from the popup to manage active and completed jobs.
 - Pause or resume a direct browser download when the browser reports that it supports the action.
 - Cancel a selected active job independently of other jobs.
 - Use **Show in folder** for a completed browser download.
+- Direct writes to a selected folder retain the same folder icon. It opens the extension's saved-folder view with the saved media highlighted and a browser-open link. Browser-managed downloads retain their existing native file-manager action.
 - Copy a source link or inspect the full filename/address through the row's tooltip where available.
 - Delete a record to remove it from the list. The downloaded file stays on disk.
 - **Shift-click Delete** to also remove a completed browser-downloaded file when that action is available.

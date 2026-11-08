@@ -39,17 +39,6 @@ export async function BindDownloadLocation(DownloadFolder, PickedFolderKey)
 		}
 	}
 
-	document.querySelector('#open-download-settings').addEventListener('click', async () =>
-	{
-		try
-		{
-			await chrome.tabs.create({ url: 'chrome://settings/downloads' });
-		}
-		catch
-		{
-			Status.textContent = Translate('opt_open_browser_settings_failed');
-		}
-	});
 	if (DownloadFolder === undefined)
 	{
 		Status.textContent = Translate('opt_folder_read_failed');

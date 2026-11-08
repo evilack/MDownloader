@@ -767,6 +767,12 @@
   "view_action_resume": {
     "message": "Возобновить"
   },
+  "view_open_saved_file": {
+    "message": "Открыть сохранённый файл"
+  },
+  "view_folder_list_limit": {
+    "message": "Показаны первые 1 000 элементов."
+  },
   "view_action_show": {
     "message": "Показать в папке"
   },

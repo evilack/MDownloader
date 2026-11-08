@@ -18,6 +18,17 @@ class Node
 	get value() { return Number(this.attributes.value || 0); }
 	set value(Value) { this.attributes.value = String(Value); }
 }
+Test('completed picked-folder downloads retain the existing folder shortcut beside delete',async T=>
+{
+	T.mock.method(globalThis,'fetch',async Url=>new Response(await ReadFile(Url)));
+	globalThis.document={createElement:Tag=>new Node(Tag)};T.after(()=>delete globalThis.document);await InitializeLocale('en');
+	const Flatten=N=>[N,...N.children.flatMap(Flatten)];
+	for(const State of ['complete','interrupted']){
+		const Job={requestId:'completed',filename:'movie.mp4',state:State,exists:true,pickedDownloadFolder:'folder'};
+		const Entry=CreateJobRow(Job,{control:new Node('button')},{Announce(){},Refresh(){},CountFormat:new Intl.NumberFormat('en')});
+		Assert.ok(Flatten(Entry.row).some(N=>N.dataset.action==='show'));
+	}
+});
 
 Test('the manager displays received bytes immediately above speed and retains the native progress bar', async T =>
 {

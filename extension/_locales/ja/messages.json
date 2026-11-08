@@ -767,6 +767,12 @@
   "view_action_resume": {
     "message": "再開"
   },
+  "view_open_saved_file": {
+    "message": "保存したファイルを開く"
+  },
+  "view_folder_list_limit": {
+    "message": "最初の1,000件を表示しています。"
+  },
   "view_action_show": {
     "message": "フォルダで表示"
   },

@@ -767,6 +767,12 @@
   "view_action_resume": {
     "message": "계속"
   },
+  "view_open_saved_file": {
+    "message": "저장한 파일 열기"
+  },
+  "view_folder_list_limit": {
+    "message": "처음 1,000개 항목만 표시합니다."
+  },
   "view_action_show": {
     "message": "폴더에서 보기"
   },

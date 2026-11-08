@@ -767,6 +767,12 @@
   "view_action_resume": {
     "message": "继续"
   },
+  "view_open_saved_file": {
+    "message": "打开已保存的文件"
+  },
+  "view_folder_list_limit": {
+    "message": "仅显示前1,000项。"
+  },
   "view_action_show": {
     "message": "在文件夹中显示"
   },

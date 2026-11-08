@@ -767,6 +767,12 @@
   "view_action_resume": {
     "message": "استئناف"
   },
+  "view_open_saved_file": {
+    "message": "فتح الملف المحفوظ"
+  },
+  "view_folder_list_limit": {
+    "message": "عرض أول 1,000 عنصر."
+  },
   "view_action_show": {
     "message": "عرض في المجلّد"
   },

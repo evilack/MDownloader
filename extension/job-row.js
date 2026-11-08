@@ -260,7 +260,7 @@ export function CreateJobRow(Job, Tile, Context)
 	{
 		Actions.append(Control(Translate('view_action_resume'), 'resume', true));
 	}
-	if (['complete', 'interrupted'].includes(Job.state) && Job.exists && !Job.pickedDownloadFolder)
+	if (['complete', 'interrupted'].includes(Job.state) && Job.exists)
 	{
 		InlineActions.append(SetButtonIcon(Control('', 'show'), Translate('view_action_show'), 'folder'));
 	}

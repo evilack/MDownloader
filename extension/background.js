@@ -3,7 +3,7 @@
  * Chrome이 워커를 다시 시작할 수 있으므로, 작업과 후보 목록의 기준 데이터는 브라우저 저장소에 둡니다.
  */
 import { CandidatePreviews, CaptureCandidatePreview, ClearScan, PreviewCandidate, ResolveCandidate, Scan } from './detection.js';
-import { ControlJob, Enqueue, EnqueuePlayback, JobUrl, ListJobs, PreviewJob, JobThumbnails, CaptureJobPreview, RemoveJob, RemoveJobs, UpdateHls } from './jobs.js';
+import { ControlJob, Enqueue, EnqueuePlayback, JobUrl, ListJobs, PreviewJob, JobThumbnails, CaptureJobPreview, SavedLocation, RemoveJob, RemoveJobs, UpdateHls } from './jobs.js';
 import { ForgetNetwork, ForgetRequest, ObserveManifest, ObserveMediaContext, ObservePageUrl, ObserveRequestStart, ObserveRequest, ObserveResponse } from './network.js';
 import { MediaContextCachePrefix, NetworkCachePrefix, SourceMetadataCachePrefix } from './lib/detection-cache.js';
 import { CancelHls, HlsQualities, HlsRunnerUrl } from './hls-jobs.js';
@@ -81,6 +81,7 @@ async function Route(Message)
 		case 'previewJob': return PreviewJob(Message.requestId);
 		case 'jobThumbnails': return JobThumbnails(Message.requestIds);
 		case 'captureJobPreview': return CaptureJobPreview(Message.requestId);
+		case 'savedLocation': return SavedLocation(Message.requestId);
 		case 'removeJob': return RemoveJob(Message.requestId, Message.deleteFile);
 		case 'removeJobs': return RemoveJobs(Message.requestIds, Message.group);
 		case 'control': return ControlJob(Message.requestId, Message.action);
@@ -132,7 +133,9 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	const bFromHls = Sender.url === HlsRunnerUrl() && Message.type === 'hlsUpdate';
 	const bFromPlayback = Sender.url === Root + 'playback.html' && ['savePlayback', 'authorizePlayback'].includes(Message.type);
 	const bFromManager = Sender.url?.split('?')[0] === Root + 'sidepanel.html';
-	if (!bFromHls && !bFromPlayback && !bFromManager && Sender.url !== Root + 'popup.html')
+	const bFromSavedFolder = Sender.url?.split('?')[0] === Root + 'saved-folder.html';
+	if (bFromSavedFolder && Message.type !== 'savedLocation') return;
+	if (!bFromHls && !bFromPlayback && !bFromManager && !bFromSavedFolder && Sender.url !== Root + 'popup.html')
 	{
 		return;
 	}
