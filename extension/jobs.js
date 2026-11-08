@@ -185,7 +185,7 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 	if (Item.format === 'YOUTUBE')
 	{
 		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle),
-			created: Date.now(), state: 'active', youtube: true, bytesReceived: 0,
+			created: Date.now(), state: 'active', youtube: true, bytesReceived: 0, waiting: !!Quality?.scheduled, live: !!Quality?.live,
 			includeYoutubeAutoCaptions: await GetSetting(SettingKeys.includeYoutubeAutoCaptions)};
 		await RegisterMediaJob(Key, Job, TabId, Item);
 		try { await ResolveYoutubeSelection(Job, Item, Quality); }
@@ -398,7 +398,7 @@ export async function UpdateHls(Message)
 		return SetScopedHlsRequestRules(Message.context, Message.urls, Job.requestId);
 		case 'progress': return WriteJob(Key, {
 			...Job, bytesReceived: Message.received, finished: Message.finished,
-			count: Message.count, muxing: !!Message.muxing, live: !!Message.live, totalBytes: Message.totalBytes,
+			count: Message.count, muxing: !!Message.muxing, live: !!(Message.live ?? Job.live), waiting: !!Message.waiting, totalBytes: Message.totalBytes,
 			snapshotAvailable: !!Message.snapshotAvailable,
 		});
 		case 'partialFormat':

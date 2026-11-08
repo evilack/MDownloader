@@ -52,11 +52,11 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 		const Slot = CreateElement('li', '', 'quality-slot');
 		Slot.append(QualityDialog);
 		Trigger.closest('.candidate').after(Slot);
-		QualitySelect.replaceChildren(...Qualities.map(({ resolution: Resolution, bandwidth: Bandwidth }, Index) =>
+		QualitySelect.replaceChildren(...Qualities.map(({ resolution: Resolution, bandwidth: Bandwidth, scheduled: Scheduled }, Index) =>
 		{
 			const Rate = Bandwidth >= Units.DecimalMega ? Translate('view_unit_megabits', BandwidthFormat.format(Bandwidth / Units.DecimalMega))
 			: Translate('view_unit_kilobits', BandwidthFormat.format(Bandwidth / Units.DecimalKilo));
-			const Label = Translate('view_quality_details', Resolution ? Resolution.replace('x', '×') : Translate('view_quality_no_resolution'), Rate);
+			const Label = Scheduled ? Translate('view_youtube_scheduled_quality') : Translate('view_quality_details', Resolution ? Resolution.replace('x', '×') : Translate('view_quality_no_resolution'), Rate);
 			return new Option(Label, String(Index));
 		}));
 		QualityDialog.returnValue = '';

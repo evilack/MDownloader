@@ -1431,5 +1431,11 @@
   },
   "opt_youtube_auto_captions_help": {
     "message": "S’applique aux nouveaux téléchargements YouTube. Désactivez pour conserver uniquement les sous-titres fournis par le créateur."
+  },
+  "view_youtube_waiting": {
+    "message": "En attente de la diffusion programmée"
+  },
+  "view_youtube_scheduled_quality": {
+    "message": "Recevoir la meilleure qualité au démarrage"
   }
 }

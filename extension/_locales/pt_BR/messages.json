@@ -1431,5 +1431,11 @@
   },
   "opt_youtube_auto_captions_help": {
     "message": "Aplica-se a novos downloads do YouTube. Desative para salvar apenas as legendas fornecidas pelo criador."
+  },
+  "view_youtube_waiting": {
+    "message": "Aguardando a transmissão agendada"
+  },
+  "view_youtube_scheduled_quality": {
+    "message": "Receber a melhor qualidade ao iniciar"
   }
 }

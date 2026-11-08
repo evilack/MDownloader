@@ -115,6 +115,7 @@ const Labels = {
 function JobDetails(Job, { bShowDiagnostics, CountFormat })
 {
 	const Details = [];
+	if (Job.waiting) Details.push(Translate('view_youtube_waiting'));
 	if (Job.error)
 	{
 		Details.push(ErrorText(Job.error));
@@ -280,7 +281,7 @@ export function CreateJobRow(Job, Tile, Context)
 	{
 		InlineActions.append(SetButtonIcon(Control('', 'snapshot', true), Translate(Job.hls || Job.recording || Job.youtube ? 'view_action_snapshot' : 'view_action_snapshot_file'), 'download'));
 	}
-	if (Job.state === 'active' && !Job.snapshot && !Job.muxing && (Job.hls || Job.live || Job.youtube))
+	if (Job.state === 'active' && !Job.waiting && !Job.snapshot && !Job.muxing && (Job.hls || Job.live || Job.youtube))
 	{
 		const Finish = SetButtonIcon(Control('', 'finish', true), Translate('view_action_finish'), 'stop-save');
 		Finish.disabled = !CanFinishJob(Job);
@@ -334,7 +335,7 @@ export function CreateJobRow(Job, Tile, Context)
 export function GetJobRowSignature(Job, bShowDiagnostics)
 {
 	return JSON.stringify([Job.filename, Job.state, Job.hasUrl, Job.error, Job.canResume, Job.exists,
-		Job.downloadId, Job.youtube, Job.hls, Job.recording, Job.live, Job.live && Job.finished > 0, Job.snapshotAvailable, Job.snapshotPermission, Job.muxing,
+		Job.downloadId, Job.youtube, Job.hls, Job.recording, Job.live, Job.waiting, Job.live && Job.finished > 0, Job.snapshotAvailable, Job.snapshotPermission, Job.muxing,
 		bShowDiagnostics || Job.state === 'failed' ? Job.diagnostic : undefined, Job.state === 'failed' ? Job.finished : undefined]);
 }
 
@@ -355,6 +356,7 @@ export function UpdateJobRowMetrics(Entry, Job, Now, CountFormat)
 			{
 				Value.speed = Translate(Job.snapshot ? 'view_job_snapshot_muxing' : 'view_job_mp4_muxing');
 			}
+			else if (Job.waiting) Value.speed = Translate('view_youtube_waiting');
 			else if (!Job.live && !Job.count && !Job.recording && !Job.youtube)
 			{
 				Value.speed = Translate('view_job_playlist_check');

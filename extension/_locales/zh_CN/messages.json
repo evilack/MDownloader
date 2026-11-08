@@ -1431,5 +1431,11 @@
   },
   "opt_youtube_auto_captions_help": {
     "message": "适用于新的 YouTube 下载。关闭后仅保存创作者提供的字幕。"
+  },
+  "view_youtube_waiting": {
+    "message": "等待预定直播开始"
+  },
+  "view_youtube_scheduled_quality": {
+    "message": "直播开始时自动接收最高画质"
   }
 }

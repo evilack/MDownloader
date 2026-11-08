@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import{mkdtemp,mkdir,writeFile,readFile,rm}from'node:fs/promises';import{tmpdir}from'node:os';import Path from'node:path';import{spawnSync}from'node:child_process';import{createHash}from'node:crypto';
+import test from 'node:test';import assert from 'node:assert/strict';import{mkdtemp,mkdir,writeFile,readFile,rm,copyFile}from'node:fs/promises';import{tmpdir}from'node:os';import Path from'node:path';import{spawnSync}from'node:child_process';import{createHash}from'node:crypto';
 test('Windows Explorer host validates native framing, origin, folder/file identity and binding without launching OS UI',{skip:process.platform!=='win32'},async t=>{
  const root=await mkdtemp(Path.join(tmpdir(),'mdownloader-explorer-')),folder=Path.join(root,'saved');await mkdir(folder);t.after(()=>rm(root,{recursive:true,force:true}));
  const name='검사, saved.mp4',bytes=Buffer.from('fixture media'),key='55555555-5555-5555-5555-555555555555',origin='chrome-extension://'+'a'.repeat(32)+'/';await writeFile(Path.join(folder,name),bytes);
@@ -12,4 +12,8 @@ test('Windows Explorer host validates native framing, origin, folder/file identi
  assert.equal(run(message,'chrome-extension://'+'b'.repeat(32)+'/').code,'origin_denied');
  const badHeader=Buffer.alloc(4);badHeader.writeUInt32LE(16385);assert.equal(run(message,origin,[],badHeader).code,'invalid_message');
  await writeFile(Path.join(folder,name),'changed');assert.equal(run(message,origin,['-TestFolder',folder]).code,'file_mismatch');
+});
+
+test('production launcher resolves default paths on Windows PowerShell without explicit test overrides',{skip:process.platform!=='win32'},async t=>{
+ const root=await mkdtemp(Path.join(tmpdir(),'mdownloader-host-default-'));t.after(()=>rm(root,{recursive:true,force:true}));await copyFile('native/explorer/host.ps1',Path.join(root,'host.ps1'));const origin='chrome-extension://'+'a'.repeat(32)+'/';await writeFile(Path.join(root,'host-manifest.json'),JSON.stringify({allowed_origins:[origin]}));const bytes=Buffer.from(JSON.stringify({action:'registration-probe'})),header=Buffer.alloc(4);header.writeUInt32LE(bytes.length);const r=spawnSync('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-STA','-File',Path.join(root,'host.ps1'),origin,'--parent-window=0'],{input:Buffer.concat([header,bytes]),windowsHide:true});assert.equal(r.status,0,r.stderr?.toString());assert.equal(JSON.parse(r.stdout.subarray(4).toString()).code,'invalid_message');
 });

@@ -7673,6 +7673,8 @@ function CreateSabrStream(Config, Fetch) {
     videoPlaybackUstreamerConfig: Config.ustreamerConfig,
     clientInfo: Config.clientInfo,
     poToken: Config.poToken,
+    callbacks: Config.callbacks,
+    heartbeatParams: Config.heartbeatParams,
     fetchFunction: Fetch,
     videoHighWaterMark: 4 * 1024 ** 2,
     audioHighWaterMark: 1024 ** 2

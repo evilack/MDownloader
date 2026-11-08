@@ -1431,5 +1431,11 @@
   },
   "opt_youtube_auto_captions_help": {
     "message": "नए YouTube डाउनलोड पर लागू होता है। बंद करने पर केवल निर्माता के दिए सबटाइटल सहेजे जाएँगे।"
+  },
+  "view_youtube_waiting": {
+    "message": "निर्धारित प्रसारण शुरू होने की प्रतीक्षा"
+  },
+  "view_youtube_scheduled_quality": {
+    "message": "प्रसारण शुरू होने पर सर्वोत्तम गुणवत्ता प्राप्त करें"
   }
 }

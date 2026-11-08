@@ -8,13 +8,19 @@ let RuleQueue = Promise.resolve();
 function Context(Change)
 {
 	const Next = RuleQueue.then(async () => {
-		const NextUsers = Users + Change;
+		const NextUsers = Math.max(0, Users + Change);
 		await chrome.declarativeNetRequest.updateSessionRules({removeRuleIds: [RuleId], addRules: NextUsers ? [{id: RuleId, priority: 2,
 			condition: {urlFilter: '|https://www.youtube.com/youtubei/', initiatorDomains: [chrome.runtime.id], requestMethods: ['post'], resourceTypes: ['xmlhttprequest']},
 			action: {type: 'modifyHeaders', requestHeaders: [{header: 'Origin', operation: 'set', value: 'https://www.youtube.com'}, {header: 'Referer', operation: 'set', value: 'https://www.youtube.com/'}]}}] : []});
 		Users = NextUsers;
 	});
 	RuleQueue = Next.catch(() => {}); return Next;
+}
+export function SetYoutubeRequestContext(Enabled)
+{
+	if (!CanUseYoutube()) throw new LocalizedError('youtube_distribution_disabled');
+	if (typeof Enabled !== 'boolean') throw new LocalizedError('job_invalid_request');
+	return Context(Enabled ? 1 : -1);
 }
 async function Request(Type, Fields)
 {

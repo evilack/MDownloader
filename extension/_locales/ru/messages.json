@@ -1431,5 +1431,11 @@
   },
   "opt_youtube_auto_captions_help": {
     "message": "Применяется к новым загрузкам YouTube. Отключите, чтобы сохранять только субтитры, добавленные автором."
+  },
+  "view_youtube_waiting": {
+    "message": "Ожидание запланированной трансляции"
+  },
+  "view_youtube_scheduled_quality": {
+    "message": "Получать в лучшем качестве после начала"
   }
 }

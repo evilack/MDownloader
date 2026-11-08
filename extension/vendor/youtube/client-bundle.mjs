@@ -28895,6 +28895,30 @@ function applyCommentsMutations(memo, mutations) {
   }
 }
 
+// ../../node_modules/youtubei.js/dist/src/parser/youtube/index.js
+var youtube_exports = {};
+__export(youtube_exports, {
+  AccountInfo: () => AccountInfo,
+  Channel: () => Channel2,
+  ChannelListContinuation: () => ChannelListContinuation,
+  Comments: () => Comments,
+  FilteredChannelList: () => FilteredChannelList,
+  Guide: () => Guide,
+  HashtagFeed: () => HashtagFeed,
+  History: () => History,
+  HomeFeed: () => HomeFeed,
+  ItemMenu: () => ItemMenu,
+  Library: () => Library,
+  LiveChat: () => LiveChat2,
+  NotificationsMenu: () => NotificationsMenu,
+  Playlist: () => Playlist2,
+  Search: () => Search,
+  Settings: () => Settings,
+  SmoothedQueue: () => SmoothedQueue,
+  TranscriptInfo: () => TranscriptInfo,
+  VideoInfo: () => VideoInfo
+});
+
 // ../../node_modules/youtubei.js/dist/src/parser/youtube/AccountInfo.js
 var AccountInfo = class {
   #page;
@@ -39087,7 +39111,18 @@ async function CreateInnertube({ fetch, evaluate: evaluate2 }) {
   Platform.shim.eval = evaluate2;
   return Innertube.create({ fetch, retrieve_player: true, enable_session_cache: false, generate_session_locally: false, fail_fast: true });
 }
+async function ReloadPlayerInfo(Tube, VideoId, ReloadContext) {
+  const Endpoint = new nodes_exports.NavigationEndpoint({ watchEndpoint: { videoId: VideoId, racyCheckOk: true, contentCheckOk: true } });
+  const Response = await Endpoint.call(Tube.actions, { client: SabrClientProfile.name, playbackContext: {
+    contentPlaybackContext: { vis: 0, splay: false, lactMilliseconds: "-1", signatureTimestamp: Tube.session.player?.signature_timestamp },
+    reloadPlaybackContext: ReloadContext
+  } });
+  const Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  const Cpn = Array.from(crypto.getRandomValues(new Uint8Array(16)), (Byte) => Alphabet[Byte & 63]).join("");
+  return new youtube_exports.VideoInfo([Response], Tube.actions, Cpn);
+}
 export {
   CreateInnertube,
+  ReloadPlayerInfo,
   SabrClientProfile
 };

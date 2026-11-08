@@ -22,7 +22,7 @@ import {RelayWebRtc, WebRtcSourceLost, CancelAllWebRtc, WebRtcQualities} from '.
 import {AuthorizePlayback} from './lib/playback-authorization.js';
 import {PrepareDistributionNetwork} from './lib/distribution-network.js';
 import {CanUseYoutube} from './lib/distribution-policy.js';
-import {DiscoverYoutube} from './features/youtube/entry.js';
+import {DiscoverYoutube, SetYoutubeRequestContext} from './features/youtube/entry.js';
 void PrepareDistributionNetwork().catch(ErrorValue => ReportDebugFailure(ErrorValue, 'DistributionRulesFailed'));
 void InitializeDebugLogging(async bEnabled =>
 {
@@ -91,6 +91,12 @@ async function Route(Message)
 
 chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 {
+	if (Message.type === 'youtubeRequestContext' && !Sender.tab && Sender.id === chrome.runtime.id && Sender.url === HlsRunnerUrl())
+	{
+		Promise.resolve().then(() => SetYoutubeRequestContext(Message.enabled)).then(
+			() => Respond({ok: true}), ErrorValue => Respond({ok: false, error: SerializeError(ErrorValue)}));
+		return true;
+	}
 	if (Message.type === 'youtubePermission' && Sender.id === chrome.runtime.id && Sender.url === HlsRunnerUrl())
 	{
 		void (async () =>

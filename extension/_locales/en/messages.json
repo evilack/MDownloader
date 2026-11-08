@@ -1431,5 +1431,11 @@
   },
   "opt_youtube_auto_captions_help": {
     "message": "Applies to new YouTube downloads. Turn off to save only creator-provided captions."
+  },
+  "view_youtube_waiting": {
+    "message": "Waiting for the scheduled broadcast"
+  },
+  "view_youtube_scheduled_quality": {
+    "message": "Automatically receive the best quality when the broadcast starts"
   }
 }

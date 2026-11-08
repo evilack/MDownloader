@@ -1431,5 +1431,11 @@
   },
   "opt_youtube_auto_captions_help": {
     "message": "Se aplica a las nuevas descargas de YouTube. Desactiva esta opción para guardar solo los subtítulos del creador."
+  },
+  "view_youtube_waiting": {
+    "message": "Esperando la emisión programada"
+  },
+  "view_youtube_scheduled_quality": {
+    "message": "Recibir la mejor calidad al comenzar"
   }
 }

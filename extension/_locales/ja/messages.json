@@ -1431,5 +1431,11 @@
   },
   "opt_youtube_auto_captions_help": {
     "message": "新しい YouTube ダウンロードに適用します。オフにすると投稿者が登録した字幕のみ保存します。"
+  },
+  "view_youtube_waiting": {
+    "message": "予約配信の開始を待機中"
+  },
+  "view_youtube_scheduled_quality": {
+    "message": "配信開始時に最高画質で自動受信"
   }
 }

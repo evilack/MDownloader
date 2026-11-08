@@ -2,6 +2,13 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {NormalizeWatchPlayer, ReceiveSabrTracks} from '../extension/features/youtube/sabr.js';
 const Id = '-XHx839rSc8';
+
+test('live capture uses live-edge startup and skips only finite VOD endpoint assertions',async()=>{
+ const config={...NormalizeWatchPlayer(raw(),Id,{}),live:true,duration:0};let options,closed=0;
+ const createStream=()=>({videoEndTimeMs:500000,audioEndTimeMs:500000,on(){},abort:async()=>{},start(value){options=value;const stream=()=>new ReadableStream({start(c){c.enqueue(new Uint8Array([1]));c.close();}});return{videoStream:stream(),audioStream:stream()};}});
+ const result=await ReceiveSabrTracks(config,{video:134,audio:140},{createStream,createWriter:async()=>({write:async()=>{},close:async()=>closed++,abort:async()=>{}})});
+ assert.equal(closed,2);assert.equal(options.startTimeMs,undefined);assert.equal(options.isPostLiveDvr,false);assert.equal(result.bytes.video,1);
+});
 test('requested finish drains writes and returns partial, cancel and writer failure never do',{timeout:5000},async()=>{
  for(const mode of ['finish','cancel','write-failure']){
   const stop=new AbortController(),cancel=new AbortController();let controllers=[],closed=0,aborted=0,writes=0;

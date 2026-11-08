@@ -136,7 +136,7 @@ Open **Download manager** from the popup to manage active and completed jobs.
 - Pause or resume a direct browser download when the browser reports that it supports the action.
 - Cancel a selected active job independently of other jobs.
 - Use **Show in folder** for a completed browser download.
-- The completed item's folder icon opens the native file manager for browser-managed downloads. Hold **Shift** while clicking it to play the saved file in a browser tab, including files saved directly to a picked folder. Direct picked-folder Explorer reveal requires the optional [Windows bridge](native/explorer/README.md) and one initial folder link; registration and actual Explorer validation are pending approval. The rejected folder-list page has been removed.
+- The completed item's folder icon opens the native file manager for browser-managed downloads. Hold **Shift** while clicking it to play the saved file in a browser tab, including files saved directly to a picked folder. Direct picked-folder Explorer reveal requires the optional [Windows bridge](native/explorer/README.md) and one initial folder link; it must be registered on the computer and linked to the selected folder once. The rejected folder-list page has been removed.
 - Copy a source link or inspect the full filename/address through the row's tooltip where available.
 - Delete a record to remove it from the list. The downloaded file stays on disk.
 - **Shift-click Delete** to also remove a completed browser-downloaded file when that action is available.
@@ -241,3 +241,5 @@ Mediabunny is bundled under MPL 2.0. See [Third-party notices](THIRD_PARTY_NOTIC
 Development YouTube downloads also acquire available original captions and embed selectable MP4 timed-text tracks. The same VOD was saved with English and Korean automatic captions, with independent saved-file text/timing equality and complete AV verification. See [caption verification](docs/verification.md#youtube-captions--2026-11-09).
 
 The development download settings include **Include automatically generated captions**, enabled by default. Turn it off to retain only creator-provided captions on new YouTube downloads. Existing active jobs retain the setting captured when queued. See [ON/OFF verification](docs/verification.md#automatic-caption-option--2026-11-09).
+
+Development/manual YouTube downloads also support ongoing live broadcasts and queued upcoming broadcasts. Upcoming jobs display a waiting state, check the same video every30seconds and automatically select an available AVC/AAC pair when streaming starts. Live capture starts at the live edge; snapshot/stop-and-save export the received interval. Keep Chrome running; closed Chrome and sleeping computers do not receive future broadcasts. Store builds continue to exclude YouTube execution code. See [live and scheduled verification](docs/verification.md#youtube-live-and-scheduled-broadcasts--2026-11-09).

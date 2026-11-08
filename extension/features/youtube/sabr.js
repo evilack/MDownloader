@@ -5,13 +5,13 @@ const Fail = Code => {throw new YoutubeError(Code);};
 export function NormalizeWatchPlayer(Player, VideoId, Client = {})
 {
 	if (Player?.videoDetails?.videoId !== VideoId) Fail('youtube_session_changed');
-	if (Player.playabilityStatus?.status !== 'OK' || Player.videoDetails.isLive || Player.videoDetails.isUpcoming) Fail('youtube_restricted');
+	if (Player.playabilityStatus?.status !== 'OK' || Player.videoDetails.isUpcoming) Fail('youtube_restricted');
 	const Url = new URL(Player.streamingData?.serverAbrStreamingUrl ?? 'about:blank');
 	if (Url.protocol !== 'https:' || !(Url.hostname === 'googlevideo.com' || Url.hostname.endsWith('.googlevideo.com'))) Fail('youtube_unexpected_host');
 	const Config = Player.playerConfig?.mediaCommonConfig?.mediaUstreamerRequestConfig?.videoPlaybackUstreamerConfig;
 	if (typeof Config !== 'string' || !Config.length || Config.length > 1024 * 1024) Fail('youtube_sabr_config_missing');
 	const Formats = (Player.streamingData?.adaptiveFormats ?? []).filter(Format => !Format.drmFamilies?.length && !Format.drmTrackType && !Format.fairPlayKeyUri);
-	return {videoId: VideoId, title: Player.videoDetails.title ?? '', duration: Number(Player.videoDetails.lengthSeconds), url: Url.href,
+	return {videoId: VideoId, title: Player.videoDetails.title ?? '', ...(Player.videoDetails.isLive ? {live: true} : {}), postLiveDvr: !!Player.videoDetails.isPostLiveDvr, duration: Number(Player.videoDetails.lengthSeconds), url: Url.href,
 		ustreamerConfig: Config, formats: Formats, clientInfo: {clientName: 1, clientVersion: Client.clientVersion ?? ''}};
 }
 
@@ -65,7 +65,7 @@ export async function ReceiveSabrTracks(Config, Selection, {createStream, create
 			if (Config.formats.filter(Format => Format.itag === Selection[Kind]).length > 1) Fail('youtube_format_unavailable');
 			return Selection[Kind];
 		};
-		const Started = Receiver.start({videoFormat: ExactFormat('video'), audioFormat: ExactFormat('audio'), isPostLiveDvr: false, maxRetries: 0});
+		const Started = Receiver.start({videoFormat: ExactFormat('video'), audioFormat: ExactFormat('audio'), isPostLiveDvr: !!Config.postLiveDvr, maxRetries: 0});
 		if (StopSignal?.aborted) Abort();
 		Copies = ['video', 'audio'].map(async Kind =>
 		{
@@ -90,7 +90,7 @@ export async function ReceiveSabrTracks(Config, Selection, {createStream, create
 		});
 		await Promise.all(Copies);
 		Signal.throwIfAborted(); if (Failure) throw Failure;
-		for (const Kind of StopSignal?.aborted ? [] : ['video', 'audio'])
+		for (const Kind of StopSignal?.aborted || Config.live ? [] : ['video', 'audio'])
 		{
 			const Format = Started.selectedFormats?.[Kind + 'Format'] ?? Config.formats.find(Item => Item.itag === Selection[Kind]);
 			const Precise = Number(Format?.approxDurationMs ?? Format?.approx_duration_ms);

@@ -1,9 +1,11 @@
 param([Parameter(Position=0)][string]$CallerOrigin,
-      [string]$ManifestPath=(Join-Path $PSScriptRoot 'host-manifest.json'),
-      [string]$BindingsPath=(Join-Path $PSScriptRoot 'folder-bindings.json'),
+      [string]$ManifestPath,
+      [string]$BindingsPath,
       [switch]$TestMode,[string]$TestFolder,
       [Parameter(ValueFromRemainingArguments=$true)][string[]]$ExtraArguments)
 $ErrorActionPreference='Stop'
+if(-not $ManifestPath){$ManifestPath=Join-Path $PSScriptRoot 'host-manifest.json'}
+if(-not $BindingsPath){$BindingsPath=Join-Path $PSScriptRoot 'folder-bindings.json'}
 function Read-Exact([IO.Stream]$Stream,[int]$Count) {
     $Buffer=New-Object byte[] $Count; $Offset=0
     while($Offset -lt $Count){$Read=$Stream.Read($Buffer,$Offset,$Count-$Offset);if($Read -le 0){throw 'invalid_message'};$Offset+=$Read}

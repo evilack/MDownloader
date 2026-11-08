@@ -1431,5 +1431,11 @@
   },
   "opt_youtube_auto_captions_help": {
     "message": "새 YouTube 다운로드에 적용됩니다. 끄면 직접 등록된 자막만 저장합니다."
+  },
+  "view_youtube_waiting": {
+    "message": "예약방송 시작 대기 중"
+  },
+  "view_youtube_scheduled_quality": {
+    "message": "방송 시작 시 최고 화질로 자동 수신"
   }
 }
