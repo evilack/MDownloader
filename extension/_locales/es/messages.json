@@ -1413,5 +1413,11 @@
   },
   "subtitle_mux_failed": {
     "message": "No se pudieron incrustar todos los subtítulos en el MP4. No se guardó el archivo sin ellos."
+  },
+  "opt_youtube_auto_captions": {
+    "message": "Incluir subtítulos generados automáticamente"
+  },
+  "opt_youtube_auto_captions_help": {
+    "message": "Se aplica a las nuevas descargas de YouTube. Desactiva esta opción para guardar solo los subtítulos del creador."
   }
 }

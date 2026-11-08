@@ -1413,5 +1413,11 @@
   },
   "subtitle_mux_failed": {
     "message": "Unable to embed all subtitles in the MP4. The file was not saved without its captions."
+  },
+  "opt_youtube_auto_captions": {
+    "message": "Include automatically generated captions"
+  },
+  "opt_youtube_auto_captions_help": {
+    "message": "Applies to new YouTube downloads. Turn off to save only creator-provided captions."
   }
 }

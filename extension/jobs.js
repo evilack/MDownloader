@@ -177,7 +177,8 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 	if (Item.format === 'YOUTUBE')
 	{
 		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle),
-			created: Date.now(), state: 'active', youtube: true, bytesReceived: 0};
+			created: Date.now(), state: 'active', youtube: true, bytesReceived: 0,
+			includeYoutubeAutoCaptions: await GetSetting(SettingKeys.includeYoutubeAutoCaptions)};
 		await RegisterMediaJob(Key, Job, TabId, Item, false);
 		try { await ResolveYoutubeSelection(Job, Item, Quality); }
 		catch (ErrorValue) { await WriteJob(Key, {...Job, state: 'failed', error: SerializeError(ErrorValue)}); throw ErrorValue; }
@@ -356,7 +357,7 @@ export async function UpdateHls(Message)
 		case 'youtubeCaptions':
 		if (!Job.youtube) throw new LocalizedError('job_hls_wrong_state');
 		return WriteJob(Key, {...Job, captionReceipt: Message.receipt, subtitleCount: Message.receipt.count,
-			subtitleStatus: {phase:Message.receipt.phase === 'unavailable' ? 'undetected' : Message.receipt.phase,
+			subtitleStatus: {phase:['unavailable','not-selected'].includes(Message.receipt.phase) ? 'undetected' : Message.receipt.phase,
 				count:Message.receipt.count,completed:Message.receipt.completed,languages:(Message.receipt.tracks ?? []).map(Track=>Track.language),targetLanguage:'',translation:'off'}});
 		case 'streamPartial':
 		if (!Job.hls || Job.snapshot || Job.muxing)

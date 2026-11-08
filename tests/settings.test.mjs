@@ -1,6 +1,12 @@
 import Assert from 'node:assert/strict';
 import { test as Test } from 'node:test';
 import { GetSetting, GetSettings, OnSettingChanged, SetDownloadLocation, SetSetting, SettingKeys } from '../extension/lib/settings.js';
+Test('automatic YouTube captions default included and persist an explicit false only as boolean',async T=>{
+	const Values={};globalThis.chrome={storage:{local:{get:async()=>Values,set:async V=>Object.assign(Values,V)}}};T.after(()=>delete globalThis.chrome);
+	Assert.equal(await GetSetting(SettingKeys.includeYoutubeAutoCaptions),true);
+	await SetSetting(SettingKeys.includeYoutubeAutoCaptions,false);Assert.equal(await GetSetting(SettingKeys.includeYoutubeAutoCaptions),false);
+	await Assert.rejects(SetSetting(SettingKeys.includeYoutubeAutoCaptions,'false'),TypeError);
+});
 Test('normalizes existing preference values and keeps their storage keys', async T =>
 {
 	const Records = { debugDownloads: 'true', chooseHlsQuality: true, downloadFolder: ' Videos\\HLS\\ ', language: 'es' };
@@ -23,7 +29,7 @@ Test('normalizes existing preference values and keeps their storage keys', async
 	});
 	const Keys = Object.values(SettingKeys);
 	Assert.deepEqual(await GetSettings(Keys), {
-		debugLogging: false, debugDownloads: false, logDownloads: false, showPanelMedia: false, usePageTitle: true, useDownloadDateTime: true,
+		debugLogging: false, debugDownloads: false, logDownloads: false, includeYoutubeAutoCaptions: true, showPanelMedia: false, usePageTitle: true, useDownloadDateTime: true,
 		downloadFolder: 'Videos/HLS', pickedDownloadFolder: '', language: 'es',
 	});
 	Assert.deepEqual(Reads, [Keys]);
@@ -36,7 +42,7 @@ Test('normalizes existing preference values and keeps their storage keys', async
 	Assert.equal(Records.downloadFolder, 'New/Folder');
 	Object.assign(Records, { usePageTitle: false, useDownloadDateTime: false, downloadFolder: '../invalid', language: '../../es' });
 	Assert.deepEqual(await GetSettings(Keys), {
-		debugLogging: false, debugDownloads: false, logDownloads: false, showPanelMedia: false, usePageTitle: false, useDownloadDateTime: false,
+		debugLogging: false, debugDownloads: false, logDownloads: false, includeYoutubeAutoCaptions: true, showPanelMedia: false, usePageTitle: false, useDownloadDateTime: false,
 		downloadFolder: '', pickedDownloadFolder: '', language: 'auto',
 	});
 });

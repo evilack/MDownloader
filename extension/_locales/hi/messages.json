@@ -1413,5 +1413,11 @@
   },
   "subtitle_mux_failed": {
     "message": "MP4 में सभी उपशीर्षक एम्बेड नहीं हो सके। उनके बिना फ़ाइल नहीं सहेजी गई।"
+  },
+  "opt_youtube_auto_captions": {
+    "message": "अपने-आप बने सबटाइटल शामिल करें"
+  },
+  "opt_youtube_auto_captions_help": {
+    "message": "नए YouTube डाउनलोड पर लागू होता है। बंद करने पर केवल निर्माता के दिए सबटाइटल सहेजे जाएँगे।"
   }
 }

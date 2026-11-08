@@ -1413,5 +1413,11 @@
   },
   "subtitle_mux_failed": {
     "message": "Não foi possível incorporar todas as legendas ao MP4. O arquivo sem elas não foi salvo."
+  },
+  "opt_youtube_auto_captions": {
+    "message": "Incluir legendas geradas automaticamente"
+  },
+  "opt_youtube_auto_captions_help": {
+    "message": "Aplica-se a novos downloads do YouTube. Desative para salvar apenas as legendas fornecidas pelo criador."
   }
 }

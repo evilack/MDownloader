@@ -253,3 +253,23 @@ A genuinely absent catalog is explicitly unavailable and may preserve normal AV 
 349 scoped tests passed; 404 messages × 10 locales, no missing references. Required shared subtitle modules and tests are included as integration dependencies; unrelated translation/UI changes remain outside the commit. Official upstream packages/bundles are unchanged. Small deferred review improvement: explicitly rejecting non-default HTTPS ports in caption URL normalization. The tested official sources use default HTTPS. Computer Use, user's Chrome profile, Store browser execution, external extractor/program installation and publication were excluded. Exact host permissions were preapproved in the test profile; this is not manual OS-prompt acceptance or external-player visual subtitle selection acceptance. Chrome automation saves a UUID filename; the original and byte-identical title export are retained. See [retained evidence](evidence/2026-11-09-youtube-captions-development.json) and [upstream changes](youtube-upstream-changes.md).
 
 The exact staged extension tree `d6b6ba3ee8b778d003e9743608f87fb5c658ccb5` repeated full native UI caption receipt/mux/save and independent disk-file comparison after review. Final MP4 SHA-256: `c30e52f43c0e21f200b217051b5da4712050555d2ecd29d9320425fed3ae3d63`. Final scoped checks: 349/349 tests, 404 messages × 10 locales, zero project failures and 73 preserved files; development 163 files/375 imports, Store 138 files/343 imports. The separately merged working folder passed 395 tests, skipped one retained supplied-HTML fixture, and failed zero tests.
+
+## Automatic caption option — 2026-11-09
+
+The original same-video English/Korean captions are marked `kind: asr`, so automatic caption downloads are supported and can be filtered independently. Settings → Download settings now includes **Include automatically generated captions** (Korean: 자동 생성 자막 포함), default enabled. Disabling it preserves creator-provided/manual captions and affects newly registered YouTube jobs. Store builds hide/disable this control and retain fixed YouTube exclusion.
+
+| Actual development Chrome same-video check | Include (default) | Exclude |
+|---|---:|---:|
+| Options UI after reload | Checked | Unchecked |
+| Captured job setting | true | false |
+| Caption HTTP responses | 2 | 0 |
+| Saved MP4 subtitle tracks | 2, eng/kor tx3g | 0 |
+| Saved file bytes | 92,736,458 | 92,344,267 |
+| Full AV duration | 622.689524s | 622.689524s |
+| Video/audio decode | 1s and 620s passed | 1s and 620s passed |
+
+Native runs used separate actual Chrome 157.0.8103.39 development profiles, the real options checkbox and reload persistence, then the normal side-panel download UI and independent saved-MP4 inspection. Both saved complete 1080p/AAC media. Include matched every original nonempty subtitle cue's text/time hash. Exclude made no caption HTTP request and wrote no subtitle track. No Computer Use, user's profile or Store browser run was used. The first harness attempt raced its own reload against the locale-change reload; waiting for the localized ready page corrected that harness issue. [Retained option evidence](evidence/2026-11-09-youtube-auto-caption-option.json) includes that failure and successful runs.
+
+The target has only automatic captions. Mixed manual+ASR preservation, exclusion before expired unselected ASR validation, default/persistence and boolean validation are unit-tested; manual preservation is not presented as a native mixed-catalog test. No separate automatic-translation feature is implied. Settings are captured when a job is queued, so running downloads retain their selection. Scoped suite: 351 passing tests; 406 messages × 10 locales with no missing references.
+
+The exact staged extension tree `f282a5e66b5ef4ce136e432299232e6ad250680c` repeated both native ON/OFF saves successfully. Final scoped checks: 351/351 tests; 406 messages × 10 locales; zero project failures and 73 preserved files; development 163 files/376 imports and Store 138 files/344 imports verified. The separately merged working folder passed 397 tests, skipped one supplied-HTML fixture, and failed zero. Fresh review had no Critical/Important findings. Deferred Minor: when automatic captions are excluded, receipts do not distinguish an originally empty catalog from one emptied by filtering; actual selection/download behavior is correct.

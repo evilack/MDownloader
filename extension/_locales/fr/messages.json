@@ -1413,5 +1413,11 @@
   },
   "subtitle_mux_failed": {
     "message": "Impossible d’intégrer tous les sous-titres au MP4. Le fichier sans sous-titres n’a pas été enregistré."
+  },
+  "opt_youtube_auto_captions": {
+    "message": "Inclure les sous-titres générés automatiquement"
+  },
+  "opt_youtube_auto_captions_help": {
+    "message": "S’applique aux nouveaux téléchargements YouTube. Désactivez pour conserver uniquement les sous-titres fournis par le créateur."
   }
 }

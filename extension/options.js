@@ -11,6 +11,7 @@ import {
 } from './lib/i18n.js';
 import { AUTO_LANGUAGE, GetSettings, SetSetting, SettingKeys } from './lib/settings.js';
 import { RuntimePolicy } from './lib/runtime-policy.js';
+import {CanUseYoutube} from './lib/distribution-policy.js';
 WatchLanguage();
 const Settings = await GetSettings(Object.values(SettingKeys)).catch(() => null);
 // 한꺼번에 읽은 설정에서 언어 값을 넘겨 시작할 때 같은 값을 다시 조회하지 않습니다.
@@ -90,6 +91,11 @@ function BindToggles(Settings, StatusSelector, Toggles)
 }
 
 BindLanguagePicker();
+if (CanUseYoutube())
+{
+	document.querySelector('#youtube-caption-settings').hidden = false;
+	BindToggles(Settings, '#youtube-caption-settings-status', [[SettingKeys.includeYoutubeAutoCaptions, '#include-youtube-auto-captions', 'opt_youtube_auto_captions']]);
+}
 void BindDownloadLocation(Settings?.[SettingKeys.downloadFolder], Settings?.[SettingKeys.pickedDownloadFolder]);
 BindToggles(Settings, '#debug-status', [
 	[SettingKeys.debugLogging, '#debug-logging', 'opt_debug_logging'],

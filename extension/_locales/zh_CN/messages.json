@@ -1413,5 +1413,11 @@
   },
   "subtitle_mux_failed": {
     "message": "无法将所有字幕嵌入MP4。未保存缺少字幕的文件。"
+  },
+  "opt_youtube_auto_captions": {
+    "message": "包含自动生成的字幕"
+  },
+  "opt_youtube_auto_captions_help": {
+    "message": "适用于新的 YouTube 下载。关闭后仅保存创作者提供的字幕。"
   }
 }

@@ -1413,5 +1413,11 @@
   },
   "subtitle_mux_failed": {
     "message": "MP4にすべての字幕を埋め込めませんでした。字幕が欠落したファイルは保存していません。"
+  },
+  "opt_youtube_auto_captions": {
+    "message": "自動生成字幕を含める"
+  },
+  "opt_youtube_auto_captions_help": {
+    "message": "新しい YouTube ダウンロードに適用します。オフにすると投稿者が登録した字幕のみ保存します。"
   }
 }
