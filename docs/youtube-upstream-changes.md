@@ -160,3 +160,7 @@ Shared HLS/DASH selection is resolved after manifest subtitle discovery, and Web
 # Explorer connection repair — 2026-11-09
 
 Only shared saved-file reveal and the approved Windows helper changed: persistent native port, connection ping, accurate file-read error classification, and Chrome-owned first-association chooser. No additional confirmation popup was retained after the user's correction. YouTube transport, official upstream/vendor code and Store exclusion are unchanged. The real registered host and Explorer launch were checked with an owned fixture file; this is separate from the user's current folder association.
+
+# Popup video title — 2026-11-09
+
+Shared detection now supplies the document-bound YouTube video title instead of a fixed candidate filename. No YouTube.js/googlevideo/Mediabunny upstream or vendor changes; downloaded-file naming and Store exclusion are unchanged.

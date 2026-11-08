@@ -80,6 +80,7 @@ function CollectVideos(MaxPlaylists, ExcludedSelector, SourcePlayerSelector)
 		...[...Player.querySelectorAll('source[src]')].map(Source => Source.src)].filter(Boolean);
 	return {
 		page: location.href,
+		pageTitle: document.title,
 		timeOrigin: performance.timeOrigin,
 		playlists: Playlists,
 		observerReady: !!globalThis.MDownloaderMediaContext,
@@ -110,8 +111,13 @@ export async function FindMedia(TabId)
 	const { page: Page, sources: Sources, playlists: Playlists } = Frame.result;
 	if (YoutubeSourceBlocked({page: Page})) return {documentId: Frame.documentId, page: Page, observed: [], items: []};
 	const Youtube = YoutubeAvailable() && IdentifyYoutubeUrl(Page);
-	if (Youtube) return {documentId: Frame.documentId, page: Page, observed: [], items: [{url: Youtube.canonicalUrl,
-		name: 'YouTube.mp4', format: 'YOUTUBE', supported: true, page: Page}]};
+	if (Youtube)
+	{
+		const Title = Frame.result.pageTitle?.replace(/^\(\d+\)\s*/, '').replace(/\s+-\s+YouTube\s*$/i, '').trim();
+		const Name = Title && Title !== 'YouTube' ? Title : 'YouTube-' + Youtube.videoId;
+		return {documentId: Frame.documentId, page: Page, observed: [], items: [{url: Youtube.canonicalUrl,
+			name: Name + '.mp4', format: 'YOUTUBE', supported: true, page: Page}]};
+	}
 	if (!['http:', 'https:'].includes(new URL(Page).protocol))
 	{
 		return null;
