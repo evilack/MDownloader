@@ -1341,5 +1341,47 @@
   },
   "youtube_not_verified": {
     "message": "Поддержка YouTube ещё не прошла проверку в браузере."
+  },
+  "youtube_permission_denied": {
+    "message": "Разрешите доступ к нужному хосту YouTube."
+  },
+  "youtube_unexpected_host": {
+    "message": "YouTube вернул неподдерживаемый медиахост."
+  },
+  "youtube_network_failed": {
+    "message": "Запрос к YouTube завершился ошибкой."
+  },
+  "youtube_automated_request_rejected": {
+    "message": "YouTube отклонил автоматический запрос."
+  },
+  "youtube_extraction_failed": {
+    "message": "Не удалось получить сведения о видео YouTube."
+  },
+  "youtube_session_changed": {
+    "message": "Сеанс видео YouTube изменился или истёк."
+  },
+  "youtube_restricted": {
+    "message": "Видео ограничено или не является поддерживаемым публичным VOD."
+  },
+  "youtube_sabr_unsupported": {
+    "message": "Потоковая передача SABR не поддерживается."
+  },
+  "youtube_no_clear_formats": {
+    "message": "Нет поддерживаемого незашифрованного медиаадреса YouTube."
+  },
+  "youtube_format_unavailable": {
+    "message": "Выбранный формат YouTube недоступен."
+  },
+  "youtube_evaluator_failed": {
+    "message": "Не удалось обработать URL YouTube."
+  },
+  "youtube_url_expired": {
+    "message": "Срок действия медиаадреса YouTube истёк."
+  },
+  "youtube_evaluator_input_limit": {
+    "message": "Ввод интерпретатора YouTube превышает лимит."
+  },
+  "youtube_evaluator_timeout": {
+    "message": "Время обработки URL YouTube истекло."
   }
 }

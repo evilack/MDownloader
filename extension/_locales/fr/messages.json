@@ -1341,5 +1341,47 @@
   },
   "youtube_not_verified": {
     "message": "La prise en charge de YouTube n’a pas encore passé la vérification dans le navigateur."
+  },
+  "youtube_permission_denied": {
+    "message": "Autorisez l’accès à l’hôte YouTube requis."
+  },
+  "youtube_unexpected_host": {
+    "message": "YouTube a renvoyé un hôte multimédia non pris en charge."
+  },
+  "youtube_network_failed": {
+    "message": "La requête YouTube a échoué."
+  },
+  "youtube_automated_request_rejected": {
+    "message": "YouTube a refusé la requête automatisée."
+  },
+  "youtube_extraction_failed": {
+    "message": "Impossible d’extraire les informations de la vidéo YouTube."
+  },
+  "youtube_session_changed": {
+    "message": "La session de la vidéo YouTube a changé ou a expiré."
+  },
+  "youtube_restricted": {
+    "message": "Cette vidéo est restreinte ou n’est pas une VOD publique prise en charge."
+  },
+  "youtube_sabr_unsupported": {
+    "message": "Le streaming SABR n’est pas pris en charge."
+  },
+  "youtube_no_clear_formats": {
+    "message": "Aucune URL multimédia YouTube non chiffrée et prise en charge n’est disponible."
+  },
+  "youtube_format_unavailable": {
+    "message": "Le format YouTube sélectionné n’est pas disponible."
+  },
+  "youtube_evaluator_failed": {
+    "message": "L’interprétation de l’URL YouTube a échoué."
+  },
+  "youtube_url_expired": {
+    "message": "L’URL multimédia YouTube a expiré."
+  },
+  "youtube_evaluator_input_limit": {
+    "message": "L’entrée de l’interpréteur YouTube dépasse la limite."
+  },
+  "youtube_evaluator_timeout": {
+    "message": "Le délai d’interprétation de l’URL YouTube a expiré."
   }
 }

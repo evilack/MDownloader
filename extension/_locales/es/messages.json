@@ -1341,5 +1341,47 @@
   },
   "youtube_not_verified": {
     "message": "La compatibilidad con YouTube aún no ha superado la verificación en el navegador."
+  },
+  "youtube_permission_denied": {
+    "message": "Permite el acceso al host de YouTube necesario."
+  },
+  "youtube_unexpected_host": {
+    "message": "YouTube devolvió un host multimedia no compatible."
+  },
+  "youtube_network_failed": {
+    "message": "La solicitud a YouTube falló."
+  },
+  "youtube_automated_request_rejected": {
+    "message": "YouTube rechazó la solicitud automatizada."
+  },
+  "youtube_extraction_failed": {
+    "message": "No se pudo extraer la información del vídeo de YouTube."
+  },
+  "youtube_session_changed": {
+    "message": "La sesión del vídeo de YouTube cambió o caducó."
+  },
+  "youtube_restricted": {
+    "message": "El vídeo está restringido o no es un VOD público compatible."
+  },
+  "youtube_sabr_unsupported": {
+    "message": "La transmisión SABR no es compatible."
+  },
+  "youtube_no_clear_formats": {
+    "message": "No hay una URL multimedia de YouTube compatible y sin cifrar."
+  },
+  "youtube_format_unavailable": {
+    "message": "El formato de YouTube seleccionado no está disponible."
+  },
+  "youtube_evaluator_failed": {
+    "message": "Falló la interpretación de la URL de YouTube."
+  },
+  "youtube_url_expired": {
+    "message": "La URL multimedia de YouTube ha caducado."
+  },
+  "youtube_evaluator_input_limit": {
+    "message": "La entrada del intérprete de YouTube supera el límite."
+  },
+  "youtube_evaluator_timeout": {
+    "message": "Se agotó el tiempo de interpretación de la URL de YouTube."
   }
 }

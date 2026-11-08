@@ -1341,5 +1341,47 @@
   },
   "youtube_not_verified": {
     "message": "YouTube 지원의 실제 브라우저 검증이 완료되지 않았습니다."
+  },
+  "youtube_permission_denied": {
+    "message": "필요한 YouTube 호스트의 접근을 허용해 주세요."
+  },
+  "youtube_unexpected_host": {
+    "message": "YouTube가 지원하지 않는 미디어 호스트를 반환했습니다."
+  },
+  "youtube_network_failed": {
+    "message": "YouTube 요청에 실패했습니다."
+  },
+  "youtube_automated_request_rejected": {
+    "message": "YouTube가 자동화 요청을 거부했습니다."
+  },
+  "youtube_extraction_failed": {
+    "message": "YouTube 영상 정보를 추출하지 못했습니다."
+  },
+  "youtube_session_changed": {
+    "message": "YouTube 영상 세션이 바뀌었거나 만료되었습니다."
+  },
+  "youtube_restricted": {
+    "message": "접근 제한이 있거나 지원하는 공개 VOD가 아닙니다."
+  },
+  "youtube_sabr_unsupported": {
+    "message": "SABR 스트리밍은 지원하지 않습니다."
+  },
+  "youtube_no_clear_formats": {
+    "message": "지원하는 암호화되지 않은 YouTube 미디어 URL이 없습니다."
+  },
+  "youtube_format_unavailable": {
+    "message": "선택한 YouTube 형식을 사용할 수 없습니다."
+  },
+  "youtube_evaluator_failed": {
+    "message": "YouTube URL 해석에 실패했습니다."
+  },
+  "youtube_url_expired": {
+    "message": "YouTube 미디어 URL이 만료되었습니다."
+  },
+  "youtube_evaluator_input_limit": {
+    "message": "YouTube 해석기 입력이 크기 제한을 초과했습니다."
+  },
+  "youtube_evaluator_timeout": {
+    "message": "YouTube URL 해석 시간이 초과되었습니다."
   }
 }

@@ -1341,5 +1341,47 @@
   },
   "youtube_not_verified": {
     "message": "لم يجتز دعم YouTube التحقق في المتصفح بعد."
+  },
+  "youtube_permission_denied": {
+    "message": "اسمح بالوصول إلى مضيف YouTube المطلوب."
+  },
+  "youtube_unexpected_host": {
+    "message": "أعاد YouTube مضيف وسائط غير مدعوم."
+  },
+  "youtube_network_failed": {
+    "message": "فشل طلب YouTube."
+  },
+  "youtube_automated_request_rejected": {
+    "message": "رفض YouTube الطلب الآلي."
+  },
+  "youtube_extraction_failed": {
+    "message": "تعذر استخراج معلومات فيديو YouTube."
+  },
+  "youtube_session_changed": {
+    "message": "تغيرت جلسة فيديو YouTube أو انتهت صلاحيتها."
+  },
+  "youtube_restricted": {
+    "message": "هذا الفيديو مقيد أو ليس فيديو عاماً مدعوماً عند الطلب."
+  },
+  "youtube_sabr_unsupported": {
+    "message": "بث SABR غير مدعوم."
+  },
+  "youtube_no_clear_formats": {
+    "message": "لا يتوفر عنوان وسائط YouTube مدعوم وغير مشفر."
+  },
+  "youtube_format_unavailable": {
+    "message": "تنسيق YouTube المحدد غير متاح."
+  },
+  "youtube_evaluator_failed": {
+    "message": "فشل تفسير عنوان YouTube."
+  },
+  "youtube_url_expired": {
+    "message": "انتهت صلاحية عنوان وسائط YouTube."
+  },
+  "youtube_evaluator_input_limit": {
+    "message": "يتجاوز إدخال مفسر YouTube الحد المسموح."
+  },
+  "youtube_evaluator_timeout": {
+    "message": "انتهت مهلة تفسير عنوان YouTube."
   }
 }

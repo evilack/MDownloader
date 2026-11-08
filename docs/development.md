@@ -14,6 +14,27 @@ MDownloader is an unbundled Manifest V3 extension. The browser loads `extension/
 
 ## Repository layout
 
+### YouTube native diagnostic probe
+
+Install the pinned development dependencies with `npm ci --ignore-scripts`, then run `node tools/build/build-youtube.mjs`. Committed runtime bundles let unpacked users load the extension without npm. The evaluator source is `tools/build/youtube-evaluator-worker.mjs`; only the bundled worker is shipped, so no bare npm import reaches Chrome. Jinter is an interpreter, not a security sandbox. Its dedicated worker has no exposed network, extension or storage capabilities, retains MV3's normal eval restrictions, receives at most 4 MiB of script, and is terminated from outside after 2 seconds.
+
+Run the following after generating the desired distribution:
+
+```powershell
+node tools/build/package-extension.mjs --flavor manual
+node tools/checks/probe-youtube-chrome.mjs
+# To repeat the diagnostic with the development package:
+node tools/build/package-extension.mjs --flavor development
+$env:MDOWNLOADER_PROBE_FLAVOR = 'development'
+node tools/checks/probe-youtube-chrome.mjs
+```
+
+The probe uses actual Chrome, a fresh isolated profile, Playwright and the DevTools protocol. It does not use Computer Use. In that test profile only, Chrome's extension-settings API preapproves three exact optional API hosts, then the extension's real `chrome.permissions.request()` activates them. Neither step grants the broad optional `http://*/*` or `https://*/*` pattern. The package manifest and extension runtime are unmodified. Offscreen documents query permissions through an authenticated service-worker relay because their extension API access is limited to `chrome.runtime`.
+
+The default diagnostic video is the user's requested `-XHx839rSc8`. The probe records statuses and fixed diagnostic categories, never player scripts, cookies, tokens or signed media URLs. `result.json` explicitly distinguishes extraction, receiving and saving. **Exit code 2 means the native gate was not passed.** This is a failure diagnostic: it currently has no positive receive/save implementation, even if a later upstream change makes metadata/selection succeed. A future successful gate requires actual track reception, a saved muxed file and playback checks before changing that behavior. It must not silently be treated as a success harness.
+
+On 2026-11-08 both manual/development probes hit automated-request HTTP 403 on the public WEB player API. The ordinary public page was playable but exposed SABR-only metadata with no direct/cipher URLs. Tasks 3–5 remain unintegrated; the provider entry still returns `youtube_not_verified`. See the retained [native evidence](verification.md#task-2-native-result--2026-11-08).
+
 | Directory | Responsibility |
 |---|---|
 | `extension/` | Installable extension pages, worker, and runtime entry points |

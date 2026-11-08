@@ -1341,5 +1341,47 @@
   },
   "youtube_not_verified": {
     "message": "O suporte ao YouTube ainda não passou na verificação do navegador."
+  },
+  "youtube_permission_denied": {
+    "message": "Permita o acesso ao host necessário do YouTube."
+  },
+  "youtube_unexpected_host": {
+    "message": "O YouTube retornou um host de mídia incompatível."
+  },
+  "youtube_network_failed": {
+    "message": "A solicitação ao YouTube falhou."
+  },
+  "youtube_automated_request_rejected": {
+    "message": "O YouTube rejeitou a solicitação automatizada."
+  },
+  "youtube_extraction_failed": {
+    "message": "Não foi possível extrair as informações do vídeo do YouTube."
+  },
+  "youtube_session_changed": {
+    "message": "A sessão do vídeo do YouTube mudou ou expirou."
+  },
+  "youtube_restricted": {
+    "message": "O vídeo é restrito ou não é um VOD público compatível."
+  },
+  "youtube_sabr_unsupported": {
+    "message": "O streaming SABR não é compatível."
+  },
+  "youtube_no_clear_formats": {
+    "message": "Não há URL de mídia do YouTube compatível e sem criptografia."
+  },
+  "youtube_format_unavailable": {
+    "message": "O formato do YouTube selecionado não está disponível."
+  },
+  "youtube_evaluator_failed": {
+    "message": "Falha ao interpretar a URL do YouTube."
+  },
+  "youtube_url_expired": {
+    "message": "A URL de mídia do YouTube expirou."
+  },
+  "youtube_evaluator_input_limit": {
+    "message": "A entrada do interpretador do YouTube excede o limite."
+  },
+  "youtube_evaluator_timeout": {
+    "message": "O tempo de interpretação da URL do YouTube se esgotou."
   }
 }

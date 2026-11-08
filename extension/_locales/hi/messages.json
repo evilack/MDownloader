@@ -1341,5 +1341,47 @@
   },
   "youtube_not_verified": {
     "message": "YouTube समर्थन का ब्राउज़र सत्यापन अभी पूरा नहीं हुआ है।"
+  },
+  "youtube_permission_denied": {
+    "message": "आवश्यक YouTube होस्ट तक पहुँच की अनुमति दें।"
+  },
+  "youtube_unexpected_host": {
+    "message": "YouTube ने असमर्थित मीडिया होस्ट लौटाया।"
+  },
+  "youtube_network_failed": {
+    "message": "YouTube अनुरोध विफल हुआ।"
+  },
+  "youtube_automated_request_rejected": {
+    "message": "YouTube ने स्वचालित अनुरोध अस्वीकार कर दिया।"
+  },
+  "youtube_extraction_failed": {
+    "message": "YouTube वीडियो की जानकारी प्राप्त नहीं हो सकी।"
+  },
+  "youtube_session_changed": {
+    "message": "YouTube वीडियो सत्र बदल गया या समाप्त हो गया।"
+  },
+  "youtube_restricted": {
+    "message": "यह वीडियो प्रतिबंधित है या समर्थित सार्वजनिक VOD नहीं है।"
+  },
+  "youtube_sabr_unsupported": {
+    "message": "SABR स्ट्रीमिंग समर्थित नहीं है।"
+  },
+  "youtube_no_clear_formats": {
+    "message": "कोई समर्थित अनएन्क्रिप्टेड YouTube मीडिया URL उपलब्ध नहीं है।"
+  },
+  "youtube_format_unavailable": {
+    "message": "चुना गया YouTube प्रारूप उपलब्ध नहीं है।"
+  },
+  "youtube_evaluator_failed": {
+    "message": "YouTube URL की व्याख्या विफल हुई।"
+  },
+  "youtube_url_expired": {
+    "message": "YouTube मीडिया URL की अवधि समाप्त हो गई।"
+  },
+  "youtube_evaluator_input_limit": {
+    "message": "YouTube इंटरप्रेटर इनपुट सीमा से अधिक है।"
+  },
+  "youtube_evaluator_timeout": {
+    "message": "YouTube URL की व्याख्या का समय समाप्त हो गया।"
   }
 }

@@ -26,7 +26,7 @@ test('YouTube identity accepts watch, shorts, short and privacy embeds with stri
  for (const url of [`https://www.youtube.com/watch?v=${videoId}`, `https://youtu.be/${videoId}?t=1`, `https://m.youtube.com/shorts/${videoId}`, `https://www.youtube-nocookie.com/embed/${videoId}`]) {
   assert.deepEqual(IdentifyYoutubeUrl(url), {videoId, canonicalUrl: `https://www.youtube.com/watch?v=${videoId}`});
  }
- for (const url of ['https://youtube.com.example.org/watch?v=aqz-KE-bpKQ', 'https://notyoutube.com/watch?v=aqz-KE-bpKQ', 'javascript:alert(1)', 'https://youtube.com/watch?v=short', 'https://example.org/?url=https://youtu.be/aqz-KE-bpKQ']) assert.equal(IdentifyYoutubeUrl(url), null);
+ for (const url of ['https://youtube.com.example.org/watch?v=aqz-KE-bpKQ', 'https://notyoutube.com/watch?v=aqz-KE-bpKQ', 'https://googlevideo.com/embed/aqz-KE-bpKQ', 'javascript:alert(1)', 'https://youtube.com/watch?v=short', 'https://example.org/?url=https://youtu.be/aqz-KE-bpKQ']) assert.equal(IdentifyYoutubeUrl(url), null);
 });
 test('source policy uses actual page/frame/media rather than spoofable provider labels', () => {
  for (const source of [{pageUrl: 'https://youtube.com/watch?v=aqz-KE-bpKQ', mediaUrl: 'https://cdn.test/file.mp4'}, {frameUrl: 'https://youtube-nocookie.com/embed/aqz-KE-bpKQ'}, {mediaUrl: 'https://rr1.googlevideo.com/videoplayback'}, {mediaUrl: 'https://googlevideo.com/file.mpd', provider: 'other'}]) assert.equal(IsYoutubeSource(source), true);

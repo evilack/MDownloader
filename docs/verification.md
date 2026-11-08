@@ -6,6 +6,24 @@ Task 1 introduced build-time development/manual/store policies and layered sourc
 
 Actual installed Chrome **157.0.8103.39**, headless unpacked in an isolated profile, loaded the generated store package. Six explicit YouTube direct/request/source/playback cases refused with `youtube_distribution_disabled` after stored settings attempted to enable YouTube. An ordinary loopback MP4 saved completely (**232,992 bytes**, one content response). A loopback redirect to googlevideo stopped with **FILE_BLOCKED**, **0 bytes**; DNR matched extension-origin requests and did not match normal YouTube page playback. Report: ignored `artifacts/youtube-implementation/native-1794130425865/result.json`. These are native automated browser checks, not visual acceptance, real YouTube download success or Chrome Store approval.
 
+### Task 2 native result — 2026-11-08
+
+**Native YouTube receive/save gate failed; YouTube download support is not accepted.** Testing used the user-specified [public VOD](https://www.youtube.com/watch?v=-XHx839rSc8), actual Chrome 157.0.8103.39, fresh profiles and the unmodified generated `manual` and `development` packages. Computer Use was not used. Reports are retained as [manual evidence](evidence/2026-11-08-youtube-manual.json) and [development evidence](evidence/2026-11-08-youtube-development.json).
+
+| Step | Observed result in both packages |
+|---|---|
+| Optional host activation | `youtube.com`, `www.youtube.com` and `youtubei.googleapis.com` approved in the test profile, then activated by real `chrome.permissions.request()`; no broad host grant |
+| Normal public watch page | HTTP 200, `playabilityStatus=OK`; 34 adaptive format metadata records, 0 direct URLs, 0 cipher URLs, SABR URL present |
+| Offscreen session/player script GET | HTTP 200 |
+| Offscreen WEB config/player POST | HTTP 403, response matched the fixed `automated`/`bot` markers; raw response was not logged |
+| Client error | `youtube_automated_request_rejected`; no alternate-client cycling, PO-token generation or login/DRM bypass |
+| Interpreter | Simple script passed; infinite loop terminated after the 2-second limit; fetch, Chrome API and native Function-constructor probes refused |
+| Video/audio receive and saved output | **Not attempted: no supported resolved media source; 0 media bytes and no YouTube output file** |
+
+The two failures are separate observations: the automated API rejected this extension-origin request, and the ordinary page response did not contain direct file sources supported by the initial adapter. Neither establishes that the video itself is restricted or that all future Chrome approaches are impossible. SABR/UMP remains outside the initial implementation scope. UI, selection, transfer, merge, source-tab-close reception and stop/partial-save integration were not enabled.
+
+The local suite passed 274 tests after adding the fixture/error cases (including unrelated HLS changes already present in this shared checkout). YouTube-specific fixtures cover URL-free metadata, exact selection, permission denial/revocation, expiry, restricted/DRM/SABR responses including URL-less format records, interpreter limits and redacted automated-request failure. Fixture success does not establish media reception. All ten language catalogs now contain 394 messages with no missing references. A separate read-only code review found no blocking scoped issue and confirmed the probe is a diagnostic, not a positive receive/save gate.
+
 Run checks from the project root with Node.js 24. No historical evidence folder or package installation is required for the core suite.
 
 ```powershell

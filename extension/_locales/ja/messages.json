@@ -1341,5 +1341,47 @@
   },
   "youtube_not_verified": {
     "message": "YouTube 対応のブラウザ検証が完了していません。"
+  },
+  "youtube_permission_denied": {
+    "message": "必要な YouTube ホストへのアクセスを許可してください。"
+  },
+  "youtube_unexpected_host": {
+    "message": "YouTube が未対応のメディアホストを返しました。"
+  },
+  "youtube_network_failed": {
+    "message": "YouTube リクエストに失敗しました。"
+  },
+  "youtube_automated_request_rejected": {
+    "message": "YouTube が自動リクエストを拒否しました。"
+  },
+  "youtube_extraction_failed": {
+    "message": "YouTube 動画情報を取得できませんでした。"
+  },
+  "youtube_session_changed": {
+    "message": "YouTube 動画セッションが変更または期限切れになりました。"
+  },
+  "youtube_restricted": {
+    "message": "制限付き動画または未対応の公開 VOD です。"
+  },
+  "youtube_sabr_unsupported": {
+    "message": "SABR ストリーミングには対応していません。"
+  },
+  "youtube_no_clear_formats": {
+    "message": "対応する暗号化されていない YouTube メディア URL がありません。"
+  },
+  "youtube_format_unavailable": {
+    "message": "選択した YouTube 形式は利用できません。"
+  },
+  "youtube_evaluator_failed": {
+    "message": "YouTube URL の解釈に失敗しました。"
+  },
+  "youtube_url_expired": {
+    "message": "YouTube メディア URL の期限が切れました。"
+  },
+  "youtube_evaluator_input_limit": {
+    "message": "YouTube インタープリターの入力が上限を超えました。"
+  },
+  "youtube_evaluator_timeout": {
+    "message": "YouTube URL の解釈がタイムアウトしました。"
   }
 }

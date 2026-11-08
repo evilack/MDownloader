@@ -1341,5 +1341,47 @@
   },
   "youtube_not_verified": {
     "message": "YouTube 支持尚未通过浏览器验证。"
+  },
+  "youtube_permission_denied": {
+    "message": "请允许访问所需的 YouTube 主机。"
+  },
+  "youtube_unexpected_host": {
+    "message": "YouTube 返回了不支持的媒体主机。"
+  },
+  "youtube_network_failed": {
+    "message": "YouTube 请求失败。"
+  },
+  "youtube_automated_request_rejected": {
+    "message": "YouTube 拒绝了自动化请求。"
+  },
+  "youtube_extraction_failed": {
+    "message": "无法提取 YouTube 视频信息。"
+  },
+  "youtube_session_changed": {
+    "message": "YouTube 视频会话已更改或过期。"
+  },
+  "youtube_restricted": {
+    "message": "此视频受限或不是支持的公开点播视频。"
+  },
+  "youtube_sabr_unsupported": {
+    "message": "不支持 SABR 流媒体。"
+  },
+  "youtube_no_clear_formats": {
+    "message": "没有受支持的未加密 YouTube 媒体 URL。"
+  },
+  "youtube_format_unavailable": {
+    "message": "所选 YouTube 格式不可用。"
+  },
+  "youtube_evaluator_failed": {
+    "message": "YouTube URL 解析失败。"
+  },
+  "youtube_url_expired": {
+    "message": "YouTube 媒体 URL 已过期。"
+  },
+  "youtube_evaluator_input_limit": {
+    "message": "YouTube 解释器输入超出限制。"
+  },
+  "youtube_evaluator_timeout": {
+    "message": "YouTube URL 解析超时。"
   }
 }

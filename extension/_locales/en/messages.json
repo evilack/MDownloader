@@ -1341,5 +1341,47 @@
   },
   "youtube_not_verified": {
     "message": "YouTube support has not passed browser verification."
+  },
+  "youtube_permission_denied": {
+    "message": "Allow access to the required YouTube host."
+  },
+  "youtube_unexpected_host": {
+    "message": "YouTube returned an unsupported media host."
+  },
+  "youtube_network_failed": {
+    "message": "The YouTube request failed."
+  },
+  "youtube_automated_request_rejected": {
+    "message": "YouTube rejected the automated request."
+  },
+  "youtube_extraction_failed": {
+    "message": "YouTube video information could not be extracted."
+  },
+  "youtube_session_changed": {
+    "message": "The YouTube video session changed or expired."
+  },
+  "youtube_restricted": {
+    "message": "This YouTube video is restricted or is not a supported public VOD."
+  },
+  "youtube_sabr_unsupported": {
+    "message": "SABR streaming is not supported."
+  },
+  "youtube_no_clear_formats": {
+    "message": "No supported unencrypted YouTube media URL is available."
+  },
+  "youtube_format_unavailable": {
+    "message": "The selected YouTube format is unavailable."
+  },
+  "youtube_evaluator_failed": {
+    "message": "YouTube URL interpretation failed."
+  },
+  "youtube_url_expired": {
+    "message": "The YouTube media URL has expired."
+  },
+  "youtube_evaluator_input_limit": {
+    "message": "The YouTube interpreter input exceeds the limit."
+  },
+  "youtube_evaluator_timeout": {
+    "message": "YouTube URL interpretation timed out."
   }
 }

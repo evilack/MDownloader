@@ -19,6 +19,7 @@ export function IdentifyYoutubeUrl(Value)
 	{
 		const Url = new URL(Value);
 		if (!YoutubeHost(Value) || Url.username || Url.password) return null;
+		if (Url.hostname === 'googlevideo.com' || Url.hostname.endsWith('.googlevideo.com')) return null;
 		const Parts = Url.pathname.split('/').filter(Boolean);
 		const Id = Url.hostname === 'youtu.be' ? Parts[0] : Url.pathname === '/watch' ? Url.searchParams.get('v') : ['shorts', 'embed'].includes(Parts[0]) ? Parts[1] : null;
 		return /^[\w-]{11}$/.test(Id ?? '') ? {videoId: Id, canonicalUrl: 'https://www.youtube.com/watch?v=' + Id} : null;

@@ -10,6 +10,15 @@
 
 **Spec:** 이 문서의 [설계와 범위](#설계와-범위), [배포 분리](#배포-분리), [인터페이스](#인터페이스)가 제안 명세다. 아직 사용자가 라이브러리·세부 지원 범위를 승인했거나 실제 다운로드가 검증된 상태는 아니다.
 
+
+## 구현 진행 기록 — 2026-11-08
+
+- Task 1: 로컬 커밋 21bca86. 배포 분리와 공통 차단, 생성된 store판의 실제 Chrome 일반 저장/YouTube 차단 확인.
+- Task 2: 후보 및 전이 의존성 lockfile 고정, 로컬 번들/격리 worker/최소 어댑터/실패 테스트 구현. Computer Use 없이 별도 Chrome 검사 프로필의 정확한 선택적 호스트 권한 활성화 문제를 해결함.
+- 지정 VOD -XHx839rSc8: 일반 페이지 HTTP 200·재생 가능, adaptive metadata 34개, 직접/cipher URL 0개·SABR 존재. offscreen WEB config/player POST는 자동 요청 관련 HTTP 403. 영상·음성 수신 및 저장은 미실행이며 Task 2 성공 게이트는 통과하지 못함.
+- Tasks 3–5: 위 실패 때문에 감지/UI/화질/전송/병합/부분 저장 통합을 활성화하지 않음. 원래 provider entry는 youtube_not_verified를 유지함. Task 6의 배포 검사만 수행하며 전체 완료로 표시하지 않음.
+- 최신 근거와 재현 절차: [검증 기록](../../verification.md#task-2-native-result--2026-11-08), [개발 안내](../../development.md). 아래 현재 기준과 제안의 미설치 설명은 계획서 작성 당시 상태임.
+
 ## 현재 기준
 
 - 작업 경로: `E:\Project\MDownloader`.
@@ -176,10 +185,10 @@ ResolvedYoutube = {videoId: string, title: string, duration?: number, thumbnail?
 
 **Interfaces:** `DistributionPolicy`, `CanUseYoutube`, `IdentifyYoutubeUrl`, `IsYoutubeSource`를 먼저 고정한다.
 
-- [ ] dev/manual의 Chrome·Edge 허용, store의 모든 브라우저 거부, Chrome 추가 제한, 도메인 경계를 검사하는 실패 테스트를 작성한다.
-- [ ] `node --test tests/distribution-policy.test.mjs tests/distribution-package.test.mjs`로 미구현 실패를 확인한다.
-- [ ] 공통 차단과 배포별 생성, 명시적 제외 목록, 비활성 entry를 구현한다. 저장된 설정을 바꿔도 store의 거부가 바뀌면 안 된다.
-- [ ] 직접 미디어·embed·위조 provider·기존 작업 경로와 기존 전체 테스트를 통과시킨 뒤 로컬 커밋한다.
+- [x] dev/manual의 Chrome·Edge 허용, store의 모든 브라우저 거부, Chrome 추가 제한, 도메인 경계를 검사하는 실패 테스트를 작성한다.
+- [x] `node --test tests/distribution-policy.test.mjs tests/distribution-package.test.mjs`로 미구현 실패를 확인한다.
+- [x] 공통 차단과 배포별 생성, 명시적 제외 목록, 비활성 entry를 구현한다. 저장된 설정을 바꿔도 store의 거부가 바뀌면 안 된다.
+- [x] 직접 미디어·embed·위조 provider·기존 작업 경로와 기존 전체 테스트를 통과시킨 뒤 로컬 커밋한다.
 
 ### Task 2: 실제 수동 설치 Chrome에서 추출 가능성 검증
 
@@ -187,8 +196,8 @@ ResolvedYoutube = {videoId: string, title: string, duration?: number, thumbnail?
 
 **Interfaces:** `DiscoverYoutube`, `ResolveYoutubeSelection`. 처음에는 UI와 결합하지 않고 같은 계약의 픽스처로 검사한다.
 
-- [ ] 고정 응답, URL 만료, 해석기 시간 초과, 권한 거부, 미지원 SABR의 실패 테스트를 준비한다. `node --test tests/youtube-client.test.mjs`로 실패를 확인한다.
-- [ ] 후보 버전을 고정하고 로컬 번들을 만든다. worker에 필요한 최소 기능만 노출하고 라이브러리 로그의 민감한 출력을 막는다.
+- [x] 고정 응답, URL 만료, 해석기 시간 초과, 권한 거부, 미지원 SABR의 실패 테스트를 준비한다. `node --test tests/youtube-client.test.mjs`로 실패를 확인한다.
+- [x] 후보 버전을 고정하고 로컬 번들을 만든다. worker에 필요한 최소 기능만 노출하고 라이브러리 로그의 민감한 출력을 막는다.
 - [ ] 본인 소유/허가된 공개 VOD로 실제 Chrome unpacked에서 정보 조회 → 미디어 응답 → 영상·음성 읽기를 확인한다. Node 성공만으로 통과하지 않는다.
 - [ ] MV3·PO Token·SABR 때문에 성립하지 않으면 결과를 보고한다. 실패를 숨기고 UI 구현으로 진행하지 않는다. 성립하면 의존성과 최소 어댑터를 로컬 커밋한다.
 

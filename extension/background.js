@@ -21,6 +21,7 @@ import { InitializeDebugLogging } from './lib/debug-runtime.js';
 import {RelayWebRtc, WebRtcSourceLost, CancelAllWebRtc, WebRtcQualities} from './webrtc-jobs.js';
 import {AuthorizePlayback} from './lib/playback-authorization.js';
 import {PrepareDistributionNetwork} from './lib/distribution-network.js';
+import {CanUseYoutube} from './lib/distribution-policy.js';
 void PrepareDistributionNetwork().catch(ErrorValue => ReportDebugFailure(ErrorValue, 'DistributionRulesFailed'));
 void InitializeDebugLogging(async bEnabled =>
 {
@@ -80,6 +81,21 @@ async function Route(Message)
 
 chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 {
+	if (Message.type === 'youtubePermission' && Sender.id === chrome.runtime.id && Sender.url === HlsRunnerUrl())
+	{
+		void (async () =>
+		{
+			if (!CanUseYoutube()) return {allowed: false};
+			try
+			{
+				const Url = new URL(Message.origin);
+				if (Url.origin !== Message.origin || Url.protocol !== 'https:' || !(['youtube.com', 'www.youtube.com', 'youtubei.googleapis.com', 'googlevideo.com'].includes(Url.hostname) || Url.hostname.endsWith('.googlevideo.com'))) return {allowed: false};
+				return {allowed: await chrome.permissions.contains({origins: [Url.origin + '/*']})};
+			}
+			catch { return {allowed: false}; }
+		})().then(Respond);
+		return true;
+	}
 	if (Message.type === 'webrtcRecordingData' && Sender.id === chrome.runtime.id && HostPattern(Sender.origin) &&
 		Sender.documentId && Sender.frameId === 0 && Number.isInteger(Sender.tab?.id))
 	{
