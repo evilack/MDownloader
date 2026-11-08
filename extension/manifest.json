@@ -6,7 +6,7 @@
   "description": "__MSG_extension_description__",
   "minimum_chrome_version": "116",
   "permissions": ["activeTab", "scripting", "downloads", "storage", "sidePanel", "clipboardWrite", "webRequest", "offscreen", "declarativeNetRequestWithHostAccess"],
-  "optional_permissions": ["nativeMessaging"],
+  "optional_permissions": ["nativeMessaging", "downloads.open"],
   "host_permissions": ["https://xszcdn11.com/*", "https://v1.xsz2-cdn.com/*"],
   "optional_host_permissions": ["http://*/*", "https://*/*"],
   "icons": {

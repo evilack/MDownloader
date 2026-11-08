@@ -10,7 +10,7 @@ import { Translate } from './lib/i18n.js';
 import { SetDownloadLocation } from './lib/settings.js';
 
 /** 텍스트 하위 경로와 폴더 선택은 서로 다른 저장 방식입니다. 화면에서 선택한 한 가지를 원자적으로 기록합니다. */
-export async function BindDownloadLocation(DownloadFolder, PickedFolderKey)
+export async function BindDownloadLocation(DownloadFolder, PickedFolderKey, BeforePick = () => true)
 {
 	const Form = document.querySelector('#download-folder-form');
 	const Input = document.querySelector('#download-folder');
@@ -93,6 +93,7 @@ export async function BindDownloadLocation(DownloadFolder, PickedFolderKey)
 		SetBusy(true);
 		try
 		{
+			if(!await BeforePick())return;
 			// 폴더 선택기는 사용자가 클릭한 순간에만 열 수 있으므로 저장소 조회보다 먼저 호출합니다.
 			const Directory = await PickDownloadFolder(PickedFolder);
 			if (!await HasPickedFolderAccess(Directory))

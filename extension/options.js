@@ -4,6 +4,7 @@ void InitializeDebugLogging();
  * 옵션 화면의 시작점입니다. 저장된 설정을 한 번에 읽은 뒤 언어, 체크박스, 다운로드 위치, 접근 권한, 로그 설정을 각각 연결합니다.
  */
 import { BindDownloadLocation } from './options-download-location.js';
+import {BeforePickDownloadFolder} from './options-explorer-setup.js';
 import { BindNetworkAccess } from './options-network-access.js';
 import { BindDownloadLog } from './options-download-log.js';
 import {
@@ -98,7 +99,7 @@ if (CanUseYoutube())
 	document.querySelector('#youtube-caption-settings').hidden = false;
 	BindToggles(Settings, '#youtube-caption-settings-status', [[SettingKeys.includeYoutubeAutoCaptions, '#include-youtube-auto-captions', 'opt_youtube_auto_captions']]);
 }
-void BindDownloadLocation(Settings?.[SettingKeys.downloadFolder], Settings?.[SettingKeys.pickedDownloadFolder]);
+void BindDownloadLocation(Settings?.[SettingKeys.downloadFolder], Settings?.[SettingKeys.pickedDownloadFolder], BeforePickDownloadFolder);
 BindToggles(Settings, '#debug-status', [
 	[SettingKeys.debugLogging, '#debug-logging', 'opt_debug_logging'],
 	[SettingKeys.debugDownloads, '#debug-downloads', 'opt_debug'],

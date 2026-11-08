@@ -1672,5 +1672,56 @@
   },
   "download_options_download": {
     "message": "다운로드"
+  },
+  "explorer_setup_title": {
+    "message": "Windows 도우미 설치"
+  },
+  "explorer_setup_body": {
+    "message": "선택한 폴더를 탐색기에서 열려면 Windows 도우미가 필요합니다."
+  },
+  "explorer_setup_install": {
+    "message": "설치"
+  },
+  "explorer_setup_installing": {
+    "message": "설치 완료를 확인하고 있습니다.\nChrome 또는 Windows 확인창이 나타나면 허용해 주세요."
+  },
+  "explorer_setup_manual": {
+    "message": "Chrome에서 설치 파일을 자동 실행하지 못했습니다. 다운로드 목록의 MDownloader-Windows-Setup.cmd를 실행한 뒤 이 화면으로 돌아와 주세요."
+  },
+  "explorer_setup_ready": {
+    "message": "도우미 설치를 확인했습니다. 폴더 선택을 계속해 주세요."
+  },
+  "explorer_setup_continue": {
+    "message": "폴더 선택 계속"
+  },
+  "explorer_setup_open": {
+    "message": "설치 실행"
+  },
+  "explorer_setup_question": {
+    "message": "지금 설치할까요?"
+  },
+  "explorer_setup_cancel": {
+    "message": "취소하면 기존 저장 폴더를 유지합니다."
+  },
+  "explorer_setup_downloading": {
+    "message": "설치 파일을 다운로드하고 있습니다.\n완료되면 ‘설치 실행’을 눌러 주세요."
+  },
+  "explorer_setup_downloaded": {
+    "message": "다운로드가 완료되었습니다.\n‘설치 실행’을 눌러 설치를 진행해 주세요."
+  },
+  "explorer_setup_pending": {
+    "message": "확인 중…"
+  },
+  "explorer_setup_show": {
+    "message": "설치 파일 보기"
+  },
+  "explorer_setup_delayed": {
+    "message": "파일 실행 확인이 지연되고 있습니다.\n‘설치 파일 보기’를 눌러 다운로드한 파일을 실행해 주세요."
+  },
+  "explorer_setup_file_help": {
+    "message": "MDownloader-Windows-Setup.cmd를 실행해 주세요.\n설치가 끝나면 이 화면에서 자동으로 확인합니다."
+  },
+  "explorer_setup_download_timeout": {
+    "message": "설치 파일 다운로드가 아직 완료되지 않았습니다. Chrome 다운로드 목록을 확인한 뒤 다시 시도해 주세요."
   }
 }

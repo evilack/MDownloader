@@ -8,6 +8,7 @@ import {createRequire as CreateRequire} from 'node:module';
 import {fileURLToPath as FileURLToPath, pathToFileURL as PathToFileURL} from 'node:url';
 import Path from 'node:path';
 import {ProjectPath, ArtifactPath} from '../lib/tool-config.mjs';
+import {AssertExtensionFilenames} from '../lib/extension-files.mjs';
 const {parse: Parse} = CreateRequire(import.meta.url)('internal/deps/acorn/acorn/dist/acorn');
 const Result = {javascript: 0, json: 0, relativeImports: 0, localReferences: 0, preservedFiles: 0, failures: []};
 async function CheckReference(File, Reference)
@@ -147,6 +148,7 @@ for (const File of Artifacts)
 	}
 }
 const Manifest = JSON.parse(await ReadFile(ProjectPath('extension/manifest.json'), 'utf8'));
+try{await AssertExtensionFilenames(ProjectPath('extension'));}catch(ErrorValue){Result.failures.push({file:'extension',reason:ErrorValue.message});}
 for (const File of [Manifest.background.service_worker, Manifest.action.default_popup, Manifest.side_panel.default_path, Manifest.options_page, Manifest.devtools_page,
 	...Object.values(Manifest.icons), ...Object.values(Manifest.action.default_icon)])
 {

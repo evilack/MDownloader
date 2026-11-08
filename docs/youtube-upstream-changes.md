@@ -164,3 +164,7 @@ Only shared saved-file reveal and the approved Windows helper changed: persisten
 # Popup video title — 2026-11-09
 
 Shared detection now supplies the document-bound YouTube video title instead of a fixed candidate filename. No YouTube.js/googlevideo/Mediabunny upstream or vendor changes; downloaded-file naming and Store exclusion are unchanged.
+
+# Shared Windows helper setup and Mac folder action — 2026-11-09
+
+Folder selection now gates Windows setup and preserves the previous directory on cancel. A runtime-ID-specific, self-contained installer is bundled in both flavors. Native deployment/UTF-8 binding repair and truthful setup progress are shared saved-file work, with no YouTube.js/googlevideo/Mediabunny source or vendor change. Mac completed-folder actions use browser Downloads. Store YouTube exclusion remains physical and verified.

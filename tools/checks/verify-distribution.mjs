@@ -2,6 +2,7 @@ import {readFile, readdir, stat} from 'node:fs/promises';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import Path from 'node:path';
+import {AssertExtensionFilenames} from '../lib/extension-files.mjs';
 const {parse} = createRequire(import.meta.url)('internal/deps/acorn/acorn/dist/acorn');
 const Args = process.argv.slice(2), Flavor = Args[Args.indexOf('--flavor') + 1];
 if (!Args.includes('--flavor') || !['development', 'chrome-store'].includes(Flavor)) throw new Error('Explicit --flavor required');
@@ -14,6 +15,7 @@ async function Walk(Directory) {
  }
 }
 await Walk(Root);
+await AssertExtensionFilenames(Root);
 async function Reference(From, Value) {
  if (/^(?:[a-z]+:|#)/i.test(Value)) throw new Error('Nonlocal executable reference: ' + From);
  const Target = Path.resolve(Root, Path.dirname(From), Value.split(/[?#]/)[0]);

@@ -725,7 +725,11 @@ export async function ControlJob(RequestId, Action)
 	if (['show','play'].includes(Action) && Job?.pickedDownloadFolder)
 	{
 		const Location = await SavedLocation(RequestId);
-		if (Action === 'show') return RevealPickedMedia(Location);
+		if (Action === 'show')
+		{
+			if((await chrome.runtime.getPlatformInfo()).os==='mac')return chrome.downloads.showDefaultFolder();
+			return RevealPickedMedia(Location);
+		}
 		return chrome.tabs.create({url: chrome.runtime.getURL('saved-media.html') + '?job=' + encodeURIComponent(RequestId)});
 	}
 	if (Job?.youtube && Job.state === 'active' && Action === 'cancel' && await CancelYoutube(RequestId)) return;
@@ -774,6 +778,7 @@ export async function ControlJob(RequestId, Action)
 		}
 		if (Action === 'show' && ['complete', 'interrupted'].includes(State) && Item.exists)
 		{
+			if((await chrome.runtime.getPlatformInfo()).os==='mac')return chrome.downloads.showDefaultFolder();
 			return chrome.downloads.show(Item.id);
 		}
 		if (Action === 'play' && ['complete','interrupted'].includes(State) && Item.exists)

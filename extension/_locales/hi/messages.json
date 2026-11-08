@@ -1672,5 +1672,56 @@
   },
   "download_options_download": {
     "message": "डाउनलोड"
+  },
+  "explorer_setup_title": {
+    "message": "Install Windows helper"
+  },
+  "explorer_setup_body": {
+    "message": "A Windows helper is needed to show files in your selected folder."
+  },
+  "explorer_setup_install": {
+    "message": "स्थापित करें"
+  },
+  "explorer_setup_installing": {
+    "message": "Waiting for installation to finish.\nAllow any Chrome or Windows execution prompt."
+  },
+  "explorer_setup_manual": {
+    "message": "Chrome इसे शुरू नहीं कर पाया। डाउनलोड में MDownloader-Windows-Setup.cmd चलाएँ, फिर यहाँ लौटें।"
+  },
+  "explorer_setup_ready": {
+    "message": "स्थापना की पुष्टि हुई। फ़ोल्डर चुनना जारी रखें।"
+  },
+  "explorer_setup_continue": {
+    "message": "फ़ोल्डर चयन जारी रखें"
+  },
+  "explorer_setup_open": {
+    "message": "Run installer"
+  },
+  "explorer_setup_question": {
+    "message": "Install it now?"
+  },
+  "explorer_setup_cancel": {
+    "message": "Cancel keeps your current saved folder."
+  },
+  "explorer_setup_downloading": {
+    "message": "Downloading the installer.\nWhen it finishes, click “Run installer”."
+  },
+  "explorer_setup_downloaded": {
+    "message": "Download complete.\nClick “Run installer” to begin installation."
+  },
+  "explorer_setup_pending": {
+    "message": "Please wait…"
+  },
+  "explorer_setup_show": {
+    "message": "Show installer"
+  },
+  "explorer_setup_delayed": {
+    "message": "File execution confirmation is taking longer than expected.\nClick “Show installer” and run the downloaded file."
+  },
+  "explorer_setup_file_help": {
+    "message": "Run MDownloader-Windows-Setup.cmd.\nThis screen checks the connection after installation."
+  },
+  "explorer_setup_download_timeout": {
+    "message": "The installer download has not completed. Check Chrome Downloads, then try again."
   }
 }

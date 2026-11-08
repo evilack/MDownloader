@@ -1,7 +1,10 @@
 import {cp, mkdir, readFile, writeFile, rm} from 'node:fs/promises';
 import Path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {WriteExplorerInstaller} from './build-explorer-installer.mjs';
+import {AssertExtensionFilenames} from '../lib/extension-files.mjs';
 const Root = fileURLToPath(new URL('../../', import.meta.url));
+await AssertExtensionFilenames(Path.join(Root,'extension'));
 const Args = process.argv.slice(2);
 const Flavor = Args[Args.indexOf('--flavor') + 1];
 if (!Args.includes('--flavor') || !['development', 'chrome-store'].includes(Flavor) || Args.some((Arg, Index) => Index !== Args.indexOf('--flavor') && Index !== Args.indexOf('--flavor') + 1 && Arg !== '--block-chrome')) throw new Error('Required: --flavor development|chrome-store [--block-chrome]');
@@ -10,6 +13,7 @@ const Stage = Path.join(Output, 'staging-' + process.pid);
 await mkdir(Output, {recursive: true});
 await cp(Path.join(Root, 'extension'), Stage, {recursive: true, filter: Source => Flavor !== 'chrome-store' || !['features/youtube', 'vendor/youtube'].some(Excluded => Source === Path.join(Root, 'extension', Excluded))});
 let Policy = await readFile(Path.join(Stage, 'lib/distribution-policy.js'), 'utf8');
+await WriteExplorerInstaller(Root,Path.join(Stage,'data/explorer-installer.json'));
 Policy = Policy.replace(/export const DistributionPolicy = .*?;/, `export const DistributionPolicy = Object.freeze({flavor: '${Flavor}', youtubeEnabled: ${Flavor !== 'chrome-store'}, blockedBrowserFamilies: Object.freeze(${JSON.stringify(Args.includes('--block-chrome') ? ['chrome'] : [])})});`);
 await writeFile(Path.join(Stage, 'lib/distribution-policy.js'), Policy);
 if (Flavor === 'chrome-store' || Args.includes('--block-chrome'))

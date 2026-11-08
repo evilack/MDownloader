@@ -245,11 +245,13 @@ export function CreateJobRow(Job, Tile, Context)
 				}
 				const RequestedAction = Action === 'show' && UiEvent.shiftKey ? 'play' : Action;
 				if (RequestedAction === 'show' && Job.pickedDownloadFolder &&
+				(await chrome.runtime.getPlatformInfo()).os==='win' &&
 				!await chrome.permissions.request({permissions: ['nativeMessaging']}))
 				{
 					throw new Error(Translate('explorer_bridge_required'));
 				}
 				await SendRequest('control', { requestId: Job.requestId, action: RequestedAction });
+				if(RequestedAction==='show')Announce('');
 			}
 			catch (ErrorValue)
 			{

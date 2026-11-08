@@ -36,7 +36,7 @@ function Resolve-SavedFile([string]$Directory,$Message) {
 $InputStream=[Console]::OpenStandardInput();$OutputStream=[Console]::OpenStandardOutput()
 $Mutex=$null;$Locked=$false
 try {
-    $Manifest=Get-Content -LiteralPath $ManifestPath -Raw | ConvertFrom-Json
+    $Manifest=Get-Content -LiteralPath $ManifestPath -Encoding UTF8 -Raw | ConvertFrom-Json
     if($CallerOrigin -cnotmatch '^chrome-extension://[a-p]{32}/$' -or $Manifest.allowed_origins -cnotcontains $CallerOrigin){throw 'origin_denied'}
     $Header=Read-Exact $InputStream 4;$Size=[BitConverter]::ToUInt32($Header,0)
     if($Size -eq 0 -or $Size -gt 16384){throw 'invalid_message'}
@@ -56,7 +56,7 @@ try {
     try {$Locked=$Mutex.WaitOne(300000)} catch [Threading.AbandonedMutexException] {$Locked=$true}
     if(-not $Locked){throw 'binding_required'}
     $Bindings=@{}
-    if(Test-Path -LiteralPath $BindingsPath){$Stored=Get-Content -LiteralPath $BindingsPath -Raw | ConvertFrom-Json;foreach($Property in $Stored.PSObject.Properties){$Bindings[$Property.Name]=[string]$Property.Value}}
+    if(Test-Path -LiteralPath $BindingsPath){$Stored=Get-Content -LiteralPath $BindingsPath -Encoding UTF8 -Raw | ConvertFrom-Json;foreach($Property in $Stored.PSObject.Properties){$Bindings[$Property.Name]=[string]$Property.Value}}
     $Key=$CallerOrigin+'|'+$ParsedGuid.ToString();$Path=$null
     if($Bindings.ContainsKey($Key)){try{$Path=Resolve-SavedFile $Bindings[$Key] $Message}catch{$Path=$null}}
     if(-not $Path){

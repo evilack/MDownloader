@@ -12,6 +12,12 @@ test('browser replay opens the completed local media URL without launching its d
  await ControlJob(Id,'play');assert.deepEqual(opened,[{url:'file:///C:/Downloads/%EC%98%81%EC%83%81%20%231.mp4'}]);
 });
 test('browser-managed completed downloads keep the original native show API',async t=>{
- const job={requestId:Id,state:'started',downloadId:7},shown=[];globalThis.chrome={storage:{local:{get:async key=>({[key]:job})}},runtime:{id:'test'},downloads:{search:async()=>[{id:7,byExtensionId:'test',state:'complete',exists:true,filename:'C:/Downloads/saved.mp4'}],show:async id=>shown.push(id)}};t.after(()=>delete globalThis.chrome);
+ const job={requestId:Id,state:'started',downloadId:7},shown=[];globalThis.chrome={storage:{local:{get:async key=>({[key]:job})}},runtime:{id:'test',getPlatformInfo:async()=>({os:'win'})},downloads:{search:async()=>[{id:7,byExtensionId:'test',state:'complete',exists:true,filename:'C:/Downloads/saved.mp4'}],show:async id=>shown.push(id)}};t.after(()=>delete globalThis.chrome);
  await ControlJob(Id,'show');assert.deepEqual(shown,[7]);
+});
+
+test('Mac picked-folder show opens Downloads without reading handles or invoking a Windows helper',async t=>{
+ const job={requestId:Id,state:'complete',exists:true,pickedDownloadFolder:'registered-key',filename:'saved.mp4'};let shown=0;
+ globalThis.chrome={storage:{local:{get:async key=>({[key]:job})}},runtime:{getPlatformInfo:async()=>({os:'mac'})},downloads:{showDefaultFolder:async()=>shown++}};t.after(()=>delete globalThis.chrome);
+ await ControlJob(Id,'show');assert.equal(shown,1);
 });

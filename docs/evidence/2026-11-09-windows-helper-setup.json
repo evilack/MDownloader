@@ -1,0 +1,116 @@
+{
+  "scope": "Windows folder-selection setup, accurate progress/cancel, Mac Downloads fallback",
+  "artifact": "E:\\Project\\MDownloader\\artifacts\\download-options-worktree\\artifacts\\explorer-setup\\chrome-1794176305154",
+  "computerUse": false,
+  "actualChrome": true,
+  "desktopContext": true,
+  "headless": false,
+  "fixtureBoundary": "real options/gate/download/open/host; declared optional permissions promoted for test; picker returns real OPFS handle",
+  "browser": "Chrome/157.0.8103.39",
+  "extensionId": "abnimjcjcaaajcjpddcgoaegfdjmkopm",
+  "cancelKeepsFolder": true,
+  "installerExecution": "desktop test driver executed the actual downloaded file; Chrome confirmation UI not automated",
+  "automaticBrowserExecutionVerified": false,
+  "downloads": [
+    {
+      "id": 1,
+      "filename": "E:\\Project\\MDownloader\\artifacts\\download-options-worktree\\artifacts\\explorer-setup\\chrome-1794176305154\\downloads\\MDownloader-Windows-Setup.cmd",
+      "state": "complete",
+      "danger": "safe"
+    }
+  ],
+  "openErrors": [],
+  "installed": true,
+  "folderChangedAfterInstall": true,
+  "connected": true,
+  "status": null,
+  "passed": true,
+  "currentProfileRepair": {
+    "before": "Specified native messaging host not found.",
+    "after": {
+      "ok": true,
+      "protocol": 1
+    },
+    "realSavedFile": {
+      "directory": "D:\\1",
+      "bytes": 204637663,
+      "sizeAndSampleHashMatched": true,
+      "explorerSelectionObserved": true
+    }
+  },
+  "checks": {
+    "scopedTests": {
+      "passed": 451,
+      "skipped": 1,
+      "failed": 0
+    },
+    "project": {
+      "javascript": 282,
+      "json": 36,
+      "relativeImports": 650,
+      "localReferences": 178,
+      "failures": 0,
+      "preservedAssets": 73
+    },
+    "locales": {
+      "count": 10,
+      "messages": 494,
+      "missingReferences": 0
+    },
+    "development": {
+      "files": 185,
+      "imports": 448,
+      "verified": true
+    },
+    "store": {
+      "files": 158,
+      "imports": 405,
+      "verified": true,
+      "browserExecuted": false
+    },
+    "mergedTests": {
+      "passed": 460,
+      "skipped": 1,
+      "failed": 0
+    }
+  },
+  "reviewFixes": [
+    "unfinished installer download is not reported complete",
+    "failed open exposes file-reveal recovery"
+  ],
+  "boundaries": [
+    "OS directory picker return in the UI probe is a real OPFS fixture",
+    "optional permissions promoted for the test only; permission UI not automatically approved",
+    "actual downloaded CMD executed by desktop test driver; Chrome native confirmation not automated",
+    "Mac branch tested by API fixture, no physical Mac available"
+  ],
+  "runInstallerClick": true,
+  "desktopDeployment": {
+    "dialogHashMatches": true,
+    "fixtureOriginsRemoved": 2,
+    "hostHashMatches": true,
+    "rootAllowed": true,
+    "realFolderBindingPreserved": true
+  },
+  "desktopRootLoad": {
+    "artifact": "E:\\Project\\MDownloader\\artifacts\\explorer-repair\\desktop-root-1794177441065",
+    "computerUse": false,
+    "desktopContext": true,
+    "actualChrome": true,
+    "browser": "Chrome/157.0.8103.39",
+    "id": "eaimflahgdgfehekmdefignmffapamjk",
+    "unpackedLoadPassed": true,
+    "helper": {
+      "connected": true
+    },
+    "optionalDownloadsOpen": true,
+    "passed": true
+  },
+  "reservedFilenameRepair": {
+    "temporaryProbeFilesRemoved": 8,
+    "userReloadConfirmed": true,
+    "sourceAndPackageGuardsAdded": true,
+    "actualChromeUnpackedLoadPassed": true
+  },
+  "scopedExtensionTree": "5d9b95f2d0c9eb9e2cf06e276ead71899dc8b8ff"
+}

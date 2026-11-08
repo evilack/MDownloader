@@ -191,3 +191,8 @@ progress { display: block; width: 100%; height: 8px; margin: 9px 0 0; accent-col
 
 .download-options-dialog button { min-height: 32px; }
 .download-options-dialog .notice[data-error="true"] { color: #ffb4ac; }
+.explorer-setup-dialog { width: min(440px, calc(100vw - 16px)); }
+.explorer-setup-dialog header, .explorer-setup-dialog footer { padding: 10px 12px; }
+.explorer-setup-dialog .explorer-setup-body { gap: 4px; padding: 12px; }
+.explorer-setup-dialog .explorer-setup-body p { margin: 0; line-height: 1.5; white-space: pre-line; }
+.explorer-setup-dialog .explorer-setup-note { margin-top: 4px; }
