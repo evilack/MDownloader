@@ -5,6 +5,7 @@ import { HostPattern } from './lib/media.js';
 import { ResolveCandidate } from './detection.js';
 import { ParseMaster } from './lib/hls.js';
 import { ReadPlaylist } from './lib/hls-http.js';
+import {FindHlsSubtitles} from './lib/subtitles.js';
 import { KnownMasterDenial } from './lib/hls-diagnostics.js';
 import { LocalizedError, ReceivedError, Translate } from './lib/i18n.js';
 import { DebugConfiguration } from './lib/debug-runtime.js';
@@ -84,7 +85,8 @@ export async function HlsQualities({ tabId: TabId, scanId: ScanId, candidateId: 
 		await RequireHlsHosts([Item.url]);
 		try
 		{
-			Qualities = ParseMaster(await ReadPlaylist(Item.url), Item.url)?.reverse();
+			const Text = await ReadPlaylist(Item.url);
+			Qualities = ParseMaster(Text, Item.url)?.reverse().map(Quality => ({...Quality, subtitles:FindHlsSubtitles(Text, Item.url, Quality.url)}));
 		}
 		catch (ErrorValue)
 		{
@@ -95,7 +97,7 @@ export async function HlsQualities({ tabId: TabId, scanId: ScanId, candidateId: 
 			throw ErrorValue;
 		}
 	}
-	if (!Qualities || Qualities.length < 2)
+	if (!Qualities?.length)
 	{
 		return [];
 	}
@@ -117,11 +119,13 @@ export async function HlsQualities({ tabId: TabId, scanId: ScanId, candidateId: 
 	}));
 }
 
-export async function LaunchHls(Job, Url, VariantUrl, RequestContext, Format)
+export async function LaunchHls(Job, Url, VariantUrl, RequestContext, Format, Subtitles)
 {
 	AssertMediaAllowed({...Job, url: Url, variants: [VariantUrl], requestContext: RequestContext});
 	return LaunchRunner({
 		...FolderDestination(Job), requestId: Job.requestId, url: Url, variantUrl: VariantUrl, requestContext: RequestContext,
+		...(Job.subtitleOptions ? {subtitleOptions: Job.subtitleOptions} : {}),
+		...(Subtitles?.length ? {subtitles: Subtitles} : {}),
 		...(Format === 'MPD' ? { format: Format } : {}),
 	});
 }
@@ -131,17 +135,19 @@ function FolderDestination({ pickedDownloadFolder: PickedDownloadFolder, filenam
 	return PickedDownloadFolder ? { pickedDownloadFolder: PickedDownloadFolder, filename: Filename } : {};
 }
 
-export async function LaunchPlaybackHls(Job, Playback)
+export async function LaunchPlaybackHls(Job, Playback, Subtitles)
 {
-	return LaunchRunner({ ...FolderDestination(Job), requestId: Job.requestId, playback: Playback });
+	return LaunchRunner({ ...FolderDestination(Job), requestId: Job.requestId, playback: Playback, ...(Subtitles?.length ? {subtitles: Subtitles} : {}) });
 }
 
-export async function LaunchDirectToFolder(Job, Url)
+export async function LaunchDirectToFolder(Job, Url, Subtitles)
 {
 	AssertMediaAllowed({...Job, url: Url});
 	await EnsureRunner();
 	const Result = await chrome.runtime.sendMessage({
-		type: 'folderRun', debugLogging: await DebugConfiguration(), job: { ...FolderDestination(Job), requestId: Job.requestId, url: Url },
+		type: 'folderRun', debugLogging: await DebugConfiguration(), job: { ...FolderDestination(Job), requestId: Job.requestId, url: Url,
+			...(Job.subtitleOptions ? {subtitleOptions: Job.subtitleOptions} : {}),
+			...(Subtitles?.length ? {subtitles: Subtitles} : {}) },
 	});
 	if (!Result?.ok)
 	{

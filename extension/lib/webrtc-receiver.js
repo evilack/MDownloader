@@ -1,5 +1,5 @@
 /** 확장 문서가 자체 연결·트랙·녹화기를 소유합니다. 사이트 코드나 원본 탭을 참조하지 않습니다. */
-export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd}, Dependencies = globalThis)
+export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd, onStart}, Dependencies = globalThis)
 {
 	const D = Dependencies, Later = D.setTimeout.bind(D), Clear = D.clearTimeout.bind(D);
 	const Every = D.setInterval.bind(D), ClearEvery = D.clearInterval.bind(D);
@@ -123,6 +123,7 @@ export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd}, Depende
 			if (!Reason) { Reason = 'webrtc_connection_lost'; if (!IsReady) RejectReady(ErrorFor(Reason)); }
 			void Complete().catch(() => {});
 		});
+		onStart?.(Now());
 		Recorder.start(1000);
 		RecorderStarted = true;
 		LastMedia = Now();

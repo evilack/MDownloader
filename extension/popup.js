@@ -7,6 +7,7 @@ import { InitializeLocale, LocalizePage, Translate, WatchLanguage } from './lib/
 import { MountOptionsButton } from './lib/ui.js';
 import { CreateCandidateList } from './candidate-list.js';
 import { CreateMediaPreview } from './media-preview.js';
+import {ObserveYoutubePolicyNotice} from './lib/youtube-policy-notice.js';
 await InitializeLocale();
 LocalizePage();
 WatchLanguage();
@@ -14,9 +15,10 @@ const Candidates = CreateCandidateList({
 	root: document, mediaPreview: CreateMediaPreview(), scrollRoot: document.querySelector('main'),
 });
 MountOptionsButton(document.querySelector('.brand'), Candidates.announce);
+let CurrentTab;
 document.querySelector('#manage').addEventListener('click', async () =>
 {
-	const WindowId = Candidates.tab?.windowId;
+	const WindowId = CurrentTab?.windowId ?? Candidates.tab?.windowId;
 	if (WindowId === undefined || !chrome.sidePanel?.open)
 	{
 		Candidates.announce(Translate('view_panel_use_menu'));
@@ -32,4 +34,11 @@ document.querySelector('#manage').addEventListener('click', async () =>
 		Candidates.announce(Translate('view_panel_failed'));
 	}
 });
-Candidates.setEnabled(true);
+ObserveYoutubePolicyNotice((Blocked, Tab) =>
+{
+	CurrentTab = Tab;
+	document.querySelector('[data-youtube-policy-notice]').hidden = !Blocked;
+	document.querySelector('#popup-media').hidden = Blocked;
+	document.querySelector('#scan').hidden = Blocked;
+	Candidates.setEnabled(!Blocked);
+});

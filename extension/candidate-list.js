@@ -13,6 +13,7 @@ import { GetMediaFormatLabel, MediaFormat } from './lib/media.js';
 import { CreateLiveBadge } from './media-badges.js';
 import { StartVisibleSourceRefresh } from './lib/source-refresh.js';
 import { CreatePlaybackHint } from './lib/playback-hint.js';
+import {CreateSubtitleStatus, UpdateSubtitleStatus} from './subtitle-status.js';
 export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, scrollRoot: ScrollRoot = null, followTabs: bFollowTabs = false })
 {
 	const List = Root.querySelector('#candidates');
@@ -50,6 +51,29 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 	let PendingScan;
 	let bManualQueued = false;
 	let StopSourceRefresh;
+	let SubtitleLookupRows, SubtitleLookupTime = 0, SubtitleLookupRevision = 0;
+	async function LoadSubtitleStatuses(Rows = RowContexts, Force = false)
+	{
+		if (!Rows.length || !bEnabled) return;
+		if (!Force && SubtitleLookupRows === Rows && Date.now() - SubtitleLookupTime < 5000) return;
+		SubtitleLookupRows = Rows;
+		SubtitleLookupTime = Date.now();
+		const Revision = ++SubtitleLookupRevision;
+		try
+		{
+			const Result = await SendRequest('candidateSubtitleStatuses', {...Rows[0].input, candidateIds: Rows.map(Row => Row.input.candidateId)});
+			if (Rows !== RowContexts || !bEnabled || Revision !== SubtitleLookupRevision) return;
+			for (const Item of Result)
+			{
+				const Row = Rows.find(Entry => Entry.input.candidateId === Item.id);
+				if (Row) UpdateSubtitleStatus(Row.subtitleStatus, Item.status);
+			}
+		}
+		catch
+		{
+			if (Rows === RowContexts && Revision === SubtitleLookupRevision) for (const Row of Rows) UpdateSubtitleStatus(Row.subtitleStatus, {phase:'failed', translation:'unknown'});
+		}
+	}
 	async function WaitForScan()
 	{
 		while (PendingScan)
@@ -175,6 +199,7 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 				{
 					ThumbnailInput.scanId = Result.scanId;
 				}
+				void LoadSubtitleStatuses();
 				return;
 			}
 			ClearCandidates();
@@ -191,7 +216,8 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 				if (Candidate.supported)
 				{
 					const Input = { tabId: Tab.id, scanId: Result.scanId, candidateId: Candidate.id };
-					const RowContext = { input: Input, generation: Version };
+					const SubtitleStatus = CreateSubtitleStatus({phase:'checking', translation:'unknown'});
+					const RowContext = { input: Input, generation: Version, subtitleStatus: SubtitleStatus };
 					RowContexts.push(RowContext);
 					const Thumbnail = PreviewTile(MediaPreview, async () =>
 					{
@@ -212,9 +238,11 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 					const Details = CreateElement('div', '', 'candidate-details');
 					const JobStatus = CreateElement('span', '', 'candidate-job-status');
 					JobStatus.setAttribute('role', 'status');
-					Details.append(Filename, JobStatus);
+					const Heading = CreateElement('div', '', 'candidate-heading');
+					Heading.append(Filename);
+					Details.append(Heading, SubtitleStatus);
 					Badges.set(Candidate.mediaKey, JobStatus);
-					Row.append(Thumbnail.control, Format, Live, Details);
+					Row.append(Thumbnail.control, Format, Live, Details, JobStatus);
 					const Actions = CreateElement('div', '', 'actions');
 					const Download = DownloadActions.CreateDownloadButton(Candidate, Input, () => RowContext.generation === Generation);
 					Actions.append(Download);
@@ -239,6 +267,7 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 				MediaPreview.resumeHover(List);
 			}
 			ShowJobStatuses(Badges);
+			void LoadSubtitleStatuses();
 			if (Thumbnails.size)
 			{
 				ThumbnailInput = { tabId: Tab.id, scanId: Result.scanId };
@@ -348,6 +377,7 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 	});
 	chrome.storage.onChanged.addListener((Changes, Area) =>
 	{
+		if (Area === 'local' && Changes.subtitleTranslation && bEnabled) void LoadSubtitleStatuses(RowContexts, true);
 		if (!bEnabled || Area !== 'session' || Tab?.id === undefined)
 		{
 			return;

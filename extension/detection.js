@@ -16,6 +16,11 @@ import { DiscoverDeclaredHls } from './lib/declared-streams.js';
 import { DiscoverNativeHls } from './lib/native-hls-discovery.js';
 import { DiscoverSelectedHls } from './lib/selected-hls.js';
 import {WebRtcPageTask} from './lib/webrtc-page.js';
+import {DiscoverSubtitles} from './lib/subtitle-discovery.js';
+import {SubtitleStatus} from './lib/subtitle-status.js';
+import {DescribeSubtitleTracks} from './lib/download-options-selection.js';
+import {ReadPlaylist} from './lib/hls-http.js';
+import {FindDashSubtitles} from './lib/subtitles.js';
 import {AssertMediaAllowed, YoutubeSourceBlocked, IdentifyYoutubeUrl} from './lib/youtube-source-policy.js';
 import {YoutubeAvailable} from './features/youtube/entry.js';
 const KeyEncoder = new TextEncoder();
@@ -135,10 +140,6 @@ export async function FindMedia(TabId)
 	.flatMap(Item => [Item.url, ...(Item.variants ?? [])]).map(MediaResourceKey));
 	const IsCurrentSource = Item => (!Item.page || Item.page === Page) && (!Item.declaredPage || Item.declaredPage === Page);
 	Observed = Observed.filter(IsCurrentSource);
-	if (await DiscoverNativeHls(TabId, Frame.documentId, Page, Sources, Observed))
-	{
-		Observed = (await NetworkCandidates(TabId, Frame.documentId)).filter(IsCurrentSource);
-	}
 	let Context = await ReadMediaContext(TabId);
 	// 응답 헤더가 카드 역할 메시지보다 먼저 도착해도, 현재 DOM이 미리보기 전용임을
 	// 확인한 중간 상태의 미분류 주소는 노출하지 않습니다. 다른 문서의 본편은 유지합니다.
@@ -154,6 +155,12 @@ export async function FindMedia(TabId)
 	(Frame.result.previewOnly && IsStreamFormat(Format ?? ClassifyMediaUrl(Url)?.format) &&
 	(DocumentId === Frame.documentId || (DocumentId === undefined && TimeOrigin === Frame.result.timeOrigin)) &&
 	!Context.byDocument.get(Frame.documentId)?.has(MediaResourceKey(Url)));
+	if (await DiscoverNativeHls(TabId, Frame.documentId, Page, Sources,
+		Observed.filter(Item => !IsAuxiliary(Item.url, Item.documentId, undefined, Item.format)),
+		{opaquePlayer: Frame.result.opaquePlayer, excludedSelector: RuntimePolicy.Detection.SourcePlayerSelector}))
+	{
+		Observed = (await NetworkCandidates(TabId, Frame.documentId)).filter(IsCurrentSource);
+	}
 	// 선택 소스가 확인된 단독 워커 플레이어에 한해 같은 문서의 이전 HLS 요청을 표시 대상에서 제외합니다.
 	// 주소는 관측 기록에 보존하며 다른 프레임과 다른 형식의 영상은 유지합니다.
 	const SelectedHls = Frame.result.opaquePlayer && !SingleWebRtc ? await DiscoverSelectedHls(TabId, Frame.documentId, Page,
@@ -460,6 +467,41 @@ export async function ReadCandidateThumbnail(TabId, Item)
 	AssertMediaAllowed({...Item, pageUrl: Item.page});
 	const Previews = await ReadPreviews(TabId, Item.documentId, [{ id: Item.id, url: Item.url, variants: Item.variants ?? [], singleStream: Item.singleStream, ...(Item.format === 'YOUTUBE' ? {pagePlayer: true} : {}), selectedSource: Item.selectedSource }], ThumbnailFrame, Item.previewPage);
 	return Array.isArray(Previews) ? Previews[0] : undefined;
+}
+
+export async function CandidateSubtitleStatuses({tabId, scanId, candidateIds, scope})
+{
+	if (!Array.isArray(candidateIds) || candidateIds.length > 128) throw new LocalizedError('candidate_changed');
+	const {subtitleTranslation: Settings = {}} = await chrome.storage.local.get('subtitleTranslation');
+	const Results = [];
+	// Bound page inspection concurrency; status inspection never invokes a translation API.
+	for (let Index = 0; Index < candidateIds.length; Index += 3)
+	{
+		Results.push(...await Promise.all(candidateIds.slice(Index, Index + 3).map(async id =>
+		{
+			try
+			{
+				const Item = await ResolveCandidate(tabId, scanId, id, scope);
+				const Tracks = [...(Item.qualities?.[0]?.subtitles || []), ...await DiscoverSubtitles(tabId, Item)];
+				return {id, status: SubtitleStatus(Tracks, Settings)};
+			}
+			catch {return {id, status: {phase: 'failed', translation: Settings.enabled ? 'unknown' : 'off'}};}
+		})));
+	}
+	return Results;
+}
+
+export async function CandidateSubtitleOptions({tabId, scanId, candidateId, scope})
+{
+	const Item = await ResolveCandidate(tabId, scanId, candidateId, scope);
+	const Tracks = await DiscoverSubtitles(tabId, Item);
+	if (Item.format === 'MPD')
+	{
+		AssertMediaAllowed(Item);
+		if (Item.requestContext || !await chrome.permissions.contains({origins:[HostPattern(Item.url)]})) throw new LocalizedError('subtitle_invalid');
+		Tracks.push(...FindDashSubtitles(await ReadPlaylist(Item.url), Item.url));
+	}
+	return DescribeSubtitleTracks(Tracks);
 }
 
 export async function CandidatePreviews({ tabId: TabId, scanId: ScanId, candidateIds: CandidateIds, scope: Scope })

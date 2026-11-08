@@ -8,6 +8,8 @@ import { CreateJobMeasure } from './lib/job-measure.js';
 import { CreateButton, CopyLink, CreateElement, SendRequest, SetButtonIcon } from './lib/ui.js';
 import { CreateLiveBadge } from './media-badges.js';
 import {CanFinishJob} from './lib/job-actions.js';
+import {CreateSubtitleStatus} from './subtitle-status.js';
+import {JobSubtitleStatus} from './lib/subtitle-status.js';
 
 /** 포인터와 키보드로 같은 도움말을 엽니다. 응답이 늦게 와도 이미 닫힌 도움말을 다시 표시하지 않습니다. */
 function AddTooltip(Wrapper, Trigger, Id, TextValue, LoadText)
@@ -167,12 +169,15 @@ export function CreateJobRow(Job, Tile, Context)
 {
 	const { Announce, Refresh } = Context;
 	const Row = CreateElement('li', '', 'job');
+	Row.dataset.state = Job.state;
 	const Top = CreateElement('div', '', 'job-top');
 	const End = CreateElement('div', '', 'job-end');
 	const InlineActions = CreateElement('div', '', 'job-inline-actions');
 	const LoadLink = () => SendRequest('jobUrl', { requestId: Job.requestId });
 	const Summary = CreateElement('div', '', 'job-summary');
-	Summary.append(Tile.control, NameWithTooltip(Job, LoadLink));
+	const Description = CreateElement('div', '', 'job-description');
+	Description.append(NameWithTooltip(Job, LoadLink), CreateSubtitleStatus(JobSubtitleStatus(Job)));
+	Summary.append(Tile.control, Description);
 	Top.append(Summary);
 	Row.append(Top);
 	const bRunning = ['active', 'paused', 'complete'].includes(Job.state);
@@ -259,7 +264,7 @@ export function CreateJobRow(Job, Tile, Context)
 		ControlButton.dataset.action = Action;
 		return ControlButton;
 	}
-	if (Job.state === 'active' && !Job.hls && !Job.recording && !Job.youtube && !Job.pickedDownloadFolder)
+	if (Job.state === 'active' && !Job.hls && !Job.recording && !Job.youtube && !Job.pickedDownloadFolder && !Job.subtitleMux)
 	{
 		Actions.append(Control(Translate('view_action_pause'), 'pause', true));
 	}
@@ -313,6 +318,7 @@ export function CreateJobRow(Job, Tile, Context)
 			}
 		});
 		SetButtonIcon(Remove, Translate('view_action_delete'), 'delete');
+		Remove.dataset.action = 'remove';
 		Remove.title = Translate('view_delete_hint');
 		(bRunning || bInlineStatus ? InlineActions : StatusLine ?? Actions).append(Remove);
 	}
@@ -335,6 +341,7 @@ export function CreateJobRow(Job, Tile, Context)
 export function GetJobRowSignature(Job, bShowDiagnostics)
 {
 	return JSON.stringify([Job.filename, Job.state, Job.hasUrl, Job.error, Job.canResume, Job.exists,
+		Job.subtitleStatus, Job.subtitleCount,
 		Job.downloadId, Job.youtube, Job.hls, Job.recording, Job.live, Job.waiting, Job.live && Job.finished > 0, Job.snapshotAvailable, Job.snapshotPermission, Job.muxing,
 		bShowDiagnostics || Job.state === 'failed' ? Job.diagnostic : undefined, Job.state === 'failed' ? Job.finished : undefined]);
 }

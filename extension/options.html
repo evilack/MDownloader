@@ -65,6 +65,26 @@
       <p id="download-folder-status" class="notice" role="status"></p>
     </form>
   </section>
+  <section class="option-group" aria-labelledby="translation-heading">
+    <h2 id="translation-heading" data-i18n="translation_heading"></h2>
+    <form id="translation-form">
+      <div class="option-toggle"><input id="translation-enabled" type="checkbox"><label for="translation-enabled" data-i18n="translation_enable"></label></div>
+      <p class="muted" data-i18n="translation_help"></p>
+      <div class="option-field"><label for="translation-target" data-i18n="translation_target"></label><input id="translation-target" value="ko" required></div>
+      <div class="option-field"><label for="translation-provider" data-i18n="translation_provider"></label><select id="translation-provider"><option value="deepl">DeepL</option><option value="google">Google Cloud Translation</option><option value="azure">Azure Translator</option><option value="gemini">Gemini / Gemma</option><option value="deepseek">DeepSeek</option><option value="openai">OpenAI</option><option value="kakao">Kakao</option></select></div>
+      <div class="option-field"><label for="translation-key" data-i18n="translation_key"></label><input id="translation-key" type="password" autocomplete="off" spellcheck="false"></div>
+      <div class="option-toggle"><input id="translation-show-key" type="checkbox"><label for="translation-show-key" data-i18n="translation_show_key"></label></div>
+      <div class="option-field"><label for="translation-region" data-i18n="translation_region"></label><input id="translation-region" autocomplete="off"></div>
+      <div class="option-field"><label for="translation-endpoint" data-i18n="translation_endpoint"></label><input id="translation-endpoint" type="url" autocomplete="off" placeholder="https://api.cognitive.microsofttranslator.com"></div>
+      <div class="option-field"><label for="translation-model" data-i18n="translation_model"></label><select id="translation-model"><option value="" data-i18n="translation_default"></option></select></div>
+      <button id="translation-refresh" type="button" data-i18n="translation_refresh"></button>
+      <div class="option-field"><label for="translation-effort" data-i18n="translation_effort"></label><select id="translation-effort"><option value="" data-i18n="translation_default"></option></select></div>
+      <p id="translation-kakao-help" class="muted" data-i18n="translation_kakao_help" hidden></p>
+      <button id="translation-capture" type="button" data-i18n="translation_capture" hidden></button>
+      <div class="actions"><button type="submit" class="primary" data-i18n="translation_save"></button><button id="translation-delete" type="button" data-i18n="translation_delete"></button></div>
+      <p id="translation-status" class="notice" role="status"></p>
+    </form>
+  </section>
   <section class="option-group" aria-labelledby="advanced-settings">
     <h2 id="advanced-settings" data-i18n="opt_advanced"></h2>
     <details open>

@@ -12,6 +12,7 @@ Test('the existing enqueue registers WebRTC before receiving and controls it fro
 		url: 'webrtc:track', mediaKey: 'media', page: Page}]}};
 	const Local = {debugDownloads: false}, Controls = [];
 	let Prepared = false, TabsOpened = 0;
+	const Captions=[{language:'en',label:'English',url:'https://captions.test/en.vtt?token=ephemeral-caption'}];
 	const Storage = Data => ({async get(Keys)
 	{
 		const Wanted = Keys == null ? Object.keys(Data) : Array.isArray(Keys) ? Keys : [Keys];
@@ -27,6 +28,7 @@ Test('the existing enqueue registers WebRTC before receiving and controls it fro
 					Prepared = true;
 					Assert.equal(Local['job:' + Id].state, 'active');
 					Assert.equal(Message.job.background, true);
+					Assert.deepEqual(Message.job.subtitles,Captions);
 					Assert.match(Message.job.filename, /^방송 제목_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.mp4$/);
 					Assert.doesNotMatch(Message.job.filename, /WebRTC|playback|MDownloader/);
 					return {ok: true, started: {mimeType: 'video/mp4'}};
@@ -38,6 +40,7 @@ Test('the existing enqueue registers WebRTC before receiving and controls it fro
 			}},
 		scripting: {async executeScript({func, args, target})
 		{
+			if(func.name==='ReadPageSubtitles')return[{documentId:Doc,result:Captions}];
 			if (func.name === 'WebRtcQualityTask') return [{documentId: Doc, result: {connection: Connection()}}];
 			if (func.name === 'WebRtcPageTask')
 			{
@@ -65,6 +68,7 @@ Test('the existing enqueue registers WebRTC before receiving and controls it fro
 	Assert.equal(Job.hls, undefined);
 	Assert.equal(Prepared, true);
 	Assert.equal(JSON.stringify(Session).includes('fixture-only-authorization'), false);
+	Assert.equal(JSON.stringify(Local).includes('ephemeral-caption'),false);
 	await ControlJob(Id, 'finish');
 	Assert.equal(Controls.at(-1).action, 'finish');
 	await ControlJob(Id, 'cancel');

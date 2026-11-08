@@ -829,7 +829,7 @@
     "message": "MDownloader · تشخيص التنزيلات"
   },
   "view_download": {
-    "message": "تنزيل"
+    "message": "تنزيل (Shift مع النقر: خيارات التنزيل)"
   },
   "view_download_check": {
     "message": "التحقّق من حالة التنزيل"
@@ -855,7 +855,7 @@
     }
   },
   "view_download_with_permission": {
-    "message": "السماح بالوصول إلى الخادم والتنزيل"
+    "message": "السماح والتنزيل (Shift مع النقر: الخيارات)"
   },
   "view_format_unknown": {
     "message": "تنسيق غير معروف"
@@ -1348,6 +1348,9 @@
   "view_state_interrupted": {
     "message": "انقطع · تم حفظ ملف جزئي"
   },
+  "youtube_store_policy_notice": {
+    "message": "تنزيل مقاطع YouTube غير مدعوم وفقًا لسياسة سوق Chrome الإلكتروني."
+  },
   "youtube_distribution_disabled": {
     "message": "تنزيلات YouTube غير متاحة في هذا الإصدار."
   },
@@ -1396,21 +1399,6 @@
   "youtube_evaluator_timeout": {
     "message": "انتهت مهلة تفسير عنوان YouTube."
   },
-  "youtube_sabr_config_missing": {
-    "message": "إعداد جلسة SABR مفقود."
-  },
-  "youtube_sabr_attestation_required": {
-    "message": "رفض YouTube إثبات التشغيل؛ تم إيقاف الاستقبال الكامل."
-  },
-  "youtube_sabr_receive_failed": {
-    "message": "فشل استقبال صوت وفيديو SABR."
-  },
-  "youtube_sabr_size_limit": {
-    "message": "يتجاوز استقبال SABR حد الحجم."
-  },
-  "view_youtube_quality_checking": {
-    "message": "جارٍ التحقق من جودة YouTube…"
-  },
   "subtitle_invalid": {
     "message": "بيانات الترجمة غير صالحة. لم يُحفظ الملف بدون ترجماته."
   },
@@ -1426,6 +1414,187 @@
   "subtitle_mux_failed": {
     "message": "تعذّر تضمين كل الترجمات في ملف MP4. لم يُحفظ الملف بدونها."
   },
+  "youtube_sabr_config_missing": {
+    "message": "إعداد جلسة SABR مفقود."
+  },
+  "youtube_sabr_attestation_required": {
+    "message": "رفض YouTube إثبات التشغيل؛ تم إيقاف الاستقبال الكامل."
+  },
+  "youtube_sabr_receive_failed": {
+    "message": "فشل استقبال صوت وفيديو SABR."
+  },
+  "youtube_sabr_size_limit": {
+    "message": "يتجاوز استقبال SABR حد الحجم."
+  },
+  "translation_heading": {
+    "message": "Subtitle translation"
+  },
+  "translation_enable": {
+    "message": "Translate when the target language is missing"
+  },
+  "translation_help": {
+    "message": "Original subtitles are retained. Translation may incur API charges. If translation fails, the download reports an error."
+  },
+  "translation_target": {
+    "message": "Target language code (for example, ko)"
+  },
+  "translation_provider": {
+    "message": "Translation service"
+  },
+  "translation_key": {
+    "message": "API key"
+  },
+  "translation_show_key": {
+    "message": "Show API key"
+  },
+  "translation_region": {
+    "message": "Azure region"
+  },
+  "translation_endpoint": {
+    "message": "Azure endpoint (optional)"
+  },
+  "translation_model": {
+    "message": "Model"
+  },
+  "translation_default": {
+    "message": "Service default"
+  },
+  "translation_refresh": {
+    "message": "Refresh models"
+  },
+  "translation_effort": {
+    "message": "Reasoning effort"
+  },
+  "translation_kakao_help": {
+    "message": "To import from PotPlayer, install the native helper first. Open PotPlayer and use subtitle translation after clicking Import. Manual entry is also available."
+  },
+  "translation_save": {
+    "message": "Save translation settings"
+  },
+  "translation_delete": {
+    "message": "Delete this API key"
+  },
+  "translation_saved": {
+    "message": "Settings saved."
+  },
+  "translation_error": {
+    "message": "Unable to complete the request. Check the settings, permissions, and API key."
+  },
+  "translation_loading": {
+    "message": "Loading models…"
+  },
+  "translation_models_loaded": {
+    "message": "Model list updated."
+  },
+  "subtitle_translation_failed": {
+    "message": "Subtitle translation failed. Check your translation settings and service account."
+  },
+  "translation_capture": {
+    "message": "Import from PotPlayer"
+  },
+  "translation_capture_wait": {
+    "message": "Waiting for a PotPlayer translation request…"
+  },
+  "translation_capture_failed": {
+    "message": "Import failed. Check native host setup, PotPlayer version and whether it is running."
+  },
+  "caption_unknown": {
+    "message": "Subtitles: not checked"
+  },
+  "caption_checking": {
+    "message": "Checking subtitles…"
+  },
+  "caption_detected": {
+    "message": "Subtitles: $value$",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_undetected": {
+    "message": "Subtitles: not detected"
+  },
+  "caption_collecting": {
+    "message": "Collecting subtitles ($value$)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_ready": {
+    "message": "Subtitles ready: $value$",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_failed": {
+    "message": "Subtitle check / acquisition failed"
+  },
+  "caption_translation_unknown": {
+    "message": "Auto translation: not checked"
+  },
+  "caption_translation_off": {
+    "message": "Auto translation: off"
+  },
+  "caption_translation_no_source": {
+    "message": "Auto translation: no source detected"
+  },
+  "caption_translation_not_needed": {
+    "message": "Translation($value$)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_translation_pending": {
+    "message": "Translation($value$)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_translation_translating": {
+    "message": "Translation($value$)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_translation_complete": {
+    "message": "Translation($value$)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_translation_failed": {
+    "message": "Translation failed"
+  },
+  "caption_stopped": {
+    "message": "Subtitle acquisition stopped"
+  },
+  "caption_translation_stopped": {
+    "message": "Auto translation stopped"
+  },
+  "caption_count": {
+    "message": "Subtitles($value$)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_youtube_quality_checking": {
+    "message": "جارٍ التحقق من جودة YouTube…"
+  },
   "opt_youtube_auto_captions": {
     "message": "تضمين الترجمات المصاحبة التي يتم إنشاؤها تلقائيًا"
   },
@@ -1437,5 +1606,71 @@
   },
   "view_youtube_scheduled_quality": {
     "message": "استقبال أفضل جودة عند بدء البث"
+  },
+  "download_options_title": {
+    "message": "Download options"
+  },
+  "download_options_subtitles": {
+    "message": "Subtitles"
+  },
+  "download_options_all": {
+    "message": "Select all"
+  },
+  "download_options_none": {
+    "message": "Clear all"
+  },
+  "download_options_search": {
+    "message": "Search subtitles"
+  },
+  "download_options_source": {
+    "message": "Source language"
+  },
+  "download_options_service": {
+    "message": "Service, model and reasoning"
+  },
+  "download_options_retry": {
+    "message": "Retry"
+  },
+  "download_options_auto": {
+    "message": "Auto"
+  },
+  "download_options_load_failed": {
+    "message": "Could not load options. Try again."
+  },
+  "download_options_auth_required": {
+    "message": "Configure translation credentials and model in settings, or turn translation off."
+  },
+  "download_options_invalid_language": {
+    "message": "Enter a valid target language code."
+  },
+  "download_options_source_required": {
+    "message": "Select a subtitle track for translation."
+  },
+  "download_options_schedule": {
+    "message": "Schedule download"
+  },
+  "download_options_existing": {
+    "message": "The original target-language subtitle is included; translation will be skipped."
+  },
+  "download_options_no_subtitles": {
+    "message": "لا تتوفر ترجمات للتنزيل."
+  },
+  "subtitle_translation_target_required": {
+    "message": "اختر لغة الترجمة."
+  },
+  "subtitle_translation_source_missing": {
+    "message": "تعذر العثور على مسار الترجمة الأصلي."
+  },
+  "subtitle_translation_source_empty": {
+    "message": "لا يحتوي المسار الأصلي على نص للترجمة."
+  },
+  "subtitle_translation_cue_too_long": {
+    "message": "يتجاوز مقطع ترجمة الحد المسموح للطول."
+  },
+  "subtitle_translation_incomplete": {
+    "message": "تتضمن نتيجة الترجمة مقاطع مفقودة أو غير صالحة."
+  },
+  "download_options_download": {
+    "message": "تنزيل"
   }
 }

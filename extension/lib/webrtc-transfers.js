@@ -3,7 +3,7 @@ import {RuntimePolicy} from './runtime-policy.js';
 import {LocalizedError, SerializeError} from './i18n.js';
 
 /** 기존 오프스크린 문서에서 WebRTC 수신·저장 수명을 관리합니다. 팝업/관리자 수명과 무관합니다. */
-export function CreateWebRtcTransfers({extensionId, createStore, report, saveFile, release, snapshots})
+export function CreateWebRtcTransfers({extensionId, createStore, report, saveFile, release, snapshots, prepareJob})
 {
 	const Entries = new Map(), Preparing = new Map();
 	function Report(Entry, Action, Fields)
@@ -57,20 +57,22 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 		prepare(Job)
 		{
 			if (Entries.has(Job.requestId) || Preparing.has(Job.requestId)) throw new LocalizedError('webrtc_busy');
-			const Pending = {canceled: false};
+			const Pending = {canceled: false, controller: new AbortController()};
 			Preparing.set(Job.requestId, Pending);
 			Pending.promise = (async () =>
 			{
 				try
 				{
+					await prepareJob?.(Job, Pending.controller.signal);
+					Pending.controller.signal.throwIfAborted();
 					const Store = await createStore(Job);
-					const Entry = {job: Job, ...Job, store: Store, phase: 'recording', count: 0, controller: new AbortController(),
+					const Entry = {job: Job, ...Job, store: Store, phase: 'recording', count: 0, controller: Pending.controller,
 						sink: CreateRecordingSink(Store, {maxBytes: RuntimePolicy.Transfer.MaxScratchBytes, maxChunkBytes: 192 * 1024})};
 					Entries.set(Job.requestId, Entry);
 					snapshots?.register(Job.requestId, () =>
 					{
 						if (Entry.phase !== 'recording' || !Entry.count || !Store.bytes) return null;
-						return {recording: {readFile: Store.snapshot(Job.mimeType),
+						return {subtitleTracks: Job.subtitleTracks, recording: {readFile: Store.snapshot(Job.mimeType),
 							format: Job.mimeType.startsWith('video/mp4') ? 'MP4' : 'WEBM'}};
 					});
 					if (Pending.canceled)
@@ -121,7 +123,7 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 		async cancel(Id)
 		{
 			const Pending = Preparing.get(Id);
-			if (Pending) { Pending.canceled = true; await Pending.promise.catch(() => {}); }
+			if (Pending) { Pending.canceled = true; Pending.controller.abort(); await Pending.promise.catch(() => {}); }
 			const Entry = Entries.get(Id);
 			if (!Entry) return !!Pending;
 			Entry.controller.abort();

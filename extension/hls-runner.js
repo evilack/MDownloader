@@ -26,25 +26,92 @@ import {CreateWebRtcTransfers} from './lib/webrtc-transfers.js';
 import {CreateRecordingStore} from './lib/webrtc-recording.js';
 import {StartWebRtcReceiver} from './lib/webrtc-receiver.js';
 import {AssertMediaAllowed} from './lib/youtube-source-policy.js';
+import {ReadSubtitles, FindHlsSubtitles, FindDashSubtitles} from './lib/subtitles.js';
+import {MuxSubtitles} from './lib/subtitle-mux.js';
+import {TranslateMissingSubtitle} from './lib/subtitle-translation.js';
+import {TranslateWithProvider} from './lib/translation-providers.js';
+import {SubtitleStatus} from './lib/subtitle-status.js';
+import {SelectSubtitleTracks} from './lib/download-options-selection.js';
+import {AlignRecordingSubtitles, SubtitleTracksForOutput} from './lib/subtitle-timing.js';
 import {YoutubeAvailable, HandleYoutubeRunner} from './features/youtube/entry.js';
 const ScratchName = 'mdownloader-hls';
 const Workspaces = CreateStreamWorkspaces(ScratchName);
 const Transfers = CreateStreamTransfers((Job, Controller, FinishSignal) =>
 Job.playback ? SavePlayback(Job, Controller) : Download(Job, Controller, FinishSignal));
 const DirectTransfers = new Map();
+const PreparedCaptionTracks = new Map();
 const Snapshots = CreateTransferSnapshots(SavePartial);
 const Receivers = new Map();
 const RecordingRoot = async () => (await navigator.storage.getDirectory()).getDirectoryHandle('mdownloader-webrtc', {create: true});
 const Recordings = CreateWebRtcTransfers({extensionId: chrome.runtime.id, report: LocalReport, snapshots: Snapshots,
+	prepareJob: (Job, Signal) => LoadJobSubtitles(Job, Signal),
 	async createStore(Job) { return CreateRecordingStore(await (await RecordingRoot()).getDirectoryHandle(Job.requestId, {create: true})); },
 	async release(Id)
 	{
 		Receivers.delete(Id);
+		PreparedCaptionTracks.delete(Id);
 		await (await RecordingRoot()).removeEntry(Id, {recursive: true});
 		await LocalReport(Id, 'recordingReleased').catch(() => {});
 	},
 	saveFile: (Job, File, Signal) => SaveMediaFile(Job, File, Signal, undefined, File.type),
 });
+
+async function LoadJobSubtitles(Job, Signal, Extra = [])
+{
+	if (Job.subtitleTracks) return Job.subtitleTracks;
+	let Sources = [...new Map([...(Job.subtitles ?? []), ...Extra].map(Source =>
+		[JSON.stringify([Source.language ?? 'und', Source.url ?? Source.text, Source.segments]), Source])).values()];
+	if (Job.subtitleOptions) Sources = await SelectSubtitleTracks(Sources, Job.subtitleOptions.trackIds, Job.subtitleOptions.translation);
+
+	let Tracks = [], Status;
+	try
+	{
+		if (Sources.length)
+		{
+			const Result = await chrome.runtime.sendMessage({type: 'subtitleTranslationConfiguration', options: Job.subtitleOptions?.translation});
+			if (!Result?.ok) throw ReceivedError(Result?.error, 'subtitle_translation_failed');
+			const Options = Result.data || {};
+			Status = {...SubtitleStatus(Sources, Options), phase:'collecting', completed:0};
+			await LocalReport(Job.requestId, 'subtitleStatus', {status:Status});
+			Tracks = await ReadSubtitles(Sources, {signal:Signal, authorize:Urls=>LocalReport(Job.requestId,'access',{urls:Urls}),
+				onProgress: async ({completed}) =>
+				{
+					Status = {...Status, completed};
+					await LocalReport(Job.requestId,'subtitleStatus',{status:Status});
+				}});
+			Status = {...SubtitleStatus(Tracks, Options), phase:'ready', completed:Tracks.length};
+			if (Status.translation === 'pending')
+			{
+				Status.translation = 'translating';
+				await LocalReport(Job.requestId,'subtitleStatus',{status:Status});
+				const Config = Options.providers?.[Options.provider] || {};
+				try { Tracks = await TranslateMissingSubtitle(Tracks, Options,
+					(Texts,Context)=>TranslateWithProvider(Options.provider,Config,Texts,Context),Signal); }
+				catch (ErrorValue)
+				{
+					if (Signal?.aborted) throw ErrorValue;
+					Status.translation = 'failed';
+					throw new LocalizedError('subtitle_translation_failed');
+				}
+				Status.translation = 'complete';
+			}
+			await LocalReport(Job.requestId,'subtitleStatus',{status:Status});
+			PreparedCaptionTracks.set(Job.requestId, Tracks);
+			await LocalReport(Job.requestId, 'subtitleCount', {count:Tracks.length});
+		}
+		Job.subtitleTracks = Tracks;
+	}
+	catch (ErrorValue)
+	{
+		if (Status && !Signal?.aborted)
+			await LocalReport(Job.requestId,'subtitleStatus',{status:{...Status,
+				phase:Status.phase==='collecting'?'failed':Status.phase,
+				translation:Status.translation==='off'?'off':'failed'}}).catch(()=>{});
+		throw ErrorValue;
+	}
+	delete Job.subtitles;
+	return Job.subtitleTracks;
+}
 async function LocalReport(RequestId, Action, Fields = {})
 {
 	if (DebugLog.IsEnabled() && Action === 'progress')
@@ -79,9 +146,10 @@ async function MuxAndSave(Job, Workspace, Playlist, Progress, Signal, Trace, Aud
 	await LocalReport(Id, 'progress', { ...Progress, muxing: true });
 	const Destination = await OutputWorkspace.getFileHandle('result.mp4', { create: true });
 	const Stream = await Destination.createWritable();
+	let Timing;
 	try
 	{
-		await RemuxHls(Playlist, async Path => (await Workspace.getFileHandle(Path)).getFile(), Stream, Signal, AudioPlaylist, AudioShift);
+		Timing = await RemuxHls(Playlist, async Path => (await Workspace.getFileHandle(Path)).getFile(), Stream, Signal, AudioPlaylist, AudioShift);
 	}
 	catch (ErrorValue)
 	{
@@ -93,15 +161,40 @@ async function MuxAndSave(Job, Workspace, Playlist, Progress, Signal, Trace, Aud
 	Signal.throwIfAborted();
 	const MediaFile = await Destination.getFile();
 	await Trace.finish({ bytes: MediaFile.size });
-	await SaveMediaFile(Job, MediaFile, Signal, Trace, 'video/mp4');
+	await SaveMediaFile(Job, MediaFile, Signal, Trace, 'video/mp4', Timing?.start ?? 0);
 }
 
 /** 생성한 파일의 저장 수명은 해당 작업이 소유합니다. 원래 전송과 부분 저장의
  * 브라우저 다운로드 ID·객체 URL·폴더 파일을 서로 덮어쓰지 않습니다.
  */
-async function SaveMediaFile(Job, MediaFile, Signal, Trace, MimeType)
+async function SaveMediaFile(Job, MediaFile, Signal, Trace, MimeType, SubtitleStart = 0)
 {
 	const Id = Job.requestId;
+	if (Job.subtitleTracks?.length)
+	{
+		const WorkspaceId = 'subtitles-' + Id;
+		const Workspace = await Workspaces.create(WorkspaceId);
+		try
+		{
+			await LocalReport(Id, 'progress', {received: MediaFile.size, muxing: true});
+			const Handle = await Workspace.getFileHandle('subtitled.mp4', {create: true});
+			const Writer = await Handle.createWritable();
+			try
+			{
+				await MuxSubtitles(MediaFile, SubtitleTracksForOutput(Job.subtitleTracks, SubtitleStart, !!(Job.partial || Job.snapshot)), Writer, Signal);
+			}
+			catch (ErrorValue)
+			{
+				await Writer.abort().catch(() => {});
+				if (Signal.aborted || ErrorValue.key) throw ErrorValue;
+				throw new LocalizedError('subtitle_mux_failed');
+			}
+			const OutputFile = await Handle.getFile();
+			const Filename = await LocalReport(Id, 'subtitleReady', {count: Job.subtitleTracks.length, bytes: OutputFile.size});
+			return await SaveMediaFile({...Job, filename: Filename, subtitleTracks: []}, OutputFile, Signal, Trace, 'video/mp4');
+		}
+		finally {await Workspaces.release(WorkspaceId);}
+	}
 	await Trace?.begin('browser-save');
 	if (Job.pickedDownloadFolder)
 	{
@@ -154,6 +247,7 @@ async function SaveMediaFile(Job, MediaFile, Signal, Trace, MimeType)
 
 async function SavePartial(Job, Snapshot, Signal)
 {
+	Job.subtitleTracks = Snapshot.subtitleTracks;
 	const Id = Job.requestId;
 	if (DebugLog.IsEnabled())
 	{
@@ -184,6 +278,7 @@ async function SavePartial(Job, Snapshot, Signal)
 			let Format;
 			try
 			{
+				await LoadJobSubtitles(Job, Signal);
 				Format = await RemuxFilePrefix(Prefix, (Snapshot.recording || Snapshot.direct).format, Writer, Signal);
 			}
 			catch (ErrorValue)
@@ -248,6 +343,7 @@ async function SavePlayback(Job, { signal: Signal })
 			const Workspace = await Root.getDirectoryHandle(PlaybackScratchName);
 			try
 			{
+				await LoadJobSubtitles(Job, Signal);
 				Trace = await StartHlsTrace(undefined, Id, Diagnostic => LocalReport(Id, 'diagnostic', { diagnostic: Diagnostic }));
 				const Preview = (async () =>
 				{
@@ -279,6 +375,7 @@ async function SavePlayback(Job, { signal: Signal })
 	{
 		await ReportFailure(Id, Signal, Trace, ErrorValue);
 	}
+	finally {PreparedCaptionTracks.delete(Id);}
 }
 
 async function ReadTracks(Job, Authorize, Signal, Trace)
@@ -292,6 +389,7 @@ async function ReadTracks(Job, Authorize, Signal, Trace)
 	await Trace.finish({ status: 200 });
 	if (Format === 'MPD')
 	{
+		Job.manifestSubtitles = FindDashSubtitles(TextValue, Url);
 		await Trace.begin('media-parse');
 		const { video: Video, audio: LocalAudio } = await ResolveDash(TextValue, Url, async (Address, LocalRange) =>
 		{
@@ -304,6 +402,7 @@ async function ReadTracks(Job, Authorize, Signal, Trace)
 
 	await Trace.begin('master-parse');
 	const Variants = ParseMaster(TextValue, Url);
+	Job.manifestSubtitles = FindHlsSubtitles(TextValue, Url, Job.variantUrl ?? Variants?.at(-1)?.url);
 	await Trace.finish({ variants: Variants?.length ?? 0 });
 	let Playlists = [TextValue];
 	let Urls = [Url];
@@ -358,6 +457,8 @@ async function Download(Job, Controller, FinishSignal)
 			}
 		}
 		const Tracks = await ReadTracks(Job, Authorize, Signal, Trace);
+		await LoadJobSubtitles(Job, Signal, Job.manifestSubtitles);
+		delete Job.manifestSubtitles;
 		await Trace.begin('temporary-storage');
 		const Workspace = await Workspaces.create(Id);
 		bWorkspace = true;
@@ -373,7 +474,7 @@ async function Download(Job, Controller, FinishSignal)
 			snapshot: Read => Snapshots.register(Id, () =>
 			{
 				const Value = Read();
-				return Value && {...Value, workspace: Workspace};
+				return Value && {...Value, workspace: Workspace, subtitleTracks: Job.subtitleTracks};
 			}),
 		});
 		await Trace.finish({ received: Result.progress.received, finished: Result.progress.finished });
@@ -395,6 +496,7 @@ async function Download(Job, Controller, FinishSignal)
 		}
 		await Preview;
 		await Snapshots.close(Id);
+		PreparedCaptionTracks.delete(Id);
 		if (bWorkspace)
 		{
 			await Workspaces.release(Id);
@@ -411,7 +513,8 @@ async function DownloadDirectToFolder(Job, { signal: Signal })
 	}
 	try
 	{
-		const Folder = await RequirePickedFolder(Job.pickedDownloadFolder);
+		const Folder = Job.pickedDownloadFolder ? await RequirePickedFolder(Job.pickedDownloadFolder) : undefined;
+		await LoadJobSubtitles(Job, Signal);
 		AssertMediaAllowed(Job);
 		const HttpResponse = await fetch(Job.url, { credentials: 'include', redirect: 'error', signal: Signal });
 		if (HttpResponse.status !== 200 || !HttpResponse.body)
@@ -442,8 +545,30 @@ async function DownloadDirectToFolder(Job, { signal: Signal })
 		});
 		try
 		{
-			const Filename = await WriteToPickedFolder(Folder, Job.filename, HttpResponse.body.pipeThrough(Progress), Signal);
-			await LocalReport(Id, 'folderSaved', { filename: Filename, bytes: Received });
+			if (Job.subtitleTracks.length)
+			{
+				const Workspace = await Workspaces.create(Id);
+				try
+				{
+					const Handle = await Workspace.getFileHandle('source.media', {create: true});
+					const Writer = await Handle.createWritable();
+					let Size = 0;
+					const Limit = new TransformStream({transform(Chunk, Output)
+					{
+						Size += Chunk.byteLength;
+						if (Size > RuntimePolicy.Transfer.MaxStreamScratchBytes) throw new LocalizedError('subtitle_limit');
+						Output.enqueue(Chunk);
+					}});
+					await HttpResponse.body.pipeThrough(Progress).pipeThrough(Limit).pipeTo(Writer, {signal: Signal});
+					await SaveMediaFile(Job, await Handle.getFile(), Signal, undefined, 'video/mp4');
+				}
+				finally {await Workspaces.release(Id);}
+			}
+			else
+			{
+				const Filename = await WriteToPickedFolder(Folder, Job.filename, HttpResponse.body.pipeThrough(Progress), Signal);
+				await LocalReport(Id, 'folderSaved', { filename: Filename, bytes: Received });
+			}
 		}
 		catch (ErrorValue)
 		{
@@ -459,6 +584,8 @@ async function DownloadDirectToFolder(Job, { signal: Signal })
 	}
 	finally
 	{
+		await Snapshots.close(Id);
+		PreparedCaptionTracks.delete(Id);
 		DirectTransfers.delete(Id);
 	}
 }
@@ -493,8 +620,10 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 			case 'webrtcReceive':
 				Pending = (async () =>
 				{
-					await Recordings.prepare({...Message.job, background: true});
+					const RecordingJob = {...Message.job, background: true};
+					await Recordings.prepare(RecordingJob);
 					const Receiver = StartWebRtcReceiver(Message.connection, {
+						onStart: StartedAt => AlignRecordingSubtitles(RecordingJob.subtitleTracks, StartedAt),
 						onData: BlobValue => Recordings.appendBlob(Message.job.requestId, BlobValue),
 						onEnd: Reason => Recordings.finish(Message.job.requestId, undefined, Reason),
 					});
@@ -558,7 +687,9 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 			{
 				if (Message.source)
 				{
-					Snapshots.register(Message.parentId, () => ({direct: Message.source}));
+					if (Message.job.subtitleCount > 0 && !PreparedCaptionTracks.has(Message.parentId))
+						throw new LocalizedError('subtitle_unsupported');
+					Snapshots.register(Message.parentId, () => ({direct: Message.source, subtitleTracks: PreparedCaptionTracks.get(Message.parentId)}));
 					Registered = true;
 				}
 				await Snapshots.save(Message.parentId, Message.job);

@@ -34,7 +34,7 @@ export function SummarizeJob(Job, Item, Runners = {}, bRegistering = false)
 		return {...Job, state: 'interrupted', error: MessageRef('webrtc_interrupted_saved')};
 	if (!Item)
 	{
-		if ((Job.hls || Job.recording || Job.youtube || Job.pickedDownloadFolder) && Job.downloadId === undefined)
+		if ((Job.hls || Job.recording || Job.youtube || Job.pickedDownloadFolder || Job.subtitleMux) && Job.downloadId === undefined)
 		{
 			const Running = Job.recording ? Runners.recordingIds?.includes(Job.requestId)
 			: Job.youtube ? Runners.youtubeIds?.includes(Job.requestId)

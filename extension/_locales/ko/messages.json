@@ -780,7 +780,7 @@
     "message": "폴더에서 보기 (Shift+클릭: 브라우저 재생)"
   },
   "view_candidate_complete": {
-    "message": "다운로드 완료"
+    "message": "완료"
   },
   "view_candidate_downloading": {
     "message": "다운로드 중"
@@ -829,7 +829,7 @@
     "message": "MDownloader · 다운로드 진단"
   },
   "view_download": {
-    "message": "다운로드"
+    "message": "다운로드 (Shift+클릭: 다운로드 옵션)"
   },
   "view_download_check": {
     "message": "다운로드 확인 필요"
@@ -855,7 +855,7 @@
     }
   },
   "view_download_with_permission": {
-    "message": "영상 서버 허용 후 다운로드"
+    "message": "권한 허용 후 다운로드 (Shift+클릭: 다운로드 옵션)"
   },
   "view_format_unknown": {
     "message": "형식 미확인"
@@ -1348,6 +1348,9 @@
   "view_state_interrupted": {
     "message": "중단 · 부분 저장"
   },
+  "youtube_store_policy_notice": {
+    "message": "Chrome 웹 스토어 정책에 따라 YouTube 다운로드를 지원하지 않습니다."
+  },
   "youtube_distribution_disabled": {
     "message": "이 배포판에서는 YouTube 다운로드를 사용할 수 없습니다."
   },
@@ -1396,21 +1399,6 @@
   "youtube_evaluator_timeout": {
     "message": "YouTube URL 해석 시간이 초과되었습니다."
   },
-  "youtube_sabr_config_missing": {
-    "message": "SABR 세션 설정이 없습니다."
-  },
-  "youtube_sabr_attestation_required": {
-    "message": "YouTube가 재생 증명을 거부하여 전체 수신을 중단했습니다."
-  },
-  "youtube_sabr_receive_failed": {
-    "message": "SABR 영상·음성 수신에 실패했습니다."
-  },
-  "youtube_sabr_size_limit": {
-    "message": "SABR 수신이 크기 제한을 초과했습니다."
-  },
-  "view_youtube_quality_checking": {
-    "message": "YouTube 화질을 확인하는 중입니다…"
-  },
   "subtitle_invalid": {
     "message": "자막 데이터가 올바르지 않습니다. 자막을 누락한 파일로 저장하지 않았습니다."
   },
@@ -1426,16 +1414,263 @@
   "subtitle_mux_failed": {
     "message": "MP4에 모든 자막을 내장하지 못했습니다. 자막을 누락한 파일로 저장하지 않았습니다."
   },
+  "youtube_sabr_config_missing": {
+    "message": "SABR 세션 설정이 없습니다."
+  },
+  "youtube_sabr_attestation_required": {
+    "message": "YouTube가 재생 증명을 거부하여 전체 수신을 중단했습니다."
+  },
+  "youtube_sabr_receive_failed": {
+    "message": "SABR 영상·음성 수신에 실패했습니다."
+  },
+  "youtube_sabr_size_limit": {
+    "message": "SABR 수신이 크기 제한을 초과했습니다."
+  },
+  "translation_heading": {
+    "message": "자막 번역"
+  },
+  "translation_enable": {
+    "message": "목표 언어 자막이 없으면 자동 번역"
+  },
+  "translation_help": {
+    "message": "원본 자막은 유지됩니다. 번역 API 사용료가 발생할 수 있습니다. 번역에 실패하면 다운로드에 오류가 표시됩니다."
+  },
+  "translation_target": {
+    "message": "목표 언어 코드 (예: ko)"
+  },
+  "translation_provider": {
+    "message": "번역 서비스"
+  },
+  "translation_key": {
+    "message": "API 키"
+  },
+  "translation_show_key": {
+    "message": "API 키 표시"
+  },
+  "translation_region": {
+    "message": "Azure 지역"
+  },
+  "translation_endpoint": {
+    "message": "Azure 엔드포인트 (선택)"
+  },
+  "translation_model": {
+    "message": "모델"
+  },
+  "translation_default": {
+    "message": "서비스 기본값"
+  },
+  "translation_refresh": {
+    "message": "모델 목록 새로고침"
+  },
+  "translation_effort": {
+    "message": "추론 수준"
+  },
+  "translation_kakao_help": {
+    "message": "팟플레이어에서 가져오려면 네이티브 도우미를 먼저 설치하세요. 가져오기를 누른 후 팟플레이어에서 자막 번역을 사용하세요. 직접 입력할 수도 있습니다."
+  },
+  "translation_save": {
+    "message": "번역 설정 저장"
+  },
+  "translation_delete": {
+    "message": "이 API 키 삭제"
+  },
+  "translation_saved": {
+    "message": "설정을 저장했습니다."
+  },
+  "translation_error": {
+    "message": "요청을 완료하지 못했습니다. 설정, 권한, API 키를 확인하세요."
+  },
+  "translation_loading": {
+    "message": "모델 목록을 불러오는 중…"
+  },
+  "translation_models_loaded": {
+    "message": "모델 목록을 갱신했습니다."
+  },
+  "subtitle_translation_failed": {
+    "message": "자막 번역에 실패했습니다. 번역 설정과 서비스 계정을 확인하세요."
+  },
+  "translation_capture": {
+    "message": "팟플레이어에서 가져오기"
+  },
+  "translation_capture_wait": {
+    "message": "팟플레이어의 번역 요청을 기다리는 중…"
+  },
+  "translation_capture_failed": {
+    "message": "가져오기에 실패했습니다. 네이티브 도우미 설치와 팟플레이어 버전·실행 상태를 확인하세요."
+  },
+  "caption_unknown": {
+    "message": "자막 확인 전"
+  },
+  "caption_checking": {
+    "message": "자막 확인 중…"
+  },
+  "caption_detected": {
+    "message": "자막 $value$개",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_undetected": {
+    "message": "자막 미검출"
+  },
+  "caption_collecting": {
+    "message": "자막 수집 중 ($value$개)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_ready": {
+    "message": "자막 준비 완료 ($value$개)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_failed": {
+    "message": "자막 확인·수집 실패"
+  },
+  "caption_translation_unknown": {
+    "message": "자동 번역 확인 전"
+  },
+  "caption_translation_off": {
+    "message": "자동 번역 꺼짐"
+  },
+  "caption_translation_no_source": {
+    "message": "자동 번역: 원문 자막 미검출"
+  },
+  "caption_translation_not_needed": {
+    "message": "번역($value$)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_translation_pending": {
+    "message": "번역($value$)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_translation_translating": {
+    "message": "번역($value$)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_translation_complete": {
+    "message": "번역($value$)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "caption_translation_failed": {
+    "message": "번역실패"
+  },
+  "caption_stopped": {
+    "message": "자막 수집 중단"
+  },
+  "caption_translation_stopped": {
+    "message": "자동 번역 중단"
+  },
+  "caption_count": {
+    "message": "자막($value$)",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_youtube_quality_checking": {
+    "message": "YouTube 화질을 확인하는 중입니다…"
+  },
   "opt_youtube_auto_captions": {
     "message": "Youtube 자동 생성 자막 포함"
   },
   "opt_youtube_auto_captions_help": {
     "message": "새 YouTube 다운로드에 적용됩니다. 끄면 직접 등록된 자막만 저장합니다."
   },
+  "download_options_title": {
+    "message": "다운로드 옵션"
+  },
+  "download_options_subtitles": {
+    "message": "자막"
+  },
+  "download_options_all": {
+    "message": "전체 선택"
+  },
+  "download_options_none": {
+    "message": "전체 해제"
+  },
+  "download_options_search": {
+    "message": "자막 검색"
+  },
+  "download_options_source": {
+    "message": "원본 언어"
+  },
+  "download_options_service": {
+    "message": "서비스 · 모델 · 추론"
+  },
+  "download_options_retry": {
+    "message": "다시 시도"
+  },
+  "download_options_auto": {
+    "message": "자동"
+  },
+  "download_options_load_failed": {
+    "message": "옵션을 불러오지 못했습니다. 다시 시도하세요."
+  },
+  "download_options_auth_required": {
+    "message": "설정에서 번역 인증정보와 모델을 설정하거나 번역을 꺼주세요."
+  },
+  "download_options_invalid_language": {
+    "message": "올바른 목표 언어 코드를 입력하세요."
+  },
+  "download_options_source_required": {
+    "message": "번역할 자막을 선택하세요."
+  },
   "view_youtube_waiting": {
     "message": "예약방송 시작 대기 중"
   },
   "view_youtube_scheduled_quality": {
     "message": "방송 시작 시 최고 화질로 자동 수신"
+  },
+  "download_options_schedule": {
+    "message": "예약 다운로드"
+  },
+  "download_options_existing": {
+    "message": "목표 언어 원본 자막을 포함하고 번역을 건너뜁니다."
+  },
+  "download_options_no_subtitles": {
+    "message": "다운로드할 수 있는 자막이 없습니다."
+  },
+  "subtitle_translation_target_required": {
+    "message": "번역 대상 언어를 선택해 주세요."
+  },
+  "subtitle_translation_source_missing": {
+    "message": "번역할 원본 자막을 찾을 수 없습니다."
+  },
+  "subtitle_translation_source_empty": {
+    "message": "원본 자막에 번역할 문장이 없습니다."
+  },
+  "subtitle_translation_cue_too_long": {
+    "message": "자막 한 구간이 번역 길이 제한을 초과했습니다."
+  },
+  "subtitle_translation_incomplete": {
+    "message": "번역 응답에 누락되거나 잘못된 자막이 있습니다."
+  },
+  "download_options_download": {
+    "message": "다운로드"
   }
 }

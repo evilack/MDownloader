@@ -57,7 +57,7 @@ export async function LaunchWebRtc(Job, Candidate, TabId, Quality)
 		await CheckCanceled(Job.requestId);
 		// 연결 인증값은 이 메시지 한 번으로만 전달하며 Job/세션/진단 저장소에 기록하지 않습니다.
 		const Prepared = await chrome.runtime.sendMessage({type: 'webrtcReceive', connection: Connection,
-			job: {...Job, ...Source, mimeType: Candidate.mimeType}});
+			job: {...Job, ...Source, mimeType: Candidate.mimeType, ...(Candidate.subtitles?.length ? {subtitles: Candidate.subtitles} : {})}});
 		if (!Prepared?.ok) throw ReceivedError(Prepared?.error, 'webrtc_recording_failed');
 		const Started = Prepared.started;
 		if (!Started?.mimeType) throw new LocalizedError('webrtc_recording_failed');

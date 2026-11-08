@@ -22,6 +22,8 @@ import {RelayWebRtc, WebRtcSourceLost, CancelAllWebRtc, WebRtcQualities} from '.
 import {AuthorizePlayback} from './lib/playback-authorization.js';
 import {PrepareDistributionNetwork} from './lib/distribution-network.js';
 import {CanUseYoutube} from './lib/distribution-policy.js';
+import {HandleTranslationConfiguration} from './lib/translation-configuration.js';
+import {CandidateSubtitleStatuses, CandidateSubtitleOptions} from './detection.js';
 import {DiscoverYoutube, SetYoutubeRequestContext} from './features/youtube/entry.js';
 void PrepareDistributionNetwork().catch(ErrorValue => ReportDebugFailure(ErrorValue, 'DistributionRulesFailed'));
 void InitializeDebugLogging(async bEnabled =>
@@ -65,6 +67,8 @@ async function Route(Message)
 		}
 		case 'candidateUrl': return (await ResolveCandidate(Message.tabId, Message.scanId, Message.candidateId, Message.scope)).url;
 		case 'candidatePreviews': return CandidatePreviews(Message);
+		case 'candidateSubtitleStatuses': return CandidateSubtitleStatuses(Message);
+		case 'candidateSubtitleOptions': return CandidateSubtitleOptions(Message);
 		case 'previewCandidate': return PreviewCandidate(Message);
 		case 'captureCandidatePreview': return CaptureCandidatePreview(Message);
 		case 'hlsQualities': return HlsQualities(Message);
@@ -91,6 +95,7 @@ async function Route(Message)
 
 chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 {
+	if (HandleTranslationConfiguration(Message, Sender, Respond)) return true;
 	if (Message.type === 'youtubeRequestContext' && !Sender.tab && Sender.id === chrome.runtime.id && Sender.url === HlsRunnerUrl())
 	{
 		Promise.resolve().then(() => SetYoutubeRequestContext(Message.enabled)).then(

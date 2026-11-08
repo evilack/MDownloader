@@ -15,6 +15,7 @@ import { CreateCandidateList } from './candidate-list.js';
 import { CreateJobRow, GetJobRowSignature, UpdateJobRowMetrics } from './job-row.js';
 import { GetSetting, OnSettingChanged, SettingKeys } from './lib/settings.js';
 import { JobGroup } from './lib/browser-job-state.js';
+import {ObserveYoutubePolicyNotice} from './lib/youtube-policy-notice.js';
 await InitializeLocale();
 LocalizePage();
 WatchLanguage();
@@ -34,11 +35,19 @@ else
 	const MediaSection = document.querySelector('#panel-media');
 	const Divider = document.querySelector('#panel-media-divider');
 	const Candidates = CreateCandidateList({ root: MediaSection, mediaPreview: MediaPreview, followTabs: true });
+	let ShowMedia = false, PolicyBlocked = false;
 	function SetMediaVisible(Enabled)
 	{
-		MediaSection.hidden = Divider.hidden = !Enabled;
-		Candidates.setEnabled(Enabled);
+		ShowMedia = Enabled;
+		MediaSection.hidden = Divider.hidden = !Enabled || PolicyBlocked;
+		Candidates.setEnabled(Enabled && !PolicyBlocked);
 	}
+	ObserveYoutubePolicyNotice(Blocked =>
+	{
+		PolicyBlocked = Blocked;
+		document.querySelector('[data-youtube-policy-notice]').hidden = !Blocked;
+		SetMediaVisible(ShowMedia);
+	});
 	let bChanged = false;
 	OnSettingChanged(SettingKeys.showPanelMedia, Change =>
 	{

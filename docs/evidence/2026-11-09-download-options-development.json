@@ -1,0 +1,119 @@
+{
+  "scope": "Shift-click Download options; ordinary-click quick download",
+  "computerUse": false,
+  "storeBrowserExecuted": false,
+  "paidTranslationRequests": false,
+  "chromeProbe": "node tools/checks/probe-download-options-chrome.mjs",
+  "chromeFixtureBoundary": "Real candidate/dialog modules in actual isolated Chrome; deterministic metadata, permission responses and model catalog only",
+  "checks": [
+    "ordinary quick download",
+    "Shift options",
+    "quality choice",
+    "subtitle selection",
+    "translation language/provider/model/effort",
+    "existing target reuse",
+    "no credentials in enqueue",
+    "missing credentials rejected",
+    "cancel and stale permission isolation",
+    "submit disabled",
+    "native focus restoration",
+    "360px overflow"
+  ],
+  "savedMediaBoundary": "subtitle-runner integration runs real receiver/mux path with deterministic AV/caption HTTP and mock translation; independent MP4 parser verifies selected languages, text and interval bounds",
+  "redEvidence": "artifacts/download-options-worktree/artifacts/options/chrome-red-races.txt",
+  "reviewFixes": [
+    "defer stream caption filtering until manifest discovery",
+    "forward ephemeral WebRTC subtitles",
+    "pin async model refresh to its original provider"
+  ],
+  "deferred": "YouTube Studio/webcam broadcast transition remains deferred by user; no Studio reopened",
+  "sourceExtensionTree": "1f0d6fbde1e51adf1808f32046911030d76b54cf",
+  "browser": "Chrome/157.0.8103.39",
+  "chromeResult": {
+    "artifact": "E:\\Project\\MDownloader\\artifacts\\download-options\\candidate\\artifacts\\options\\chrome-1794171463705",
+    "computerUse": false,
+    "actualChrome": true,
+    "fixture": "real candidate/dialog code; deterministic metadata/permissions only",
+    "paidRequests": false,
+    "browser": "Chrome/157.0.8103.39",
+    "normalClickQuick": true,
+    "title": "다운로드 옵션",
+    "labels": [
+      "해상도 및 비트레이트1920×1080640×360",
+      "English (en)",
+      "French (fr)",
+      "Korean (ko)",
+      "목표 언어 자막이 없으면 자동 번역",
+      "목표 언어 코드 (예: ko)",
+      "원본 언어자동EnglishFrenchKorean",
+      "번역 서비스DeepLGoogle TranslateAzure TranslatorGeminiDeepSeekOpenAIKakao",
+      "모델서비스 기본값",
+      "추론 수준서비스 기본값"
+    ],
+    "selection": {
+      "quality": {
+        "videoId": "abcdefghijk",
+        "selection": {
+          "videoFormatId": "low",
+          "audioFormatId": "audio"
+        }
+      },
+      "subtitles": {
+        "trackIds": [
+          "0"
+        ],
+        "translation": {
+          "enabled": true,
+          "targetLanguage": "es",
+          "sourceLanguage": "auto",
+          "provider": "openai",
+          "model": "fixture-large",
+          "effort": "medium"
+        }
+      },
+      "noCredential": true
+    },
+    "submitDisabled": true,
+    "stalePermissionSafe": true,
+    "focusReturned": true,
+    "existingTargetReused": true,
+    "missingCredentialsBlocked": true,
+    "noSubtitleMessage": true,
+    "noHorizontalOverflow": true,
+    "avOnlyWithoutSubtitles": true,
+    "passed": true
+  },
+  "tests": {
+    "passed": 438,
+    "skipped": 1,
+    "failed": 0
+  },
+  "project": {
+    "failures": 0,
+    "preservedFiles": 73
+  },
+  "localization": {
+    "locales": 10,
+    "messages": 477,
+    "missingReferences": 0
+  },
+  "distribution": {
+    "development": {
+      "files": 182,
+      "imports": 441,
+      "verified": true
+    },
+    "store": {
+      "files": 155,
+      "imports": 398,
+      "verified": true,
+      "executed": false
+    }
+  },
+  "artifacts": "artifacts/download-options/verified",
+  "mergedWorkingFolderTests": {
+    "passed": 447,
+    "skipped": 1,
+    "failed": 0
+  }
+}

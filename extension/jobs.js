@@ -27,12 +27,20 @@ import {LocalMediaUrl} from './lib/saved-media.js';
 import {LaunchWebRtc, ControlWebRtc, ForgetWebRtcControl} from './webrtc-jobs.js';
 import {AssertMediaAllowed, AssertJobMayRestart, IsYoutubeSource} from './lib/youtube-source-policy.js';
 import {RequirePlaybackAuthorization} from './lib/playback-authorization.js';
+import {DiscoverSubtitles} from './lib/subtitle-discovery.js';
+import {SubtitleStatus, ValidateSubtitleStatus} from './lib/subtitle-status.js';
+import {SelectSubtitleTracks} from './lib/download-options-selection.js';
 import {ResolveYoutubeSelection, CancelYoutube, FinishYoutube, SavePartialYoutube} from './features/youtube/entry.js';
 const Pending = new Map();
 const Removing = new Set();
 const PendingSnapshots = new Set();
 async function RegisterMediaJob(Key, Job, TabId, Candidate, PreparePreview = true)
 {
+	const {subtitleTranslation: StoredSettings = {}} = await chrome.storage.local.get('subtitleTranslation');
+	const Settings = Job.subtitleOptions?.translation ?? StoredSettings;
+	Job.subtitleStatus = {...SubtitleStatus(Candidate.subtitles || [], Settings), completed:0};
+	if (Job.youtube && Job.subtitleOptions?.trackIds.length)
+		Job.subtitleStatus = {...SubtitleStatus(Job.subtitleOptions.trackIds.map(() => ({language:'und'})), Settings), completed:0};
 	Object.assign(Job, {sourcePolicyVersion: 1, youtubeSource: IsYoutubeSource({pageUrl: Candidate.page, frameUrl: Candidate.previewPage ?? Candidate.initiator, mediaUrl: Candidate.url})});
 	await WriteJob(Key, Job);
 	if (DebugLog.IsEnabled())
@@ -86,7 +94,7 @@ async function PrepareJobPreview(Job, TabId, Candidate)
 	await chrome.runtime.sendMessage({ type: 'jobPreviewReady', requestId: Job.requestId });
 }
 
-async function DownloadTarget(Name, PageTitle)
+async function DownloadTarget(Name, PageTitle, PageUrl)
 {
 	const { usePageTitle: UsePageTitle, useDownloadDateTime: UseDownloadDateTime, downloadFolder: DownloadFolder, pickedDownloadFolder: PickedDownloadFolder } = await GetSettings([
 		SettingKeys.usePageTitle, SettingKeys.useDownloadDateTime, SettingKeys.downloadFolder, SettingKeys.pickedDownloadFolder,
@@ -97,7 +105,7 @@ async function DownloadTarget(Name, PageTitle)
 	}
 	return {
 		// 등록 시 한 번만 정합니다. 라이브 종료·재시도·MP4 저장 때 이름과 시각이 달라지지 않습니다.
-		filename: SafeFilename(Name, UsePageTitle ? PageTitle : undefined, UseDownloadDateTime ? new Date() : undefined),
+		filename: SafeFilename(Name, UsePageTitle ? PageTitle : undefined, UseDownloadDateTime ? new Date() : undefined, '.mp4', PageUrl),
 		downloadFolder: DownloadFolder, ...(PickedDownloadFolder ? { pickedDownloadFolder: PickedDownloadFolder } : {}),
 	};
 }
@@ -117,9 +125,9 @@ export function Enqueue(Input)
 	return EnqueueOnce(Input.requestId, Key => StartJob(Key, Input));
 }
 
-export async function EnqueuePlayback({ requestId: RequestId, playlist: Playlist, count: Count, bytes: Bytes, pageTitle: PageTitle })
+export async function EnqueuePlayback({ requestId: RequestId, playlist: Playlist, count: Count, bytes: Bytes, pageTitle: PageTitle, pageUrl: PageUrl })
 {
-	await RequirePlaybackAuthorization(RequestId);
+	const PlaybackSource = await RequirePlaybackAuthorization(RequestId);
 	if (typeof Playlist !== 'string' || Playlist.length > RuntimePolicy.Transfer.MaxPlaylistBytes ||
 	!Number.isInteger(Count) || Count < 1 || Count > RuntimePolicy.Transfer.MaxSegments ||
 	!Number.isSafeInteger(Bytes) || Bytes < 1 || Bytes > RuntimePolicy.Transfer.MaxStreamScratchBytes)
@@ -134,14 +142,14 @@ export async function EnqueuePlayback({ requestId: RequestId, playlist: Playlist
 		}
 		await RecordDownloadLog('started', { requestId: RequestId });
 		const Job = {
-			requestId: RequestId, ...await DownloadTarget(undefined, PageTitle), created: Date.now(), state: 'active',
-			sourcePolicyVersion: 1, youtubeSource: false,
+			requestId: RequestId, ...await DownloadTarget(undefined, PageTitle, PageUrl), created: Date.now(), state: 'active',
+			sourcePolicyVersion: 1, youtubeSource: false, subtitleCount: PlaybackSource?.subtitles?.length ?? 0,
 			hls: true, bytesReceived: Bytes, finished: Count, count: Count, muxing: true,
 		};
 		await WriteJob(Key, Job);
 		try
 		{
-			await LaunchPlaybackHls(Job, { playlist: Playlist, count: Count, bytes: Bytes });
+			await LaunchPlaybackHls(Job, { playlist: Playlist, count: Count, bytes: Bytes }, PlaybackSource?.subtitles);
 		}
 		catch (ErrorValue)
 		{
@@ -170,7 +178,7 @@ function EnqueueOnce(RequestId, Start)
 	return Pending.get(Key);
 }
 
-async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: CandidateId, requestId: RequestId, variantUrl: VariantUrl, quality: Quality, scope: Scope })
+async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: CandidateId, requestId: RequestId, variantUrl: VariantUrl, quality: Quality, scope: Scope, subtitleOptions: SubtitleOptions })
 {
 	const Existing = await ReadJob(Key);
 	if (Existing)
@@ -180,22 +188,36 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 
 	await RecordDownloadLog('started', { requestId: RequestId });
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
+	if (SubtitleOptions)
+	{
+		const T = SubtitleOptions.translation;
+		if (!Array.isArray(SubtitleOptions.trackIds) || SubtitleOptions.trackIds.length > 128 || !T || typeof T.enabled !== 'boolean' ||
+			!['targetLanguage','sourceLanguage'].every(K => typeof T[K] === 'string' && /^[a-z0-9-]{1,35}$/i.test(T[K])) ||
+			!['deepl','google','azure','gemini','deepseek','openai','kakao'].includes(T.provider) ||
+			!['model','effort'].every(K => typeof T[K] === 'string' && T[K].length <= 200)) throw new LocalizedError('subtitle_invalid');
+	}
 	AssertMediaAllowed(Item);
 	if (VariantUrl) AssertMediaAllowed({url: VariantUrl});
 	if (Item.format === 'YOUTUBE')
 	{
-		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle),
+		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle, Item.page),
 			created: Date.now(), state: 'active', youtube: true, bytesReceived: 0, waiting: !!Quality?.scheduled, live: !!Quality?.live,
-			includeYoutubeAutoCaptions: await GetSetting(SettingKeys.includeYoutubeAutoCaptions)};
+			includeYoutubeAutoCaptions: await GetSetting(SettingKeys.includeYoutubeAutoCaptions), ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {})};
 		await RegisterMediaJob(Key, Job, TabId, Item);
 		try { await ResolveYoutubeSelection(Job, Item, Quality); }
 		catch (ErrorValue) { await WriteJob(Key, {...Job, state: 'failed', error: SerializeError(ErrorValue)}); throw ErrorValue; }
 		await OpenDebugView(RequestId); return {state: 'started'};
 	}
+	// 자막 주소는 이 등록 호출과 전송 문서 안에서만 유지합니다. 영속 기록에는 개수만 남깁니다.
+	const ManifestSubtitles = (VariantUrl ? Item.qualities?.find(Value => Value.url === VariantUrl) : Item.qualities?.[0])?.subtitles ?? [];
+	let Subtitles = [...ManifestSubtitles, ...await DiscoverSubtitles(TabId, Item)];
+	// HLS/DASH sources are complete only after the runner resolves the chosen manifest.
+	if (SubtitleOptions && !IsStreamFormat(Item.format)) Subtitles = await SelectSubtitleTracks(Subtitles, SubtitleOptions.trackIds, SubtitleOptions.translation);
+	Item.subtitles = Subtitles;
 	if (Item.format === 'WEBRTC')
 	{
-		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle),
-			created: Date.now(), state: 'active', recording: true, live: true, bytesReceived: 0, finished: 0};
+		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle, Item.page),
+			created: Date.now(), state: 'active', recording: true, live: true, bytesReceived: 0, finished: 0, subtitleCount: Subtitles.length, ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {})};
 		await RegisterMediaJob(Key, Job, TabId, Item, false);
 		try
 		{
@@ -223,8 +245,8 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 		const Source = Observed ?? Item;
 		const Job = {
 			requestId: RequestId, mediaKey: Item.mediaKey,
-			...await DownloadTarget(Item.name.replace(/\.(m3u8|mpd)$/i, '') + '.mp4', Item.pageTitle),
-			created: Date.now(), state: 'active', hls: true, bytesReceived: 0, finished: 0,
+			...await DownloadTarget(Item.name.replace(/\.(m3u8|mpd)$/i, '') + '.mp4', Item.pageTitle, Item.page),
+			created: Date.now(), state: 'active', hls: true, bytesReceived: 0, finished: 0, subtitleCount: Subtitles.length, ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {}),
 			// 감지 단계에서 확인한 라이브는 첫 진행 응답 전에도 관리자에 표시합니다.
 			...(typeof Item.live === 'boolean' ? {live: Item.live} : {}),
 		};
@@ -244,7 +266,7 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 		await RegisterMediaJob(Key, Job, TabId, Item);
 		try
 		{
-			await LaunchHls(Job, Source.url, Observed ? undefined : VariantUrl, Source.requestContext, Item.format);
+			await LaunchHls(Job, Source.url, Observed ? undefined : VariantUrl, Source.requestContext, Item.format, Subtitles);
 		}
 		catch (ErrorValue)
 		{
@@ -255,16 +277,16 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 		return { state: 'started' };
 	}
 	const Job = {
-		requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(Item.name, Item.pageTitle), created: Date.now(), state: 'starting',
+		requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(Item.name, Item.pageTitle, Item.page), created: Date.now(), state: 'starting', ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {}),
 	};
-	if (Job.pickedDownloadFolder)
+	if (Job.pickedDownloadFolder || Subtitles.length)
 	{
 		await RequireHlsHosts([Item.url]);
-		const FolderJob = { ...Job, state: 'active' };
+		const FolderJob = { ...Job, state: 'active', ...(Subtitles.length ? {subtitleMux: true, subtitleCount: Subtitles.length} : {}) };
 		await RegisterMediaJob(Key, FolderJob, TabId, Item);
 		try
 		{
-			await LaunchDirectToFolder(FolderJob, Item.url);
+			await LaunchDirectToFolder(FolderJob, Item.url, Subtitles);
 		}
 		catch (ErrorValue)
 		{
@@ -315,7 +337,7 @@ export async function UpdateHls(Message)
 {
 	const Key = JobKey(Message.requestId);
 	const Job = await ReadJob(Key);
-	if (!Job?.hls && !Job?.recording && !Job?.youtube && !Job?.pickedDownloadFolder)
+	if (!Job?.hls && !Job?.recording && !Job?.youtube && !Job?.pickedDownloadFolder && !Job?.subtitleMux)
 	{
 		throw new LocalizedError('job_hls_not_found');
 	}
@@ -359,6 +381,18 @@ export async function UpdateHls(Message)
 	}
 	switch (Message.action)
 	{
+		case 'subtitleStatus':
+		if (!ValidateSubtitleStatus(Message.status)) throw new LocalizedError('subtitle_invalid');
+		return WriteJob(Key, {...Job, subtitleStatus: Message.status});
+		case 'subtitleCount':
+		if (!Number.isInteger(Message.count) || Message.count < 1 || Message.count > 128) throw new LocalizedError('subtitle_invalid');
+		return WriteJob(Key, {...Job, subtitleCount: Message.count});
+		case 'subtitleReady':
+		if (!Number.isInteger(Message.count) || Message.count < 1) throw new LocalizedError('subtitle_invalid');
+		const SubtitleFilename = PartialOutputFilename(Job.filename, '.mp4');
+		await WriteJob(Key, {...Job, filename: SubtitleFilename, subtitleCount: Message.count,
+			...(Number.isSafeInteger(Message.bytes) && Message.bytes > 0 ? {bytesReceived: Message.bytes} : {})});
+		return SubtitleFilename;
 		case 'youtubePartial':
 		{
 		if (!Job.youtube) throw new LocalizedError('job_hls_wrong_state');
@@ -419,7 +453,7 @@ export async function UpdateHls(Message)
 		}
 		case 'save':
 		{
-			if ((!Job.hls && !Job.recording && !Job.youtube) || Job.pickedDownloadFolder || !Message.objectUrl.startsWith('blob:' + chrome.runtime.getURL('')))
+			if ((!Job.hls && !Job.recording && !Job.youtube && !Job.subtitleMux) || Job.pickedDownloadFolder || !Message.objectUrl.startsWith('blob:' + chrome.runtime.getURL('')))
 			{
 				throw new LocalizedError('job_invalid_mp4_url');
 			}
@@ -467,7 +501,7 @@ export async function ListJobs(RequestIds, LocalMediaKeys)
 	{
 		Registering.add(Key);
 	}
-	const bNeedsRunner = Jobs.some(Job => (Job.hls || Job.recording || Job.youtube || Job.pickedDownloadFolder) &&
+	const bNeedsRunner = Jobs.some(Job => (Job.hls || Job.recording || Job.youtube || Job.pickedDownloadFolder || Job.subtitleMux) &&
 	Job.state === 'active' && Job.downloadId === undefined &&
 	!Registering.has(JobKey(Job.requestId)));
 	const [Own, Runners] = await Promise.all([LoadBrowserDownloads(Jobs), bNeedsRunner ? ActiveTransfers() : undefined]);
@@ -620,7 +654,7 @@ export async function RemoveJob(RequestId, DeleteFile, ExpectedGroup)
 				throw new LocalizedError('job_cancel_first');
 			}
 		}
-		if (Job.pickedDownloadFolder && !Job.hls && (await ActiveTransfers()).directIds?.includes(RequestId))
+		if ((Job.pickedDownloadFolder || Job.subtitleMux) && !Job.hls && (await ActiveTransfers()).directIds?.includes(RequestId))
 		{
 			throw new LocalizedError('job_cancel_first');
 		}
@@ -709,7 +743,7 @@ export async function ControlJob(RequestId, Action)
 	{
 		return;
 	}
-	if (Job?.pickedDownloadFolder && !Job.hls && Job.state === 'active' && Action === 'cancel')
+	if ((Job?.pickedDownloadFolder || Job?.subtitleMux) && !Job.hls && Job.state === 'active' && Action === 'cancel')
 	{
 		const Result = await chrome.runtime.sendMessage({ type: 'folderCancel', requestId: RequestId }).catch(() => null);
 		if (Result?.ok)
@@ -817,7 +851,8 @@ async function SaveCurrentJobOnce(Job)
 	}
 	const Partial = {requestId: crypto.randomUUID(), filename: PartialFilename(Job.filename), created: Date.now(),
 		state: 'starting', hls: !Job.youtube, ...(Job.youtube ? {youtube: true, includeYoutubeAutoCaptions: Job.includeYoutubeAutoCaptions,
-			subtitleCount: Job.subtitleCount, subtitleStatus: Job.subtitleStatus, captionReceipt: Job.captionReceipt} : {}), snapshot: true, snapshotDirect: !!Source, snapshotParent: Job.requestId,
+			captionReceipt: Job.captionReceipt} : {}), snapshot: true, snapshotDirect: !!Source, snapshotParent: Job.requestId,
+		subtitleCount: Job.subtitleCount ?? 0, subtitleStatus: Job.subtitleStatus,
 		downloadFolder: Job.downloadFolder, pickedDownloadFolder: Job.pickedDownloadFolder,
 		bytesReceived: 0, finished: 0, count: Source?.bytes ?? 1};
 	const Key = JobKey(Partial.requestId);

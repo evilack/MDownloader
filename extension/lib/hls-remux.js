@@ -87,6 +87,7 @@ export async function RemuxHls(Playlist, GetSegment, Destination, Signal, AudioP
 		await Promise.all(Copies);
 		Signal.throwIfAborted();
 		await MediaOutput.finalize();
+		return {start: Start};
 	}
 	catch (ErrorValue)
 	{
