@@ -19,6 +19,9 @@ import { SyncMediaContext } from './media-context-registration.js';
 import { DebugLog, ReportDebugFailure } from './lib/debug-log.js';
 import { InitializeDebugLogging } from './lib/debug-runtime.js';
 import {RelayWebRtc, WebRtcSourceLost, CancelAllWebRtc, WebRtcQualities} from './webrtc-jobs.js';
+import {AuthorizePlayback} from './lib/playback-authorization.js';
+import {PrepareDistributionNetwork} from './lib/distribution-network.js';
+void PrepareDistributionNetwork().catch(ErrorValue => ReportDebugFailure(ErrorValue, 'DistributionRulesFailed'));
 void InitializeDebugLogging(async bEnabled =>
 {
 	// 설정 전환에만 기존 오프스크린 문서에 알립니다. 진단 때문에 문서를 만들거나 깨우지 않습니다.
@@ -102,7 +105,7 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	}
 	const Root = chrome.runtime.getURL('');
 	const bFromHls = Sender.url === HlsRunnerUrl() && Message.type === 'hlsUpdate';
-	const bFromPlayback = Sender.url === Root + 'playback.html' && Message.type === 'savePlayback';
+	const bFromPlayback = Sender.url === Root + 'playback.html' && ['savePlayback', 'authorizePlayback'].includes(Message.type);
 	const bFromManager = Sender.url?.split('?')[0] === Root + 'sidepanel.html';
 	if (!bFromHls && !bFromPlayback && !bFromManager && Sender.url !== Root + 'popup.html')
 	{
@@ -111,7 +114,7 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	// 두 화면이 동시에 열려 있어도 같은 탭의 스캔을 공유하지 않습니다.
 	// 이후 후보 조회는 요청을 시작한 화면의 스캔에서만 수행합니다.
 	const Scope = bFromManager ? 'sidepanel' : 'popup';
-	(bFromHls ? UpdateHls(Message) : bFromPlayback ? EnqueuePlayback(Message) : Route({ ...Message, scope: Scope })).then(
+	(bFromHls ? UpdateHls(Message) : bFromPlayback ? Message.type === 'authorizePlayback' ? AuthorizePlayback(Message) : EnqueuePlayback(Message) : Route({ ...Message, scope: Scope })).then(
 	Data => Respond({ ok: true, data: Data }),
 	ErrorValue => Respond({ ok: false, error: SerializeError(ErrorValue) }),
 	);

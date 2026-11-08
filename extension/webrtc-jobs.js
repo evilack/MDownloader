@@ -1,4 +1,5 @@
 import {EnsureRunner, HlsRunnerUrl} from './hls-jobs.js';
+import {AssertMediaAllowed} from './lib/youtube-source-policy.js';
 import {WebRtcPageTask} from './lib/webrtc-page.js';
 import {WebRtcQualityTask} from './lib/webrtc-quality-task.js';
 import {RuntimePolicy} from './lib/runtime-policy.js';
@@ -41,6 +42,7 @@ export async function WebRtcQualities(Input)
 
 export async function LaunchWebRtc(Job, Candidate, TabId, Quality)
 {
+	AssertMediaAllowed(Candidate);
 	const Source = {tabId: TabId, documentId: Candidate.documentId, page: Candidate.page,
 		trackId: Candidate.trackId, requestId: Job.requestId, token: crypto.randomUUID(), background: true};
 	await chrome.storage.session.set({[Prefix + Job.requestId]: Source});

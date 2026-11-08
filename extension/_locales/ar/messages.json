@@ -1335,5 +1335,11 @@
   },
   "view_state_interrupted": {
     "message": "انقطع · تم حفظ ملف جزئي"
+  },
+  "youtube_distribution_disabled": {
+    "message": "تنزيلات YouTube غير متاحة في هذا الإصدار."
+  },
+  "youtube_not_verified": {
+    "message": "لم يجتز دعم YouTube التحقق في المتصفح بعد."
   }
 }

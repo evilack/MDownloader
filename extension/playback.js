@@ -7,6 +7,7 @@ void InitializeDebugLogging();
 import { ErrorText, GetLocale, InitializeLocale, LocalizePage, LocalizedError, Translate } from './lib/i18n.js';
 import { IsFullPlaybackResponse, PlaybackHls, PlaybackScratchName, StorePlaybackSegment } from './lib/playback-hls.js';
 import { SendRequest } from './lib/ui.js';
+import {AssertMediaAllowed, YoutubeSourceBlocked} from './lib/youtube-source-policy.js';
 await InitializeLocale();
 LocalizePage();
 const Form = document.querySelector('#capture');
@@ -20,6 +21,7 @@ const CountFormat = new Intl.NumberFormat(GetLocale());
 let Session;
 async function CapturePlayback(Address)
 {
+	AssertMediaAllowed({url: Address});
 	await navigator.locks.request(PlaybackScratchName, { ifAvailable: true }, async LocalLock =>
 	{
 		if (!LocalLock)
@@ -37,6 +39,7 @@ async function CapturePlayback(Address)
 		});
 		const Directory = await Root.getDirectoryHandle(PlaybackScratchName, { create: true });
 		const RequestId = crypto.randomUUID();
+		await SendRequest('authorizePlayback', {requestId: RequestId, tabId: chrome.devtools.inspectedWindow.tabId, url: Address});
 		let bHandedOff = false;
 		try
 		{
@@ -68,6 +71,7 @@ async function CapturePlayback(Address)
 			};
 			function Observe(Entry)
 			{
+				if (YoutubeSourceBlocked({url: Entry.request?.url})) return;
 				// 수집할 수 없는 HTTP 응답은 대기열에 넣기 전에 거릅니다.
 				// 앞선 재생목록이 조각 주소를 추가할 수 있으므로 URL 일치는 대기열의 처리 순서 안에서 검사합니다.
 				if (!IsFullPlaybackResponse(Entry))

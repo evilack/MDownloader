@@ -5,6 +5,7 @@ import { RuntimePolicy } from './runtime-policy.js';
 import { RetryableTransferError } from './segment-transfer.js';
 import { LocalizedError } from './i18n.js';
 import { NormalizeHlsProtocol } from './hls-protocol.js';
+import {AssertMediaAllowed} from './youtube-source-policy.js';
 export class HlsHttpError extends LocalizedError
 {
 	constructor(Key, Status, bChallenge = false, ...Args)
@@ -17,6 +18,7 @@ export class HlsHttpError extends LocalizedError
 
 export async function FetchMedia(Address, Signal, bObservedContext = false, LocalRange, bFresh = false)
 {
+	AssertMediaAllowed({url: Address});
 	let HttpResponse;
 	try
 	{

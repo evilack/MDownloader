@@ -1,5 +1,7 @@
 # MDownloader
 
+배포판은 `node tools/build/package-extension.mjs --flavor development|manual|chrome-store`로 원본과 별도의 `artifacts/distributions/<flavor>/extension/`에 생성합니다. 개발·수동판은 기본적으로 Chrome에서도 허용하며 `--block-chrome`은 추가 제한용 빌드 옵션입니다. YouTube 추출·저장 지원은 실제 브라우저 선행 검증 단계이며 아직 완료된 기능이 아닙니다. 스토어판은 YouTube provider/vendor를 물리적으로 제외하고 일반 미디어·embed·재생 수집·기존 작업 재개와 전송에서도 고정 차단합니다. 심사 이후 켜는 설정은 없습니다. 상세 범위는 [개발 안내](development.md)와 [검증 기록](verification.md)에 기록합니다.
+
 [English](../README.md) · 한국어
 
 <img src="../extension/icons/app-media-128.png" alt="MDownloader" width="80" height="80">

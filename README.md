@@ -22,6 +22,8 @@ MDownloader runs in your browser. It can save direct media files, supported clea
 
 No build, npm installation, or paid service is required to load the extension. Store installation links have not been configured in the product website.
 
+Distribution packages are generated separately: `node tools/build/package-extension.mjs --flavor development|manual|chrome-store`. Development and manual builds allow Chrome by default; `--block-chrome` is an optional additional build restriction. YouTube extraction is still subject to the browser feasibility gate and is not a completed download feature. The Chrome Store package physically excludes the YouTube provider/vendor and uses a disabled entry. Its fixed source checks also cover generic media, embeds, playback capture, resume, and media requests. This is a permanent package distinction, not a review-time switch. See [development](docs/development.md) and [verification](docs/verification.md).
+
 To update a local copy, finish active downloads first, replace the project files, and reload MDownloader from the browser's extensions page.
 
 ## Screenshots

@@ -9,6 +9,7 @@ import { KnownMasterDenial } from './lib/hls-diagnostics.js';
 import { LocalizedError, ReceivedError, Translate } from './lib/i18n.js';
 import { DebugConfiguration } from './lib/debug-runtime.js';
 import { DebugLog } from './lib/debug-log.js';
+import {AssertMediaAllowed} from './lib/youtube-source-policy.js';
 const Path = 'hls-runner.html';
 let Creating;
 export const HlsRunnerUrl = () => chrome.runtime.getURL(Path);
@@ -42,6 +43,7 @@ export async function EnsureRunner()
 
 export async function RequireHlsHosts(Urls)
 {
+	for (const Url of Urls) AssertMediaAllowed({url: Url});
 	const Origins = [...new Set(Urls.map(HostPattern))];
 	if (Origins.includes(null))
 	{
@@ -116,6 +118,7 @@ export async function HlsQualities({ tabId: TabId, scanId: ScanId, candidateId: 
 
 export async function LaunchHls(Job, Url, VariantUrl, RequestContext, Format)
 {
+	AssertMediaAllowed({...Job, url: Url, variants: [VariantUrl], requestContext: RequestContext});
 	return LaunchRunner({
 		...FolderDestination(Job), requestId: Job.requestId, url: Url, variantUrl: VariantUrl, requestContext: RequestContext,
 		...(Format === 'MPD' ? { format: Format } : {}),
@@ -134,6 +137,7 @@ export async function LaunchPlaybackHls(Job, Playback)
 
 export async function LaunchDirectToFolder(Job, Url)
 {
+	AssertMediaAllowed({...Job, url: Url});
 	await EnsureRunner();
 	const Result = await chrome.runtime.sendMessage({
 		type: 'folderRun', debugLogging: await DebugConfiguration(), job: { ...FolderDestination(Job), requestId: Job.requestId, url: Url },

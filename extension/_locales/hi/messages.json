@@ -1335,5 +1335,11 @@
   },
   "view_state_interrupted": {
     "message": "बाधित · आंशिक फ़ाइल सहेजी गई"
+  },
+  "youtube_distribution_disabled": {
+    "message": "इस वितरण में YouTube डाउनलोड उपलब्ध नहीं हैं।"
+  },
+  "youtube_not_verified": {
+    "message": "YouTube समर्थन का ब्राउज़र सत्यापन अभी पूरा नहीं हुआ है।"
   }
 }

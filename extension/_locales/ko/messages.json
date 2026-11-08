@@ -1335,5 +1335,11 @@
   },
   "view_state_interrupted": {
     "message": "중단 · 부분 저장"
+  },
+  "youtube_distribution_disabled": {
+    "message": "이 배포판에서는 YouTube 다운로드를 사용할 수 없습니다."
+  },
+  "youtube_not_verified": {
+    "message": "YouTube 지원의 실제 브라우저 검증이 완료되지 않았습니다."
   }
 }

@@ -25,6 +25,7 @@ import { DebugLog } from './lib/debug-log.js';
 import {CreateWebRtcTransfers} from './lib/webrtc-transfers.js';
 import {CreateRecordingStore} from './lib/webrtc-recording.js';
 import {StartWebRtcReceiver} from './lib/webrtc-receiver.js';
+import {AssertMediaAllowed} from './lib/youtube-source-policy.js';
 const ScratchName = 'mdownloader-hls';
 const Workspaces = CreateStreamWorkspaces(ScratchName);
 const Transfers = CreateStreamTransfers((Job, Controller, FinishSignal) =>
@@ -410,7 +411,8 @@ async function DownloadDirectToFolder(Job, { signal: Signal })
 	try
 	{
 		const Folder = await RequirePickedFolder(Job.pickedDownloadFolder);
-		const HttpResponse = await fetch(Job.url, { credentials: 'include', signal: Signal });
+		AssertMediaAllowed(Job);
+		const HttpResponse = await fetch(Job.url, { credentials: 'include', redirect: 'error', signal: Signal });
 		if (HttpResponse.status !== 200 || !HttpResponse.body)
 		{
 			await HttpResponse.body?.cancel();
@@ -465,6 +467,13 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	if (Sender.id !== chrome.runtime.id)
 	{
 		return;
+	}
+	// 실행을 만드는 메시지는 워커에서만 받으며 실행 직전 출처를 다시 검사합니다.
+	if (['hlsRun', 'folderRun', 'hlsSnapshot', 'webrtcReceive', 'webrtcPrepare'].includes(Message.type))
+	{
+		if (Sender.tab || Sender.url !== chrome.runtime.getURL('background.js')) return;
+		try { AssertMediaAllowed(Message.job); AssertMediaAllowed(Message.source); }
+		catch (ErrorValue) { Respond({ok: false, error: SerializeError(ErrorValue)}); return; }
 	}
 	if (Message.type.startsWith('webrtc'))
 	{

@@ -2,6 +2,7 @@ import {RuntimePolicy} from './runtime-policy.js';
 import {LocalizedError} from './i18n.js';
 import {IsHtmlMediaType} from './media.js';
 import {HlsHttpError} from './hls-http.js';
+import {AssertMediaAllowed} from './youtube-source-policy.js';
 function ResponseValidator(Response)
 {
 	const Etag = Response.headers.get('etag');
@@ -13,6 +14,7 @@ function ResponseValidator(Response)
  */
 export async function ReadFilePrefix(Source, Workspace, Signal, Progress)
 {
+	AssertMediaAllowed(Source);
 	const Limit = Math.floor(Source.bytes);
 	if (!Number.isSafeInteger(Limit) || !(Limit > 0))
 	{
@@ -24,7 +26,7 @@ export async function ReadFilePrefix(Source, Workspace, Signal, Progress)
 	let Response;
 	try
 	{
-		Response = await fetch(Source.url, {credentials: 'include', signal: RequestSignal, headers: {Range: 'bytes=0-' + (Limit - 1)}});
+		Response = await fetch(Source.url, {credentials: 'include', redirect: 'error', signal: RequestSignal, headers: {Range: 'bytes=0-' + (Limit - 1)}});
 	}
 	finally
 	{
@@ -114,6 +116,7 @@ export async function ReadFilePrefix(Source, Workspace, Signal, Progress)
  */
 export async function ReadMp4Metadata(Prefix, Signal)
 {
+	AssertMediaAllowed(Prefix);
 	const BaseHeaderBytes = 8, ExtendedHeaderBytes = 16;
 	let Requested = 0;
 	async function Read(Start, End)
@@ -127,7 +130,7 @@ export async function ReadMp4Metadata(Prefix, Signal)
 		{
 			throw new LocalizedError('job_snapshot_metadata');
 		}
-		const Response = await fetch(Prefix.url, {credentials: 'include', signal: AbortSignal.any([Signal, AbortSignal.timeout(RuntimePolicy.Transfer.RequestTimeoutMs)]),
+		const Response = await fetch(Prefix.url, {credentials: 'include', redirect: 'error', signal: AbortSignal.any([Signal, AbortSignal.timeout(RuntimePolicy.Transfer.RequestTimeoutMs)]),
 			headers: {Range: 'bytes=' + Start + '-' + (End - 1), ...(Prefix.validator ? {'If-Range': Prefix.validator} : {})}});
 		const Expected = `bytes ${Start}-${End - 1}/${Prefix.total}`;
 		if (Response.status !== 206 || Response.headers.get('content-range') !== Expected)

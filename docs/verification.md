@@ -1,5 +1,11 @@
 # Verification
 
+## YouTube distribution gate — 2026-11-08
+
+Task 1 introduced build-time development/manual/store policies and layered source/transfer guards. Baseline was commit `2c96967`, version `0.2.37`, 257 passing tests. The initial policy/package/enforcement additions raised the suite to 265 passing tests. All ten catalogs have 380 messages and no missing references. This does not establish YouTube extraction or saving.
+
+Actual installed Chrome **157.0.8103.39**, headless unpacked in an isolated profile, loaded the generated store package. Six explicit YouTube direct/request/source/playback cases refused with `youtube_distribution_disabled` after stored settings attempted to enable YouTube. An ordinary loopback MP4 saved completely (**232,992 bytes**, one content response). A loopback redirect to googlevideo stopped with **FILE_BLOCKED**, **0 bytes**; DNR matched extension-origin requests and did not match normal YouTube page playback. Report: ignored `artifacts/youtube-implementation/native-1794130425865/result.json`. These are native automated browser checks, not visual acceptance, real YouTube download success or Chrome Store approval.
+
 Run checks from the project root with Node.js 24. No historical evidence folder or package installation is required for the core suite.
 
 ```powershell

@@ -1335,5 +1335,11 @@
   },
   "view_state_interrupted": {
     "message": "Interrupted · partial file saved"
+  },
+  "youtube_distribution_disabled": {
+    "message": "YouTube downloads are unavailable in this distribution."
+  },
+  "youtube_not_verified": {
+    "message": "YouTube support has not passed browser verification."
   }
 }

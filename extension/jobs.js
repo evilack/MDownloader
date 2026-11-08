@@ -23,11 +23,14 @@ import { GetBrowserDownload, JobGroup, LoadBrowserDownloads, SummarizeJob } from
 import {PartialFilename, PartialOutputFilename} from './lib/partial-naming.js';
 import {CanFinishJob} from './lib/job-actions.js';
 import {LaunchWebRtc, ControlWebRtc, ForgetWebRtcControl} from './webrtc-jobs.js';
+import {AssertMediaAllowed, AssertJobMayRestart, IsYoutubeSource} from './lib/youtube-source-policy.js';
+import {RequirePlaybackAuthorization} from './lib/playback-authorization.js';
 const Pending = new Map();
 const Removing = new Set();
 const PendingSnapshots = new Set();
 async function RegisterMediaJob(Key, Job, TabId, Candidate, PreparePreview = true)
 {
+	Object.assign(Job, {sourcePolicyVersion: 1, youtubeSource: IsYoutubeSource({pageUrl: Candidate.page, frameUrl: Candidate.previewPage ?? Candidate.initiator, mediaUrl: Candidate.url})});
 	await WriteJob(Key, Job);
 	if (DebugLog.IsEnabled())
 	{
@@ -107,6 +110,7 @@ export function Enqueue(Input)
 
 export async function EnqueuePlayback({ requestId: RequestId, playlist: Playlist, count: Count, bytes: Bytes, pageTitle: PageTitle })
 {
+	await RequirePlaybackAuthorization(RequestId);
 	if (typeof Playlist !== 'string' || Playlist.length > RuntimePolicy.Transfer.MaxPlaylistBytes ||
 	!Number.isInteger(Count) || Count < 1 || Count > RuntimePolicy.Transfer.MaxSegments ||
 	!Number.isSafeInteger(Bytes) || Bytes < 1 || Bytes > RuntimePolicy.Transfer.MaxStreamScratchBytes)
@@ -122,6 +126,7 @@ export async function EnqueuePlayback({ requestId: RequestId, playlist: Playlist
 		await RecordDownloadLog('started', { requestId: RequestId });
 		const Job = {
 			requestId: RequestId, ...await DownloadTarget(undefined, PageTitle), created: Date.now(), state: 'active',
+			sourcePolicyVersion: 1, youtubeSource: false,
 			hls: true, bytesReceived: Bytes, finished: Count, count: Count, muxing: true,
 		};
 		await WriteJob(Key, Job);
@@ -166,6 +171,8 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 
 	await RecordDownloadLog('started', { requestId: RequestId });
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
+	AssertMediaAllowed(Item);
+	if (VariantUrl) AssertMediaAllowed({url: VariantUrl});
 	if (Item.format === 'WEBRTC')
 	{
 		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle),
@@ -620,6 +627,7 @@ export async function ControlJob(RequestId, Action)
 	const Item = await GetBrowserDownload(Job?.downloadId);
 	if (Item)
 	{
+		if (Action === 'resume') AssertJobMayRestart({...Job, url: Item.url, finalUrl: Item.finalUrl, pageUrl: Item.referrer});
 		const State = SummarizeJob(Job, Item).state;
 		if (Action === 'pause' && State === 'active' && !Job.hls)
 		{
@@ -650,8 +658,10 @@ export async function ControlJob(RequestId, Action)
  */
 async function DirectSnapshotSource(Job, Item)
 {
+	AssertJobMayRestart(Job);
 	const Stored = Item ? undefined : (await chrome.storage.session.get(PreviewSourceKey(Job.requestId)))[PreviewSourceKey(Job.requestId)];
 	const Url = Item?.finalUrl || Item?.url || Stored?.url;
+	AssertMediaAllowed({...Job, url: Url, pageUrl: Item?.referrer});
 	const Bytes = Item?.bytesReceived ?? Job.bytesReceived;
 	if (!HostPattern(Url) || !(Bytes > 0))
 	{

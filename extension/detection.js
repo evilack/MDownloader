@@ -14,6 +14,7 @@ import { DiscoverDeclaredHls } from './lib/declared-streams.js';
 import { DiscoverNativeHls } from './lib/native-hls-discovery.js';
 import { DiscoverSelectedHls } from './lib/selected-hls.js';
 import {WebRtcPageTask} from './lib/webrtc-page.js';
+import {AssertMediaAllowed, YoutubeSourceBlocked} from './lib/youtube-source-policy.js';
 const KeyEncoder = new TextEncoder();
 const MaxPlaybackObservations = MaxObservedMediaPerTab + RuntimePolicy.Detection.MaxMediaContextUrls;
 async function MediaJobKey(Page, Url)
@@ -99,6 +100,7 @@ export async function FindMedia(TabId)
 		target: { tabId: TabId }, func: CollectVideos, args: [MaxPlaybackObservations, RuntimePolicy.Detection.AuxiliaryPlayerSelector, RuntimePolicy.Detection.SourcePlayerSelector],
 	});
 	const { page: Page, sources: Sources, playlists: Playlists } = Frame.result;
+	if (YoutubeSourceBlocked({page: Page})) return {documentId: Frame.documentId, page: Page, observed: [], items: []};
 	if (!['http:', 'https:'].includes(new URL(Page).protocol))
 	{
 		return null;
@@ -221,6 +223,7 @@ export async function FindMedia(TabId)
 	const Items = new Map();
 	for (const Item of [...Direct.filter(Item => Item.supported && !IsStreamFormat(Item.format)), ...AllowedObserved, ...Playback.values(), ...Direct])
 	{
+		if (YoutubeSourceBlocked({...Item, pageUrl: Page})) continue;
 		const ResourceKey = MediaResourceKey(Item.url);
 		if (!Items.has(ResourceKey))
 		{
@@ -354,6 +357,7 @@ export async function ResolveCandidate(TabId, ScanId, CandidateId, Scope)
 	{
 		throw new LocalizedError('candidate_changed');
 	}
+	AssertMediaAllowed({...Candidate, pageUrl: Saved.page});
 	const Context = await ReadMediaContext(TabId);
 	if (Candidate.format === 'WEBRTC')
 	{
@@ -398,6 +402,7 @@ export async function ResolveCandidate(TabId, ScanId, CandidateId, Scope)
 		}
 		PreviewPage = Frame.result;
 	}
+	AssertMediaAllowed({...Candidate, pageUrl: Saved.page, frameUrl: PreviewPage});
 	// 썸네일과 같은 플레이어 연결 검증을 사용하되 이미지를 만들지 않는 조회입니다.
 	// 별도 파일이나 다른 프레임에 현재 방송 제목이 섞이지 않도록 후보를 고른 뒤 조회합니다.
 	const bSingleStream = IsSingleDocumentStream(Saved, Candidate);

@@ -1335,5 +1335,11 @@
   },
   "view_state_interrupted": {
     "message": "Interrumpido · archivo parcial guardado"
+  },
+  "youtube_distribution_disabled": {
+    "message": "Las descargas de YouTube no están disponibles en esta distribución."
+  },
+  "youtube_not_verified": {
+    "message": "La compatibilidad con YouTube aún no ha superado la verificación en el navegador."
   }
 }

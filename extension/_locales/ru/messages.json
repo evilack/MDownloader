@@ -1335,5 +1335,11 @@
   },
   "view_state_interrupted": {
     "message": "Прервано · часть сохранена"
+  },
+  "youtube_distribution_disabled": {
+    "message": "В этой сборке загрузки с YouTube недоступны."
+  },
+  "youtube_not_verified": {
+    "message": "Поддержка YouTube ещё не прошла проверку в браузере."
   }
 }

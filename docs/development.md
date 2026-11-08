@@ -1,5 +1,15 @@
 # Development
 
+## Distribution boundary (2026-11-08)
+
+Build with `node tools/build/package-extension.mjs --flavor development|manual|chrome-store`. A flavor is mandatory. Output is `artifacts/distributions/<flavor>/extension/`; source `extension/` is never overwritten. Optional `--block-chrome` blocks Chrome (and unknown families) only for YouTube. The fixed store denial always takes precedence over browser detection and stored settings.
+
+Store packaging omits `features/youtube/` and `vendor/youtube/`, then emits only a disabled provider entry. `node --expose-internals tools/checks/verify-distribution.mjs --flavor chrome-store` checks physical files, manifest references and every static/dynamic literal module import. The source policy checks trusted page/frame/request context as well as media URLs. All HLS/DASH resources, direct browser saves, partial re-fetches, playback capture and resume have independent guards. Store resume/re-fetch refuses legacy records without a trusted `sourcePolicyVersion`; rescan the page to register a classified job.
+
+Store builds (and `--block-chrome` builds) use `declarativeNetRequest` instead of `declarativeNetRequestWithHostAccess`. Chrome requires the former to apply block rules before optional target-host permission has been granted. The fixed session rule matches only this extension's initiator and YouTube media domains, including redirects; site playback and other extensions are outside the rule. Header modifications still require host access. This adds Chrome's block-content installation warning to those packages. [Chrome DNR permissions](https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#permissions).
+
+`node tools/checks/probe-distribution-chrome.mjs` uses a new isolated Chrome profile, loads the generated store package with the DevTools Extensions API, checks fixed denial despite forged settings, saves the retained local MP4 and checks a redirect to googlevideo. Set `MDOWNLOADER_BROWSER_PATH` and `MDOWNLOADER_PLAYWRIGHT_MODULE` when bundled defaults do not apply. It never uses or reloads the user's profile. Browser outputs remain under ignored `artifacts/youtube-implementation/`.
+
 MDownloader is an unbundled Manifest V3 extension. The browser loads `extension/` directly; there is no npm installation or build step for normal use.
 
 ## Repository layout

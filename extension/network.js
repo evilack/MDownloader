@@ -11,6 +11,7 @@ import { MediaContextCacheKey, MediaContextCachePrefix, NetworkCacheKey, Network
 import { NormalizeHlsProtocol } from './lib/hls-protocol.js';
 import { LoadSourceProviders } from './lib/source-provider-data.js';
 import { CreateMediaPageScopes } from './lib/media-page-scope.js';
+import {YoutubeSourceBlocked} from './lib/youtube-source-policy.js';
 export const MaxObservedMediaPerTab = RuntimePolicy.Detection.MaxObservedMedia;
 const MediaResponseStatus = new Set([200, 206]);
 let Writes = Promise.resolve();
@@ -219,6 +220,7 @@ export function IsAuxiliaryMedia(Context, Url, DocumentId, TimeOrigin)
 
 export function ClassifyResponse(Details)
 {
+	if (YoutubeSourceBlocked(Details)) return null;
 	if (Details.tabId < 0 || !Details.documentId ||
 	(Details.frameId !== 0 && !(Details.frameId > 0 && Details.parentFrameId === 0 && Details.parentDocumentId)) ||
 	!HostPattern(Details.initiator) || Details.method !== 'GET' ||
@@ -288,6 +290,7 @@ export function ObserveResponse(Details)
 	const HttpRequest = ObservedHeaders.get(Details.requestId);
 	const PageSnapshot = RequestPages.get(Details.requestId);
 	ForgetRequest(Details);
+	if (YoutubeSourceBlocked(Details)) return;
 	const Candidate = ClassifyResponse(Details);
 	if (Candidate && DebugLog.IsEnabled())
 	{
@@ -307,6 +310,7 @@ export function ObserveResponse(Details)
 			return;
 		}
 		const Scope = await PageSnapshot;
+		if (YoutubeSourceBlocked({page: Scope?.page, ...Details})) return;
 		if (Scope?.stale)
 		{
 			return;
@@ -532,6 +536,7 @@ export function BindDeclaredSource(TabId, DocumentId, Page, Url)
 
 export function ObserveManifest(Sender, { url: Url, text: TextValue, page: Page })
 {
+	if (YoutubeSourceBlocked({url: Url, page: Page, frameUrl: Sender.url, initiator: Sender.origin})) return;
 	if (!Number.isInteger(Sender.frameId) || Sender.frameId < 0 || !Sender.documentId || !Number.isInteger(Sender.tab?.id) ||
 	typeof Url !== 'string' || typeof TextValue !== 'string' || TextValue.length > RuntimePolicy.Detection.MaxObservedManifestBytes)
 	{
@@ -640,6 +645,7 @@ export async function FilterAllowedNetworkCandidates(Items, TabId, DocumentId, P
 	const PermissionChecks = new Map();
 	const Allowed = await Promise.all(Items.map(async Item =>
 	{
+		if (YoutubeSourceBlocked({...Item, pageUrl: Page})) return false;
 		if (Page !== undefined && Item.page && Item.page !== Page)
 		{
 			return false;

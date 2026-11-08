@@ -1335,5 +1335,11 @@
   },
   "view_state_interrupted": {
     "message": "中断 · 部分保存"
+  },
+  "youtube_distribution_disabled": {
+    "message": "この配布版では YouTube のダウンロードは利用できません。"
+  },
+  "youtube_not_verified": {
+    "message": "YouTube 対応のブラウザ検証が完了していません。"
   }
 }

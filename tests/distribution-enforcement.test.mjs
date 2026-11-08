@@ -1,0 +1,42 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+spawnSync(process.execPath, ['tools/build/package-extension.mjs', '--flavor', 'chrome-store']);
+const root = '../artifacts/distributions/chrome-store/extension/';
+const {AssertMediaAllowed} = await import(root + 'lib/youtube-source-policy.js');
+const blocked = {key: 'youtube_distribution_disabled'};
+test('store fetch, direct save, runner launch and partial retry reject before any IO', async t => {
+ let calls = 0;
+ globalThis.fetch = async () => {calls++; throw Error('unexpected fetch');};
+ globalThis.chrome = {runtime: {getURL: value => 'chrome-extension://test/' + value}, storage: {local: {get: async () => ({youtubeEnabled: true})}}};
+ t.after(() => {delete globalThis.chrome; delete globalThis.fetch;});
+ const {FetchMedia} = await import(root + 'lib/hls-http.js');
+ const {DownloadNamedFile} = await import(root + 'lib/browser-download.js');
+ const {ReadFilePrefix} = await import(root + 'lib/partial-file.js');
+ const {LaunchHls, LaunchDirectToFolder} = await import(root + 'hls-jobs.js');
+ const url = 'https://rr1.googlevideo.com/videoplayback';
+ for (const operation of [() => FetchMedia(url, new AbortController().signal), () => DownloadNamedFile(url, 'file.mp4'), () => ReadFilePrefix({url, bytes: 5}, {}, new AbortController().signal), () => LaunchHls({}, 'https://cdn.test/file.m3u8', url), () => LaunchDirectToFolder({}, url)]) await assert.rejects(operation(), blocked);
+ assert.equal(calls, 0);
+ assert.throws(() => AssertMediaAllowed({url: 'https://cdn.test/file.mp4', previewPage: 'https://youtube-nocookie.com/embed/aqz-KE-bpKQ', provider: 'generic'}), blocked);
+});
+test('store blocks observed generic media in YouTube frames and stale saved candidates', async t => {
+ const {ClassifyResponse, FilterAllowedNetworkCandidates} = await import(root + 'network.js');
+ const details = {tabId: 1, documentId: 'doc', frameId: 0, method: 'GET', statusCode: 200, initiator: 'https://youtube.com', url: 'https://cdn.test/file.mp4', responseHeaders: [{name: 'Content-Type', value: 'video/mp4'}]};
+ assert.equal(ClassifyResponse(details), null);
+ assert.equal(ClassifyResponse({...details, initiator: 'https://example.org', url: 'https://r1.googlevideo.com/file.mp4'}), null);
+ assert.deepEqual(await FilterAllowedNetworkCandidates([{url: 'https://cdn.test/file.mp4', initiator: 'https://youtube-nocookie.com'}], 1, 'doc', 'https://example.org'), []);
+ const {ResolveCandidate} = await import(root + 'detection.js');
+ const scan = {scanId: 'scan', documentId: 'doc', page: 'https://youtube.com/watch?v=aqz-KE-bpKQ', candidates: [{id: 0, supported: true, url: 'https://cdn.test/file.mp4'}]};
+ globalThis.chrome = {storage: {session: {get: async key => ({[key]: scan})}}, scripting: {executeScript: async () => [{documentId: 'doc', result: {page: scan.page, active: true}}]}};
+ t.after(() => delete globalThis.chrome);
+ await assert.rejects(ResolveCandidate(1, 'scan', 0), blocked);
+});
+test('store resume uses browser final URL even for legacy jobs without provider metadata', async t => {
+ const {ControlJob, EnqueuePlayback} = await import(root + 'jobs.js');
+ let resumed = 0;
+ globalThis.chrome = {runtime: {id: 'test'}, storage: {local: {get: async key => ({[key]: {requestId: 'legacy', downloadId: 1}})}, session: {get: async () => ({})}}, downloads: {search: async () => [{id: 1, byExtensionId: 'test', url: 'https://cdn.test/file.mp4', finalUrl: 'https://r1.googlevideo.com/videoplayback', state: 'interrupted', canResume: true}], resume: async () => resumed++}};
+ t.after(() => delete globalThis.chrome);
+ await assert.rejects(ControlJob('legacy', 'resume'), blocked);
+ await assert.rejects(EnqueuePlayback({requestId: 'legacy', playlist: '#EXTM3U', count: 1, bytes: 1}), blocked);
+ assert.equal(resumed, 0);
+});

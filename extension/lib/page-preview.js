@@ -5,9 +5,11 @@
 import { RuntimePolicy } from './runtime-policy.js';
 import { LocalizedError } from './i18n.js';
 import { ValidHlsRequestContext } from './hls-request-context.js';
+import {AssertMediaAllowed} from './youtube-source-policy.js';
 const PageRequestsKey = 'MDownloaderPreviewRequests';
 export async function ReadPagePreviewResource(Source, { url: Url, range: Range }, Limit, Signal)
 {
+	AssertMediaAllowed({...Source, url: Url, requestContext: Source.context});
 	Signal.throwIfAborted();
 	if (!ValidHlsRequestContext(Source.context) || new URL(Url).origin !== Source.context.serverOrigin)
 	{
