@@ -124,3 +124,7 @@ Official YouTube.js/googlevideo/Mediabunny sources and bundles are unchanged. Th
 - Completed picked-folder jobs preserve local-file preview precedence. Store policy checks cover the added routes, including older YouTube job flags without a source classification. Store provider/vendor exclusion remains physical.
 
 Native check: `node tools/checks/probe-youtube-job-preview-chrome.mjs`, same FACJInvEmY8 source, normal quality/enqueue/manager UI and a throttled receiver. It requires both hovers to advance decoded frames, shared visible thumbnails, a changed thumbnail after refresh, continuing download, capture refusal after navigation and no leftover hover players/loading. No Computer Use or Store browser execution.
+
+# Shared download-location confirmation — 2026-11-09
+
+The common options form now preserves a picked directory when Save location is clicked, with an explicit default-location reset. No YouTube.js, googlevideo, Mediabunny, provider/runner code, vendor bundle or Store exclusion rule changed. This applies to all download providers; see the download-location verification entry for the real browser scope and picker fixture boundary.

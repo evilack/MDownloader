@@ -55,6 +55,9 @@
   "opt_pick_download_folder": {
     "message": "Selecionar pasta…"
   },
+  "opt_use_default_download_folder": {
+    "message": "Usar local padrão"
+  },
   "opt_restore_folder_access": {
     "message": "Restaurar acesso à pasta"
   },
@@ -300,7 +303,7 @@
     "message": "Extensão"
   },
   "opt_folder_help": {
-    "message": "Digite uma subpasta da pasta padrão de downloads, como MDownloader/Vídeos. Deixe em branco para usar o local padrão."
+    "message": "Digite uma subpasta da pasta de downloads ou selecione uma pasta. Salvar mantém a pasta selecionada. Use o local padrão para redefinir."
   },
   "opt_folder_read_failed": {
     "message": "Não foi possível ler o local dos downloads."

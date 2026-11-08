@@ -55,6 +55,9 @@
   "opt_pick_download_folder": {
     "message": "Elegir carpeta…"
   },
+  "opt_use_default_download_folder": {
+    "message": "Usar ubicación predeterminada"
+  },
   "opt_restore_folder_access": {
     "message": "Restaurar acceso a la carpeta"
   },
@@ -300,7 +303,7 @@
     "message": "Extensión"
   },
   "opt_folder_help": {
-    "message": "Introduce una subcarpeta dentro de la carpeta de descargas predeterminada, por ejemplo MDownloader/Vídeos. Déjalo en blanco para usar la ubicación predeterminada."
+    "message": "Introduce una subcarpeta de Descargas o selecciona una carpeta. Guardar conserva la carpeta seleccionada. Usa la ubicación predeterminada para restablecerla."
   },
   "opt_folder_read_failed": {
     "message": "No se pudo leer la ubicación de descarga."

@@ -17,19 +17,23 @@ export async function BindDownloadLocation(DownloadFolder, PickedFolderKey)
 	const Save = document.querySelector('#save-download-folder');
 	const Picker = document.querySelector('#pick-download-folder');
 	const Restore = document.querySelector('#restore-folder-access');
+	const Default = document.querySelector('#use-default-download-folder');
 	const Selected = document.querySelector('#picked-download-folder');
 	const Status = document.querySelector('#download-folder-status');
 	let PickedFolder;
+	let CurrentPickedKey = PickedFolderKey ?? '';
 	async function DisplayPickedFolder()
 	{
 		Selected.hidden = !PickedFolder;
 		Selected.textContent = PickedFolder ? Translate('opt_picked_folder', PickedFolder.name) : '';
 		Restore.hidden = !PickedFolder || await HasPickedFolderAccess(PickedFolder);
+		Default.hidden = false;
+		Input.placeholder = PickedFolder ? PickedFolder.name : Translate('opt_default_folder');
 	}
 
 	function SetBusy(Busy)
 	{
-		for (const Control of [Input, Save, Picker, Restore])
+		for (const Control of [Input, Save, Picker, Restore, Default])
 		{
 			Control.disabled = Busy;
 		}
@@ -71,11 +75,20 @@ export async function BindDownloadLocation(DownloadFolder, PickedFolderKey)
 		SetBusy(true);
 		try
 		{
-			await SetDownloadLocation(Folder);
-			PickedFolder = undefined;
+			// Selecting a native folder clears the relative input. Confirming that
+			// selection must not interpret the empty input as a default reset.
+			const KeepPicked = !!CurrentPickedKey && !Folder;
+			if (KeepPicked && !await HasPickedFolderAccess(PickedFolder))
+			{
+				await DisplayPickedFolder();
+				Status.textContent = Translate('folder_access_required');
+				return;
+			}
+			await SetDownloadLocation(Folder, KeepPicked ? CurrentPickedKey : '');
+			if (!KeepPicked) { PickedFolder = undefined; CurrentPickedKey = ''; }
 			await DisplayPickedFolder();
 			Input.value = Folder;
-			Status.textContent = Translate(Folder ? 'opt_folder_saved' : 'opt_default_folder_saved');
+			Status.textContent = Translate(KeepPicked || Folder ? 'opt_folder_saved' : 'opt_default_folder_saved');
 		}
 		catch
 		{
@@ -98,7 +111,9 @@ export async function BindDownloadLocation(DownloadFolder, PickedFolderKey)
 				Status.textContent = Translate('folder_access_required');
 				return;
 			}
-			await SetDownloadLocation('', await RememberPickedFolder(Directory));
+			const Key = await RememberPickedFolder(Directory);
+			await SetDownloadLocation('', Key);
+			CurrentPickedKey = Key;
 			PickedFolder = Directory;
 			Input.value = '';
 			Input.setCustomValidity('');
@@ -116,6 +131,20 @@ export async function BindDownloadLocation(DownloadFolder, PickedFolderKey)
 		{
 			SetBusy(false);
 		}
+	});
+	Default.addEventListener('click', async () =>
+	{
+		SetBusy(true);
+		try
+		{
+			await SetDownloadLocation('');
+			CurrentPickedKey = ''; PickedFolder = undefined;
+			Input.value = ''; Input.setCustomValidity('');
+			await DisplayPickedFolder();
+			Status.textContent = Translate('opt_default_folder_saved');
+		}
+		catch { Status.textContent = Translate('opt_folder_save_failed'); }
+		finally { SetBusy(false); }
 	});
 	Restore.addEventListener('click', async () =>
 	{
@@ -151,5 +180,6 @@ export async function BindDownloadLocation(DownloadFolder, PickedFolderKey)
 			Status.textContent = Translate('opt_folder_read_failed');
 		}
 	}
+	else await DisplayPickedFolder();
 	SetBusy(false);
 }

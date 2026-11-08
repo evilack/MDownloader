@@ -55,6 +55,9 @@
   "opt_pick_download_folder": {
     "message": "폴더 선택…"
   },
+  "opt_use_default_download_folder": {
+    "message": "기본 위치 사용"
+  },
   "opt_restore_folder_access": {
     "message": "폴더 접근 다시 허용"
   },
@@ -300,7 +303,7 @@
     "message": "확장 프로그램"
   },
   "opt_folder_help": {
-    "message": "기본 다운로드 폴더 안의 하위 폴더를 입력하세요. 예를 들어 MDownloader/영상으로 지정할 수 있습니다. 비워 두면 기본 위치에 저장합니다."
+    "message": "브라우저 기본 다운로드 폴더의 하위 경로를 입력하거나 폴더를 선택하세요. ‘위치 저장’은 선택한 폴더를 유지합니다. 초기화하려면 ‘기본 위치 사용’을 누르세요."
   },
   "opt_folder_read_failed": {
     "message": "다운로드 위치를 읽지 못했습니다."

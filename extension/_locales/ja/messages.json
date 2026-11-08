@@ -55,6 +55,9 @@
   "opt_pick_download_folder": {
     "message": "フォルダーを選択…"
   },
+  "opt_use_default_download_folder": {
+    "message": "既定の保存先を使う"
+  },
   "opt_restore_folder_access": {
     "message": "フォルダーへのアクセスを再許可"
   },
@@ -300,7 +303,7 @@
     "message": "拡張機能"
   },
   "opt_folder_help": {
-    "message": "既定のダウンロードフォルダー内のサブフォルダーを入力してください（例：MDownloader/動画）。空欄にすると既定の場所に保存します。"
+    "message": "ブラウザのダウンロードフォルダ内の相対パスを入力するか、フォルダを選択してください。保存しても選択は保持されます。「既定の保存先を使う」でリセットできます。"
   },
   "opt_folder_read_failed": {
     "message": "ダウンロード先を読み込めませんでした。"

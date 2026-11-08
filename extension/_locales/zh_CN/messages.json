@@ -55,6 +55,9 @@
   "opt_pick_download_folder": {
     "message": "选择文件夹…"
   },
+  "opt_use_default_download_folder": {
+    "message": "使用默认位置"
+  },
   "opt_restore_folder_access": {
     "message": "恢复文件夹访问权限"
   },
@@ -300,7 +303,7 @@
     "message": "扩展程序"
   },
   "opt_folder_help": {
-    "message": "请输入默认下载文件夹下的子文件夹，例如 MDownloader/视频。留空则使用默认位置。"
+    "message": "输入浏览器下载文件夹内的子路径，或选择文件夹。保存位置会保留已选文件夹。点击“使用默认位置”可重置。"
   },
   "opt_folder_read_failed": {
     "message": "无法读取下载位置。"

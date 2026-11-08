@@ -150,7 +150,7 @@ Hover over an icon button to see its action name. The same controls expose acces
 | Display language | Use the system language or select one of ten languages; English is the fallback. |
 | Use page title | Combine the current page title with the original filename; ON by default. |
 | Include date and time | Append the local download start time to the filename; ON by default. |
-| Download location | Set a subfolder under the browser's default download directory, or choose a folder where supported. |
+| Download location | Set a subfolder under the browser's default download directory, or choose a folder where supported. **Save location** preserves a selected folder; **Use default location** explicitly resets it. |
 | Show detected media in the side panel | Display the active tab's media above the download list. |
 | Debug mode | Open a separate job diagnostics tab. |
 | Record download events | Keep a bounded local result log for troubleshooting. |

@@ -55,6 +55,9 @@
   "opt_pick_download_folder": {
     "message": "Choisir un dossier…"
   },
+  "opt_use_default_download_folder": {
+    "message": "Utiliser l’emplacement par défaut"
+  },
   "opt_restore_folder_access": {
     "message": "Rétablir l’accès au dossier"
   },
@@ -300,7 +303,7 @@
     "message": "Extension"
   },
   "opt_folder_help": {
-    "message": "Saisissez un sous-dossier du dossier de téléchargement par défaut, par exemple MDownloader/Vidéos. Laissez ce champ vide pour utiliser l’emplacement par défaut."
+    "message": "Saisissez un sous-dossier du dossier de téléchargement ou sélectionnez un dossier. Enregistrer conserve ce choix. Utilisez l’emplacement par défaut pour le réinitialiser."
   },
   "opt_folder_read_failed": {
     "message": "Impossible de lire l’emplacement des téléchargements."

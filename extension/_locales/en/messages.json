@@ -55,6 +55,9 @@
   "opt_pick_download_folder": {
     "message": "Select folder…"
   },
+  "opt_use_default_download_folder": {
+    "message": "Use default location"
+  },
   "opt_restore_folder_access": {
     "message": "Restore folder access"
   },
@@ -300,7 +303,7 @@
     "message": "Extension"
   },
   "opt_folder_help": {
-    "message": "Enter a subfolder within the default download folder, for example MDownloader/Videos. Leave blank to use the default location."
+    "message": "Enter a subfolder under the browser's downloads folder, or select a folder. Save location keeps your selected folder. Use default location resets the choice."
   },
   "opt_folder_read_failed": {
     "message": "Could not read the download location."
