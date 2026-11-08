@@ -770,11 +770,14 @@
   "view_open_saved_file": {
     "message": "Open saved file"
   },
-  "view_folder_list_limit": {
-    "message": "Showing the first 1,000 entries."
+  "explorer_bridge_required": {
+    "message": "Register the Windows Explorer bridge to reveal files saved directly to a selected folder."
+  },
+  "explorer_reveal_failed": {
+    "message": "Could not reveal the saved file in Windows Explorer."
   },
   "view_action_show": {
-    "message": "Show in folder"
+    "message": "Show in folder (Shift+click: play in browser)"
   },
   "view_candidate_complete": {
     "message": "Download complete"

@@ -22,7 +22,7 @@ const Numbers = new Set(['count', 'bytes', 'received', 'finished', 'durationMs',
 	'bandwidth', 'variantIndex', 'tabId', 'downloadId', 'rules', 'owners', 'registered', 'changed', 'removed', 'segments']);
 const Booleans = new Set(['bAllowed', 'bObservedContext', 'bPartial', 'bCanceled', 'bLive', 'bChooseQuality']);
 const FrequentEvents = new Set(['Observation', 'TransferProgress', 'RequestStarted', 'RequestFinished', 'RequestFailed', 'SegmentRetry']);
-const Actions = new Set(['snapshot', 'finish', 'cancel', 'pause', 'resume', 'show']);
+const Actions = new Set(['snapshot', 'finish', 'cancel', 'pause', 'resume', 'show', 'play']);
 export function CreateDebugLogger({ sink: Sink = Entry => console.debug('[MDownloader]', Entry),
 	clock: Clock = () => performance.now(), limit: Limit = RuntimePolicy.Debug.MaxEntries,
 	intervalMs: IntervalMs = RuntimePolicy.Debug.EventIntervalMs } = {})

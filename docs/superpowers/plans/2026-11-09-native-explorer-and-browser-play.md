@@ -1,0 +1,13 @@
+# Correct native reveal and Shift browser playback
+
+User rejected the custom folder listing: normal click must open Windows Explorer. Shift-click must play the saved file in the browser. Remove that listing, its routes/components and acceptance claims. Preserve removed browser-settings button, existing folder selection persistence, Store exclusion, unrelated root work and no Computer Use.
+
+Base0f07c28. Browser downloads retain downloads.show. Shift browser replay uses the completed file URL. Direct FSA writes expose no usable OS path; a real native-FSA experiment confirmed DOM.getFileInfo returns an empty path, so do not add debugger permission or claim that workaround works. FSA Shift replay uses only the registered handle and a native video element, no listing.
+
+For real Explorer on direct FSA saves, prepare a small Windows PowerShell native-messaging bridge (no media extraction/FFmpeg/third-party runtime). It binds a directory key to a user-chosen OS folder once, checks the saved filename/size/128KiB sample fingerprint, persists only that binding, and launches only SystemRoot explorer.exe with /select. No arbitrary command/path from a page. Registration changes HKCU and requires explicit user approval after concrete implementation/tests; do not install/register automatically. First binding needs an OS folder choice, not silent guessing. Missing bridge reports requirement, never opens a substitute page.
+
+1. RED/GREEN saved file URL, MIME, fingerprint, original show and Shift routing; remove rejected folder view.
+2. Implement optional native bridge plus installer/uninstaller/stdlib-only tests; validate framing, bindings, names, fingerprint mismatch and canceled selection. No OS chooser/Explorer automation for tests; mark native installation/launch pending approval.
+3. Actual isolated development Chrome Shift-click full saved media playback for picked-folder fixture and browser download path; no custom folder view. Full suites/project/locales/packages and fresh review. Correct docs and local commit. Ask only for native registration when everything is concrete; normal FSA Explorer acceptance remains pending until installed and observed.
+
+Execution ledger: Shift playback passed for both saved-file routes in real Chrome. The first browser-download fixture failed FILE_FAILED with a mixed-separator download directory; using Path.join and creating the test directory resolved it. Review found the saved-media allowlist omitted existing formats; FLAC/MKV tests reproduced RED, then the shared saved-file set and host validation were aligned GREEN. Browser codec support is left to native media playback and does not gate Explorer reveal. No registry registration or native OS UI was performed.

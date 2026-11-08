@@ -770,11 +770,14 @@
   "view_open_saved_file": {
     "message": "保存したファイルを開く"
   },
-  "view_folder_list_limit": {
-    "message": "最初の1,000件を表示しています。"
+  "explorer_bridge_required": {
+    "message": "選択フォルダに直接保存したファイルを表示するには、Windows Explorerブリッジを登録してください。"
+  },
+  "explorer_reveal_failed": {
+    "message": "Windows Explorerで保存ファイルを表示できませんでした。"
   },
   "view_action_show": {
-    "message": "フォルダで表示"
+    "message": "フォルダに表示（Shift+クリック: ブラウザで再生）"
   },
   "view_candidate_complete": {
     "message": "ダウンロード完了"

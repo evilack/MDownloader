@@ -770,11 +770,14 @@
   "view_open_saved_file": {
     "message": "Ouvrir le fichier enregistré"
   },
-  "view_folder_list_limit": {
-    "message": "Les 1 000 premières entrées sont affichées."
+  "explorer_bridge_required": {
+    "message": "Enregistrez le pont Windows Explorer pour afficher les fichiers enregistrés dans un dossier choisi."
+  },
+  "explorer_reveal_failed": {
+    "message": "Impossible d’afficher le fichier dans Windows Explorer."
   },
   "view_action_show": {
-    "message": "Afficher dans le dossier"
+    "message": "Afficher dans le dossier (Maj+clic : lire dans le navigateur)"
   },
   "view_candidate_complete": {
     "message": "Téléchargé"

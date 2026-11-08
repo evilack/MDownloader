@@ -770,11 +770,14 @@
   "view_open_saved_file": {
     "message": "Abrir archivo guardado"
   },
-  "view_folder_list_limit": {
-    "message": "Se muestran las primeras 1.000 entradas."
+  "explorer_bridge_required": {
+    "message": "Registra el puente de Windows Explorer para mostrar archivos guardados en una carpeta seleccionada."
+  },
+  "explorer_reveal_failed": {
+    "message": "No se pudo mostrar el archivo en Windows Explorer."
   },
   "view_action_show": {
-    "message": "Mostrar en carpeta"
+    "message": "Mostrar en carpeta (Mayús+clic: reproducir en navegador)"
   },
   "view_candidate_complete": {
     "message": "Descarga completa"

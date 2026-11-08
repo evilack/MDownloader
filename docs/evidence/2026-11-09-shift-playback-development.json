@@ -1,0 +1,73 @@
+{
+  "developmentOnly": true,
+  "computerUse": false,
+  "fixture": "real OPFS saved media + real Chrome download",
+  "nativeExplorerAutomated": false,
+  "nativeRegistration": "pending user approval",
+  "browser": "Chrome/157.0.8103.39",
+  "browserSettingsButtonRemoved": true,
+  "shortcutVisible": true,
+  "pickedReplay": {
+    "width": 320,
+    "height": 184,
+    "time": 0.301839,
+    "duration": 10.031066
+  },
+  "missingHost": {
+    "ok": false,
+    "error": "explorer_bridge_required"
+  },
+  "noFolderListing": true,
+  "browserReplay": {
+    "width": 320,
+    "height": 184,
+    "time": 0.306797,
+    "duration": 10.031066
+  },
+  "passed": true,
+  "sourceExtensionTree": "4a77cc8773d57c6055dadb0a1b09950d67f3a9b1",
+  "validation": {
+    "scoped": {
+      "passed": 380,
+      "failed": 0
+    },
+    "mergedRoot": {
+      "passed": 429,
+      "skipped": 1,
+      "failed": 0
+    },
+    "project": {
+      "scopedFailures": 0,
+      "mergedFailures": 0,
+      "preservedFiles": 73
+    },
+    "locales": {
+      "scope": "exact staged candidate",
+      "locales": 10,
+      "messagesPerLocale": 410,
+      "missingReferences": 0
+    },
+    "packages": {
+      "development": {
+        "files": 170,
+        "imports": 390
+      },
+      "chromeStore": {
+        "files": 144,
+        "imports": 356,
+        "browserTested": false
+      }
+    },
+    "review": {
+      "critical": 0,
+      "important": 1,
+      "resolved": 1,
+      "formatRegression": "FLAC/MKV/Opus/WebA allowlist RED then GREEN"
+    }
+  },
+  "remaining": {
+    "nativeExplorer": "Not installed/registered, OS folder link and observed Explorer pending approval",
+    "rootLocalization": "Existing uncommitted subtitle-translation module references five missing keys (six references); scoped candidate passes; baseline locale snapshots also lack these keys"
+  },
+  "artifacts": "artifacts/native-explorer/verified"
+}

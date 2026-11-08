@@ -133,9 +133,9 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	const bFromHls = Sender.url === HlsRunnerUrl() && Message.type === 'hlsUpdate';
 	const bFromPlayback = Sender.url === Root + 'playback.html' && ['savePlayback', 'authorizePlayback'].includes(Message.type);
 	const bFromManager = Sender.url?.split('?')[0] === Root + 'sidepanel.html';
-	const bFromSavedFolder = Sender.url?.split('?')[0] === Root + 'saved-folder.html';
-	if (bFromSavedFolder && Message.type !== 'savedLocation') return;
-	if (!bFromHls && !bFromPlayback && !bFromManager && !bFromSavedFolder && Sender.url !== Root + 'popup.html')
+	const bFromSavedMedia = Sender.url?.split('?')[0] === Root + 'saved-media.html';
+	if (bFromSavedMedia && Message.type !== 'savedLocation') return;
+	if (!bFromHls && !bFromPlayback && !bFromManager && !bFromSavedMedia && Sender.url !== Root + 'popup.html')
 	{
 		return;
 	}

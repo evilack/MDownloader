@@ -770,11 +770,14 @@
   "view_open_saved_file": {
     "message": "Открыть сохранённый файл"
   },
-  "view_folder_list_limit": {
-    "message": "Показаны первые 1 000 элементов."
+  "explorer_bridge_required": {
+    "message": "Зарегистрируйте мост Windows Explorer для файлов, сохранённых в выбранную папку."
+  },
+  "explorer_reveal_failed": {
+    "message": "Не удалось показать файл в Windows Explorer."
   },
   "view_action_show": {
-    "message": "Показать в папке"
+    "message": "Показать в папке (Shift+щелчок: воспроизвести в браузере)"
   },
   "view_candidate_complete": {
     "message": "Загрузка завершена"

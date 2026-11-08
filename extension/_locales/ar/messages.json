@@ -770,11 +770,14 @@
   "view_open_saved_file": {
     "message": "فتح الملف المحفوظ"
   },
-  "view_folder_list_limit": {
-    "message": "عرض أول 1,000 عنصر."
+  "explorer_bridge_required": {
+    "message": "سجّل جسر Windows Explorer لإظهار الملفات المحفوظة مباشرة في المجلد المحدد."
+  },
+  "explorer_reveal_failed": {
+    "message": "تعذر إظهار الملف في Windows Explorer."
   },
   "view_action_show": {
-    "message": "عرض في المجلّد"
+    "message": "إظهار في المجلد (Shift+نقر: تشغيل في المتصفح)"
   },
   "view_candidate_complete": {
     "message": "اكتمل التنزيل"

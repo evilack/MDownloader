@@ -129,6 +129,10 @@ Native check: `node tools/checks/probe-youtube-job-preview-chrome.mjs`, same FAC
 
 The common options form now preserves a picked directory when Save location is clicked, with an explicit default-location reset. No YouTube.js, googlevideo, Mediabunny, provider/runner code, vendor bundle or Store exclusion rule changed. This applies to all download providers; see the download-location verification entry for the real browser scope and picker fixture boundary.
 
-# Completed saved-folder shortcut — 2026-11-09
+# Completed shortcut correction and Shift playback — 2026-11-09
 
-Only common job UI/control, a local saved-folder view and removal of the browser settings shortcut changed. Provider/YouTube.js/googlevideo/Mediabunny source and vendor bundles are unchanged. Direct folder completion now keeps the existing folder icon; Chrome-ID jobs retain native show, direct folder jobs use their registered IndexedDB handle in a read-only view. No external helper, second download or Store exclusion change. Verification distinguishes extension folder view from Windows Explorer.
+The previous custom folder-list implementation was rejected by the user and has been removed. Normal browser-managed downloads retain chrome.downloads.show. Shift-click on the same folder icon opens the complete saved file in a browser tab: a file URL for Chrome downloads, or a native video over the original granted folder handle for direct saves. No extraction request or second download is made. Native controls provide seek, volume and fullscreen.
+
+Direct picked-folder Explorer reveal is implemented through an optional Windows PowerShell native-messaging bridge, prepared but NOT registered. It needs explicit user approval to register in HKCU and one manual folder link because FileSystemDirectoryHandle exposes no usable native path. Missing host reports the requirement instead of opening a substitute page. An actual FSA DOM.getFileInfo experiment returned an empty path; no debugger permission is included.
+
+Provider/YouTube.js/googlevideo/Mediabunny sources and bundles are unchanged. Store source guards and physical YouTube exclusion remain. Native tests cover framing, strict caller/filename/size/fingerprint checks, binding persistence and mismatch refusal without launching Explorer or a folder picker. Actual development Chrome tests cover both Shift playback routes; actual registered Chrome-to-host/Explorer observation remains pending.

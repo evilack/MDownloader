@@ -770,11 +770,14 @@
   "view_open_saved_file": {
     "message": "打开已保存的文件"
   },
-  "view_folder_list_limit": {
-    "message": "仅显示前1,000项。"
+  "explorer_bridge_required": {
+    "message": "请注册Windows资源管理器桥接程序，以显示直接保存到所选文件夹的文件。"
+  },
+  "explorer_reveal_failed": {
+    "message": "无法在Windows资源管理器中显示已保存的文件。"
   },
   "view_action_show": {
-    "message": "在文件夹中显示"
+    "message": "在文件夹中显示（Shift+点击：浏览器播放）"
   },
   "view_candidate_complete": {
     "message": "下载完成"

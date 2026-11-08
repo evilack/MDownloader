@@ -770,11 +770,14 @@
   "view_open_saved_file": {
     "message": "Abrir arquivo salvo"
   },
-  "view_folder_list_limit": {
-    "message": "Mostrando as primeiras 1.000 entradas."
+  "explorer_bridge_required": {
+    "message": "Registre a ponte do Windows Explorer para mostrar arquivos salvos diretamente na pasta selecionada."
+  },
+  "explorer_reveal_failed": {
+    "message": "Não foi possível mostrar o arquivo no Windows Explorer."
   },
   "view_action_show": {
-    "message": "Mostrar na pasta"
+    "message": "Mostrar na pasta (Shift+clique: reproduzir no navegador)"
   },
   "view_candidate_complete": {
     "message": "Download concluído"

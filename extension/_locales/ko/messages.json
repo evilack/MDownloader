@@ -770,11 +770,14 @@
   "view_open_saved_file": {
     "message": "저장한 파일 열기"
   },
-  "view_folder_list_limit": {
-    "message": "처음 1,000개 항목만 표시합니다."
+  "explorer_bridge_required": {
+    "message": "선택 폴더에 직접 저장한 파일을 탐색기에서 열려면 Windows 탐색기 연결 도우미를 등록해야 합니다."
+  },
+  "explorer_reveal_failed": {
+    "message": "Windows 탐색기에서 저장 파일을 표시하지 못했습니다."
   },
   "view_action_show": {
-    "message": "폴더에서 보기"
+    "message": "폴더에서 보기 (Shift+클릭: 브라우저 재생)"
   },
   "view_candidate_complete": {
     "message": "다운로드 완료"

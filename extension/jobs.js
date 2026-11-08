@@ -22,6 +22,8 @@ import { DownloadNamedFile } from './lib/browser-download.js';
 import { GetBrowserDownload, JobGroup, LoadBrowserDownloads, SummarizeJob } from './lib/browser-job-state.js';
 import {PartialFilename, PartialOutputFilename} from './lib/partial-naming.js';
 import {CanFinishJob} from './lib/job-actions.js';
+import {RevealPickedMedia} from './lib/explorer-bridge.js';
+import {LocalMediaUrl} from './lib/saved-media.js';
 import {LaunchWebRtc, ControlWebRtc, ForgetWebRtcControl} from './webrtc-jobs.js';
 import {AssertMediaAllowed, AssertJobMayRestart, IsYoutubeSource} from './lib/youtube-source-policy.js';
 import {RequirePlaybackAuthorization} from './lib/playback-authorization.js';
@@ -686,10 +688,11 @@ export async function ControlJob(RequestId, Action)
 		DebugLog.Record('JobControlRequested', () => ({ requestId: RequestId, action: Action }));
 	}
 	const Job = await ReadJob(JobKey(RequestId));
-	if (Action === 'show' && Job?.pickedDownloadFolder)
+	if (['show','play'].includes(Action) && Job?.pickedDownloadFolder)
 	{
-		await SavedLocation(RequestId);
-		return chrome.tabs.create({url: chrome.runtime.getURL('saved-folder.html') + '?job=' + encodeURIComponent(RequestId)});
+		const Location = await SavedLocation(RequestId);
+		if (Action === 'show') return RevealPickedMedia(Location);
+		return chrome.tabs.create({url: chrome.runtime.getURL('saved-media.html') + '?job=' + encodeURIComponent(RequestId)});
 	}
 	if (Job?.youtube && Job.state === 'active' && Action === 'cancel' && await CancelYoutube(RequestId)) return;
 	if (Job?.youtube && CanFinishJob(Job) && Action === 'finish' && await FinishYoutube(RequestId)) return;
@@ -738,6 +741,10 @@ export async function ControlJob(RequestId, Action)
 		if (Action === 'show' && ['complete', 'interrupted'].includes(State) && Item.exists)
 		{
 			return chrome.downloads.show(Item.id);
+		}
+		if (Action === 'play' && ['complete','interrupted'].includes(State) && Item.exists)
+		{
+			return chrome.tabs.create({url:LocalMediaUrl(Item.filename)});
 		}
 	}
 	throw new LocalizedError('job_state_changed');

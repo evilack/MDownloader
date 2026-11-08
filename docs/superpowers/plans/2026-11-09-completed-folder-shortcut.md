@@ -1,3 +1,5 @@
+**Superseded after user rejection:** the folder-list substitution did not satisfy native Explorer reveal. Its implementation is removed by [the correction plan](2026-11-09-native-explorer-and-browser-play.md). The text below records the rejected historical approach only.
+
 # Restore completed folder shortcut
 
 User reports the existing completed-row folder icon missing and explicitly removes browser-default-location settings button. Base f87aaac. No Computer Use, no new native helper, development-only browser checks, preserve Store exclusion and unrelated root work.

@@ -770,11 +770,14 @@
   "view_open_saved_file": {
     "message": "सहेजी गई फ़ाइल खोलें"
   },
-  "view_folder_list_limit": {
-    "message": "पहली 1,000 प्रविष्टियाँ दिखाई गई हैं।"
+  "explorer_bridge_required": {
+    "message": "चुने फ़ोल्डर में सीधे सहेजी गई फ़ाइलें दिखाने के लिए Windows Explorer ब्रिज पंजीकृत करें।"
+  },
+  "explorer_reveal_failed": {
+    "message": "Windows Explorer में सहेजी फ़ाइल नहीं दिखाई जा सकी।"
   },
   "view_action_show": {
-    "message": "फ़ोल्डर में दिखाएँ"
+    "message": "फ़ोल्डर में दिखाएँ (Shift+क्लिक: ब्राउज़र में चलाएँ)"
   },
   "view_candidate_complete": {
     "message": "डाउनलोड पूरा"

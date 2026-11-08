@@ -228,7 +228,7 @@ export function CreateJobRow(Job, Tile, Context)
 	const Actions = CreateElement('div', '', 'actions');
 	function Control(Label, Action, bPrimary = false)
 	{
-		const ControlButton = CreateButton(Label, async () =>
+		const ControlButton = CreateButton(Label, async UiEvent =>
 		{
 			ControlButton.disabled = true;
 			try
@@ -237,7 +237,13 @@ export function CreateJobRow(Job, Tile, Context)
 				{
 					throw new Error(Translate('view_permission_denied'));
 				}
-				await SendRequest('control', { requestId: Job.requestId, action: Action });
+				const RequestedAction = Action === 'show' && UiEvent.shiftKey ? 'play' : Action;
+				if (RequestedAction === 'show' && Job.pickedDownloadFolder &&
+				!await chrome.permissions.request({permissions: ['nativeMessaging']}))
+				{
+					throw new Error(Translate('explorer_bridge_required'));
+				}
+				await SendRequest('control', { requestId: Job.requestId, action: RequestedAction });
 			}
 			catch (ErrorValue)
 			{
