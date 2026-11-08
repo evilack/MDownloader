@@ -3,15 +3,16 @@ import assert from 'node:assert/strict';
 import {CanUseYoutube, BrowserFamily} from '../extension/lib/distribution-policy.js';
 import {IdentifyYoutubeUrl, IsYoutubeSource} from '../extension/lib/youtube-source-policy.js';
 
-test('development/manual allow Chrome and Edge; store is unconditional', () => {
- for (const flavor of ['development', 'manual', 'chrome-store']) {
+test('development allows Chrome and Edge; store is unconditional', () => {
+ for (const flavor of ['development', 'chrome-store']) {
   for (const family of ['chrome', 'edge', 'unknown']) {
    assert.equal(CanUseYoutube({flavor, youtubeEnabled: true, blockedBrowserFamilies: []}, family), flavor !== 'chrome-store');
   }
  }
- assert.equal(CanUseYoutube({flavor: 'manual', youtubeEnabled: true, blockedBrowserFamilies: ['chrome']}, 'chrome'), false);
- assert.equal(CanUseYoutube({flavor: 'manual', youtubeEnabled: true, blockedBrowserFamilies: ['chrome']}, 'edge'), true);
- assert.equal(CanUseYoutube({flavor: 'manual', youtubeEnabled: true, blockedBrowserFamilies: ['chrome']}, 'unknown'), false);
+ assert.equal(CanUseYoutube({flavor: 'development', youtubeEnabled: true, blockedBrowserFamilies: ['chrome']}, 'chrome'), false);
+ assert.equal(CanUseYoutube({flavor: 'development', youtubeEnabled: true, blockedBrowserFamilies: ['chrome']}, 'edge'), true);
+ assert.equal(CanUseYoutube({flavor: 'development', youtubeEnabled: true, blockedBrowserFamilies: ['chrome']}, 'unknown'), false);
+ assert.equal(CanUseYoutube({flavor: 'manual', youtubeEnabled: true}, 'chrome'), false);
  assert.equal(CanUseYoutube({flavor: 'unrecognized', youtubeEnabled: true}, 'chrome'), false);
 });
 test('browser detection prefers Edge UA-CH and falls back without conflating Edge with Chrome', () => {

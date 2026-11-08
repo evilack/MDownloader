@@ -1383,5 +1383,17 @@
   },
   "youtube_evaluator_timeout": {
     "message": "YouTube URL 解析超时。"
+  },
+  "youtube_sabr_config_missing": {
+    "message": "缺少 SABR 会话配置。"
+  },
+  "youtube_sabr_attestation_required": {
+    "message": "YouTube 拒绝了播放证明，已停止完整接收。"
+  },
+  "youtube_sabr_receive_failed": {
+    "message": "SABR 音视频接收失败。"
+  },
+  "youtube_sabr_size_limit": {
+    "message": "SABR 接收超出大小限制。"
   }
 }

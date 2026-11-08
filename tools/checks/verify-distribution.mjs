@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import Path from 'node:path';
 const {parse} = createRequire(import.meta.url)('internal/deps/acorn/acorn/dist/acorn');
 const Args = process.argv.slice(2), Flavor = Args[Args.indexOf('--flavor') + 1];
-if (!Args.includes('--flavor') || !['development', 'manual', 'chrome-store'].includes(Flavor)) throw new Error('Explicit --flavor required');
+if (!Args.includes('--flavor') || !['development', 'chrome-store'].includes(Flavor)) throw new Error('Explicit --flavor required');
 const Root = fileURLToPath(new URL(`../../artifacts/distributions/${Flavor}/extension/`, import.meta.url));
 const Files = [];
 async function Walk(Directory) {

@@ -1383,5 +1383,17 @@
   },
   "youtube_evaluator_timeout": {
     "message": "YouTube URL interpretation timed out."
+  },
+  "youtube_sabr_config_missing": {
+    "message": "The SABR session configuration is missing."
+  },
+  "youtube_sabr_attestation_required": {
+    "message": "YouTube rejected the playback attestation; full reception stopped."
+  },
+  "youtube_sabr_receive_failed": {
+    "message": "The SABR audio/video reception failed."
+  },
+  "youtube_sabr_size_limit": {
+    "message": "SABR reception exceeds the size limit."
   }
 }

@@ -1383,5 +1383,17 @@
   },
   "youtube_evaluator_timeout": {
     "message": "YouTube URL की व्याख्या का समय समाप्त हो गया।"
+  },
+  "youtube_sabr_config_missing": {
+    "message": "SABR सत्र का कॉन्फ़िगरेशन उपलब्ध नहीं है।"
+  },
+  "youtube_sabr_attestation_required": {
+    "message": "YouTube ने प्लेबैक प्रमाण अस्वीकार कर दिया; पूरा रिसेप्शन रोक दिया गया।"
+  },
+  "youtube_sabr_receive_failed": {
+    "message": "SABR ऑडियो और वीडियो प्राप्त करने में विफलता हुई।"
+  },
+  "youtube_sabr_size_limit": {
+    "message": "SABR रिसेप्शन आकार सीमा से अधिक है।"
   }
 }

@@ -1383,5 +1383,17 @@
   },
   "youtube_evaluator_timeout": {
     "message": "انتهت مهلة تفسير عنوان YouTube."
+  },
+  "youtube_sabr_config_missing": {
+    "message": "إعداد جلسة SABR مفقود."
+  },
+  "youtube_sabr_attestation_required": {
+    "message": "رفض YouTube إثبات التشغيل؛ تم إيقاف الاستقبال الكامل."
+  },
+  "youtube_sabr_receive_failed": {
+    "message": "فشل استقبال صوت وفيديو SABR."
+  },
+  "youtube_sabr_size_limit": {
+    "message": "يتجاوز استقبال SABR حد الحجم."
   }
 }

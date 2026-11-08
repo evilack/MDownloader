@@ -2,7 +2,9 @@
 
 ## Distribution boundary (2026-11-08)
 
-Build with `node tools/build/package-extension.mjs --flavor development|manual|chrome-store`. A flavor is mandatory. Output is `artifacts/distributions/<flavor>/extension/`; source `extension/` is never overwritten. Optional `--block-chrome` blocks Chrome (and unknown families) only for YouTube. The fixed store denial always takes precedence over browser detection and stored settings.
+There are exactly two distributions: **development (the manually installed/unpacked build)** and **chrome-store**. The earlier `manual` flavor was a mistaken duplicate; both CLIs now reject it. Reports with that older label are historical records, not another distribution.
+
+Build with `node tools/build/package-extension.mjs --flavor development|chrome-store`. A flavor is mandatory. Output is `artifacts/distributions/<flavor>/extension/`; source `extension/` is never overwritten. Optional `--block-chrome` blocks Chrome (and unknown families) only for YouTube. The fixed store denial always takes precedence over browser detection and stored settings.
 
 Store packaging omits `features/youtube/` and `vendor/youtube/`, then emits only a disabled provider entry. `node --expose-internals tools/checks/verify-distribution.mjs --flavor chrome-store` checks physical files, manifest references and every static/dynamic literal module import. The source policy checks trusted page/frame/request context as well as media URLs. All HLS/DASH resources, direct browser saves, partial re-fetches, playback capture and resume have independent guards. Store resume/re-fetch refuses legacy records without a trusted `sourcePolicyVersion`; rescan the page to register a classified job.
 
@@ -21,19 +23,17 @@ Install the pinned development dependencies with `npm ci --ignore-scripts`, then
 Run the following after generating the desired distribution:
 
 ```powershell
-node tools/build/package-extension.mjs --flavor manual
-node tools/checks/probe-youtube-chrome.mjs
-# To repeat the diagnostic with the development package:
 node tools/build/package-extension.mjs --flavor development
-$env:MDOWNLOADER_PROBE_FLAVOR = 'development'
 node tools/checks/probe-youtube-chrome.mjs
+# Expanded SABR/UMP receiving, partial remux, native save and decode:
+node tools/checks/probe-youtube-sabr-chrome.mjs
 ```
 
 The probe uses actual Chrome, a fresh isolated profile, Playwright and the DevTools protocol. It does not use Computer Use. In that test profile only, Chrome's extension-settings API preapproves three exact optional API hosts, then the extension's real `chrome.permissions.request()` activates them. Neither step grants the broad optional `http://*/*` or `https://*/*` pattern. The package manifest and extension runtime are unmodified. Offscreen documents query permissions through an authenticated service-worker relay because their extension API access is limited to `chrome.runtime`.
 
 The default diagnostic video is the user's requested `-XHx839rSc8`. The probe records statuses and fixed diagnostic categories, never player scripts, cookies, tokens or signed media URLs. `result.json` explicitly distinguishes extraction, receiving and saving. **Exit code 2 means the native gate was not passed.** This is a failure diagnostic: it currently has no positive receive/save implementation, even if a later upstream change makes metadata/selection succeed. A future successful gate requires actual track reception, a saved muxed file and playback checks before changing that behavior. It must not silently be treated as a success harness.
 
-On 2026-11-08 both manual/development probes hit automated-request HTTP 403 on the public WEB player API. The ordinary public page was playable but exposed SABR-only metadata with no direct/cipher URLs. Tasks 3–5 remain unintegrated; the provider entry still returns `youtube_not_verified`. See the retained [native evidence](verification.md#task-2-native-result--2026-11-08).
+On 2026-11-08 both development probes hit automated-request HTTP 403 on the public WEB player API. The ordinary public page was playable but exposed SABR-only metadata with no direct/cipher URLs. Tasks 3–5 remain unintegrated; the provider entry still returns `youtube_not_verified`. See the retained [native evidence](verification.md#task-2-native-result--2026-11-08).
 
 | Directory | Responsibility |
 |---|---|
@@ -200,3 +200,11 @@ The preview tools run actual HTML/components against Chrome API substitutes. The
 ## Asset maintenance
 
 See [the asset guide](../assets/README.md) before changing icons. Original PNGs, resize baselines, correction metadata, generation prompts, and retained visual reviews belong in `assets/`; runtime derivatives belong in `extension/icons/`. Website screenshots and their capture metadata belong in `website/assets/screenshots/`.
+
+## SABR/UMP development diagnostic
+
+The user-authorized SABR/UMP expansion uses locked googlevideo 5.0.1, bundled under vendor/youtube and excluded wholesale from store packages. features/youtube/sabr.js validates the public VOD identity/config and receives separate video/audio streams into OPFS. It enforces a 32 MiB chunk limit and 16 GiB combined limit, with zero HTTP retries and no token-minting callback. Pending attestation (status 2) may continue while data progresses; rejection (status 3) stops reception. Writers commit only after joint completion validation, except explicitly requested partial-prefix retention. features/youtube/remux.js uses existing Mediabunny 1.65.2 to copy H.264/AAC packets from independent files, retaining a decodable keyframe and the audio offset.
+
+The expanded diagnostic observes a successful normal playback request in its own tab and keeps the signed source/config/legitimate token in memory. It closes that tab before receiving in the offscreen document. Ephemeral exact-URL POST header rules reproduce only the observed Origin/Referer for that source, allowing only rn to change. These are diagnostic controls, not a production source-session relay or UI integration. The API comparison holds the body constant: page 200, plain offscreen 403, offscreen with the page Origin/Referer pair 200. It does not isolate which header alone is decisive.
+
+The probe actually receives, remuxes, calls chrome.downloads, verifies file bytes, plays video frames and decodes an AAC sample. The server rejected this session after a prefix; only a 60.533-second partial MP4 passed save/decode. Exit 2 and gatePassed=false remain appropriate for incomplete reception. Automation saved a UUID-named file despite the requested title/date name; the original is preserved and an identical named artifact is exported, with both names and its hash recorded. Production filename acceptance and complete 623-second download are unverified. Only the development build is browser-tested in this expansion.

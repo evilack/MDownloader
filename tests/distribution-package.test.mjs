@@ -7,7 +7,8 @@ test('flavor is mandatory, independent packages exclude executable YouTube files
  assert.notEqual(run('tools/build/package-extension.mjs').status, 0);
  assert.notEqual(run('tools/build/package-extension.mjs', '--flavor', 'invalid').status, 0);
  const original = await readFile('extension/lib/distribution-policy.js', 'utf8');
- for (const flavor of ['development', 'manual', 'chrome-store']) {
+ assert.notEqual(run('tools/build/package-extension.mjs', '--flavor', 'manual').status, 0);
+ for (const flavor of ['development', 'chrome-store']) {
   const result = run('tools/build/package-extension.mjs', '--flavor', flavor);
   assert.equal(result.status, 0, result.stderr);
   const root = `artifacts/distributions/${flavor}/extension`;

@@ -2,6 +2,8 @@
 
 ## YouTube distribution gate — 2026-11-08
 
+Current distribution correction: development is the manual/unpacked build; chrome-store is the only other build. The old manual/development report labels below record an earlier mistaken duplicate. They are retained as historical evidence, not current distribution choices.
+
 Task 1 introduced build-time development/manual/store policies and layered source/transfer guards. Baseline was commit `2c96967`, version `0.2.37`, 257 passing tests. The initial policy/package/enforcement additions raised the suite to 265 passing tests. All ten catalogs have 380 messages and no missing references. This does not establish YouTube extraction or saving.
 
 Actual installed Chrome **157.0.8103.39**, headless unpacked in an isolated profile, loaded the generated store package. Six explicit YouTube direct/request/source/playback cases refused with `youtube_distribution_disabled` after stored settings attempted to enable YouTube. An ordinary loopback MP4 saved completely (**232,992 bytes**, one content response). A loopback redirect to googlevideo stopped with **FILE_BLOCKED**, **0 bytes**; DNR matched extension-origin requests and did not match normal YouTube page playback. Report: ignored `artifacts/youtube-implementation/native-1794130425865/result.json`. These are native automated browser checks, not visual acceptance, real YouTube download success or Chrome Store approval.
@@ -120,3 +122,25 @@ Large WebRTC recordings, picked-folder end-to-end saving, WebM live-source accep
 ## Retained asset provenance
 
 Manual/website screenshots are existing real captures, not newly captured screens of every current control. Their language, version, date, and hashes are in `website/assets/screenshots/catalog.json`. Icon originals, baselines, prompts, processing metadata, and retained visual reviews are in `assets/catalog.json`. Repository cleanup preserves those bytes and does not claim new art or retouch acceptance.
+
+## SABR/UMP expansion — 2026-11-08
+
+The user expanded scope to SABR/UMP and requested development-only browser verification. No Computer Use, store browser run, external downloader, proxy or generated/forged token was used. [Retained native evidence](evidence/2026-11-08-youtube-sabr-development.json) comes from actual Chrome 157.0.8103.39 and the same VOD -XHx839rSc8 (623 seconds).
+
+| Check | Native observation |
+|---|---|
+| Same player API body from normal page | HTTP 200 |
+| Same body from plain offscreen | HTTP 403, automated-request response |
+| Offscreen plus the page Origin/Referer pair | HTTP 200; this pair/context is sufficient in the test, individual header causality not isolated |
+| SABR/UMP with naturally observed playback token/config | Four HTTP 200 responses with protection pending (2), then rejection (3); no token mint/retry loop |
+| Source test tab | Closed before independent offscreen reception |
+| Received media | Video 305,162 bytes; audio 1,132,817 bytes |
+| Partial MP4 | 1,278,495 bytes; 60.533 seconds; 1,816 video packets and 2,606 AAC packets |
+| Native playback | 256×144 video frames decoded; stereo AAC decoded at 44,100 Hz, 1,024 sample frames, RMS 0.068686 |
+| Complete 623-second download | **Not achieved: protection rejection; gatePassed=false** |
+
+The browser reports its UUID-named download as complete; that only describes the partial output file. It ignored the requested title/date name in the automation environment. The original download is preserved and copied byte-for-byte into a named artifact; the report contains both names and the output SHA-256. No production browser filename acceptance is asserted. Product discovery/quality/manager integration remains disabled until complete reception and the production source-session relay are verified.
+
+The new protocol/remux regression tests also cover bounded independent track writes, pending/rejected attestation, incomplete-output commit policy, and differing video/audio start timestamps. The two last cases reproduced review findings RED before their fixes. Source exclusion remains checked statically by the package tests; only development was run in Chrome in this expansion.
+
+Final staged-candidate verification: 277 Node tests passed, 398 messages in each of 10 catalogs with no missing references, generated page policy matched, project verification had zero failures and preserved all 73 retained files. Package tests checked development/store composition and rejected the removed manual flavor. Only development was loaded in Chrome. The exact staged source reproduced the 60.533-second partial save/decode and the full-reception attestation rejection; it excludes concurrent naming/subtitle/HLS changes.

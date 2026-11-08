@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 const Root = fileURLToPath(new URL('../../', import.meta.url));
 const Args = process.argv.slice(2);
 const Flavor = Args[Args.indexOf('--flavor') + 1];
-if (!Args.includes('--flavor') || !['development', 'manual', 'chrome-store'].includes(Flavor) || Args.some((Arg, Index) => Index !== Args.indexOf('--flavor') && Index !== Args.indexOf('--flavor') + 1 && Arg !== '--block-chrome')) throw new Error('Required: --flavor development|manual|chrome-store [--block-chrome]');
+if (!Args.includes('--flavor') || !['development', 'chrome-store'].includes(Flavor) || Args.some((Arg, Index) => Index !== Args.indexOf('--flavor') && Index !== Args.indexOf('--flavor') + 1 && Arg !== '--block-chrome')) throw new Error('Required: --flavor development|chrome-store [--block-chrome]');
 const Output = Path.join(Root, 'artifacts/distributions', Flavor);
 const Stage = Path.join(Output, 'staging-' + process.pid);
 await mkdir(Output, {recursive: true});

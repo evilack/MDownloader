@@ -1383,5 +1383,17 @@
   },
   "youtube_evaluator_timeout": {
     "message": "YouTube URL の解釈がタイムアウトしました。"
+  },
+  "youtube_sabr_config_missing": {
+    "message": "SABR セッション設定がありません。"
+  },
+  "youtube_sabr_attestation_required": {
+    "message": "YouTube が再生の証明を拒否したため、全体の受信を停止しました。"
+  },
+  "youtube_sabr_receive_failed": {
+    "message": "SABR の映像・音声の受信に失敗しました。"
+  },
+  "youtube_sabr_size_limit": {
+    "message": "SABR 受信がサイズ上限を超えました。"
   }
 }

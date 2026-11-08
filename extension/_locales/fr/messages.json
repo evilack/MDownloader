@@ -1383,5 +1383,17 @@
   },
   "youtube_evaluator_timeout": {
     "message": "Le délai d’interprétation de l’URL YouTube a expiré."
+  },
+  "youtube_sabr_config_missing": {
+    "message": "La configuration de la session SABR est manquante."
+  },
+  "youtube_sabr_attestation_required": {
+    "message": "YouTube a refusé l’attestation de lecture ; la réception complète a été arrêtée."
+  },
+  "youtube_sabr_receive_failed": {
+    "message": "La réception audio et vidéo SABR a échoué."
+  },
+  "youtube_sabr_size_limit": {
+    "message": "La réception SABR dépasse la limite de taille."
   }
 }

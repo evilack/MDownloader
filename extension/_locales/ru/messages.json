@@ -1383,5 +1383,17 @@
   },
   "youtube_evaluator_timeout": {
     "message": "Время обработки URL YouTube истекло."
+  },
+  "youtube_sabr_config_missing": {
+    "message": "Отсутствует конфигурация сеанса SABR."
+  },
+  "youtube_sabr_attestation_required": {
+    "message": "YouTube отклонил подтверждение воспроизведения; полное получение остановлено."
+  },
+  "youtube_sabr_receive_failed": {
+    "message": "Ошибка получения видео и звука SABR."
+  },
+  "youtube_sabr_size_limit": {
+    "message": "Получение SABR превышает ограничение размера."
   }
 }

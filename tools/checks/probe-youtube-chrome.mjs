@@ -6,8 +6,8 @@ const Root = fileURLToPath(new URL('../../', import.meta.url));
 const {chromium} = await import(pathToFileURL(process.env.MDOWNLOADER_PLAYWRIGHT_MODULE || Path.resolve(Path.dirname(process.execPath), '../node_modules/playwright/index.mjs')));
 const Artifact = Path.join(Root, 'artifacts/youtube-implementation/youtube-native-' + Date.now());
 await mkdir(Artifact, {recursive: true});
-const Flavor = process.env.MDOWNLOADER_PROBE_FLAVOR || 'manual';
-if (!['manual', 'development'].includes(Flavor)) throw new Error('Only manual/development probe');
+const Flavor = 'development';
+// 개발판이 수동 설치판입니다. 별도 manual 배포판은 없습니다.
 const Context = await chromium.launchPersistentContext(Path.join(Artifact, 'profile'), {executablePath: process.env.MDOWNLOADER_BROWSER_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: process.env.MDOWNLOADER_HEADFUL !== '1', ignoreDefaultArgs: ['--disable-extensions'], args: ['--enable-unsafe-extension-debugging']});
 try {
  const Browser = await Context.browser().newBrowserCDPSession();

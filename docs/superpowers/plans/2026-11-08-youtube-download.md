@@ -1,10 +1,12 @@
 # YouTube Download Implementation Plan
 
+최신 사용자 지시: 개발판이 수동 설치판이며 배포 종류는 `development`와 `chrome-store` 둘뿐입니다. SABR/UMP를 포함한 확장 범위와 최신 결과는 [SABR 작업 계획](2026-11-08-youtube-sabr.md)을 따릅니다. 아래의 SABR 제외·이전 중단 설명은 초기 단계 기록이며 최신 확장 지시를 제한하지 않습니다.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 개발·수동 설치판에서 YouTube 다운로드를 기존 미디어 목록과 다운로드 관리자에 통합하고, Chrome 웹 스토어 제출판에서는 관련 기능과 실행 코드를 제외한다.
+**Goal:** 개발판(수동 설치판)에서 YouTube 다운로드를 기존 미디어 목록과 다운로드 관리자에 통합하고, Chrome 웹 스토어 제출판에서는 관련 기능과 실행 코드를 제외한다.
 
-**Architecture:** 배포 종류를 빌드 시 고정하고, 공통 차단 정책을 감지·메시지·작업 등록·실제 전송에 적용한다. 개발·수동 설치판은 브라우저 내부 추출 어댑터와 기존 오프스크린 저장·Mediabunny 재포장을 우선 사용한다. 추출과 MV3 호환성은 실제 Chrome의 선행 검증으로 확정하며, 외부 프로그램을 필요로 하는 방식으로 임의 전환하지 않는다.
+**Architecture:** 배포 종류를 빌드 시 고정하고, 공통 차단 정책을 감지·메시지·작업 등록·실제 전송에 적용한다. 개발판(수동 설치판)은 브라우저 내부 추출 어댑터와 기존 오프스크린 저장·Mediabunny 재포장을 우선 사용한다. 추출과 MV3 호환성은 실제 Chrome의 선행 검증으로 확정하며, 외부 프로그램을 필요로 하는 방식으로 임의 전환하지 않는다.
 
 **Tech Stack:** 기존 JavaScript ESM / Manifest V3 / Node.js 24 검사 도구 / Mediabunny 1.65.2, 신규 후보 youtubei.js 18.3.0 / jintr 3.3.1 / esbuild 0.28.2.
 
@@ -79,14 +81,13 @@
 | 배포 종류 | Chrome | Edge 등 지원 Chromium | YouTube 코드 |
 |---|---|---|---|
 | `development` | 허용 | 허용 | 포함 |
-| `manual` | 허용 | 허용 | 포함 |
 | `chrome-store` | 차단 | 차단 | 추출기·전송 어댑터·관련 vendor/worker 제외 |
 
 수동 설치판에도 필요하면 `blockedBrowserFamilies: ['chrome']`로 Chrome만 막는 빌드 정책을 제공한다. 기본값은 빈 배열이므로 Chrome 개발을 막지 않는다. Chrome/Edge 구분은 UA-CH brands를 우선 확인하고 Edge를 Chrome보다 먼저 구분하며, UA 문자열은 보조 정보로 사용한다. Chrome 제한이 설정된 빌드에서 판별이 불명확하면 YouTube만 차단한다. 이 판별은 보안 경계나 스토어 적합성의 근거가 아니다.
 
 ### 게시판의 실제 제외
 
-- `tools/build/package-extension.mjs --flavor development|manual|chrome-store`로 원본과 별도인 `artifacts/distributions/<flavor>/extension/`을 만든다. flavor 누락/잘못된 값은 오류다.
+- `tools/build/package-extension.mjs --flavor development|chrome-store`로 원본과 별도인 `artifacts/distributions/<flavor>/extension/`을 만든다. flavor 누락/잘못된 값은 오류다.
 - 원본의 명시적인 개발 정책은 개발 로드용이며, 제출판은 빌드로 생성한 경로만 사용한다. 스토어판 생성이 원본 정책이나 사용 중 확장을 덮어쓰지 않게 한다.
 - 공통 entry 모듈은 동일 인터페이스의 disabled stub으로 교체한다. YouTube 기능 파일·vendor·해석 worker를 제출판에서 물리적으로 제외한다. dead-code elimination만 믿지 않는다.
 - 스토어판에는 비활성 안내와 공통 차단 정책만 남긴다. 원격 다운로드·설정 동기화·개발자 옵션으로 코드를 다시 불러오는 기능은 만들지 않는다.
@@ -128,7 +129,7 @@ Chrome 공식 문서는 YouTube 다운로드를 거부 사유로 명시한다. �
 실제 구현은 JavaScript + JSDoc으로 한다. 다음 타입 표기는 계약 설명용이다.
 
 ```text
-DistributionPolicy = {flavor: 'development'|'manual'|'chrome-store',
+DistributionPolicy = {flavor: 'development'|'chrome-store',
                       youtubeEnabled: boolean, blockedBrowserFamilies: string[]}
 YoutubeIdentity = {videoId: string, canonicalUrl: string}
 YoutubeFormat = {id: string, kind: 'muxed'|'video'|'audio', container: string,
@@ -156,7 +157,7 @@ ResolvedYoutube = {videoId: string, title: string, duration?: number, thumbnail?
 | 생성 | `extension/lib/youtube-source-policy.js` | URL 식별과 일반 전송 경로의 출처 판정 |
 | 생성 | `extension/features/youtube/entry.js` | 감지·형식·전송으로 연결하는 provider 경계 |
 | 생성 | `extension/features/youtube/client.js` | youtubei.js의 fetch/cache/세션 어댑터 |
-| 생성 | `extension/features/youtube/evaluator-worker.js` | 개발·수동판 전용 제한된 서명 처리 |
+| 생성 | `extension/features/youtube/evaluator-worker.js` | 개발판 전용 제한된 서명 처리 |
 | 생성 | `extension/features/youtube/transfers.js` | Range·분리 트랙 수신, 재포장, 부분 저장 |
 | 생성 | `tools/build/package-extension.mjs` | 배포 종류별 독립 산출물과 비활성 stub 생성 |
 | 생성 | `tools/checks/verify-distribution.mjs` | 산출물의 의존 그래프·manifest·차단 경로 검사 |
@@ -185,7 +186,7 @@ ResolvedYoutube = {videoId: string, title: string, duration?: number, thumbnail?
 
 **Interfaces:** `DistributionPolicy`, `CanUseYoutube`, `IdentifyYoutubeUrl`, `IsYoutubeSource`를 먼저 고정한다.
 
-- [x] dev/manual의 Chrome·Edge 허용, store의 모든 브라우저 거부, Chrome 추가 제한, 도메인 경계를 검사하는 실패 테스트를 작성한다.
+- [x] development의 Chrome·Edge 허용, store의 모든 브라우저 거부, Chrome 추가 제한, 도메인 경계를 검사하는 실패 테스트를 작성한다.
 - [x] `node --test tests/distribution-policy.test.mjs tests/distribution-package.test.mjs`로 미구현 실패를 확인한다.
 - [x] 공통 차단과 배포별 생성, 명시적 제외 목록, 비활성 entry를 구현한다. 저장된 설정을 바꿔도 store의 거부가 바뀌면 안 된다.
 - [x] 직접 미디어·embed·위조 provider·기존 작업 경로와 기존 전체 테스트를 통과시킨 뒤 로컬 커밋한다.
@@ -210,7 +211,7 @@ ResolvedYoutube = {videoId: string, title: string, duration?: number, thumbnail?
 - [ ] watch/Shorts/단축/embed의 동일 ID 처리, 광고 제외, SPA 전환, 늦은 응답, 중복 후보를 실패 테스트로 고정한다.
 - [ ] 기존 후보·Shift 선택에 연결한다. 기본값은 사용 가능한 호환 MP4 중 최고 해상도, 같은 해상도에서는 fps/bitrate 순이다. 음성은 기본 언어를 우선하고 다른 언어를 조용히 섞지 않는다.
 - [ ] `node --test tests/youtube-detection.test.mjs tests/youtube-quality.test.mjs`와 번역 검사를 실행한다.
-- [ ] dev/manual에서 선택 가능하고 store에서는 조회 자체를 시작하지 않음을 확인해 로컬 커밋한다.
+- [ ] development에서 선택 가능하고 store에서는 조회 자체를 시작하지 않음을 확인해 로컬 커밋한다.
 
 ### Task 4: 병렬 수신·음성 통합·저장
 
@@ -238,14 +239,14 @@ ResolvedYoutube = {videoId: string, title: string, duration?: number, thumbnail?
 
 **Files:** 배포/검사 도구, 양쪽 README, development/verification, 외부 구성 요소 고지.
 
-- [ ] 세 배포물을 생성하고 store에서 YouTube 어댑터·vendor·해석기가 제외되며 import 누락이 없음을 검사한다. 일반 CDN 경로에서도 네트워크 요청이 시작되지 않아야 한다.
-- [ ] 실제 Chrome에서 dev/manual 저장 성공, 생성된 store판의 YouTube 거부와 일반 사이트 동작을 확인한다. 검사 프로필을 사용하고 진행 중인 사용자 작업을 중단하지 않는다.
+- [ ] 두 배포물을 생성하고 store에서 YouTube 어댑터·vendor·해석기가 제외되며 import 누락이 없음을 검사한다. 일반 CDN 경로에서도 네트워크 요청이 시작되지 않아야 한다.
+- [ ] 실제 Chrome에서 development 저장 성공, 생성된 store판의 YouTube 거부와 일반 사이트 동작을 확인한다. 검사 프로필을 사용하고 진행 중인 사용자 작업을 중단하지 않는다.
 - [ ] `node --test tests/*.test.mjs`, `node tools/checks/audit-localization.mjs`, `node tools/build/build-page-policy.mjs --check`, `node --expose-internals tools/checks/verify-project.mjs`를 실행한다.
 - [ ] `node tools/checks/verify-distribution.mjs --flavor chrome-store`를 통과시키고 배포별 README·남은 제한·라이선스를 갱신한 뒤 로컬 커밋한다. 공개·업로드는 하지 않는다.
 
 ## 완료 판정
 
-- 개발·수동 설치판에서 실제 Chrome VOD의 영상과 음성이 함께 저장·재생된다.
+- 개발판(수동 설치판)에서 실제 Chrome VOD의 영상과 음성이 함께 저장·재생된다.
 - 화질 선택과 제목·날짜·시간 파일명이 기존 흐름에서 작동한다.
 - 다른 HLS/WebRTC 작업 및 source-tab 종료 후 수신이 유지된다.
 - 안전한 구간에서만 중지·부분 저장이 가능하고 빈 파일을 성공으로 표시하지 않는다.
@@ -258,7 +259,7 @@ ResolvedYoutube = {videoId: string, title: string, duration?: number, thumbnail?
 ```text
 E:\Project\MDownloader의 docs/superpowers/plans/2026-11-08-youtube-download.md를 읽고 YouTube 지원을 진행해 주세요.
 먼저 현재 HEAD와 작업 트리를 확인하고, Task 1 배포 분리와 Task 2 실제 Chrome unpacked의 추출·수신 검증부터 진행해 주세요.
-개발·수동 설치판은 Chrome에서도 사용할 수 있어야 하고 Chrome Web Store판에는 YouTube 코드를 제외해 주세요.
+개발판(수동 설치판)은 Chrome에서도 사용할 수 있어야 하고 Chrome Web Store판에는 YouTube 코드를 제외해 주세요.
 버튼만 숨기지 말고 일반 MP4/HLS·embed·googlevideo·재개 경로도 막아 주세요.
 추가 프로그램·서버 방식으로 임의 전환하지 말고 실패 조건을 보고해 주세요.
 기존 기능·파일명·UI를 유지하고 로컬 커밋까지 진행해 주세요. GitHub push와 스토어 제출은 하지 마세요.
