@@ -25,7 +25,7 @@ import {CanFinishJob} from './lib/job-actions.js';
 import {LaunchWebRtc, ControlWebRtc, ForgetWebRtcControl} from './webrtc-jobs.js';
 import {AssertMediaAllowed, AssertJobMayRestart, IsYoutubeSource} from './lib/youtube-source-policy.js';
 import {RequirePlaybackAuthorization} from './lib/playback-authorization.js';
-import {ResolveYoutubeSelection, CancelYoutube} from './features/youtube/entry.js';
+import {ResolveYoutubeSelection, CancelYoutube, FinishYoutube, SavePartialYoutube} from './features/youtube/entry.js';
 const Pending = new Map();
 const Removing = new Set();
 const PendingSnapshots = new Set();
@@ -351,6 +351,13 @@ export async function UpdateHls(Message)
 	}
 	switch (Message.action)
 	{
+		case 'youtubePartial':
+		{
+		if (!Job.youtube) throw new LocalizedError('job_hls_wrong_state');
+		const Filename = Job.partial || Job.snapshot ? Job.filename : PartialFilename(Job.filename);
+		await WriteJob(Key, {...Job, partial: true, filename: Filename, receipt: Message.receipt});
+		return Filename;
+		}
 		case 'youtubeReceived':
 		if (!Job.youtube) throw new LocalizedError('job_hls_wrong_state');
 		return WriteJob(Key, {...Job, receipt: Message.receipt});
@@ -623,12 +630,13 @@ export async function ControlJob(RequestId, Action)
 	}
 	const Job = await ReadJob(JobKey(RequestId));
 	if (Job?.youtube && Job.state === 'active' && Action === 'cancel' && await CancelYoutube(RequestId)) return;
+	if (Job?.youtube && CanFinishJob(Job) && Action === 'finish' && await FinishYoutube(RequestId)) return;
 	if (Job?.recording && Job.state === 'active' && ['finish', 'cancel'].includes(Action) && await ControlWebRtc(RequestId, Action)) return;
 	if (Action === 'snapshot')
 	{
 		return SaveCurrentJob(Job);
 	}
-	if (CanFinishJob(Job) && Action === 'finish' && await FinishLive(RequestId))
+	if (!Job?.youtube && CanFinishJob(Job) && Action === 'finish' && await FinishLive(RequestId))
 	{
 		return;
 	}
@@ -718,7 +726,7 @@ async function SaveCurrentJobOnce(Job)
 	{
 		throw new LocalizedError('job_snapshot_unavailable');
 	}
-	const LocalStream = Job.hls || Job.recording;
+	const LocalStream = Job.hls || Job.recording || Job.youtube;
 	const Item = LocalStream ? undefined : await GetBrowserDownload(Job.downloadId);
 	const State = Item ? SummarizeJob(Job, Item).state : Job.state;
 	if (!['active', 'paused'].includes(State))
@@ -730,7 +738,7 @@ async function SaveCurrentJobOnce(Job)
 		throw new LocalizedError('job_snapshot_unavailable');
 	}
 	const Source = LocalStream ? undefined : await DirectSnapshotSource(Job, Item);
-	if ((!LocalStream && !Source) || Job.recording && !Job.snapshotAvailable)
+	if ((!LocalStream && !Source) || (Job.recording || Job.youtube) && !Job.snapshotAvailable)
 	{
 		throw new LocalizedError('job_snapshot_unavailable');
 	}
@@ -739,14 +747,16 @@ async function SaveCurrentJobOnce(Job)
 		await RequireHlsHosts([Source.url]);
 	}
 	const Partial = {requestId: crypto.randomUUID(), filename: PartialFilename(Job.filename), created: Date.now(),
-		state: 'starting', hls: true, snapshot: true, snapshotDirect: !!Source, snapshotParent: Job.requestId,
+		state: 'starting', hls: !Job.youtube, ...(Job.youtube ? {youtube: true, includeYoutubeAutoCaptions: Job.includeYoutubeAutoCaptions,
+			subtitleCount: Job.subtitleCount, subtitleStatus: Job.subtitleStatus, captionReceipt: Job.captionReceipt} : {}), snapshot: true, snapshotDirect: !!Source, snapshotParent: Job.requestId,
 		downloadFolder: Job.downloadFolder, pickedDownloadFolder: Job.pickedDownloadFolder,
 		bytesReceived: 0, finished: 0, count: Source?.bytes ?? 1};
 	const Key = JobKey(Partial.requestId);
 	await WriteJob(Key, Partial);
 	try
 	{
-		await SavePartialHls(Job.requestId, Partial, Source);
+		if (Job.youtube) await SavePartialYoutube(Job.requestId, Partial);
+		else await SavePartialHls(Job.requestId, Partial, Source);
 	}
 	catch (ErrorValue)
 	{

@@ -274,7 +274,7 @@ export function CreateJobRow(Job, Tile, Context)
 	{
 		InlineActions.append(SetButtonIcon(Control('', 'snapshot', true), Translate(Job.hls || Job.recording || Job.youtube ? 'view_action_snapshot' : 'view_action_snapshot_file'), 'download'));
 	}
-	if (Job.state === 'active' && !Job.snapshot && !Job.muxing && (Job.hls || Job.live))
+	if (Job.state === 'active' && !Job.snapshot && !Job.muxing && (Job.hls || Job.live || Job.youtube))
 	{
 		const Finish = SetButtonIcon(Control('', 'finish', true), Translate('view_action_finish'), 'stop-save');
 		Finish.disabled = !CanFinishJob(Job);

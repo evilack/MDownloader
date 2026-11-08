@@ -469,7 +469,7 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	{
 		return;
 	}
-	if (['youtubeDiscover', 'youtubeRun', 'youtubeCancel', 'youtubeActive'].includes(Message.type))
+	if (['youtubeDiscover', 'youtubeRun', 'youtubeCancel', 'youtubeActive', 'youtubeSnapshot', 'youtubeFinish'].includes(Message.type))
 	{
 		if (Sender.tab || Sender.url !== chrome.runtime.getURL('background.js') || !YoutubeAvailable()) return;
 		HandleYoutubeRunner(Message, {report: LocalReport, saveFile: SaveMediaFile}).then(

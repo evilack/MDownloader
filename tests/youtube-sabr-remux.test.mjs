@@ -1,8 +1,17 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {RemuxYoutubeTracks} from '../extension/features/youtube/remux.js';
+import {RemuxYoutubeTracks,YoutubePrefixReady} from '../extension/features/youtube/remux.js';
 import {BufferTarget,Input,BlobSource,ALL_FORMATS,Output,Mp4OutputFormat,EncodedAudioPacketSource,EncodedPacketSink} from '../extension/vendor/mediabunny-1.65.2.mjs';
+test('readiness requires committed key/audio packets; declared duration or only audio media is insufficient',async()=>{
+ const bytes=await readFile(new URL('../website/sample/media/sample-film.mp4',import.meta.url));
+ const headers=[];for(let p=0;p<bytes.length;){const size=bytes.readUInt32BE(p),type=bytes.toString('ascii',p+4,p+8);if(['ftyp','moov'].includes(type))headers.push(bytes.subarray(p,p+size));p+=size;}
+ const init=new Blob(headers),full=new Blob([bytes]);assert.ok(init.size>0);
+ assert.equal(await YoutubePrefixReady({video:init,audio:init}),false);
+ assert.equal(await YoutubePrefixReady({video:init,audio:full}),false);
+ assert.equal(await YoutubePrefixReady({video:full,audio:init}),false);
+ assert.equal(await YoutubePrefixReady({video:full,audio:full}),true);
+});
 test('separate SABR file inputs are copied into a playable common audio/video interval',async()=>{
  const blob=new Blob([await readFile(new URL('../website/sample/media/sample-film.mp4',import.meta.url))]);
  const target=new BufferTarget();const result=await RemuxYoutubeTracks(blob,blob,target,new AbortController().signal);

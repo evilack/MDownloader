@@ -12,6 +12,20 @@ Test('stop/save becomes available for finite streams only after a committed pref
 	}
 	Assert.equal(CanFinishJob({state: 'active', live: true, recording: true, finished: 1}), true);
 });
+Test('YouTube finish uses only its provider and partial receipt keeps the YouTube type', async T =>
+{
+	const Id = 'youtube-stop-save', Job = {requestId: Id, youtube: true, state: 'active', snapshotAvailable: true, filename: 'movie.mp4'};
+	Assert.equal(CanFinishJob(Job), true);
+	for (const Change of [{snapshotAvailable:false},{snapshot:true},{muxing:true},{state:'complete'}]) Assert.equal(CanFinishJob({...Job,...Change}), false);
+	const Data = {['job:' + Id]: Job}, Sent = [];
+	globalThis.chrome = {storage:{local:{get:async Key=>({[Key]:Data[Key]}),set:async Values=>Object.assign(Data,Values)}},
+		runtime:{getURL:Path=>'chrome-extension://test/'+Path,getContexts:async()=>[{}],sendMessage:async Message=>{Sent.push(Message);return {ok:true,data:true};}}};
+	T.after(()=>delete globalThis.chrome);
+	await ControlJob(Id,'finish'); Assert.deepEqual(Sent,[{type:'youtubeFinish',requestId:Id}]);
+	await UpdateHls({requestId:Id,action:'youtubePartial',receipt:{duration:20,start:0,partial:true}});
+	Assert.equal(Data['job:'+Id].youtube,true); Assert.equal(Data['job:'+Id].hls,undefined); Assert.equal(Data['job:'+Id].partial,true);
+	Assert.match(Data['job:'+Id].filename,/_partial_.+\.mp4$/);
+});
 Test('finite HLS stop/save controls its existing transfer and marks its output as partial', async T =>
 {
 	const Id = 'finite-stop-save';

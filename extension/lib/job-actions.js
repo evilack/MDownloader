@@ -2,5 +2,5 @@
 export function CanFinishJob(Job)
 {
 	return Job?.state === 'active' && !Job.snapshot && !Job.muxing &&
-	(Job.hls ? !!Job.snapshotAvailable : !!Job.live && Job.finished > 0);
+	(Job.hls || Job.youtube ? !!Job.snapshotAvailable : !!Job.live && Job.finished > 0);
 }

@@ -1,5 +1,27 @@
 import {ALL_FORMATS,BlobSource,Input,EncodedPacketSink,EncodedVideoPacketSource,EncodedAudioPacketSource,Mp4OutputFormat,Output,StreamTarget} from '../../vendor/mediabunny-1.65.2.mjs';
 import {YoutubeError} from './evaluator.js';
+/** Receiver endpoints may be advertised format durations. Inspect only committed
+ * bytes: init metadata alone must never authorize an irreversible finish. */
+export async function YoutubePrefixReady({video: VideoFile, audio: AudioFile})
+{
+	if (!VideoFile.size || !AudioFile.size) return false;
+	const Inputs = [VideoFile, AudioFile].map(File => new Input({formats: ALL_FORMATS, source: new BlobSource(File)}));
+	try
+	{
+		const Video = await Inputs[0].getPrimaryVideoTrack(), Audio = await Inputs[1].getPrimaryAudioTrack();
+		if (!Video || !Audio || await Video.getCodec() !== 'avc' || await Audio.getCodec() !== 'aac') return false;
+		const VideoSink = new EncodedPacketSink(Video), AudioSink = new EncodedPacketSink(Audio);
+		const Start = Math.max(await Video.getFirstTimestamp(), await Audio.getFirstTimestamp());
+		const Key = await VideoSink.getKeyPacket(Start) ?? await VideoSink.getFirstKeyPacket();
+		const FirstAudio = await AudioSink.getFirstPacket();
+		const LastVideo = await VideoSink.getPacket(Number.MAX_SAFE_INTEGER), LastAudio = await AudioSink.getPacket(Number.MAX_SAFE_INTEGER);
+		if (!Key || !FirstAudio || !LastVideo || !LastAudio) return false;
+		const End = Math.min(LastVideo.timestamp + LastVideo.duration, LastAudio.timestamp + LastAudio.duration);
+		return End > Start && Key.timestamp + Key.duration <= End + 0.000001 && FirstAudio.timestamp + FirstAudio.duration <= End + 0.000001;
+	}
+	catch { return false; }
+	finally { for (const InputValue of Inputs) InputValue.dispose(); }
+}
 /** 독립 fMP4 트랙을 재인코딩 없이 병합합니다. 공통으로 받은 구간 밖의 패킷은 저장하지 않습니다. */
 export async function RemuxYoutubeTracks(VideoFile,AudioFile,Destination,Signal,{preserveTrackEnds:PreserveTrackEnds=false}={})
 {
@@ -36,7 +58,7 @@ export async function RemuxYoutubeTracks(VideoFile,AudioFile,Destination,Signal,
 		}
 		Copies=[Copy(Video,VideoOut),Copy(Audio,AudioOut)];
 		const [VideoPackets,AudioPackets]=await Promise.all(Copies);await Result.finalize();
-		return {duration:End-Start,videoPackets:VideoPackets,audioPackets:AudioPackets};
+		return {start:Start,duration:End-Start,videoPackets:VideoPackets,audioPackets:AudioPackets};
 	}
 	catch(ErrorValue){await Result?.cancel().catch(()=>{});await Promise.allSettled(Copies);throw ErrorValue;}
 	finally{VideoInput.dispose();AudioInput.dispose();}

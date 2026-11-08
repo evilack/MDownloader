@@ -17,7 +17,7 @@ export function NormalizeWatchPlayer(Player, VideoId, Client = {})
 
 /** SABR/UMP의 영상·음성 출력을 독립 파일에 순서대로 씁니다. 실패한 출력을 저장 완료로 올리지 않습니다. */
 export async function ReceiveSabrTracks(Config, Selection, {createStream, createWriter, fetch: Fetch = globalThis.fetch, hasPermission = async () => false,
-	signal: Signal = new AbortController().signal, report = () => {}, limit: Limit = 16 * 1024 ** 3, keepReceivedOnFailure: KeepReceived = false} = {})
+	signal: Signal = new AbortController().signal, stopSignal: StopSignal, report = () => {}, limit: Limit = 16 * 1024 ** 3, keepReceivedOnFailure: KeepReceived = false} = {})
 {
 	if (!CanUseYoutube()) Fail('youtube_distribution_disabled');
 	Signal.throwIfAborted();
@@ -45,9 +45,10 @@ export async function ReceiveSabrTracks(Config, Selection, {createStream, create
 		AttestationBytes = Received;
 		if (Status.status === 3 || (Status.status === 2 && (!Config.poToken || PendingAttestations > 3))) {Failure = new YoutubeError('youtube_sabr_attestation_required'); void Receiver.abort();}
 	});
-	Receiver.on('error', ErrorValue => {Failure ??= ErrorValue instanceof YoutubeError ? ErrorValue : new YoutubeError('youtube_sabr_receive_failed');});
+	Receiver.on('error', ErrorValue => {if (!StopSignal?.aborted) Failure ??= ErrorValue instanceof YoutubeError ? ErrorValue : new YoutubeError('youtube_sabr_receive_failed');});
 	const Abort = () => {void Receiver.abort();};
 	Signal.addEventListener('abort', Abort, {once: true});
+	StopSignal?.addEventListener('abort', Abort, {once: true});
 	const Writers = [];
 	let Copies = [];
 	let Reserved = 0;
@@ -65,6 +66,7 @@ export async function ReceiveSabrTracks(Config, Selection, {createStream, create
 			return Selection[Kind];
 		};
 		const Started = Receiver.start({videoFormat: ExactFormat('video'), audioFormat: ExactFormat('audio'), isPostLiveDvr: false, maxRetries: 0});
+		if (StopSignal?.aborted) Abort();
 		Copies = ['video', 'audio'].map(async Kind =>
 		{
 			const Writer = await createWriter(Kind); Writers.push(Writer);
@@ -77,8 +79,9 @@ export async function ReceiveSabrTracks(Config, Selection, {createStream, create
 					const {value: Chunk, done: Done} = await Reader.read(); if (Done) break;
 					if (Chunk.byteLength > 32 * 1024 ** 2 || Reserved + Chunk.byteLength > Limit) Fail('youtube_sabr_size_limit');
 					Reserved += Chunk.byteLength;
-					await Writer.write(Chunk); Bytes[Kind] += Chunk.byteLength;
-					report({stage: 'sabr-bytes', video: Bytes.video, audio: Bytes.audio});
+					try { await Writer.write(Chunk); } catch (ErrorValue) { Failure ??= ErrorValue; throw ErrorValue; }
+					Bytes[Kind] += Chunk.byteLength;
+					report({stage: 'sabr-bytes', video: Bytes.video, audio: Bytes.audio, videoEndMs: Receiver.videoEndTimeMs, audioEndMs: Receiver.audioEndTimeMs});
 				}
 				if (Failure) throw Failure;
 				if (!Bytes[Kind]) Fail('youtube_sabr_receive_failed');
@@ -86,7 +89,8 @@ export async function ReceiveSabrTracks(Config, Selection, {createStream, create
 			finally {Reader.releaseLock();}
 		});
 		await Promise.all(Copies);
-		for (const Kind of ['video', 'audio'])
+		Signal.throwIfAborted(); if (Failure) throw Failure;
+		for (const Kind of StopSignal?.aborted ? [] : ['video', 'audio'])
 		{
 			const Format = Started.selectedFormats?.[Kind + 'Format'] ?? Config.formats.find(Item => Item.itag === Selection[Kind]);
 			const Precise = Number(Format?.approxDurationMs ?? Format?.approx_duration_ms);
@@ -96,14 +100,19 @@ export async function ReceiveSabrTracks(Config, Selection, {createStream, create
 			if (Number.isFinite(ExpectedEnd) && (!Number.isFinite(Receiver[Kind + 'EndTimeMs']) || Receiver[Kind + 'EndTimeMs'] < ExpectedEnd)) Fail('youtube_sabr_receive_failed');
 		}
 		await Promise.all(Writers.map(Writer => Writer.close()));
-		return {bytes: Bytes, selectedFormats: Started.selectedFormats, videoEndMs: Receiver.videoEndTimeMs, audioEndMs: Receiver.audioEndTimeMs};
+		return {bytes: Bytes, partial: !!StopSignal?.aborted, selectedFormats: Started.selectedFormats, videoEndMs: Receiver.videoEndTimeMs, audioEndMs: Receiver.audioEndTimeMs};
 	}
 	catch (ErrorValue)
 	{
 		await Receiver.abort(); await Promise.allSettled(Copies);
+		if (StopSignal?.aborted && !Signal.aborted && !Failure && Bytes.video && Bytes.audio)
+		{
+			await Promise.all(Writers.map(Writer => Writer.close()));
+			return {bytes: Bytes, partial: true, videoEndMs: Receiver.videoEndTimeMs, audioEndMs: Receiver.audioEndTimeMs};
+		}
 		await Promise.allSettled(Writers.map(Writer => KeepReceived ? Writer.close() : Writer.abort()));
 		Signal.throwIfAborted();
 		throw Failure ?? (ErrorValue instanceof YoutubeError ? ErrorValue : new YoutubeError('youtube_sabr_receive_failed'));
 	}
-	finally {Signal.removeEventListener('abort', Abort);}
+	finally {Signal.removeEventListener('abort', Abort); StopSignal?.removeEventListener('abort', Abort);}
 }

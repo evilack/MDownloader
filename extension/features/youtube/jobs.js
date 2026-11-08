@@ -37,3 +37,5 @@ export async function ResolveYoutubeSelection(Job, Item, Quality)
 	return Request('youtubeRun', {job: Job, quality: Quality});
 }
 export async function CancelYoutube(RequestId) { return Request('youtubeCancel', {requestId: RequestId}); }
+export async function FinishYoutube(RequestId) { return Request('youtubeFinish', {requestId: RequestId}); }
+export async function SavePartialYoutube(RequestId, Job) { return Request('youtubeSnapshot', {requestId: RequestId, job: Job}); }

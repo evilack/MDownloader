@@ -33,10 +33,10 @@ test('YouTube revoked permission fails without saving or exposing the resolved c
 test('YouTube keeps scratch and active ownership until native save finishes',async()=>{
  const events=[];let release=0,muxOptions,finishSave;
  const saved=new Promise(r=>finishSave=r);
- const directory={async getFileHandle(){return{async getFile(){return new Blob(['media']);},async createWritable(){return{abort:async()=>{}};}};}};
+ const files=new Map();const directory={async getFileHandle(name){return{async getFile(){return files.get(name)??new Blob(['media']);},async createWritable(){return{write:async bytes=>files.set(name,new Blob([bytes])),close:async()=>{},abort:async()=>{}};}};}};
  const handle=CreateYoutubeRunner({client:{async ResolveYoutubeCaptions(){return[];},async ResolveYoutubeSelection(){return{config:{secret:'session'},selection:{}};}},
   workspaces:{async create(){return directory;},async release(){release++;}},
-  async receive(_config,_selection,options){options.report({stage:'sabr-bytes',video:12,audio:8});return{bytes:{video:12,audio:8},videoEndMs:622567,audioEndMs:622853};},
+  async receive(_config,_selection,options){await(await options.createWriter('video')).write(new Uint8Array(12));await(await options.createWriter('audio')).write(new Uint8Array(8));options.report({stage:'sabr-bytes',video:12,audio:8});return{bytes:{video:12,audio:8},videoEndMs:622567,audioEndMs:622853};},
   async remux(_v,_a,_writer,_signal,options){muxOptions=options;}});
  const deps={report:async(...a)=>events.push(a),saveFile:async()=>saved};
  await handle({type:'youtubeRun',job:{requestId:Id},quality:{}},deps);await wait();

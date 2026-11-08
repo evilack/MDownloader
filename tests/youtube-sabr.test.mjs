@@ -2,6 +2,17 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {NormalizeWatchPlayer, ReceiveSabrTracks} from '../extension/features/youtube/sabr.js';
 const Id = '-XHx839rSc8';
+test('requested finish drains writes and returns partial, cancel and writer failure never do',{timeout:5000},async()=>{
+ for(const mode of ['finish','cancel','write-failure']){
+  const stop=new AbortController(),cancel=new AbortController();let controllers=[],closed=0,aborted=0,writes=0;
+  const createStream=()=>({on(){},async abort(){for(const c of controllers)c.error(Error('Stream aborted'));},start(){const stream=()=>new ReadableStream({start(c){controllers.push(c);c.enqueue(new Uint8Array([1]));}});return{videoStream:stream(),audioStream:stream()};}});
+  const promise=ReceiveSabrTracks(NormalizeWatchPlayer(raw(),Id,{}),{video:134,audio:140},{createStream,stopSignal:stop.signal,signal:cancel.signal,createWriter:async()=>({async write(){writes++;if(mode==='write-failure'){stop.abort();throw Error('disk-full');}},async close(){closed++;},async abort(){aborted++;}})});
+  void promise.catch(()=>{});while(writes<2)await new Promise(r=>setTimeout(r,0));
+  if(mode==='cancel'){cancel.abort();stop.abort();}else stop.abort();
+  if(mode==='finish'){const result=await promise;assert.equal(result.partial,true);assert.deepEqual(result.bytes,{video:1,audio:1});assert.equal(closed,2);}
+  else{await assert.rejects(promise);assert.equal(closed,0);assert.equal(aborted,2);}
+ }
+});
 const raw = () => ({videoDetails: {videoId: Id, title: 'Fixture', lengthSeconds: '2'}, playabilityStatus: {status: 'OK'},
  streamingData: {serverAbrStreamingUrl: 'https://r1.googlevideo.com/videoplayback?sabr=1', adaptiveFormats: [{itag:134, mimeType:'video/mp4; codecs="avc1.4d401e"', qualityLabel:'360p', bitrate:1, approxDurationMs:'2000'}, {itag:140, mimeType:'audio/mp4; codecs="mp4a.40.2"', audioQuality:'AUDIO_QUALITY_MEDIUM', bitrate:1, approxDurationMs:'2000'}]},
  playerConfig: {mediaCommonConfig: {mediaUstreamerRequestConfig: {videoPlaybackUstreamerConfig:'AA=='}}}});
