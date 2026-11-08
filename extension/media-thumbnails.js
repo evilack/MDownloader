@@ -182,7 +182,7 @@ export function PreviewTile(Preview, Load, Capture)
 	};
 }
 
-export function ObserveCandidateThumbnails(Root, Input, Tiles)
+export function ObserveCandidateThumbnails(Root, Input, Tiles, ReadBatch = Ids => SendRequest('candidatePreviews', {...Input, candidateIds: Ids}))
 {
 	const Pending = new Map([...Tiles].map(([Id, Tile]) => [Tile.control, { id: Id, tile: Tile, attempt: 0, readyAt: 0 }]));
 	const Visible = new Set();
@@ -238,7 +238,7 @@ export function ObserveCandidateThumbnails(Root, Input, Tiles)
 		const Signal = ReadingController.signal;
 		try
 		{
-			const Previews = await AwaitThumbnailRead(SendRequest('candidatePreviews', { ...Input, candidateIds: Batch.map(({ id: Id }) => Id) }), Signal)
+			const Previews = await AwaitThumbnailRead(ReadBatch(Batch.map(({ id: Id }) => Id)), Signal)
 			.catch(() => []);
 			if (bDisposed || Signal.aborted)
 			{

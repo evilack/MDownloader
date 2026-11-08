@@ -112,3 +112,15 @@ Official youtubei.js 18.3.0, googlevideo 5.0.1 and Mediabunny 1.65.2 source and 
 - `jobs.js`, provider entry/stub and existing job-row actions: YouTube children stay `youtube:true, hls:false`; snapshot creates a separate partial file while finish marks the parent output partial and propagates that filename into picked-folder saving. Shared native/folder save owns file lifetime through completion. Store stub gains only disabled exports; provider/store exclusion remains physical.
 
 Update checks: receiver stop/cancel/error races, immutable-prefix stability, child/native ownership, full endpoint tests, Store import graph, and actual development Chrome UI via `node tools/checks/probe-youtube-partial-chrome.mjs`. Native test uses the latest user video FACJInvEmY8 and network throttling in its isolated receiver to keep the action window open. No Computer Use, external program, raw caption/signed-media persistence, or Store browser execution. See the partial-save verification entry.
+
+# YouTube job thumbnails and hover — 2026-11-09
+
+Official YouTube.js/googlevideo/Mediabunny sources and bundles are unchanged. The adapter previously skipped preview preparation for YouTube jobs; the manager also omitted the capture callback used by candidate tiles. This update connects both paths without treating a watch page as playable media.
+
+- Registration pins tab/document/page/canonical video identity in session-only preview source and prepares the existing small job thumbnail cache.
+- `shared-thumbnail-cache.js` coalesces the same bound document/video thumbnail read across popup/manager, with the existing 15s refresh and 128-entry ceiling. Cache keys do not grant capture authority; page-player reads retain exact document checks. Empty/error results retry. Observations stay in SW memory and remap each caller's candidate ID.
+- `JobThumbnails` reads the shared provider observation for active jobs and refreshes their existing thumbnail cache. Sidepanel reuses the same visibility/timeout/retry scheduler as popup candidates, stopping its old observer when rows change. No extra stream download fallback is enabled for job thumbnail reads.
+- `CaptureJobPreview` accepts a registered job ID only, resolves the pinned source and reuses the existing bounded canvas-copy clip. It does not depend on a mutable scan ID. Capture after document navigation cannot borrow the new player. Source playback/tracks are untouched; playing/readable/unprotected source remains required for a moving preview.
+- Completed picked-folder jobs preserve local-file preview precedence. Store policy checks cover the added routes, including older YouTube job flags without a source classification. Store provider/vendor exclusion remains physical.
+
+Native check: `node tools/checks/probe-youtube-job-preview-chrome.mjs`, same FACJInvEmY8 source, normal quality/enqueue/manager UI and a throttled receiver. It requires both hovers to advance decoded frames, shared visible thumbnails, a changed thumbnail after refresh, continuing download, capture refusal after navigation and no leftover hover players/loading. No Computer Use or Store browser execution.

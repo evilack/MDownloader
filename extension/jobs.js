@@ -8,7 +8,7 @@ import { ClassifyResponseMedia, HostPattern, IsStreamFormat, StreamPreviewPath }
 import { NormalizeDownloadFolder, SafeFilename } from './lib/download-folder.js';
 import { RecordDownloadLog } from './lib/download-log.js';
 import { LocalizedError, MessageRef, SerializeError } from './lib/i18n.js';
-import { ReadCandidateThumbnail, ResolveCandidate } from './detection.js';
+import { ReadCandidateThumbnail, ResolveCandidate, CaptureResolvedCandidatePreview } from './detection.js';
 import {
 	IsHlsActive, ActiveTransfers, CancelHls, FinishLive, SavePartialHls, LaunchDirectToFolder, LaunchHls, LaunchPlaybackHls, RequireHlsHosts,
 } from './hls-jobs.js';
@@ -17,7 +17,7 @@ import { HlsRequestSource, SetHlsRequestRules, SetScopedHlsRequestRules } from '
 import { DeleteStoredJob, JobKey, ListStoredJobs, ReadJob, WriteJob } from './lib/job-storage.js';
 import { GetSetting, GetSettings, SettingKeys } from './lib/settings.js';
 import { RequirePickedFolder } from './lib/picked-download-folder.js';
-import { DeleteJobPreview, PreviewSourceKey, SaveJobPreviewSource, SaveJobThumbnail } from './lib/job-preview-cache.js';
+import { DeleteJobPreview, PreviewSourceKey, SaveJobPreviewSource, SaveJobThumbnail, ReadJobThumbnail } from './lib/job-preview-cache.js';
 import { DownloadNamedFile } from './lib/browser-download.js';
 import { GetBrowserDownload, JobGroup, LoadBrowserDownloads, SummarizeJob } from './lib/browser-job-state.js';
 import {PartialFilename, PartialOutputFilename} from './lib/partial-naming.js';
@@ -46,7 +46,13 @@ async function PrepareJobPreview(Job, TabId, Candidate)
 {
 	const bProtectedRequest = !!Candidate.requestContext || !!Candidate.observedVariants?.length;
 	const Source = { format: Candidate.format, protectedRequest: bProtectedRequest, streamPath: StreamPreviewPath(Candidate.url, Candidate.format) };
-	if (!bProtectedRequest)
+	if (Candidate.format === 'YOUTUBE')
+	{
+		// The canonical watch URL identifies the source; it is never a playable URL.
+		Source.pageCandidate = {tabId: TabId, item: {id: Candidate.id, url: Candidate.url, format: Candidate.format,
+			page: Candidate.page, previewPage: Candidate.previewPage, documentId: Candidate.documentId, singleStream: true}};
+	}
+	else if (!bProtectedRequest)
 	{
 		Source.url = Candidate.url;
 	}
@@ -179,7 +185,7 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle),
 			created: Date.now(), state: 'active', youtube: true, bytesReceived: 0,
 			includeYoutubeAutoCaptions: await GetSetting(SettingKeys.includeYoutubeAutoCaptions)};
-		await RegisterMediaJob(Key, Job, TabId, Item, false);
+		await RegisterMediaJob(Key, Job, TabId, Item);
 		try { await ResolveYoutubeSelection(Job, Item, Quality); }
 		catch (ErrorValue) { await WriteJob(Key, {...Job, state: 'failed', error: SerializeError(ErrorValue)}); throw ErrorValue; }
 		await OpenDebugView(RequestId); return {state: 'started'};
@@ -506,6 +512,7 @@ export async function PreviewJob(RequestId)
 	}
 	const SourceKey = PreviewSourceKey(RequestId);
 	const Source = (await chrome.storage.session.get(SourceKey))[SourceKey];
+	AssertMediaAllowed({...Job, youtubeSource: Job.youtube || Job.youtubeSource}); AssertMediaAllowed(Source?.pageCandidate?.item);
 	if (Job.pickedDownloadFolder && ['complete', 'interrupted'].includes(Job.state))
 	{
 		return {
@@ -513,6 +520,11 @@ export async function PreviewJob(RequestId)
 			ClassifyResponseMedia(InternalMediaOrigin + '/' + encodeURIComponent(Job.filename), '')?.format,
 			localFile: { folder: Job.pickedDownloadFolder, name: Job.filename },
 		};
+	}
+	if (Job.youtube && Source?.pageCandidate)
+	{
+		const [Thumbnail] = await JobThumbnails([RequestId]);
+		return {...Source, ...Thumbnail, url: undefined};
 	}
 	if (Source)
 	{
@@ -524,6 +536,42 @@ export async function PreviewJob(RequestId)
 		return { url: Item.url, format: ClassifyResponseMedia(Item.url, Item.mime)?.format };
 	}
 	return {};
+}
+
+export async function JobThumbnails(RequestIds)
+{
+	if (!Array.isArray(RequestIds) || RequestIds.length > 128 || RequestIds.some(Id => typeof Id !== 'string' || !/^[a-f\d-]{36}$/i.test(Id))) throw new LocalizedError('job_invalid_request');
+	return Promise.all(RequestIds.map(async Id =>
+	{
+		const Job = await ReadJob(JobKey(Id));
+		if (!Job) return {id: Id};
+		AssertMediaAllowed({...Job, youtubeSource: Job.youtube || Job.youtubeSource});
+		const Key = PreviewSourceKey(Id), Source = (await chrome.storage.session.get(Key))[Key];
+		AssertMediaAllowed(Source?.pageCandidate?.item);
+		let Thumbnail = await ReadJobThumbnail(Id).catch(() => undefined);
+		if (Job.youtube && Source?.pageCandidate && Job.state === 'active')
+		{
+			const {tabId: TabId, item: Item} = Source.pageCandidate;
+			const Fresh = await ReadCandidateThumbnail(TabId, Item).catch(() => undefined);
+			if (Fresh?.still)
+			{
+				Thumbnail = Fresh;
+				if (Fresh.still.startsWith('data:image/jpeg;base64,')) await SaveJobThumbnail(Id, Fresh, () => ReadJob(JobKey(Id)));
+			}
+		}
+		return {...Thumbnail, id: Id};
+	}));
+}
+
+export async function CaptureJobPreview(RequestId)
+{
+	if (typeof RequestId !== 'string' || !/^[a-f\d-]{36}$/i.test(RequestId)) throw new LocalizedError('job_invalid_request');
+	const Job = await ReadJob(JobKey(RequestId));
+	if (!Job) throw new LocalizedError('job_not_found');
+	AssertMediaAllowed({...Job, youtubeSource: Job.youtube || Job.youtubeSource});
+	const Key = PreviewSourceKey(RequestId), Source = (await chrome.storage.session.get(Key))[Key];
+	if (!Job.youtube || !Source?.pageCandidate) return null;
+	return CaptureResolvedCandidatePreview(Source.pageCandidate.tabId, Source.pageCandidate.item);
 }
 
 export async function RemoveJob(RequestId, DeleteFile, ExpectedGroup)

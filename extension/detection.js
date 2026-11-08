@@ -4,6 +4,8 @@ import { ReportDebugFailure } from './lib/debug-log.js';
  * 후보를 사용하기 직전에 문서 ID, 페이지 주소, 호스트 권한을 다시 확인합니다. 스캔 당시의 후보 번호만으로 작업을 시작하지 않습니다.
  */
 import { RuntimePolicy } from './lib/runtime-policy.js';
+import {CreateSharedThumbnailCache} from './lib/shared-thumbnail-cache.js';
+const SharedThumbnails = CreateSharedThumbnailCache({ttl: RuntimePolicy.Preview.ThumbnailRefreshMs, limit: RuntimePolicy.Preview.MaxCachedThumbnails});
 import { ClassifyMediaUrl, HlsReloadParameters, HostPattern, IsStreamFormat, MediaResourceKey, StreamPreviewPath } from './lib/media.js';
 import { FilterAllowedNetworkCandidates, IsAuxiliaryMedia, MaxObservedMediaPerTab, NetworkCandidates, ReadMediaContext } from './network.js';
 import { LocalizedError } from './lib/i18n.js';
@@ -435,6 +437,17 @@ export async function ResolveCandidate(TabId, ScanId, CandidateId, Scope)
 
 async function ReadPreviews(TabId, DocumentId, Candidates, FrameSize, Page = null)
 {
+	if (FrameSize === ThumbnailFrame && Candidates.length === 1 && Candidates[0].pagePlayer === true && DocumentId && Page)
+	{
+		const Item = Candidates[0];
+		const Previews = await SharedThumbnails.read({tabId: TabId, documentId: DocumentId, page: Page, url: Item.url},
+			() => CollectPreviews(TabId, DocumentId, Candidates, FrameSize, Page));
+		return Previews.map(Preview => ({...Preview, id: Item.id}));
+	}
+	return CollectPreviews(TabId, DocumentId, Candidates, FrameSize, Page);
+}
+async function CollectPreviews(TabId, DocumentId, Candidates, FrameSize, Page)
+{
 	const [Frame] = await chrome.scripting.executeScript({
 		target: DocumentId ? { tabId: TabId, documentIds: [DocumentId] } : { tabId: TabId },
 		func: CollectPlayerPreviews, args: [Candidates, {...FrameSize, excludedSelector: RuntimePolicy.Detection.AuxiliaryPlayerSelector}, Page],
@@ -444,6 +457,7 @@ async function ReadPreviews(TabId, DocumentId, Candidates, FrameSize, Page = nul
 
 export async function ReadCandidateThumbnail(TabId, Item)
 {
+	AssertMediaAllowed({...Item, pageUrl: Item.page});
 	const Previews = await ReadPreviews(TabId, Item.documentId, [{ id: Item.id, url: Item.url, variants: Item.variants ?? [], singleStream: Item.singleStream, ...(Item.format === 'YOUTUBE' ? {pagePlayer: true} : {}), selectedSource: Item.selectedSource }], ThumbnailFrame, Item.previewPage);
 	return Array.isArray(Previews) ? Previews[0] : undefined;
 }
@@ -495,6 +509,12 @@ export async function PreviewCandidate({ tabId: TabId, scanId: ScanId, candidate
 export async function CaptureCandidatePreview({ tabId: TabId, scanId: ScanId, candidateId: CandidateId, scope: Scope })
 {
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
+	return CaptureResolvedCandidatePreview(TabId, Item);
+}
+/** Only a worker-registered, document-bound source may use this entry. */
+export async function CaptureResolvedCandidatePreview(TabId, Item)
+{
+	AssertMediaAllowed({...Item, pageUrl: Item.page});
 	if (!IsStreamFormat(Item.format) && !['WEBRTC', 'YOUTUBE'].includes(Item.format))
 	{
 		return null;

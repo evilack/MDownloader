@@ -26,6 +26,11 @@ test('flavor is mandatory, independent packages exclude executable YouTube files
    const entry = await import(`../${root}/features/youtube/entry.js`);
    assert.equal(entry.YoutubeAvailable(), false);
    await assert.rejects(entry.DiscoverYoutube(), {key: 'youtube_distribution_disabled'});
+   const Id='33333333-3333-3333-3333-333333333333';
+   const {JobThumbnails,CaptureJobPreview,PreviewJob}=await import(`../${root}/jobs.js`);
+   globalThis.chrome={storage:{local:{get:async Key=>({[Key]:{requestId:Id,youtube:true,state:'active'}})},session:{get:async()=>({})}}};
+   try { for(const Read of [()=>JobThumbnails([Id]),()=>CaptureJobPreview(Id),()=>PreviewJob(Id)]) await assert.rejects(Read(),{key:'youtube_distribution_disabled'}); }
+   finally {delete globalThis.chrome;}
   }
   else{const manifest=JSON.parse(await readFile(`${root}/manifest.json`,'utf8'));assert.deepEqual(manifest.sandbox.pages,['features/youtube/evaluator-sandbox.html']);assert.ok(manifest.content_security_policy.sandbox.includes("connect-src 'none'"));assert.ok(!(manifest.content_security_policy.extension_pages??"script-src 'self'").includes('unsafe-eval'));}
  }

@@ -3,7 +3,7 @@
  * Chrome이 워커를 다시 시작할 수 있으므로, 작업과 후보 목록의 기준 데이터는 브라우저 저장소에 둡니다.
  */
 import { CandidatePreviews, CaptureCandidatePreview, ClearScan, PreviewCandidate, ResolveCandidate, Scan } from './detection.js';
-import { ControlJob, Enqueue, EnqueuePlayback, JobUrl, ListJobs, PreviewJob, RemoveJob, RemoveJobs, UpdateHls } from './jobs.js';
+import { ControlJob, Enqueue, EnqueuePlayback, JobUrl, ListJobs, PreviewJob, JobThumbnails, CaptureJobPreview, RemoveJob, RemoveJobs, UpdateHls } from './jobs.js';
 import { ForgetNetwork, ForgetRequest, ObserveManifest, ObserveMediaContext, ObservePageUrl, ObserveRequestStart, ObserveRequest, ObserveResponse } from './network.js';
 import { MediaContextCachePrefix, NetworkCachePrefix, SourceMetadataCachePrefix } from './lib/detection-cache.js';
 import { CancelHls, HlsQualities, HlsRunnerUrl } from './hls-jobs.js';
@@ -79,6 +79,8 @@ async function Route(Message)
 		case 'jobs': return ListJobs(Message.requestIds, Message.mediaKeys);
 		case 'jobUrl': return JobUrl(Message.requestId);
 		case 'previewJob': return PreviewJob(Message.requestId);
+		case 'jobThumbnails': return JobThumbnails(Message.requestIds);
+		case 'captureJobPreview': return CaptureJobPreview(Message.requestId);
 		case 'removeJob': return RemoveJob(Message.requestId, Message.deleteFile);
 		case 'removeJobs': return RemoveJobs(Message.requestIds, Message.group);
 		case 'control': return ControlJob(Message.requestId, Message.action);

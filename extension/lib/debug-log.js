@@ -16,7 +16,7 @@ const Events = new Set(DebugEvents);
 const Stages = new Set(Object.keys(DownloadStages));
 const Results = new Set(DownloadResults);
 const Operations = new Set(['scan', 'candidateUrl', 'candidatePreviews', 'previewCandidate', 'captureCandidatePreview',
-	'hlsQualities', 'enqueue', 'jobs', 'jobUrl', 'previewJob', 'removeJob', 'removeJobs', 'control',
+	'hlsQualities', 'enqueue', 'jobs', 'jobUrl', 'previewJob', 'jobThumbnails', 'captureJobPreview', 'removeJob', 'removeJobs', 'control',
 	'hlsRun', 'folderRun', 'hlsSnapshot', 'hlsFinish', 'hlsCancel', 'savePlayback', 'hlsUpdate']);
 const Numbers = new Set(['count', 'bytes', 'received', 'finished', 'durationMs', 'status', 'attempt', 'variants',
 	'bandwidth', 'variantIndex', 'tabId', 'downloadId', 'rules', 'owners', 'registered', 'changed', 'removed', 'segments']);

@@ -10,7 +10,7 @@ import { ReadJobSample, ReadJobThumbnail } from './lib/job-preview-cache.js';
 import { RequirePickedFolder } from './lib/picked-download-folder.js';
 import { CreateButton, MountOptionsButton, SendRequest, SetButtonIcon } from './lib/ui.js';
 import { CreateMediaPreview } from './media-preview.js';
-import { PreviewTile } from './media-thumbnails.js';
+import { PreviewTile, ObserveCandidateThumbnails } from './media-thumbnails.js';
 import { CreateCandidateList } from './candidate-list.js';
 import { CreateJobRow, GetJobRowSignature, UpdateJobRowMetrics } from './job-row.js';
 import { GetSetting, OnSettingChanged, SettingKeys } from './lib/settings.js';
@@ -93,6 +93,7 @@ const Sections = Object.entries(SectionLabels).map(([Id, Label]) =>
 });
 MountOptionsButton(document.querySelector('.brand'), Announce);
 const PreviewTiles = new WeakMap();
+let StopJobThumbnails;
 const VisibleTiles = new IntersectionObserver(Entries =>
 {
 	for (const { target: Target, isIntersecting: bIsIntersecting } of Entries)
@@ -150,7 +151,7 @@ function JobPreviewTile(RequestId)
 			}
 		}
 		return Source;
-	});
+	}, () => SendRequest('captureJobPreview', {requestId: RequestId}));
 	PreviewTiles.set(Tile.control, RequestId);
 	VisibleTiles.observe(Tile.control);
 	return Tile;
@@ -242,6 +243,9 @@ function RenderChanges(Changes)
 	if (bLayoutChanged)
 	{
 		PlaceRows();
+		StopJobThumbnails?.();
+		const Tiles = new Map([...Rows].map(([Id, Entry]) => [Id, {control: Entry.tile.control, show: (...Args) => Entry.tile.show(...Args)}]));
+		StopJobThumbnails = ObserveCandidateThumbnails(null, {}, Tiles, Ids => SendRequest('jobThumbnails', {requestIds: Ids}));
 	}
 	const bHasJobs = Rows.size > 0;
 	if (Empty.hidden !== bHasJobs)
