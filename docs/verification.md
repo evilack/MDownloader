@@ -144,3 +144,34 @@ The browser reports its UUID-named download as complete; that only describes the
 The new protocol/remux regression tests also cover bounded independent track writes, pending/rejected attestation, incomplete-output commit policy, and differing video/audio start timestamps. The two last cases reproduced review findings RED before their fixes. Source exclusion remains checked statically by the package tests; only development was run in Chrome in this expansion.
 
 Final staged-candidate verification: 277 Node tests passed, 398 messages in each of 10 catalogs with no missing references, generated page policy matched, project verification had zero failures and preserved all 73 retained files. Package tests checked development/store composition and rejected the removed manual flavor. Only development was loaded in Chrome. The exact staged source reproduced the 60.533-second partial save/decode and the full-reception attestation rejection; it excludes concurrent naming/subtitle/HLS changes.
+
+## yt-dlp comparison — 2026-11-08
+
+The user subsequently requested yt-dlp investigation. This supersedes the earlier no-external-extractor boundary **for the experiment**, while preserving development-only browser tests, no Computer Use, no proxy/token generation and permanent store exclusion. YTVD 1.4 was inspected read-only at the user-provided installation path: its extension calls a server for formats/download/progress; the server implementation and use of yt-dlp remain unverified.
+
+| Check | Observation |
+|---|---|
+| Official temporary executable | yt-dlp 2026.10.26, 23,575,744 bytes, SHA-256 `f5389d3698ecde4ef06f4e6b1ce0294fe9ac1396228c8990b8d3416d6d177a7d`; official asset digest/SHA256SUMS matched |
+| Selected source | Same video `-XHx839rSc8`, format 18, H.264/AAC muxed MP4, 640×360, no FFmpeg needed for this format |
+| Native Chrome direct successful run | Chrome 157.0.8103.39, full 30,185,697 bytes, eight HTTP 206 ranges, OPFS and browser save |
+| Parsed full source | 622.689524 seconds; YouTube's integer-rounded display is 623 seconds; declared source duration 622.689 |
+| Every encoded packet inspected | Video 18,677 packets, end 622.566667; audio 26,817 packets, end 622.689524 |
+| Decode at 1 and 620 seconds | Video 640×360; AAC stereo 44,100 Hz, 1,024 frames/sample; RMS 0.013904 and 0.051983 |
+| Complete-file SHA-256 | `6718534d9e36a3128210b07fd6522d44328a63366342d369b33b514a26f60fd3`; matches the independently yt-dlp-received full file |
+| Other freshly extracted sessions | Direct Node and Chrome requests returned HTTP 403, including matched extractor headers; successful extraction alone is insufficient |
+| SABR diagnosis refinement | A normal page HTTP 200 response itself contained UMP protection status 3 and no media header; the 90-byte token was not evidence of accepted full playback |
+| Integration boundary | No Native Messaging registration/permission, permanent helper, YTVD service credential reuse or product UI enablement |
+
+Both successful whole-file native runs (including the exact final staged candidate) are preserved alongside failures in [retained evidence](evidence/2026-11-08-youtube-ytdlp-development.json). Browser automation still saves a UUID filename; the original and byte-identical title/date export are both retained. This verifies complete source bytes and actual Chrome decode/save, not 623 seconds of real-time viewing or production filename behavior. It establishes a working yt-dlp-assisted route for this video, while repeated 403 sessions leave reliability and the exact server-side eligibility cause unresolved. The browser-only SABR route still fails its full-reception gate. See the [native helper implementation decision](superpowers/plans/2026-11-08-youtube-ytdlp.md).
+
+## Subtitle inclusion verification — 2026-11-08
+
+The subtitle implementation was already present in the shared working tree when the supplied XVideos subtitle omission was investigated again. It was verified in place without replacing concurrent changes. The supplied page declares captions separately from its video sources; saving only a media URL does not include those external captions.
+
+`node tools/checks/probe-subtitles.mjs` fetched the supplied page and all 23 declared caption resources successfully. The production discovery/conversion/mux modules embedded every language into the synthetic ten-second sample AV file. An independent MP4 box reader found 23 `wvtt` subtitle tracks plus the original video and audio tracks, with retained language and label metadata. Discovery used a DOM fixture populated from live HTML; this is not an installed-browser test or a download of the complete original video.
+
+The Node suite reported 344 tests: 343 passed, zero failed, and one opt-in live test skipped; the separate live caption probe above passed. The offscreen-runner regression verifies direct transfer and concurrent partial saving with every prepared language. Project syntax/import/reference checks passed with zero failures, all 73 retained files preserved, and localization checks found no missing references across ten catalogs.
+
+To use the current source, finish active downloads, reload the extension loaded from this repository's `extension/` folder, refresh the source page, and create a new download. Previously saved files are not modified. Native installed-extension full-video save and subtitle rendering in a user's playback application remain unverified; selectable MP4 WebVTT support depends on that application.
+
+Final yt-dlp candidate checks: **280 tests passed, zero failed**; all 398 messages in each of 10 catalogs matched; generated page policy matched; project verification reported zero failures and preserved 73 retained files; development/store package composition passed. Independent review found three defects (multipart source identity, response cleanup, whole-file hashing memory); RED→GREEN tests and streamed hashing resolved them, and re-review found no remaining important findings. The final staged candidate repeated the full direct Chrome receive/decode/save with the same SHA-256. Concurrent naming/subtitle/HLS changes are excluded.

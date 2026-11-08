@@ -2,7 +2,7 @@
 
 The user authorized extending the existing browser-only YouTube plan to SABR/UMP, investigating HTTP 403 further, testing only the development build with video `-XHx839rSc8`, updating documentation and committing locally. Computer Use remains prohibited. The development build **is** the manual/unpacked build; only `development` and `chrome-store` remain. No proxy, external downloader, token forgery/generation, CAPTCHA automation or restricted-video bypass is added.
 
-The chosen implementation reuses the official `googlevideo` SABR/UMP implementation pinned at 5.0.1, with local bundling and the existing Mediabunny 1.65.2 for independent H.264/AAC inputs. Successful normal playback requests in the isolated test tab supply the source URL/config/client context and naturally issued token in memory. The test closes that tab before independent offscreen reception. API source diagnosis compares the same body from the page, offscreen and offscreen with the page's Origin/Referer pair. It does not conclude which individual header is decisive.
+The chosen implementation reuses the official `googlevideo` SABR/UMP implementation pinned at 5.0.1, with local bundling and the existing Mediabunny 1.65.2 for independent H.264/AAC inputs. Observed HTTP 200 normal playback requests in the isolated test tab supply the source URL/config/client context and naturally issued token in memory. The test closes that tab before independent offscreen reception. API source diagnosis compares the same body from the page, offscreen and offscreen with the page's Origin/Referer pair. It does not conclude which individual header is decisive.
 
 - [x] Remove the duplicate manual flavor; development/store policy and package tests.
 - [x] Pin/bundle googlevideo with license/hash provenance; store excludes the entire provider/vendor tree.
@@ -19,3 +19,5 @@ The native diagnostic uses CDP observation and ephemeral exact-source POST heade
 Read-only review identified two defects and both received RED→GREEN regression coverage: (1) slightly later audio could drop the leading video keyframe; (2) writers committed before joint completion validation. Both were fixed before final checks. Concurrent unrelated HLS/naming/subtitle work is excluded from this commit and its isolated-index verification.
 
 See [native verification](../../verification.md#sabrump-expansion--2026-11-08) and [retained evidence](../../evidence/2026-11-08-youtube-sabr-development.json).
+
+Subsequent user steering authorized comparing yt-dlp. That separate experiment received the complete same-video file in real development Chrome once; other fresh sources still failed with 403. It does not close the SABR attestation item above or unlock product integration. The [yt-dlp decision and follow-up plan](2026-11-08-youtube-ytdlp.md) records the observed YTVD server architecture, whole-file proof and optional native-helper work required.

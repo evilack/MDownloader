@@ -1,0 +1,391 @@
+{
+  "date": "2026-11-08",
+  "scope": "Development only; Computer Use prohibited; temporary yt-dlp feasibility; product UI remains gated",
+  "fullDirectRun": {
+    "date": "2026-11-08",
+    "videoId": "-XHx839rSc8",
+    "flavor": "development",
+    "computerUse": false,
+    "nativeMessagingIntegrated": false,
+    "extractor": {
+      "sha256": "f5389d3698ecde4ef06f4e6b1ce0294fe9ac1396228c8990b8d3416d6d177a7d",
+      "version": "2026.10.26",
+      "formatId": "18",
+      "duration": 623,
+      "width": 640,
+      "height": 360,
+      "vcodec": "avc1.42001E",
+      "acodec": "mp4a.40.2",
+      "expectedBytes": 30185697,
+      "sourceDuration": 622.689
+    },
+    "transportControls": [
+      {
+        "label": "node-default",
+        "status": 206
+      },
+      {
+        "label": "node-extractor-headers",
+        "status": 206
+      }
+    ],
+    "browser": "Chrome/157.0.8103.39",
+    "receive": {
+      "ok": true,
+      "bytes": 30185697,
+      "total": 30185697,
+      "ranges": 8,
+      "statuses": [
+        206,
+        206,
+        206,
+        206,
+        206,
+        206,
+        206,
+        206
+      ]
+    },
+    "decode": {
+      "ok": true,
+      "duration": 622.6895238095238,
+      "samples": [
+        {
+          "at": 1,
+          "videoTimestamp": 1,
+          "width": 640,
+          "height": 360,
+          "audioTimestamp": 0.9984580498866213,
+          "audioFrames": 1024,
+          "channels": 2,
+          "sampleRate": 44100,
+          "rms": 0.01390408038405941
+        },
+        {
+          "at": 620,
+          "videoTimestamp": 620,
+          "width": 640,
+          "height": 360,
+          "audioTimestamp": 619.9960090702948,
+          "audioFrames": 1024,
+          "channels": 2,
+          "sampleRate": 44100,
+          "rms": 0.051982703025841556
+        }
+      ],
+      "packets": {
+        "video": {
+          "count": 18677,
+          "start": 0,
+          "end": 622.5666666666666
+        },
+        "audio": {
+          "count": 26817,
+          "start": 0,
+          "end": 622.6895238095238
+        }
+      }
+    },
+    "save": {
+      "state": "complete",
+      "bytes": 30185697,
+      "filename": "8bd6a778-8f87-4c50-9c69-59411e106c2e.mp4",
+      "requestedFilename": "제작비 쏟아넣고 탑티어 배우 써놓고도 완전히 말아먹은 드라마들_2026-11-08_20-32-28.mp4",
+      "output": "E:\\Project\\MDownloader\\artifacts\\youtube-attestation\\verified\\제작비 쏟아넣고 탑티어 배우 써놓고도 완전히 말아먹은 드라마들_2026-11-08_20-32-28.mp4",
+      "sha256": "6718534d9e36a3128210b07fd6522d44328a63366342d369b33b514a26f60fd3",
+      "fileBytes": 30185697
+    },
+    "gatePassed": true,
+    "chromeDirectNetworkPassed": true,
+    "verificationScope": "Exact staged candidate; concurrent naming/subtitle/HLS changes excluded; includes post-review source-validator and cleanup fixes"
+  },
+  "freshSessionTrials": [
+    {
+      "run": "native-ytdlp-1794136706328",
+      "gatePassed": false,
+      "chromeDirectNetworkPassed": false,
+      "statuses": [
+        403
+      ],
+      "failure": "receive-failed"
+    },
+    {
+      "run": "native-ytdlp-1794136787252",
+      "gatePassed": false,
+      "chromeDirectNetworkPassed": false,
+      "statuses": [
+        403
+      ],
+      "failure": "receive-failed"
+    },
+    {
+      "run": "native-ytdlp-1794137010281",
+      "gatePassed": false,
+      "chromeDirectNetworkPassed": false,
+      "statuses": [
+        403
+      ],
+      "transport": "yt-dlp-network-to-file-then-CDP-chunks-to-Chrome-OPFS"
+    },
+    {
+      "run": "native-ytdlp-1794137069313",
+      "gatePassed": true,
+      "chromeDirectNetworkPassed": true,
+      "statuses": [
+        206,
+        206,
+        206,
+        206,
+        206,
+        206,
+        206,
+        206
+      ]
+    },
+    {
+      "run": "native-ytdlp-1794137215771",
+      "gatePassed": false,
+      "chromeDirectNetworkPassed": false,
+      "statuses": [
+        403
+      ],
+      "failure": "receive-failed"
+    },
+    {
+      "run": "native-ytdlp-1794137256869",
+      "gatePassed": false,
+      "chromeDirectNetworkPassed": false,
+      "statuses": [
+        403
+      ],
+      "failure": "receive-failed"
+    },
+    {
+      "run": "native-ytdlp-1794137277810",
+      "gatePassed": false,
+      "chromeDirectNetworkPassed": false,
+      "statuses": [
+        403
+      ],
+      "failure": "receive-failed"
+    },
+    {
+      "run": "native-ytdlp-1794137283218",
+      "gatePassed": false,
+      "chromeDirectNetworkPassed": false,
+      "statuses": [
+        403
+      ],
+      "failure": "receive-failed"
+    },
+    {
+      "run": "native-ytdlp-1794137288762",
+      "gatePassed": false,
+      "chromeDirectNetworkPassed": false,
+      "statuses": [
+        403
+      ],
+      "failure": "receive-failed"
+    },
+    {
+      "run": "staged-candidate/native-ytdlp-1794137541285",
+      "gatePassed": true,
+      "chromeDirectNetworkPassed": true,
+      "statuses": [
+        206,
+        206,
+        206,
+        206,
+        206,
+        206,
+        206,
+        206
+      ]
+    }
+  ],
+  "sabrRefinement": {
+    "observedPayload": {
+      "headers": [],
+      "protection": [
+        3
+      ]
+    },
+    "normalSession": {
+      "tokenPresent": true,
+      "tokenBytes": 90,
+      "clientInfoPresent": true,
+      "contextTypes": [],
+      "hasExtraContext": false
+    },
+    "receive": {
+      "ok": false,
+      "code": "youtube_sabr_attestation_required",
+      "bytes": {
+        "video": 305162,
+        "audio": 1132817
+      },
+      "events": [
+        {
+          "stage": "sabr-http",
+          "status": 200
+        },
+        {
+          "stage": "sabr-protection",
+          "status": 2
+        },
+        {
+          "stage": "sabr-http",
+          "status": 200
+        },
+        {
+          "stage": "sabr-protection",
+          "status": 2
+        },
+        {
+          "stage": "sabr-http",
+          "status": 200
+        },
+        {
+          "stage": "sabr-protection",
+          "status": 2
+        },
+        {
+          "stage": "sabr-http",
+          "status": 200
+        },
+        {
+          "stage": "sabr-protection",
+          "status": 2
+        },
+        {
+          "stage": "sabr-http",
+          "status": 200
+        },
+        {
+          "stage": "sabr-protection",
+          "status": 3
+        }
+      ]
+    },
+    "gatePassed": false
+  },
+  "ytvd": {
+    "version": "1.4",
+    "architecture": "server formats/download/progress; browser saves server file",
+    "serverImplementationKnown": false,
+    "credentialsReused": false
+  },
+  "nativeMessagingIntegrated": false,
+  "storeBrowserTested": false,
+  "initialFullDirectRun": {
+    "date": "2026-11-08",
+    "videoId": "-XHx839rSc8",
+    "flavor": "development",
+    "computerUse": false,
+    "nativeMessagingIntegrated": false,
+    "extractor": {
+      "sha256": "f5389d3698ecde4ef06f4e6b1ce0294fe9ac1396228c8990b8d3416d6d177a7d",
+      "version": "2026.10.26",
+      "formatId": "18",
+      "duration": 623,
+      "width": 640,
+      "height": 360,
+      "vcodec": "avc1.42001E",
+      "acodec": "mp4a.40.2",
+      "expectedBytes": 30185697,
+      "sourceDuration": 622.689
+    },
+    "transportControls": [
+      {
+        "label": "node-default",
+        "status": 206
+      },
+      {
+        "label": "node-extractor-headers",
+        "status": 206
+      }
+    ],
+    "browser": "Chrome/157.0.8103.39",
+    "receive": {
+      "ok": true,
+      "bytes": 30185697,
+      "total": 30185697,
+      "ranges": 8,
+      "statuses": [
+        206,
+        206,
+        206,
+        206,
+        206,
+        206,
+        206,
+        206
+      ]
+    },
+    "decode": {
+      "ok": true,
+      "duration": 622.6895238095238,
+      "samples": [
+        {
+          "at": 1,
+          "videoTimestamp": 1,
+          "width": 640,
+          "height": 360,
+          "audioTimestamp": 0.9984580498866213,
+          "audioFrames": 1024,
+          "channels": 2,
+          "sampleRate": 44100,
+          "rms": 0.01390408038405941
+        },
+        {
+          "at": 620,
+          "videoTimestamp": 620,
+          "width": 640,
+          "height": 360,
+          "audioTimestamp": 619.9960090702948,
+          "audioFrames": 1024,
+          "channels": 2,
+          "sampleRate": 44100,
+          "rms": 0.051982703025841556
+        }
+      ],
+      "packets": {
+        "video": {
+          "count": 18677,
+          "start": 0,
+          "end": 622.5666666666666
+        },
+        "audio": {
+          "count": 26817,
+          "start": 0,
+          "end": 622.6895238095238
+        }
+      }
+    },
+    "save": {
+      "state": "complete",
+      "bytes": 30185697,
+      "filename": "ae31b537-9527-44b6-a3c5-c0ba7e314dbb.mp4",
+      "requestedFilename": "제작비_쏟아넣고_탑티어_배우_써놓고도_완전히_말아먹은_드라마들_2026-11-08_20-24-35.mp4",
+      "output": "E:\\Project\\MDownloader\\artifacts\\youtube-attestation\\verified\\제작비_쏟아넣고_탑티어_배우_써놓고도_완전히_말아먹은_드라마들_2026-11-08_20-24-35.mp4",
+      "sha256": "6718534d9e36a3128210b07fd6522d44328a63366342d369b33b514a26f60fd3",
+      "fileBytes": 30185697
+    },
+    "gatePassed": true,
+    "chromeDirectNetworkPassed": true
+  },
+  "validation": {
+    "tests": 280,
+    "passed": 280,
+    "failed": 0,
+    "locales": 10,
+    "messagesPerLocale": 398,
+    "missingReferences": 0,
+    "projectFailures": 0,
+    "preservedFiles": 73,
+    "developmentPackage": true,
+    "storePackage": true,
+    "storeBrowserRun": false,
+    "independentReview": "Three findings fixed with RED to GREEN tests; re-review found no remaining important findings"
+  }
+}

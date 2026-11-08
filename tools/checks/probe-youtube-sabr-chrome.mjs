@@ -1,5 +1,6 @@
 /** 개발판 전용 실제 Chrome SABR 진단. 사용자 프로필·Computer Use·프록시를 사용하지 않습니다. */
-import {VideoPlaybackAbrRequest} from 'googlevideo/protos';
+import {VideoPlaybackAbrRequest,MediaHeader,StreamProtectionStatus,UMPPartId} from 'googlevideo/protos';
+import {UmpReader,CompositeBuffer} from 'googlevideo/ump';
 import {createHash} from 'node:crypto';
 import {mkdir,writeFile,copyFile,readFile} from 'node:fs/promises';
 import Path from 'node:path';
@@ -16,9 +17,9 @@ try{
  const Page=await Context.newPage();await Page.goto(`chrome-extension://${id}/options.html`);
  async function Grant(Hosts){await Settings.evaluate(async({id,hosts})=>{for(const host of hosts)await chrome.developerPrivate.addHostPermission(id,host);},{id,hosts:Hosts});return Page.evaluate(hosts=>chrome.permissions.request({origins:hosts}),Hosts);}
  await Grant(['https://www.youtube.com/*','https://youtube.com/*','https://youtubei.googleapis.com/*']);
- const Vod=await Context.newPage();let ObservedUrl;let ObservedBody;let SuccessfulRequest;const MediaResponses=[];
+ const Vod=await Context.newPage();let ObservedUrl;let ObservedBody;let ObservedHttp200Request;let ObservedHttp200Response;const MediaResponses=[];
  Vod.on('request',Request=>{const Url=new URL(Request.url());if(Url.hostname.endsWith('.googlevideo.com')&&Url.searchParams.get('sabr')==='1'){ObservedUrl=Request.url();ObservedBody=Request.postDataBuffer();}});
- Vod.on('response',Response=>{if(new URL(Response.url()).hostname.endsWith('.googlevideo.com')){MediaResponses.push(Response.status());if(Response.status()===200&&new URL(Response.url()).searchParams.get('sabr')==='1')SuccessfulRequest=Response.request();}});
+ Vod.on('response',Response=>{if(new URL(Response.url()).hostname.endsWith('.googlevideo.com')){MediaResponses.push(Response.status());if(Response.status()===200&&new URL(Response.url()).searchParams.get('sabr')==='1'){ObservedHttp200Request=Response.request();ObservedHttp200Response=Response;}}});
  await Vod.goto('https://www.youtube.com/watch?v=-XHx839rSc8',{waitUntil:'domcontentloaded',timeout:30000});
  const Watch=await Vod.evaluate(()=>({player:globalThis.ytInitialPlayerResponse,context:globalThis.ytcfg?.get('INNERTUBE_CONTEXT')}));
  Report.watch={status:Watch.player?.playabilityStatus?.status,duration:Number(Watch.player?.videoDetails?.lengthSeconds),hasSabr:!!Watch.player?.streamingData?.serverAbrStreamingUrl};
@@ -37,8 +38,11 @@ try{
  const NextMedia=Vod.waitForResponse(r=>r.status()===200&&new URL(r.url()).hostname.endsWith('.googlevideo.com')&&new URL(r.url()).searchParams.get('sabr')==='1',{timeout:20000}).catch(()=>undefined);
  await Vod.evaluate(()=>{const video=document.querySelector('video');if(video){video.currentTime=120;void video.play();}});
  await NextMedia;
- if(SuccessfulRequest){ObservedUrl=SuccessfulRequest.url();ObservedBody=SuccessfulRequest.postDataBuffer();}
- const ObservedHeaders=await SuccessfulRequest?.allHeaders();
+ if(ObservedHttp200Request){ObservedUrl=ObservedHttp200Request.url();ObservedBody=ObservedHttp200Request.postDataBuffer();}
+ const ObservedHeaders=await ObservedHttp200Request?.allHeaders();
+ const sourceHeaders=[];const sourceProtection=[];
+ if(ObservedHttp200Response){const payload=await ObservedHttp200Response.body();const reader=new UmpReader({onPart:(type,data)=>{const b=Buffer.concat(data.chunks.map(c=>Buffer.from(c)));if(type===UMPPartId.MEDIA_HEADER){const h=MediaHeader.decode(b);sourceHeaders.push({videoId:h.videoId,itag:h.itag,segment:h.segmentNum});}if(type===UMPPartId.STREAM_PROTECTION_STATUS)sourceProtection.push(StreamProtectionStatus.decode(b).status);}});await reader.feed(new CompositeBuffer([new Uint8Array(payload)]));}
+ Report.observedPayload={headers:sourceHeaders,protection:sourceProtection};
  const RequestContext=ObservedBody?VideoPlaybackAbrRequest.decode(ObservedBody):undefined;
  const Token=RequestContext?.streamerContext?.poToken;
  Report.normalSession={tokenPresent:!!Token?.length,tokenBytes:Token?.length??0,clientInfoPresent:!!RequestContext?.streamerContext?.clientInfo,contextTypes:RequestContext?.streamerContext?.sabrContexts?.map(c=>c.type),hasExtraContext:!!RequestContext?.streamerContext?.field4};
