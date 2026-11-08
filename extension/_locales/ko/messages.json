@@ -1723,5 +1723,44 @@
   },
   "explorer_setup_download_timeout": {
     "message": "설치 파일 다운로드가 아직 완료되지 않았습니다. Chrome 다운로드 목록을 확인한 뒤 다시 시도해 주세요."
+  },
+  "explorer_remove_button": {
+    "message": "Windows 도우미 삭제"
+  },
+  "explorer_remove_title": {
+    "message": "Windows 도우미를 삭제할까요?"
+  },
+  "explorer_remove_body": {
+    "message": "도우미와 폴더 연결 기록을 삭제합니다.\n다운로드 위치는 브라우저 기본값으로 변경됩니다."
+  },
+  "explorer_remove_keep": {
+    "message": "다운로드한 영상·자막은 삭제하지 않습니다."
+  },
+  "explorer_remove_confirm": {
+    "message": "삭제"
+  },
+  "explorer_remove_available": {
+    "message": "Windows 도우미가 설치되어 있습니다."
+  },
+  "explorer_remove_update_required": {
+    "message": "이전 도우미가 설치되어 있습니다. 삭제 도구를 제공합니다."
+  },
+  "explorer_remove_absent": {
+    "message": "Windows 도우미가 설치되어 있지 않습니다."
+  },
+  "explorer_remove_pending": {
+    "message": "Windows 도우미를 삭제하고 있습니다…"
+  },
+  "explorer_remove_done": {
+    "message": "Windows 도우미를 삭제했습니다. 저장 위치를 기본값으로 변경했습니다."
+  },
+  "explorer_remove_failed": {
+    "message": "삭제 완료를 확인하지 못했습니다. Windows 상태를 확인한 뒤 다시 시도해 주세요."
+  },
+  "explorer_remove_run": {
+    "message": "삭제 실행"
+  },
+  "explorer_remove_run_help": {
+    "message": "다운로드한 MDownloader-Windows-Remove.cmd를 실행해 주세요.\n삭제가 끝나면 이 화면에서 자동으로 확인합니다."
   }
 }

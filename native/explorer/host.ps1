@@ -42,7 +42,26 @@ try {
     if($Size -eq 0 -or $Size -gt 16384){throw 'invalid_message'}
     $Message=[Text.Encoding]::UTF8.GetString((Read-Exact $InputStream ([int]$Size))) | ConvertFrom-Json
     if($Message.action -ceq 'ping'){
-        $Payload=[Text.Encoding]::UTF8.GetBytes('{"ok":true,"protocol":1}')
+        $Status=@{ok=$true;protocol=1}
+        if(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'lifecycle.ps1')){
+            . (Join-Path $PSScriptRoot 'lifecycle.ps1')
+            $Identity=Get-ExplorerIdentity $PSScriptRoot
+            if($Identity){$Status.installationId=$Identity.installationId;$Status.canUninstall=$true;try{Save-ExplorerClient $PSScriptRoot $CallerOrigin}catch{}}
+        }
+        $Payload=[Text.Encoding]::UTF8.GetBytes(($Status|ConvertTo-Json -Compress))
+        $Header=[BitConverter]::GetBytes([uint32]$Payload.Length);$OutputStream.Write($Header,0,4);$OutputStream.Write($Payload,0,$Payload.Length);$OutputStream.Flush()
+        return
+    }
+    if($Message.action -ceq 'uninstall'){
+        . (Join-Path $PSScriptRoot 'lifecycle.ps1')
+        $Identity=Get-ExplorerIdentity $PSScriptRoot
+        if(-not $Identity -or $Message.installationId -cne $Identity.installationId){throw 'invalid_message'}
+        Save-ExplorerClient $PSScriptRoot $CallerOrigin
+        $PowerShell=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+        $Startup=New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ShowWindow=[uint16]0}
+        $Started=Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine=('"'+$PowerShell+'" -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+(Join-Path $PSScriptRoot 'uninstall.ps1')+'" -Confirmed -WaitProcessId '+$PID);ProcessStartupInformation=$Startup}
+        if($Started.ReturnValue -ne 0){throw 'reveal_failed'}
+        $Payload=[Text.Encoding]::UTF8.GetBytes('{"ok":true,"scheduled":true}')
         $Header=[BitConverter]::GetBytes([uint32]$Payload.Length);$OutputStream.Write($Header,0,4);$OutputStream.Write($Payload,0,$Payload.Length);$OutputStream.Flush()
         return
     }

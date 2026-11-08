@@ -168,3 +168,7 @@ Shared detection now supplies the document-bound YouTube video title instead of 
 # Shared Windows helper setup and Mac folder action — 2026-11-09
 
 Folder selection now gates Windows setup and preserves the previous directory on cancel. A runtime-ID-specific, self-contained installer is bundled in both flavors. Native deployment/UTF-8 binding repair and truthful setup progress are shared saved-file work, with no YouTube.js/googlevideo/Mediabunny source or vendor change. Mac completed-folder actions use browser Downloads. Store YouTube exclusion remains physical and verified.
+
+# Windows helper removal — 2026-11-09
+
+Windows settings removal, Installed Apps registration, safe file/registry removal and authenticated download-location reset are shared saved-file changes. Official YouTube.js, googlevideo and Mediabunny sources, pinned versions and generated vendor bundles are unchanged. Media and subtitle data are preserved. Store YouTube code/vendor exclusion remains physical; only development Chrome is run for acceptance.

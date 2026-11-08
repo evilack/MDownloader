@@ -35,13 +35,15 @@ try {
     return
 }
 $Destination=Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'MDownloader\ExplorerBridge'
+. (Join-Path $PSScriptRoot 'lifecycle.ps1')
+[void](Assert-ExplorerDirectory $Destination $Destination)
 $Manifest=Join-Path $Destination 'host-manifest.json'
 $Registry='HKCU:\Software\Google\Chrome\NativeMessagingHosts\com.mdownloader.explorer'
-if(Test-Path -LiteralPath $Registry){$Existing=(Get-Item -LiteralPath $Registry).GetValue('');if($Existing -ne $Manifest){throw 'Another Explorer bridge registration exists; inspect it before replacing.'}}
+$AppsKey='HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\MDownloaderExplorerBridge'
+[void](Assert-ExplorerRegistration $Registry $AppsKey $Destination $Manifest)
 New-Item -ItemType Directory -Path $Destination -Force | Out-Null
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'host.ps1') -Destination (Join-Path $Destination 'host.ps1') -Force
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'dialog.ps1') -Destination (Join-Path $Destination 'dialog.ps1') -Force
-foreach($Name in @('host.ps1','dialog.ps1')){
+foreach($Name in @('host.ps1','dialog.ps1','lifecycle.ps1','uninstall.ps1')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot $Name) -Destination (Join-Path $Destination $Name) -Force}
+foreach($Name in @('host.ps1','dialog.ps1','lifecycle.ps1','uninstall.ps1')){
     if((Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $PSScriptRoot $Name)).Hash -ne
        (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $Destination $Name)).Hash){throw 'Desktop helper copy verification failed.'}
 }
@@ -54,6 +56,14 @@ if(Test-Path -LiteralPath $Manifest){
 }
 $Config=@{name='com.mdownloader.explorer';description='MDownloader Windows Explorer file reveal';path=$Launcher;type='stdio';allowed_origins=@($Origins|Select-Object -Unique)}
 [IO.File]::WriteAllText($Manifest,($Config | ConvertTo-Json -Depth 4),[Text.UTF8Encoding]::new($false))
+. (Join-Path $PSScriptRoot 'lifecycle.ps1')
+$Identity=Get-ExplorerIdentity $Destination
+if(-not $Identity){$Identity=@{installationId=[Guid]::NewGuid().ToString('N');clients=@()};[IO.File]::WriteAllText((Join-Path $Destination 'lifecycle.json'),($Identity|ConvertTo-Json -Depth 6),[Text.UTF8Encoding]::new($false))}
+$AppsKey='HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\MDownloaderExplorerBridge'
+New-Item -Path $AppsKey -Force|Out-Null
+$UninstallCommand='"'+(Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe')+'" -NoProfile -ExecutionPolicy Bypass -STA -File "'+(Join-Path $Destination 'uninstall.ps1')+'"'
+foreach($Property in @{DisplayName='MDownloader Windows Helper';DisplayVersion='1.1.0';Publisher='MDownloader';InstallLocation=$Destination;UninstallString=$UninstallCommand}.GetEnumerator()){New-ItemProperty -LiteralPath $AppsKey -Name $Property.Key -Value $Property.Value -PropertyType String -Force|Out-Null}
+foreach($Name in @('NoModify','NoRepair')){New-ItemProperty -LiteralPath $AppsKey -Name $Name -Value 1 -PropertyType DWord -Force|Out-Null}
 New-Item -Path $Registry -Force | Out-Null
 Set-Item -LiteralPath $Registry -Value $Manifest
 $Readback=Get-Content -LiteralPath $Manifest -Encoding UTF8 -Raw | ConvertFrom-Json

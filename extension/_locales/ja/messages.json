@@ -1723,5 +1723,44 @@
   },
   "explorer_setup_download_timeout": {
     "message": "The installer download has not completed. Check Chrome Downloads, then try again."
+  },
+  "explorer_remove_button": {
+    "message": "Remove Windows helper"
+  },
+  "explorer_remove_title": {
+    "message": "Remove Windows helper?"
+  },
+  "explorer_remove_body": {
+    "message": "Remove the helper and its folder-link records.\nThe download location will return to the browser default."
+  },
+  "explorer_remove_keep": {
+    "message": "Downloaded videos and subtitles will be kept."
+  },
+  "explorer_remove_confirm": {
+    "message": "Remove"
+  },
+  "explorer_remove_available": {
+    "message": "Windows helper is installed."
+  },
+  "explorer_remove_update_required": {
+    "message": "An older helper is installed. A removal tool will be provided."
+  },
+  "explorer_remove_absent": {
+    "message": "Windows helper is not installed."
+  },
+  "explorer_remove_pending": {
+    "message": "Removing the Windows helper…"
+  },
+  "explorer_remove_done": {
+    "message": "Windows helper removed. Download location reset to default."
+  },
+  "explorer_remove_failed": {
+    "message": "Removal could not be verified. Check Windows and try again."
+  },
+  "explorer_remove_run": {
+    "message": "Run removal tool"
+  },
+  "explorer_remove_run_help": {
+    "message": "Run MDownloader-Windows-Remove.cmd from Downloads.\nThis screen verifies completion automatically."
   }
 }

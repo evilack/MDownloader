@@ -1,0 +1,10 @@
+import test from'node:test';import assert from'node:assert/strict';
+import{ApplyExplorerRemoval,ReceiveExplorerRemoval,ReconcileExplorerRemoval,ExplorerInstallationKey,ExplorerRemovalKey,ExplorerReceiptKey}from'../extension/lib/explorer-lifecycle.js';
+test('only a matching removal identity after host removal resets both location fields',async t=>{
+ const token='a'.repeat(32),job={filename:'saved.mp4',pickedDownloadFolder:'job-pinned-key'};const data={[ExplorerInstallationKey]:{installationId:token},downloadFolder:'custom',pickedDownloadFolder:'selected-key','job:existing':job};const writes=[];let installed=true;
+ globalThis.chrome={storage:{local:{get:async k=>({[k]:data[k]}),set:async v=>{writes.push(v);Object.assign(data,v);},remove:async keys=>{for(const k of Array.isArray(keys)?keys:[keys])delete data[k];}}},runtime:{connectNative(){let message,disconnect;return{onMessage:{addListener(f){message=f;}},onDisconnect:{addListener(f){disconnect=f;}},disconnect(){},postMessage(){queueMicrotask(()=>{if(installed)message({ok:true,protocol:1});else{chrome.runtime.lastError={message:'Specified native messaging host not found.'};disconnect();}});}};}}};t.after(()=>delete globalThis.chrome);
+ assert.equal(await ApplyExplorerRemoval('b'.repeat(32)),false);assert.equal(await ApplyExplorerRemoval(token),false);assert.equal(writes.length,0);
+ installed=false;assert.equal(await ReconcileExplorerRemoval(),false);assert.equal(writes.length,0,'a missing host without a success receipt changes nothing');assert.equal(await ReceiveExplorerRemoval('b'.repeat(32)),false);assert.equal(writes.length,0);
+ assert.equal(await ReceiveExplorerRemoval(token),true);assert.equal(data.downloadFolder,'');assert.equal(data.pickedDownloadFolder,'');assert.equal(data[ExplorerInstallationKey],undefined);assert.equal(data[ExplorerReceiptKey],undefined);assert.ok(data[ExplorerRemovalKey]);assert.strictEqual(data['job:existing'],job);
+ assert.equal(await ReconcileExplorerRemoval(),false);assert.equal(await ApplyExplorerRemoval(token),false);assert.equal(writes.length,2);
+});

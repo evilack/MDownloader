@@ -1,0 +1,106 @@
+{
+  "date": "2026-11-09",
+  "scope": "Windows helper removal in normal desktop development Chrome",
+  "browser": "Chrome/157.0.8103.39",
+  "computerUse": false,
+  "optionalPermissionsPromotedInIsolatedManifest": true,
+  "windowsSettingsUiAutomated": false,
+  "windowsRegisteredCommandConfirmedByTest": true,
+  "actualInstall": true,
+  "cancelPreservesLocation": true,
+  "cancelPreservesInstallation": true,
+  "settingsRemoval": {
+    "ownedFiles": [],
+    "nativeRegistered": false,
+    "appRegistered": false
+  },
+  "settingsReset": {
+    "downloadFolder": "",
+    "pickedDownloadFolder": ""
+  },
+  "settingsMediaPreserved": true,
+  "windowsRegisteredCommand": {
+    "executedRegisteredCommand": true,
+    "confirmedForTest": true
+  },
+  "windowsRemoval": {
+    "ownedFiles": [],
+    "nativeRegistered": false,
+    "appRegistered": false
+  },
+  "windowsReset": {
+    "downloadFolder": "",
+    "pickedDownloadFolder": ""
+  },
+  "windowsMediaPreserved": true,
+  "existingSavedMp4": {
+    "bytes": 204637663,
+    "beforeSha256": "34f7e0e276099f6ee56a7753647540ade2f4905a3298dbace49fafa851d0d4d9",
+    "afterSha256": "34f7e0e276099f6ee56a7753647540ade2f4905a3298dbace49fafa851d0d4d9",
+    "unchanged": true
+  },
+  "actualExistingDevelopmentProfile": {
+    "downloadFolder": "",
+    "pickedDownloadFolder": "",
+    "successReceiptObserved": true
+  },
+  "tests": {
+    "passed": 456,
+    "skipped": 1,
+    "failed": 0
+  },
+  "packages": {
+    "development": {
+      "files": 190,
+      "imports": 461
+    },
+    "chromeStore": {
+      "files": 163,
+      "imports": 418,
+      "youtubeExecutablesExcluded": true,
+      "browserRun": false
+    }
+  },
+  "nativeScriptSha256": {
+    "host.ps1": "3a259247b5beff7f442ab49fa503d1ad76b1767f257132181c0c0fbd382d609a",
+    "install.ps1": "b83f294462ff9d93b40416c390debacb326041433e77e6525044f787a6539df2",
+    "uninstall.ps1": "8ca8900ab5dfad8e19e4eb918c67b4ad2bac24aa5aae4295fefc2411d8fb7c8c",
+    "lifecycle.ps1": "c07108a4609d5d0695f49664e936ce9d6d68d66ac3fd651ff4f58c42db1727ba"
+  },
+  "limitations": [
+    "Windows Settings UI and native confirmation not automated; exact registered command ran with -Confirmed under explicit test authorization.",
+    "Actual Chrome acceptance used Default profiles; per-user executable/multi-profile routing has isolated filesystem coverage.",
+    "This is removal/media retention acceptance, not a new YouTube download/playback acceptance."
+  ],
+  "passed": true,
+  "mergedRoot": {
+    "tests": {
+      "passed": 465,
+      "skipped": 1,
+      "failed": 0
+    },
+    "project": {
+      "javascript": 292,
+      "json": 37,
+      "relativeImports": 672,
+      "preservedFiles": 73,
+      "failures": 0
+    },
+    "locales": {
+      "count": 10,
+      "messagesPerLocale": 507,
+      "missingReferences": 0
+    },
+    "packages": {
+      "development": {
+        "files": 194,
+        "imports": 464
+      },
+      "chromeStore": {
+        "files": 167,
+        "imports": 421,
+        "browserRun": false
+      }
+    }
+  }
+}

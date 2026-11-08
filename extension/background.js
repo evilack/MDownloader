@@ -24,6 +24,7 @@ import {PrepareDistributionNetwork} from './lib/distribution-network.js';
 import {CanUseYoutube} from './lib/distribution-policy.js';
 import {HandleTranslationConfiguration} from './lib/translation-configuration.js';
 import {CandidateSubtitleStatuses, CandidateSubtitleOptions} from './detection.js';
+import {ReconcileExplorerRemoval} from './lib/explorer-lifecycle.js';
 import {DiscoverYoutube, SetYoutubeRequestContext} from './features/youtube/entry.js';
 void PrepareDistributionNetwork().catch(ErrorValue => ReportDebugFailure(ErrorValue, 'DistributionRulesFailed'));
 void InitializeDebugLogging(async bEnabled =>
@@ -223,11 +224,13 @@ chrome.storage.onChanged.addListener((Changes, Area) =>
 });
 chrome.runtime.onStartup?.addListener(() =>
 {
+	void ReconcileExplorerRemoval().catch(ReportDebugFailure);
 	void SyncMediaContext().catch(ReportDebugFailure);
 	void RefreshOpenBadges().catch(ReportDebugFailure);
 });
 chrome.runtime.onInstalled?.addListener(async () =>
 {
+	void ReconcileExplorerRemoval().catch(ReportDebugFailure);
 	void SyncMediaContext().catch(ReportDebugFailure);
 	void RefreshOpenBadges().catch(ReportDebugFailure);
 	try

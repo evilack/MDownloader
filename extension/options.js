@@ -5,6 +5,7 @@ void InitializeDebugLogging();
  */
 import { BindDownloadLocation } from './options-download-location.js';
 import {BeforePickDownloadFolder} from './options-explorer-setup.js';
+import {BindExplorerRemoval} from './options-explorer-remove.js';
 import { BindNetworkAccess } from './options-network-access.js';
 import { BindDownloadLog } from './options-download-log.js';
 import {
@@ -100,6 +101,7 @@ if (CanUseYoutube())
 	BindToggles(Settings, '#youtube-caption-settings-status', [[SettingKeys.includeYoutubeAutoCaptions, '#include-youtube-auto-captions', 'opt_youtube_auto_captions']]);
 }
 void BindDownloadLocation(Settings?.[SettingKeys.downloadFolder], Settings?.[SettingKeys.pickedDownloadFolder], BeforePickDownloadFolder);
+void BindExplorerRemoval();
 BindToggles(Settings, '#debug-status', [
 	[SettingKeys.debugLogging, '#debug-logging', 'opt_debug_logging'],
 	[SettingKeys.debugDownloads, '#debug-downloads', 'opt_debug'],

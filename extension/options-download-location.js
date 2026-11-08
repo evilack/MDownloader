@@ -22,6 +22,10 @@ export async function BindDownloadLocation(DownloadFolder, PickedFolderKey, Befo
 	const Status = document.querySelector('#download-folder-status');
 	let PickedFolder;
 	let CurrentPickedKey = PickedFolderKey ?? '';
+	window.addEventListener?.('download-location-default',()=>{
+		CurrentPickedKey='';PickedFolder=undefined;Input.value='';Input.setCustomValidity('');
+		void DisplayPickedFolder();Status.textContent=Translate('opt_default_folder_saved');
+	});
 	async function DisplayPickedFolder()
 	{
 		Selected.hidden = !PickedFolder;
