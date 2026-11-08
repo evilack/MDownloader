@@ -26,6 +26,7 @@ import {CreateWebRtcTransfers} from './lib/webrtc-transfers.js';
 import {CreateRecordingStore} from './lib/webrtc-recording.js';
 import {StartWebRtcReceiver} from './lib/webrtc-receiver.js';
 import {AssertMediaAllowed} from './lib/youtube-source-policy.js';
+import {YoutubeAvailable, HandleYoutubeRunner} from './features/youtube/entry.js';
 const ScratchName = 'mdownloader-hls';
 const Workspaces = CreateStreamWorkspaces(ScratchName);
 const Transfers = CreateStreamTransfers((Job, Controller, FinishSignal) =>
@@ -468,6 +469,13 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	{
 		return;
 	}
+	if (['youtubeDiscover', 'youtubeRun', 'youtubeCancel', 'youtubeActive'].includes(Message.type))
+	{
+		if (Sender.tab || Sender.url !== chrome.runtime.getURL('background.js') || !YoutubeAvailable()) return;
+		HandleYoutubeRunner(Message, {report: LocalReport, saveFile: SaveMediaFile}).then(
+			Data => Respond({ok: true, data: Data}), ErrorValue => Respond({ok: false, error: SerializeError(ErrorValue)}));
+		return true;
+	}
 	// 실행을 만드는 메시지는 워커에서만 받으며 실행 직전 출처를 다시 검사합니다.
 	if (['hlsRun', 'folderRun', 'hlsSnapshot', 'webrtcReceive', 'webrtcPrepare'].includes(Message.type))
 	{
@@ -537,7 +545,9 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	}
 	if (Message.type === 'hlsActive')
 	{
-		return Respond({ requestIds: [...Transfers.ids(), ...Snapshots.ids()], directIds: [...DirectTransfers.keys()], recordingIds: Recordings.ids() });
+		void (YoutubeAvailable() ? HandleYoutubeRunner({type: 'youtubeActive'}) : Promise.resolve([])).then(YoutubeIds =>
+			Respond({requestIds: [...Transfers.ids(), ...Snapshots.ids()], directIds: [...DirectTransfers.keys()], recordingIds: Recordings.ids(), youtubeIds: YoutubeIds}));
+		return true;
 	}
 	if (Message.type === 'hlsSnapshot')
 	{

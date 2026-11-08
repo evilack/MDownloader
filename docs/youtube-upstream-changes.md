@@ -1,6 +1,6 @@
 # YouTube.js 연동 변경 기록과 업데이트 절차
 
-기준일: 2026-11-08. 이 문서는 YouTube.js 업데이트 때 MDownloader의 연동 변경을 다시 대조하기 위한 별도 기록이다. 현재 개발판은 수동 설치판이며, 스토어판에서는 YouTube 코드와 실행용 sandbox를 제외한다.
+기준일: 2026-11-09. 이 문서는 YouTube.js 업데이트 때 MDownloader의 연동 변경을 다시 대조하기 위한 별도 기록이다. 현재 개발판은 수동 설치판이며, 스토어판에서는 YouTube 코드와 실행용 sandbox를 제외한다.
 
 ## 공식 원본과 고정 버전
 
@@ -50,4 +50,23 @@
 4. **실제 Chrome에서는 개발판만** `node tools/checks/probe-youtube-library-chrome.mjs`로 검사한다. 권한은 별도 검사 프로필의 정확한 API/CDN 호스트에만 부여한다. Computer Use, 사용자 프로필, yt-dlp/FFmpeg 실행 파일과 외부 다운로드 서버를 사용하지 않는다.
 5. sandbox에서 부모 eval 차단, 전역/prototype API 제거, 무한 루프 시간 제한, 다음 평가 복구와 프레임 정리를 확인한다. URL이 추출됐다는 이유만으로 통과시키지 않는다.
 6. 같은 영상 전체의 양 트랙 수신 끝·모든 패킷·시작/끝 구간 디코딩·실제 파일 저장·해시를 확인한다. protection 2/3 또는 부분 파일은 전체 성공이 아니다. 스토어판에 실행 코드나 sandbox 참조가 남으면 실패다.
-7. [검증 기록](verification.md#browser-only-sabr-completion--2026-11-08)에 실행 환경·성공과 실패·UI 통합 범위를 구분해 남긴 뒤 로컬 커밋한다. UI/작업 관리자 통합과 공개 배포는 별도 범위다.
+7. [검증 기록](verification.md#browser-only-sabr-completion--2026-11-08)에 실행 환경·성공과 실패·UI 통합 범위를 구분해 남긴 뒤 로컬 커밋한다. UI/작업 관리자 통합 후에는 아래의 실제 UI 검증도 반복한다. 공개 배포는 별도 범위다.
+
+## 2026-11-09: 개발판 일반 UI·작업 관리자 연결
+
+공식 youtubei.js 18.3.0, googlevideo 5.0.1, Mediabunny 1.65.2의 버전·번들·원본은 변경하지 않았다. 아래는 모두 MDownloader 소유 연동 변경이다.
+
+| 파일/경계 | 변경 | 업데이트 때 다시 확인할 계약 |
+|---|---|---|
+| features/youtube/entry.js, jobs.js | SW용 provider 작업은 정적 import. 추출 중에만 extension initiator + www.youtube.com/youtubei/ + POST의 Origin/Referer 규칙을 참조 계수로 유지·해제한다. 규칙 추가 실패도 참조를 남기지 않는다. | MV3 SW의 동적 import 금지, DNR 권한/발신자와 API 경로 |
+| features/youtube/qualities.js | AVC 영상과 최고 비트레이트 AAC를 조합하고 영상 해상도 순서로 정렬한다. itag만 쓰지 않고 정확한 index ID를 유지한다. | upstream 포맷 codecs/kind/bitrate/크기 및 세션 ID |
+| features/youtube/runner.js | 추출/서명 URL/설정은 offscreen 메모리. 런타임만으로 SW에 정확한 호스트 권한을 문의한다. 수신 → 전체 끝 검증 → Mediabunny → 공통 폴더/Chrome 저장. 저장을 마친 뒤 공통 workspace 수명 관리로 OPFS를 해제한다. | sandbox 함수 본문 실행, SABR 양 트랙 완료, native save의 비동기 수명 |
+| detection/background/candidate-download | 현재 문서의 canonical YouTube 후보, 일반 클릭 최고 화질, Shift 화질 선택, 정확한 CDN 권한 요청. watch HTML을 미디어 URL로 미리보기하지 않는다. | 활성 문서/scan ID, 공개 WEB 검증, 선택 세션 소유권 |
+| jobs/browser-job-state/job-row/metrics | YouTube는 youtube:true인 별도 전송이다. HLS로 표시/가장하지 않는다. 작업 등록·수신 바이트·병합·완료·취소·runner 상실을 연결한다. 주소나 Ustreamer 설정은 영속 작업/scan에 쓰지 않는다. | 활성 ID, 취소와 진행 보고 순서, 최종 다운로드 ID |
+| store packaging | 새 provider 구현도 전부 제외하고 새 export의 비활성 stub만 제공한다. 실제 Chrome 검사는 개발판만 수행한다. | 모든 import/export, sandbox 참조와 물리 파일 제외 |
+
+업데이트 후 개발판을 생성하고 node tools/checks/probe-youtube-ui-chrome.mjs 및 node tools/checks/probe-youtube-ui-chrome.mjs --auto를 실행한다. 실제 사이드 패널은 Playwright가 일반 페이지 목록에 노출하지 않아 CDP로 그 target에 연결한다. 일반 UI 버튼/품질 선택/관리자 완료를 사용하며 수신기를 직접 호출하지 않는다. 검사 프로필의 정확한 API/CDN 호스트만 사전 승인한다. OS 권한 팝업의 수동 인수나 일반 사용자 프로필 변경으로 해석하지 않는다.
+
+이전 WEB protection 3의 모든 서버 원인을 해결한 것은 아니다. 공개 WEB의 제한 여부를 먼저 확인한 뒤 공식 VISIONOS SABR 세션으로 성공한 범위를 유지한다. [실제 UI 검증](verification.md#youtube-ui-integration--2026-11-09)을 참조한다.
+
+독립 검토 후 첫 일반 클릭의 새 CDN 권한은 최고 화질 1개가 선택된 기존 확인 창에서 직접 요청하도록 변경했다. 비동기 추출 뒤 원래 클릭의 사용자 제스처에 의존하지 않는다. runner 종료 시에는 진행 보고 체인을 먼저 기다려 늦은 active 스냅샷이 canceled/failed 상태를 덮어쓰지 않도록 했다. 두 항목 모두 실패 재현 → 수정 후 통과 검사와 실제 1080p UI 수신·저장 재검사를 남겼다.

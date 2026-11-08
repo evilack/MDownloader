@@ -10,6 +10,7 @@ import { LocalizedError, ReceivedError, Translate } from './lib/i18n.js';
 import { DebugConfiguration } from './lib/debug-runtime.js';
 import { DebugLog } from './lib/debug-log.js';
 import {AssertMediaAllowed} from './lib/youtube-source-policy.js';
+import {YoutubeAvailable} from './features/youtube/entry.js';
 const Path = 'hls-runner.html';
 let Creating;
 export const HlsRunnerUrl = () => chrome.runtime.getURL(Path);
@@ -30,7 +31,7 @@ export async function EnsureRunner()
 				throw new LocalizedError('stream_runner_unavailable');
 			}
 			await chrome.offscreen.createDocument({
-				url: Path, reasons: ['BLOBS', 'WEB_RTC'],
+				url: Path, reasons: ['BLOBS', 'WEB_RTC', ...(YoutubeAvailable() ? ['IFRAME_SCRIPTING', 'WORKERS'] : [])],
 				justification: Translate('offscreen_justification'),
 			});
 		})().finally(() =>

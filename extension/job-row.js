@@ -252,7 +252,7 @@ export function CreateJobRow(Job, Tile, Context)
 		ControlButton.dataset.action = Action;
 		return ControlButton;
 	}
-	if (Job.state === 'active' && !Job.hls && !Job.recording && !Job.pickedDownloadFolder)
+	if (Job.state === 'active' && !Job.hls && !Job.recording && !Job.youtube && !Job.pickedDownloadFolder)
 	{
 		Actions.append(Control(Translate('view_action_pause'), 'pause', true));
 	}
@@ -272,7 +272,7 @@ export function CreateJobRow(Job, Tile, Context)
 	}
 	if (['active', 'paused'].includes(Job.state) && !Job.snapshot && Job.snapshotAvailable && !Job.muxing)
 	{
-		InlineActions.append(SetButtonIcon(Control('', 'snapshot', true), Translate(Job.hls || Job.recording ? 'view_action_snapshot' : 'view_action_snapshot_file'), 'download'));
+		InlineActions.append(SetButtonIcon(Control('', 'snapshot', true), Translate(Job.hls || Job.recording || Job.youtube ? 'view_action_snapshot' : 'view_action_snapshot_file'), 'download'));
 	}
 	if (Job.state === 'active' && !Job.snapshot && !Job.muxing && (Job.hls || Job.live))
 	{
@@ -284,7 +284,7 @@ export function CreateJobRow(Job, Tile, Context)
 	{
 		Actions.append(CreateButton(Translate('view_copy_link'), () => CopyLink(LoadLink, Announce)));
 	}
-	if (Job.state !== 'starting' && !((Job.hls || Job.recording) && ['active', 'paused'].includes(Job.state)))
+	if (Job.state !== 'starting' && !((Job.hls || Job.recording || Job.youtube) && ['active', 'paused'].includes(Job.state)))
 	{
 		const Remove = CreateButton('', async UiEvent =>
 		{
@@ -328,7 +328,7 @@ export function CreateJobRow(Job, Tile, Context)
 export function GetJobRowSignature(Job, bShowDiagnostics)
 {
 	return JSON.stringify([Job.filename, Job.state, Job.hasUrl, Job.error, Job.canResume, Job.exists,
-		Job.downloadId, Job.hls, Job.recording, Job.live, Job.live && Job.finished > 0, Job.snapshotAvailable, Job.snapshotPermission, Job.muxing,
+		Job.downloadId, Job.youtube, Job.hls, Job.recording, Job.live, Job.live && Job.finished > 0, Job.snapshotAvailable, Job.snapshotPermission, Job.muxing,
 		bShowDiagnostics || Job.state === 'failed' ? Job.diagnostic : undefined, Job.state === 'failed' ? Job.finished : undefined]);
 }
 
@@ -337,7 +337,7 @@ export function UpdateJobRowMetrics(Entry, Job, Now, CountFormat)
 {
 	if (Entry.progress)
 	{
-		const ActiveStream = Job.state === 'active' && (Job.hls || Job.recording);
+		const ActiveStream = Job.state === 'active' && (Job.hls || Job.recording || Job.youtube);
 		const Value = GetDownloadMetrics(Job, Entry.previous, Now);
 		if (ActiveStream)
 		{
@@ -349,7 +349,7 @@ export function UpdateJobRowMetrics(Entry, Job, Now, CountFormat)
 			{
 				Value.speed = Translate(Job.snapshot ? 'view_job_snapshot_muxing' : 'view_job_mp4_muxing');
 			}
-			else if (!Job.live && !Job.count && !Job.recording)
+			else if (!Job.live && !Job.count && !Job.recording && !Job.youtube)
 			{
 				Value.speed = Translate('view_job_playlist_check');
 			}

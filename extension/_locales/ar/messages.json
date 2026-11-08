@@ -1395,5 +1395,8 @@
   },
   "youtube_sabr_size_limit": {
     "message": "يتجاوز استقبال SABR حد الحجم."
+  },
+  "view_youtube_quality_checking": {
+    "message": "جارٍ التحقق من جودة YouTube…"
   }
 }

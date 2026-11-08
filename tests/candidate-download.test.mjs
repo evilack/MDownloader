@@ -107,7 +107,7 @@ function QualityHarness(T, Format = 'M3U8', Qualities = [{url: 'https://cdn.test
 	globalThis.chrome = {storage: {local: {get: async() => ({chooseHlsQuality: true})}}, runtime: {sendMessage: async Message =>
 			{
 				Sent.push(Message);
-				return {ok: true, data: ['hlsQualities', 'webrtcQualities'].includes(Message.type) ? Qualities: {state: 'started'}};
+				return {ok: true, data: ['hlsQualities', 'webrtcQualities', 'youtubeQualities'].includes(Message.type) ? Qualities: {state: 'started'}};
 			}}};
 	T.after(() =>
 	{
@@ -140,6 +140,19 @@ Test('normal click registers automatically even when an obsolete quality setting
 	await Click;
 	Assert.deepEqual(H.sent.map(Message => Message.type), ['enqueue']);
 	Assert.equal(H.sent[0].variantUrl, undefined);
+});
+Test('first-use YouTube normal click hands CDN permission to a fresh confirm gesture', async T =>
+{
+	const Quality = {sessionKey: 's', videoId: '-XHx839rSc8', selection: {videoFormatId: '137:0', audioFormatId: '140:1'}};
+	const H = QualityHarness(T, 'YOUTUBE', [{resolution: '1920x1080', bandwidth: 1000, quality: Quality, serverPermission: 'https://cdn.googlevideo.com/*'}]);
+	const Requests = [];
+	chrome.permissions = {request: async Options => {Requests.push(Options); return true;}};
+	const Click = H.button.events.click({shiftKey: false}); await H.settle();
+	Assert.equal(Requests.length, 0, 'no host prompt after async extraction');
+	Assert.equal(H.get('quality-dialog').open, true);
+	const Confirm = H.get('confirm-quality'); await Confirm.form.events.submit({submitter: Confirm, preventDefault() {}}); await Click;
+	Assert.deepEqual(Requests, [{origins: ['https://cdn.googlevideo.com/*']}]);
+	Assert.deepEqual(H.sent.at(-1).quality, Quality);
 });
 Test('Shift click opens quality controls below its own row and sends the selected rendition', async T =>
 {

@@ -138,7 +138,8 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 	{
 		const bIsHls = Candidate.format === MediaFormat.Hls;
 		const bIsWebRtc = Candidate.format === MediaFormat.WebRtc;
-		const bHasQuality = bIsHls || bIsWebRtc;
+		const bIsYoutube = Candidate.format === 'YOUTUBE';
+		const bHasQuality = bIsHls || bIsWebRtc || bIsYoutube;
 		const BaseLabel = Translate(Candidate.serverPermission ? 'view_download_with_permission' : 'view_download');
 		const DownloadLabel = bHasQuality ? Translate('view_download_quality_hint', BaseLabel) : BaseLabel;
 		const Download = CreateButton('', async UiEvent =>
@@ -162,7 +163,7 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 			try
 			{
 				if (Candidate.serverPermission &&
-				!await chrome.permissions.request({ origins: [Candidate.serverPermission] }))
+				!await chrome.permissions.request({ origins: bIsYoutube ? ['https://www.youtube.com/*', 'https://youtubei.googleapis.com/*'] : [Candidate.serverPermission] }))
 				{
 					Download.disabled = false;
 					SetControlLabel(Download, DownloadLabel);
@@ -179,17 +180,19 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 				}
 				let VariantUrl;
 				let Quality;
-				if (bHasQuality && bChooseQuality)
+				if (bHasQuality && (bChooseQuality || bIsYoutube))
 				{
-					Announce(Translate('view_quality_checking'));
-					const Qualities = await SendRequest(bIsWebRtc ? 'webrtcQualities' : 'hlsQualities', Input);
+					Announce(Translate(bIsYoutube ? 'view_youtube_quality_checking' : 'view_quality_checking'));
+					const Qualities = await SendRequest(bIsYoutube ? 'youtubeQualities' : bIsWebRtc ? 'webrtcQualities' : 'hlsQualities', Input);
 					if (!IsCurrent())
 					{
 						return;
 					}
-					if (Qualities.length > 1 || bIsWebRtc && Qualities.length === 1)
+					if (bChooseQuality && (Qualities.length > 1 || (bIsWebRtc || bIsYoutube) && Qualities.length === 1) ||
+						bIsYoutube && Qualities[0]?.serverPermission)
 					{
-						const Selected = await ChooseQuality(Qualities, Download);
+						// 새 CDN 권한은 추출을 기다린 원래 클릭 대신 확인 버튼의 새 제스처에서 요청합니다.
+						const Selected = await ChooseQuality(bIsYoutube && !bChooseQuality ? [Qualities[0]] : Qualities, Download);
 						if (!IsCurrent())
 						{
 							return;
@@ -202,8 +205,14 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 							Announce(Translate('view_quality_canceled'));
 							return;
 						}
-						if (bIsWebRtc) Quality = {name: Selected.name, session: Selected.session};
+						if (bIsYoutube) Quality = Selected.quality;
+						else if (bIsWebRtc) Quality = {name: Selected.name, session: Selected.session};
 						else VariantUrl = Selected.url;
+					}
+					else if (bIsYoutube)
+					{
+						const Selected = Qualities[0];
+						Quality = Selected.quality;
 					}
 				}
 				const Job = await SendRequest('enqueue', { ...Input, requestId: RequestId, variantUrl: VariantUrl, ...(Quality ? {quality: Quality} : {}) });

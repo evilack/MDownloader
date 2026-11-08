@@ -44,7 +44,7 @@ export function FormatDownloadBytes(Bytes)
 
 function TransferPercent(Item)
 {
-	if (Item.state === 'active' && (Item.hls || Item.recording))
+	if (Item.state === 'active' && (Item.hls || Item.recording || Item.youtube))
 	{
 		if (Item.live || !(Item.count > 0))
 		{

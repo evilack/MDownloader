@@ -1395,5 +1395,8 @@
   },
   "youtube_sabr_size_limit": {
     "message": "SABR रिसेप्शन आकार सीमा से अधिक है।"
+  },
+  "view_youtube_quality_checking": {
+    "message": "YouTube की गुणवत्ता जाँची जा रही है…"
   }
 }

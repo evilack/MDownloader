@@ -1395,5 +1395,8 @@
   },
   "youtube_sabr_size_limit": {
     "message": "SABR 受信がサイズ上限を超えました。"
+  },
+  "view_youtube_quality_checking": {
+    "message": "YouTube の画質を確認しています…"
   }
 }

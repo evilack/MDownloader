@@ -22,6 +22,7 @@ import {RelayWebRtc, WebRtcSourceLost, CancelAllWebRtc, WebRtcQualities} from '.
 import {AuthorizePlayback} from './lib/playback-authorization.js';
 import {PrepareDistributionNetwork} from './lib/distribution-network.js';
 import {CanUseYoutube} from './lib/distribution-policy.js';
+import {DiscoverYoutube} from './features/youtube/entry.js';
 void PrepareDistributionNetwork().catch(ErrorValue => ReportDebugFailure(ErrorValue, 'DistributionRulesFailed'));
 void InitializeDebugLogging(async bEnabled =>
 {
@@ -68,6 +69,12 @@ async function Route(Message)
 		case 'captureCandidatePreview': return CaptureCandidatePreview(Message);
 		case 'hlsQualities': return HlsQualities(Message);
 		case 'webrtcQualities': return WebRtcQualities(Message);
+		case 'youtubeQualities':
+		{
+			const Item = await ResolveCandidate(Message.tabId, Message.scanId, Message.candidateId, Message.scope);
+			if (Item.format !== 'YOUTUBE') throw new LocalizedError('youtube_session_changed');
+			return DiscoverYoutube(Item);
+		}
 		case 'enqueue': return Enqueue(Message);
 		case 'jobs': return ListJobs(Message.requestIds, Message.mediaKeys);
 		case 'jobUrl': return JobUrl(Message.requestId);

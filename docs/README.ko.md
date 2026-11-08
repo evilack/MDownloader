@@ -1,8 +1,8 @@
 # MDownloader
 
-배포판은 `node tools/build/package-extension.mjs --flavor development|chrome-store`로 원본과 별도의 `artifacts/distributions/<flavor>/extension/`에 생성합니다. 개발판은 기본적으로 Chrome에서도 허용하며 `--block-chrome`은 추가 제한용 빌드 옵션입니다. YouTube 추출·저장 지원은 실제 브라우저 선행 검증 단계이며 아직 완료된 기능이 아닙니다. 스토어판은 YouTube provider/vendor를 물리적으로 제외하고 일반 미디어·embed·재생 수집·기존 작업 재개와 전송에서도 고정 차단합니다. 심사 이후 켜는 설정은 없습니다. 상세 범위는 [개발 안내](development.md)와 [검증 기록](verification.md)에 기록합니다.
+배포판은 `node tools/build/package-extension.mjs --flavor development|chrome-store`로 원본과 별도의 `artifacts/distributions/<flavor>/extension/`에 생성합니다. 개발판은 기본적으로 Chrome에서도 허용하며 `--block-chrome`은 추가 제한용 빌드 옵션입니다. 개발판은 지원되는 공개 YouTube VOD를 일반 다운로드 UI와 작업 관리자에서 저장합니다. 스토어판은 YouTube provider/vendor를 물리적으로 제외하고 일반 미디어·embed·재생 수집·기존 작업 재개와 전송에서도 고정 차단합니다. 심사 이후 켜는 설정은 없습니다. 상세 범위는 [개발 안내](development.md)와 [검증 기록](verification.md)에 기록합니다.
 
-개발판은 수동 설치판이며, 다른 배포판은 Chrome 웹 스토어판뿐입니다. youtubei.js·SABR·Mediabunny만으로 같은 영상 전체 623초의 수신·병합·실제 개발판 Chrome 저장을 확인했습니다. yt-dlp·FFmpeg 실행 파일과 외부 서버는 사용하지 않았습니다. 제품 UI·작업 관리자 연결은 별도 단계로 남아 있습니다. [브라우저 단독 검증](verification.md#browser-only-sabr-completion--2026-11-08)과 [YouTube.js 변경·업데이트 기록](youtube-upstream-changes.md)을 확인하세요.
+개발판은 수동 설치판이며, 다른 배포판은 Chrome 웹 스토어판뿐입니다. youtubei.js·SABR·Mediabunny만으로 같은 영상 전체 623초의 수신·병합·실제 개발판 Chrome 저장을 확인했습니다. yt-dlp·FFmpeg 실행 파일과 외부 서버는 사용하지 않았습니다. 일반 클릭의 자동 최고 화질(1080p)과 Shift+클릭의 선택 화질(360p) 모두 같은 영상의 전체 수신·작업 관리자 완료·실제 파일 저장을 확인했습니다. 검증 범위와 제한은 [UI 통합 기록](verification.md#youtube-ui-integration--2026-11-09)에 있습니다. [브라우저 단독 검증](verification.md#browser-only-sabr-completion--2026-11-08)과 [YouTube.js 변경·업데이트 기록](youtube-upstream-changes.md)을 확인하세요.
 
 [English](../README.md) · 한국어
 

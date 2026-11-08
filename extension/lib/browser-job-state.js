@@ -34,9 +34,10 @@ export function SummarizeJob(Job, Item, Runners = {}, bRegistering = false)
 		return {...Job, state: 'interrupted', error: MessageRef('webrtc_interrupted_saved')};
 	if (!Item)
 	{
-		if ((Job.hls || Job.recording || Job.pickedDownloadFolder) && Job.downloadId === undefined)
+		if ((Job.hls || Job.recording || Job.youtube || Job.pickedDownloadFolder) && Job.downloadId === undefined)
 		{
 			const Running = Job.recording ? Runners.recordingIds?.includes(Job.requestId)
+			: Job.youtube ? Runners.youtubeIds?.includes(Job.requestId)
 			: Job.hls ? Runners.requestIds?.includes(Job.requestId) || Runners.requestId === Job.requestId
 			: Runners.directIds?.includes(Job.requestId);
 			if (Job.state !== 'active' || Running || bRegistering)
@@ -61,9 +62,9 @@ export function SummarizeJob(Job, Item, Runners = {}, bRegistering = false)
 		error: bWrongType ? MessageRef('job_not_video') : State === 'interrupted' ? MessageRef('webrtc_interrupted_saved')
 		: Item.error && MessageRef('job_browser_error', Item.error),
 		hasUrl: /^https?:\/\//i.test(Item.url),
-		bytesReceived: (Job.hls || Job.recording) && ['complete', 'interrupted'].includes(State) ? Job.bytesReceived : Item.bytesReceived,
+		bytesReceived: (Job.hls || Job.recording || Job.youtube) && ['complete', 'interrupted'].includes(State) ? Job.bytesReceived : Item.bytesReceived,
 		totalBytes: Item.totalBytes,
-		startTime: Job.hls || Job.recording ? new Date(Job.created).toISOString() : Item.startTime,
+		startTime: Job.hls || Job.recording || Job.youtube ? new Date(Job.created).toISOString() : Item.startTime,
 		endTime: Item.endTime, paused: Item.paused,
 		canResume: Item.canResume, exists: Item.exists,
 	};

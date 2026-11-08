@@ -25,6 +25,7 @@ import {CanFinishJob} from './lib/job-actions.js';
 import {LaunchWebRtc, ControlWebRtc, ForgetWebRtcControl} from './webrtc-jobs.js';
 import {AssertMediaAllowed, AssertJobMayRestart, IsYoutubeSource} from './lib/youtube-source-policy.js';
 import {RequirePlaybackAuthorization} from './lib/playback-authorization.js';
+import {ResolveYoutubeSelection, CancelYoutube} from './features/youtube/entry.js';
 const Pending = new Map();
 const Removing = new Set();
 const PendingSnapshots = new Set();
@@ -173,6 +174,15 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
 	AssertMediaAllowed(Item);
 	if (VariantUrl) AssertMediaAllowed({url: VariantUrl});
+	if (Item.format === 'YOUTUBE')
+	{
+		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle),
+			created: Date.now(), state: 'active', youtube: true, bytesReceived: 0};
+		await RegisterMediaJob(Key, Job, TabId, Item, false);
+		try { await ResolveYoutubeSelection(Job, Item, Quality); }
+		catch (ErrorValue) { await WriteJob(Key, {...Job, state: 'failed', error: SerializeError(ErrorValue)}); throw ErrorValue; }
+		await OpenDebugView(RequestId); return {state: 'started'};
+	}
 	if (Item.format === 'WEBRTC')
 	{
 		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle),
@@ -296,7 +306,7 @@ export async function UpdateHls(Message)
 {
 	const Key = JobKey(Message.requestId);
 	const Job = await ReadJob(Key);
-	if (!Job?.hls && !Job?.recording && !Job?.pickedDownloadFolder)
+	if (!Job?.hls && !Job?.recording && !Job?.youtube && !Job?.pickedDownloadFolder)
 	{
 		throw new LocalizedError('job_hls_not_found');
 	}
@@ -340,6 +350,9 @@ export async function UpdateHls(Message)
 	}
 	switch (Message.action)
 	{
+		case 'youtubeReceived':
+		if (!Job.youtube) throw new LocalizedError('job_hls_wrong_state');
+		return WriteJob(Key, {...Job, receipt: Message.receipt});
 		case 'streamPartial':
 		if (!Job.hls || Job.snapshot || Job.muxing)
 		{
@@ -385,7 +398,7 @@ export async function UpdateHls(Message)
 		}
 		case 'save':
 		{
-			if ((!Job.hls && !Job.recording) || Job.pickedDownloadFolder || !Message.objectUrl.startsWith('blob:' + chrome.runtime.getURL('')))
+			if ((!Job.hls && !Job.recording && !Job.youtube) || Job.pickedDownloadFolder || !Message.objectUrl.startsWith('blob:' + chrome.runtime.getURL('')))
 			{
 				throw new LocalizedError('job_invalid_mp4_url');
 			}
@@ -433,7 +446,7 @@ export async function ListJobs(RequestIds, LocalMediaKeys)
 	{
 		Registering.add(Key);
 	}
-	const bNeedsRunner = Jobs.some(Job => (Job.hls || Job.recording || Job.pickedDownloadFolder) &&
+	const bNeedsRunner = Jobs.some(Job => (Job.hls || Job.recording || Job.youtube || Job.pickedDownloadFolder) &&
 	Job.state === 'active' && Job.downloadId === undefined &&
 	!Registering.has(JobKey(Job.requestId)));
 	const [Own, Runners] = await Promise.all([LoadBrowserDownloads(Jobs), bNeedsRunner ? ActiveTransfers() : undefined]);
@@ -441,7 +454,7 @@ export async function ListJobs(RequestIds, LocalMediaKeys)
 	{
 		const Item = Own.get(Job.downloadId);
 		const Summary = SummarizeJob(Job, Item, Runners, Registering.has(JobKey(Job.requestId)));
-		if (Job.hls || Job.recording || Job.snapshot || !['active', 'paused'].includes(Summary.state))
+		if (Job.hls || Job.recording || Job.youtube || Job.snapshot || !['active', 'paused'].includes(Summary.state))
 		{
 			return Summary;
 		}
@@ -526,9 +539,9 @@ export async function RemoveJob(RequestId, DeleteFile, ExpectedGroup)
 		{
 			return;
 		}
-		if (Job.hls || Job.recording)
+		if (Job.hls || Job.recording || Job.youtube)
 		{
-			const bSaving = Job.downloadId === undefined ? Job.recording ? (await ActiveTransfers()).recordingIds?.includes(RequestId) : await IsHlsActive(RequestId)
+			const bSaving = Job.downloadId === undefined ? Job.youtube ? (await ActiveTransfers()).youtubeIds?.includes(RequestId) : Job.recording ? (await ActiveTransfers()).recordingIds?.includes(RequestId) : await IsHlsActive(RequestId)
 			: (ExpectedGroup ? BrowserItem : await GetBrowserDownload(Job.downloadId))?.state === 'in_progress';
 			if (bSaving)
 			{
@@ -603,6 +616,7 @@ export async function ControlJob(RequestId, Action)
 		DebugLog.Record('JobControlRequested', () => ({ requestId: RequestId, action: Action }));
 	}
 	const Job = await ReadJob(JobKey(RequestId));
+	if (Job?.youtube && Job.state === 'active' && Action === 'cancel' && await CancelYoutube(RequestId)) return;
 	if (Job?.recording && Job.state === 'active' && ['finish', 'cancel'].includes(Action) && await ControlWebRtc(RequestId, Action)) return;
 	if (Action === 'snapshot')
 	{

@@ -200,3 +200,29 @@ The normal public WEB player itself stalled at about 60 seconds and returned pro
 Product discovery/manager UI remains gated pending its production permission/header/job integration; this full-reception proof does not claim that UI integration or store publication. The [separate YouTube.js change log](youtube-upstream-changes.md) identifies official pins, MDownloader-owned changes, unchanged upstream source, examples and required upgrade checks.
 
 Final browser-only scoped candidate: **292 tests passed, zero failed**; all ten catalogs contain 398 messages with zero missing references; generated policy matched; project checks had zero failures and preserved 73 files; development/store physical composition and import graphs passed. The exact staged candidate repeated native full reception, complete-tail save and both-track decoding. Independent review's duplicate-itag identity finding and additional prototype/disposal regressions were fixed RED→GREEN. An inspector-listed worker descriptor was checked and its runtime session was already closed; the report does not claim zero inspector descriptors.
+
+## YouTube UI integration — 2026-11-09
+
+The development build is the manual/unpacked build. In actual Chrome **157.0.8103.39**, isolated profiles opened the native side panel and used the normal candidate/download controls. The first implementation failed because its SW provider dynamically imported a module; Chrome explicitly rejected that operation. The worker entry now uses static imports with a regression check. A subsequent harness-only normal-click attempt clicked while the canceled dialog's button was still disabled; waiting for its enabled state corrected the test. All negative runs are retained in [redacted UI evidence](evidence/2026-11-09-youtube-ui-development.json).
+
+| Native UI acceptance | Shift-selected 360p | Normal-click automatic best 1080p |
+|---|---:|---:|
+| Manager | active → complete | active → complete |
+| Video received | 8,432,390 bytes | 82,318,558 bytes |
+| AAC received | 10,078,363 bytes | 10,078,363 bytes |
+| Received track ends | video 622.567s / audio 622.690s | video 622.567s / audio 622.690s |
+| Saved MP4 | 18,464,219 bytes | 92,344,267 bytes |
+| Actual saved duration | 622.689524s, rounds to displayed 623s | 622.689524s, rounds to displayed 623s |
+| All disk-file packets | 18,677 video / 26,817 AAC | 18,677 video / 26,817 AAC |
+| Decoded saved-file samples | 1s / 620s, 640×360, nonzero AAC RMS | 1s / 620s, 1920×1080, nonzero AAC RMS |
+| SHA-256 | d6d49b4df3870186cfe0d793a674f3ccbbdc5ce634a7dcc329d6073929704752 | de469d848a19f967d19a71322d0d1a45ecc2430453b745fbd9b3590cd97f1a13 |
+
+The job uses youtube:true and hls:false. Local/session storage contain no signed googlevideo source or Ustreamer config, and the scoped API header rule is removed. The exact underlying audio variant differs from the earlier lower-bitrate browser-library proof; format identity remains selected by exact index. The complete longer audio tail is retained.
+
+Computer Use, the user's Chrome profile, yt-dlp, an FFmpeg executable, an external download server and Store browser execution were excluded. The probe approves only exact API/CDN origins in its own test profile, so it does not establish manual OS permission-dialog acceptance. Chrome automation saves a UUID filename; the original native download and byte-identical requested-title export are both retained. This proves whole-source bytes, native save and decoded samples, not production filename acceptance or real-time viewing of every frame. No claim is made for all videos/languages/resolutions, live/DRM/restricted sources, Store review or public release. The earlier public-WEB protection rejection remains independently documented.
+
+Independent review found and fixed two important issues RED→GREEN: a first normal click now hands a new CDN permission to the existing dialog's direct confirm gesture, keeping automatic best quality selected; pending progress writes finish before a cancel/failure report so they cannot restore an active state afterward. The reviewed implementation repeated the full native 1080p receive/save, including the first-use permission handoff. Optional-host OS prompts are still preapproved by the harness, not manually accepted.
+
+Automated scoped checks: 302 tests passed, zero failed; ten catalogs contain 399 messages each, no missing references. Development/Store package composition and import graphs are checked separately from browser acceptance. Official upstream packages/bundles remain unchanged; MDownloader-only integration and upgrade checks are recorded in [YouTube.js changes](youtube-upstream-changes.md). Shared picked-folder save is connected but was not separately native-tested here; this acceptance is for Chrome native downloads.
+
+The exact staged extension tree `03b1a1f7d3ed3c45d4bed4813e8f030819402db1` repeated native automatic-best-quality full reception/save and disk-file decoding after review fixes. Final scoped candidate: 302/302 tests; 399 messages × 10 locales; zero project failures, 73 preserved files; development 159 files/366 imports and Store 135 files/338 imports verified. The separately merged working folder, including pre-existing subtitle/translation changes outside this commit, passed 382 tests, skipped one supplied-HTML fixture, and had zero failures.

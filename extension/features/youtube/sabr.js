@@ -96,7 +96,7 @@ export async function ReceiveSabrTracks(Config, Selection, {createStream, create
 			if (Number.isFinite(ExpectedEnd) && (!Number.isFinite(Receiver[Kind + 'EndTimeMs']) || Receiver[Kind + 'EndTimeMs'] < ExpectedEnd)) Fail('youtube_sabr_receive_failed');
 		}
 		await Promise.all(Writers.map(Writer => Writer.close()));
-		return {bytes: Bytes, selectedFormats: Started.selectedFormats};
+		return {bytes: Bytes, selectedFormats: Started.selectedFormats, videoEndMs: Receiver.videoEndTimeMs, audioEndMs: Receiver.audioEndTimeMs};
 	}
 	catch (ErrorValue)
 	{

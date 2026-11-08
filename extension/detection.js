@@ -14,7 +14,8 @@ import { DiscoverDeclaredHls } from './lib/declared-streams.js';
 import { DiscoverNativeHls } from './lib/native-hls-discovery.js';
 import { DiscoverSelectedHls } from './lib/selected-hls.js';
 import {WebRtcPageTask} from './lib/webrtc-page.js';
-import {AssertMediaAllowed, YoutubeSourceBlocked} from './lib/youtube-source-policy.js';
+import {AssertMediaAllowed, YoutubeSourceBlocked, IdentifyYoutubeUrl} from './lib/youtube-source-policy.js';
+import {YoutubeAvailable} from './features/youtube/entry.js';
 const KeyEncoder = new TextEncoder();
 const MaxPlaybackObservations = MaxObservedMediaPerTab + RuntimePolicy.Detection.MaxMediaContextUrls;
 async function MediaJobKey(Page, Url)
@@ -101,6 +102,9 @@ export async function FindMedia(TabId)
 	});
 	const { page: Page, sources: Sources, playlists: Playlists } = Frame.result;
 	if (YoutubeSourceBlocked({page: Page})) return {documentId: Frame.documentId, page: Page, observed: [], items: []};
+	const Youtube = YoutubeAvailable() && IdentifyYoutubeUrl(Page);
+	if (Youtube) return {documentId: Frame.documentId, page: Page, observed: [], items: [{url: Youtube.canonicalUrl,
+		name: 'YouTube.mp4', format: 'YOUTUBE', supported: true, page: Page}]};
 	if (!['http:', 'https:'].includes(new URL(Page).protocol))
 	{
 		return null;
@@ -276,7 +280,7 @@ export async function Scan(TabId, Scope)
 		{
 			const Variants = VariantsByDocument.get(Item.documentId);
 			const ObservedVariants = Item.variants?.map(Url => Variants?.get(Url)).filter(Boolean);
-			const Origin = IsStreamFormat(Item.format) && HostPattern(Item.url);
+			const Origin = (IsStreamFormat(Item.format) || Item.format === 'YOUTUBE') && HostPattern(Item.url);
 			if (Origin && !LocalPermissions.has(Origin))
 			{
 				LocalPermissions.set(Origin, chrome.permissions.contains({ origins: [Origin] }));
@@ -358,6 +362,8 @@ export async function ResolveCandidate(TabId, ScanId, CandidateId, Scope)
 		throw new LocalizedError('candidate_changed');
 	}
 	AssertMediaAllowed({...Candidate, pageUrl: Saved.page});
+	if (Candidate.format === 'YOUTUBE') return {...Candidate, page: Saved.page, previewPage: Saved.page,
+		documentId: Saved.documentId, singleStream: true, pageTitle: Saved.pageTitle};
 	const Context = await ReadMediaContext(TabId);
 	if (Candidate.format === 'WEBRTC')
 	{
@@ -472,7 +478,7 @@ export async function PreviewCandidate({ tabId: TabId, scanId: ScanId, candidate
 	// 마스터와 연결된 화질 중 이 문서에서 성공한 CDN 응답만 보호된 스트림의 미리보기에 사용합니다.
 	const Playback = Item.observedVariants?.[0] ?? (Item.requestContext ? Item : undefined);
 	return {
-		url: Item.format === 'WEBRTC' ? undefined : Item.url, format: Item.format, still: Preview?.still, resolution: Preview?.resolution,
+		url: ['WEBRTC', 'YOUTUBE'].includes(Item.format) ? undefined : Item.url, format: Item.format, still: Preview?.still, resolution: Preview?.resolution,
 		live: Preview?.live ?? Item.live, duration: Preview?.duration,
 		streamPath: StreamPreviewPath(Item.url, Item.format),
 		protectedRequest: !!Playback,

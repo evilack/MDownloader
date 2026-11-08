@@ -1395,5 +1395,8 @@
   },
   "youtube_sabr_size_limit": {
     "message": "Получение SABR превышает ограничение размера."
+  },
+  "view_youtube_quality_checking": {
+    "message": "Проверка качества YouTube…"
   }
 }

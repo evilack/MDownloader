@@ -60,7 +60,7 @@ export function IsAudioFormat(Format)
 
 export function GetMediaFormatLabel(Format)
 {
-	return Format === MediaFormat.WebRtc ? 'WebRTC' : StreamLabels.get(Format) ?? Format;
+	return Format === MediaFormat.WebRtc ? 'WebRTC' : Format === 'YOUTUBE' ? 'YouTube' : StreamLabels.get(Format) ?? Format;
 }
 
 /** Chrome 권한 검사는 HTTP(S) 호스트만 사용하며 경로나 인증 정보는 포함하지 않습니다. */
