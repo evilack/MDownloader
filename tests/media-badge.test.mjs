@@ -34,7 +34,7 @@ Test('updates a per-tab badge from deduplicated media and ignores results overta
 			{
 			},
 		},
-		runtime: { id: 'test', onMessage: Event(), getURL: Path => 'chrome-extension://test/' + Path },
+		runtime: { id: 'test', onConnect: Event(), onMessage: Event(), getURL: Path => 'chrome-extension://test/' + Path },
 		permissions: { contains: async () => true, onRemoved: Event() },
 		tabs: {
 			get: async () => ({ url: Page, status: 'complete' }),

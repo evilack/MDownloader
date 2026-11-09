@@ -1762,5 +1762,38 @@
   },
   "explorer_remove_run_help": {
     "message": "Run MDownloader-Windows-Remove.cmd from Downloads.\nThis screen verifies completion automatically."
+  },
+  "opt_notifications": {
+    "message": "通知"
+  },
+  "opt_notify_complete": {
+    "message": "下载完成通知"
+  },
+  "opt_notify_scheduled_start": {
+    "message": "预约下载开始通知"
+  },
+  "opt_notify_complete_help": {
+    "message": "侧边栏已关闭且弹出窗口中没有显示此下载项目时通知。"
+  },
+  "opt_notify_scheduled_start_help": {
+    "message": "预约下载结束等待并开始接收数据时通知。"
+  },
+  "opt_notifications_help": {
+    "message": "使用Chrome桌面通知。声音遵循Chrome和操作系统设置。"
+  },
+  "opt_notifications_permission_denied": {
+    "message": "请允许Chrome通知权限以使用通知。"
+  },
+  "opt_notifications_blocked": {
+    "message": "Chrome或操作系统已阻止通知，请检查通知设置。"
+  },
+  "notification_complete_title": {
+    "message": "下载完成"
+  },
+  "notification_scheduled_start_title": {
+    "message": "预约下载已开始"
+  },
+  "notification_file_fallback": {
+    "message": "下载"
   }
 }

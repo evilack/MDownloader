@@ -14,7 +14,7 @@ import { CreateLiveBadge } from './media-badges.js';
 import { StartVisibleSourceRefresh } from './lib/source-refresh.js';
 import { CreatePlaybackHint } from './lib/playback-hint.js';
 import {CreateSubtitleStatus, UpdateSubtitleStatus} from './subtitle-status.js';
-export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, scrollRoot: ScrollRoot = null, followTabs: bFollowTabs = false })
+export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, scrollRoot: ScrollRoot = null, followTabs: bFollowTabs = false, reportShownJobs: ReportShownJobs })
 {
 	const List = Root.querySelector('#candidates');
 	const Status = Root.querySelector('[data-candidate-status]');
@@ -37,7 +37,7 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 		{
 			Entry.badge.hidden = !(Entry.live === true || (Entry.live === undefined && Job?.live === true));
 		}
-	});
+	},ReportShownJobs);
 	let bEnabled = false;
 	let Tab;
 	let bRestricted = false;

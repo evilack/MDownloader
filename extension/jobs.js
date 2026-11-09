@@ -202,6 +202,7 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 	{
 		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle, Item.page),
 			created: Date.now(), state: 'active', youtube: true, bytesReceived: 0, waiting: !!Quality?.scheduled, live: !!Quality?.live,
+			scheduled: !!Quality?.scheduled,
 			includeYoutubeAutoCaptions: await GetSetting(SettingKeys.includeYoutubeAutoCaptions), ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {})};
 		await RegisterMediaJob(Key, Job, TabId, Item);
 		try { await ResolveYoutubeSelection(Job, Item, Quality); }

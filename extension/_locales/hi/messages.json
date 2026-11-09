@@ -1762,5 +1762,38 @@
   },
   "explorer_remove_run_help": {
     "message": "Run MDownloader-Windows-Remove.cmd from Downloads.\nThis screen verifies completion automatically."
+  },
+  "opt_notifications": {
+    "message": "सूचनाएँ"
+  },
+  "opt_notify_complete": {
+    "message": "डाउनलोड पूरा होने की सूचना"
+  },
+  "opt_notify_scheduled_start": {
+    "message": "निर्धारित डाउनलोड शुरू होने की सूचना"
+  },
+  "opt_notify_complete_help": {
+    "message": "साइड पैनल बंद होने और पॉपअप में यह डाउनलोड न दिखने पर सूचना दें।"
+  },
+  "opt_notify_scheduled_start_help": {
+    "message": "निर्धारित डाउनलोड का इंतज़ार समाप्त होने और डेटा प्राप्त होना शुरू होने पर सूचना दें।"
+  },
+  "opt_notifications_help": {
+    "message": "Chrome की डेस्कटॉप सूचनाएँ उपयोग होती हैं। ध्वनि Chrome और ऑपरेटिंग सिस्टम की सेटिंग पर निर्भर है।"
+  },
+  "opt_notifications_permission_denied": {
+    "message": "सूचनाओं के लिए Chrome की सूचना अनुमति दें।"
+  },
+  "opt_notifications_blocked": {
+    "message": "Chrome या ऑपरेटिंग सिस्टम ने सूचनाएँ रोकी हैं। सूचना सेटिंग जाँचें।"
+  },
+  "notification_complete_title": {
+    "message": "डाउनलोड पूरा हुआ"
+  },
+  "notification_scheduled_start_title": {
+    "message": "निर्धारित डाउनलोड शुरू हुआ"
+  },
+  "notification_file_fallback": {
+    "message": "डाउनलोड"
   }
 }

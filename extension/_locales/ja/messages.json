@@ -1762,5 +1762,38 @@
   },
   "explorer_remove_run_help": {
     "message": "Run MDownloader-Windows-Remove.cmd from Downloads.\nThis screen verifies completion automatically."
+  },
+  "opt_notifications": {
+    "message": "通知"
+  },
+  "opt_notify_complete": {
+    "message": "ダウンロード完了通知"
+  },
+  "opt_notify_scheduled_start": {
+    "message": "予約ダウンロード開始通知"
+  },
+  "opt_notify_complete_help": {
+    "message": "サイドパネルが閉じていて、このダウンロードがポップアップに表示されていない場合に通知します。"
+  },
+  "opt_notify_scheduled_start_help": {
+    "message": "予約ダウンロードが待機を終えてデータの受信を開始したときに通知します。"
+  },
+  "opt_notifications_help": {
+    "message": "Chromeのデスクトップ通知を使用します。通知音はChromeとOSの設定に従います。"
+  },
+  "opt_notifications_permission_denied": {
+    "message": "通知を使用するにはChromeの通知権限を許可してください。"
+  },
+  "opt_notifications_blocked": {
+    "message": "ChromeまたはOSで通知がブロックされています。通知設定を確認してください。"
+  },
+  "notification_complete_title": {
+    "message": "ダウンロード完了"
+  },
+  "notification_scheduled_start_title": {
+    "message": "予約ダウンロードを開始しました"
+  },
+  "notification_file_fallback": {
+    "message": "ダウンロード"
   }
 }

@@ -34,6 +34,7 @@ Test('a known master 403 is shown as an independent failed job without another r
 	T.mock.method(globalThis, 'fetch', async () => new Response(null, { status: 403 }));
 	globalThis.chrome = {
 		runtime: {
+			onConnect: PassiveEvent,
 			getURL: Path => 'chrome-extension://test/' + Path,
 			onMessage: { addListener(Listener)
 				{

@@ -1762,5 +1762,38 @@
   },
   "explorer_remove_run_help": {
     "message": "Run MDownloader-Windows-Remove.cmd from Downloads.\nThis screen verifies completion automatically."
+  },
+  "opt_notifications": {
+    "message": "الإشعارات"
+  },
+  "opt_notify_complete": {
+    "message": "إشعار اكتمال التنزيل"
+  },
+  "opt_notify_scheduled_start": {
+    "message": "إشعار بدء التنزيل المجدول"
+  },
+  "opt_notify_complete_help": {
+    "message": "إظهار إشعار عند إغلاق اللوحة الجانبية وعدم ظهور هذا التنزيل في النافذة المنبثقة."
+  },
+  "opt_notify_scheduled_start_help": {
+    "message": "إظهار إشعار عندما ينتهي انتظار التنزيل المجدول ويبدأ استقبال البيانات."
+  },
+  "opt_notifications_help": {
+    "message": "تُستخدم إشعارات Chrome. يتبع الصوت إعدادات Chrome ونظام التشغيل."
+  },
+  "opt_notifications_permission_denied": {
+    "message": "اسمح بإشعارات Chrome لاستخدام هذه الميزة."
+  },
+  "opt_notifications_blocked": {
+    "message": "يحظر Chrome أو نظام التشغيل الإشعارات. تحقق من إعدادات الإشعارات."
+  },
+  "notification_complete_title": {
+    "message": "اكتمل التنزيل"
+  },
+  "notification_scheduled_start_title": {
+    "message": "بدأ التنزيل المجدول"
+  },
+  "notification_file_fallback": {
+    "message": "تنزيل"
   }
 }

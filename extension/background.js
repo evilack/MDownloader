@@ -25,6 +25,9 @@ import {CanUseYoutube} from './lib/distribution-policy.js';
 import {HandleTranslationConfiguration} from './lib/translation-configuration.js';
 import {CandidateSubtitleStatuses, CandidateSubtitleOptions} from './detection.js';
 import {ReconcileExplorerRemoval} from './lib/explorer-lifecycle.js';
+import {CreateDownloadNotifications} from './lib/download-notifications.js';
+const DownloadNotifications=CreateDownloadNotifications();
+chrome.runtime.onConnect.addListener(Port=>{DownloadNotifications.connectView(Port);});
 import {DiscoverYoutube, SetYoutubeRequestContext} from './features/youtube/entry.js';
 void PrepareDistributionNetwork().catch(ErrorValue => ReportDebugFailure(ErrorValue, 'DistributionRulesFailed'));
 void InitializeDebugLogging(async bEnabled =>
@@ -171,6 +174,7 @@ chrome.webRequest.onSendHeaders?.addListener(ObserveRequest, MediaRequestFilter,
 chrome.webRequest.onErrorOccurred?.addListener(ForgetRequest, MediaRequestFilter);
 chrome.downloads.onChanged.addListener(Change =>
 {
+	void DownloadNotifications.downloadChanged(Change).catch(ReportDebugFailure);
 	FinishDownloadNaming(Change);
 	void RecordBrowserDownload(Change).catch(() =>
 	{
@@ -200,6 +204,7 @@ chrome.tabs.onActivated.addListener(({ tabId: TabId }) =>
 });
 chrome.storage.onChanged.addListener((Changes, Area) =>
 {
+	void DownloadNotifications.storageChanged(Changes,Area).catch(ReportDebugFailure);
 	if (Area === 'local' && Object.hasOwn(Changes, SettingKeys.language))
 	{
 		void RefreshActionTitle();

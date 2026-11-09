@@ -8,11 +8,13 @@ import { MountOptionsButton } from './lib/ui.js';
 import { CreateCandidateList } from './candidate-list.js';
 import { CreateMediaPreview } from './media-preview.js';
 import {ObserveYoutubePolicyNotice} from './lib/youtube-policy-notice.js';
+import {CreateNotificationView} from './lib/notification-view.js';
 await InitializeLocale();
 LocalizePage();
 WatchLanguage();
 const Candidates = CreateCandidateList({
 	root: document, mediaPreview: CreateMediaPreview(), scrollRoot: document.querySelector('main'),
+	reportShownJobs: CreateNotificationView(),
 });
 MountOptionsButton(document.querySelector('.brand'), Candidates.announce);
 let CurrentTab;

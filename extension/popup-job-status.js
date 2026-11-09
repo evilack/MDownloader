@@ -14,7 +14,7 @@ const Labels = {
 	failed: 'view_state_failed',
 	unknown: 'view_state_unknown',
 };
-export function CreateCandidateJobStatus(UpdateLive)
+export function CreateCandidateJobStatus(UpdateLive,ReportShownJobs)
 {
 	const Jobs = new Map();
 	const Meters = new Map();
@@ -23,6 +23,7 @@ export function CreateCandidateJobStatus(UpdateLive)
 	let Rows = new Map();
 	function Render()
 	{
+		const Shown=[];
 		// 같은 후보를 여러 번 받을 수 있습니다. 최신 작업을 표시하고, 그 기록을 지우면 이전 작업을 선택할 수 있게 함께 보관합니다.
 		const Latest = new Map();
 		for (const Job of Jobs.values())
@@ -36,6 +37,7 @@ export function CreateCandidateJobStatus(UpdateLive)
 		for (const [Key, Badge] of Rows)
 		{
 			const Job = Latest.get(Key);
+			if(Job)Shown.push(Job.requestId);
 			// 재생목록 본문을 볼 수 없는 워커 스트림도 실제 수신 작업이 라이브임을 확인하면 표시합니다.
 			UpdateLive?.(Key, Job);
 			const State = Job?.state;
@@ -82,6 +84,7 @@ export function CreateCandidateJobStatus(UpdateLive)
 				delete Badge.dataset.state;
 			}
 		}
+		ReportShownJobs?.(Shown);
 	}
 
 	const Refresh = ObserveJobs({

@@ -15,6 +15,7 @@ import { AUTO_LANGUAGE, GetSettings, SetSetting, SettingKeys } from './lib/setti
 import { RuntimePolicy } from './lib/runtime-policy.js';
 import { BindTranslationSettings } from './options-translation.js';
 import {CanUseYoutube} from './lib/distribution-policy.js';
+import {BindNotificationOptions} from './options-notifications.js';
 WatchLanguage();
 const Settings = await GetSettings(Object.values(SettingKeys)).catch(() => null);
 // 한꺼번에 읽은 설정에서 언어 값을 넘겨 시작할 때 같은 값을 다시 조회하지 않습니다.
@@ -95,6 +96,7 @@ function BindToggles(Settings, StatusSelector, Toggles)
 }
 
 BindLanguagePicker();
+BindNotificationOptions(Settings);
 if (CanUseYoutube())
 {
 	document.querySelector('#youtube-caption-settings').hidden = false;

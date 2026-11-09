@@ -1762,5 +1762,38 @@
   },
   "explorer_remove_run_help": {
     "message": "Run MDownloader-Windows-Remove.cmd from Downloads.\nThis screen verifies completion automatically."
+  },
+  "opt_notifications": {
+    "message": "Notifications"
+  },
+  "opt_notify_complete": {
+    "message": "Download complete notification"
+  },
+  "opt_notify_scheduled_start": {
+    "message": "Scheduled download start notification"
+  },
+  "opt_notify_complete_help": {
+    "message": "Notify when the side panel is closed and this download is not represented in the popup."
+  },
+  "opt_notify_scheduled_start_help": {
+    "message": "Notify when a scheduled download leaves waiting and starts receiving data."
+  },
+  "opt_notifications_help": {
+    "message": "Uses Chrome desktop notifications. Sounds follow Chrome and operating system settings."
+  },
+  "opt_notifications_permission_denied": {
+    "message": "Allow Chrome notification permission to use notifications."
+  },
+  "opt_notifications_blocked": {
+    "message": "Notifications are blocked by Chrome or your operating system. Check notification settings."
+  },
+  "notification_complete_title": {
+    "message": "Download complete"
+  },
+  "notification_scheduled_start_title": {
+    "message": "Scheduled download started"
+  },
+  "notification_file_fallback": {
+    "message": "Download"
   }
 }

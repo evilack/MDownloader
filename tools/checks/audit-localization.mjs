@@ -37,9 +37,12 @@ const LiteralUiCandidates = [];
 for (const File of Files)
 {
 	const Source = await ReadFile(File, 'utf8');
+	// DOM form names are identifiers, not displayed message keys. Explicit
+	// Translate/data-i18n references below still scan the original source.
+	const MessageSource = Source.replace(/\.name\s*=\s*(['"])[a-z][a-z0-9_]*\1/g, '');
 	// 메시지 표나 조건식에서 고르는 키도 확인하도록 기존 메시지 이름공간의
 	// 문자열을 수집합니다. 결과 파일에는 소스 본문이나 미디어 주소를 저장하지 않습니다.
-	for (const Match of Source.matchAll(/['"]([a-z][a-z0-9]+(?:_[a-z0-9]+)+)['"]/g))
+	for (const Match of MessageSource.matchAll(/['"]([a-z][a-z0-9]+(?:_[a-z0-9]+)+)['"]/g))
 	{
 		const Key = Match[1];
 		if (Prefixes.has(Key.split('_')[0]) && !English[Key])

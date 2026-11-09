@@ -1,0 +1,186 @@
+{
+  "date": "2026-11-09",
+  "feature": "Chrome desktop download notifications",
+  "browser": "Chrome/157.0.8103.39",
+  "flavor": "development",
+  "headless": false,
+  "computerUse": false,
+  "fixture": "actual contexts/options/native file download/notification API; fixture job metadata and scheduled transitions; declared notification permission pregranted and localhost host added only in test manifest",
+  "optionsPersisted": true,
+  "cases": [
+    {
+      "label": "both-closed",
+      "expected": true,
+      "passed": true
+    },
+    {
+      "label": "popup-open-other-item",
+      "expected": true,
+      "passed": true
+    },
+    {
+      "label": "popup-open-matching-item",
+      "expected": false,
+      "passed": true
+    },
+    {
+      "label": "side-panel-open",
+      "expected": false,
+      "passed": true
+    },
+    {
+      "label": "scheduled-waiting",
+      "expected": false,
+      "passed": true
+    },
+    {
+      "label": "scheduled-zero-bytes",
+      "expected": false,
+      "passed": true
+    },
+    {
+      "label": "scheduled-positive-bytes-with-panel",
+      "expected": true,
+      "passed": true
+    },
+    {
+      "label": "snapshot-not-scheduled-start",
+      "expected": false,
+      "passed": true
+    },
+    {
+      "label": "complete-option-off",
+      "expected": false,
+      "passed": true
+    }
+  ],
+  "realNativeDownloadCount": 4,
+  "registeredNotifications": {
+    "complete": 2,
+    "scheduledStart": 1
+  },
+  "osBannerObserved": false,
+  "audibleOutputObserved": false,
+  "scopedTests": {
+    "passed": 470,
+    "skipped": 1,
+    "failed": 0
+  },
+  "focusedTests": {
+    "passed": 14,
+    "failed": 0
+  },
+  "packages": {
+    "development": {
+      "files": 193,
+      "imports": 471
+    },
+    "chromeStore": {
+      "files": 166,
+      "imports": 428,
+      "youtubeExecutablesExcluded": true,
+      "browserRun": false
+    }
+  },
+  "limitations": [
+    "Permission pregranted in isolated test manifest; optional prompt not automated. Unit tests cover denied/blocked rollback and gesture ordering.",
+    "Chrome notification API registration checked; OS banner and sound not observed.",
+    "Native downloads and real UI contexts; job metadata/picked-folder completion/scheduled transitions are fixtures."
+  ],
+  "passed": true,
+  "mergedRoot": {
+    "chromeCases": [
+      {
+        "label": "both-closed",
+        "expected": true,
+        "passed": true
+      },
+      {
+        "label": "popup-open-other-item",
+        "expected": true,
+        "passed": true
+      },
+      {
+        "label": "popup-open-matching-item",
+        "expected": false,
+        "passed": true
+      },
+      {
+        "label": "side-panel-open",
+        "expected": false,
+        "passed": true
+      },
+      {
+        "label": "scheduled-waiting",
+        "expected": false,
+        "passed": true
+      },
+      {
+        "label": "scheduled-zero-bytes",
+        "expected": false,
+        "passed": true
+      },
+      {
+        "label": "scheduled-positive-bytes-with-panel",
+        "expected": true,
+        "passed": true
+      },
+      {
+        "label": "snapshot-not-scheduled-start",
+        "expected": false,
+        "passed": true
+      },
+      {
+        "label": "complete-option-off",
+        "expected": false,
+        "passed": true
+      }
+    ],
+    "optionsPersisted": true,
+    "nativeDownloads": 4,
+    "registeredNotifications": 3,
+    "tests": {
+      "passed": 551,
+      "skipped": 1,
+      "failed": 0
+    },
+    "project": {
+      "javascript": 315,
+      "json": 39,
+      "relativeImports": 723,
+      "preservedFiles": 73,
+      "failures": 0
+    },
+    "locales": {
+      "count": 10,
+      "messagesPerLocale": 518,
+      "missingReferences": 0,
+      "literalUiReviewCandidates": 1
+    },
+    "packages": {
+      "development": {
+        "files": 207,
+        "imports": 493
+      },
+      "chromeStore": {
+        "files": 180,
+        "imports": 450,
+        "verified": true,
+        "browserRun": false
+      }
+    },
+    "featureSourceMatchesTestCopy": {
+      "lib/download-notifications.js": true,
+      "lib/notification-view.js": true,
+      "options-notifications.js": true,
+      "background.js": true,
+      "popup.js": true,
+      "candidate-list.js": true,
+      "popup-job-status.js": true,
+      "options.js": true,
+      "options.html": true
+    }
+  },
+  "chromeAcceptanceTree": "merged working tree, shared notification core",
+  "notificationCoreSha256": "db9dc78bdf75856d9ce8a7d2ebdba5554cda8085c55f65c7bf64e82801a6f2e1"
+}

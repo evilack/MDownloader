@@ -1762,5 +1762,38 @@
   },
   "explorer_remove_run_help": {
     "message": "다운로드한 MDownloader-Windows-Remove.cmd를 실행해 주세요.\n삭제가 끝나면 이 화면에서 자동으로 확인합니다."
+  },
+  "opt_notifications": {
+    "message": "알림"
+  },
+  "opt_notify_complete": {
+    "message": "다운로드 완료 알림"
+  },
+  "opt_notify_scheduled_start": {
+    "message": "예약 다운로드 시작 알림"
+  },
+  "opt_notify_complete_help": {
+    "message": "사이드 패널이 닫혀 있고 팝업에 해당 다운로드 항목이 없을 때 Chrome 알림을 표시합니다."
+  },
+  "opt_notify_scheduled_start_help": {
+    "message": "예약 다운로드가 대기를 끝내고 실제 수신을 시작하면 Chrome 알림을 표시합니다."
+  },
+  "opt_notifications_help": {
+    "message": "Chrome 알림을 사용합니다. 소리는 Chrome과 운영체제의 알림 설정에 따릅니다."
+  },
+  "opt_notifications_permission_denied": {
+    "message": "Chrome 알림 권한을 허용해야 알림을 사용할 수 있습니다."
+  },
+  "opt_notifications_blocked": {
+    "message": "Chrome 또는 운영체제에서 알림이 차단되어 있습니다. 알림 설정을 확인해 주세요."
+  },
+  "notification_complete_title": {
+    "message": "다운로드 완료"
+  },
+  "notification_scheduled_start_title": {
+    "message": "예약 다운로드 시작"
+  },
+  "notification_file_fallback": {
+    "message": "다운로드"
   }
 }
