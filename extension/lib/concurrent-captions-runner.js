@@ -4,11 +4,19 @@ import {CaptionFinalTimeline,UnionCaptionSpans,CaptionCovers} from './caption-ti
 import {CaptionOutputSession} from './caption-output-session.js';
 import {BuildLiveCaptionSnapshot,ComposeLiveCaptionView} from './live-caption-output.js';
 import {ValidateCaptionPreview} from './caption-preview.js';
+import {CreateLiveCaptionFiles} from './live-caption-files.js';
 
 const TimelineFailures=new Set(['caption_window_clock','caption_window_codec','caption_window_epoch','caption_window_config','caption_window_budget','caption_seam_unresolved']);
 const MayFallback=(E,ErrorValue)=>!E.source?.timeline&&TimelineFailures.has(ErrorValue.message);
 export function CreateConcurrentCaptionRunner({stage:Stage}){
  const Entries=new Map();
+ const LiveFiles=CreateLiveCaptionFiles({view:LiveView,check:V=>Request(FileEntry(V),'liveFileCheck'),report:(V,Fields)=>Request(FileEntry(V),'liveFileState',Fields)});
+ function FileEntry(V){const E=Entries.get(V.job.requestId);if(!E||E.attempt!==V.attempt||(E.transport.controlRevision||0)!==V.controlRevision||E.signal!==V.signal)throw Error('caption_stale_attempt');return E;}
+ function LiveView(Id){const E=Entries.get(Id);return E?.liveState?{job:E.job,state:structuredClone(E.liveState),revision:E.liveRevision||0,attempt:E.attempt,controlRevision:E.transport.controlRevision||0,signal:E.signal,finished:!!E.liveFinished}:null;}
+ async function PublishFile(E){
+  try{await LiveFiles.publish(LiveView(E.job.requestId));}
+  catch(ErrorValue){if(!E.signal.aborted)await Request(E,'liveFileState',{phase:'failed',error:/^caption_/.test(ErrorValue.message)?ErrorValue.message:'caption_live_file_write_failed'}).catch(()=>{});}
+ }
  function Entry(Job,Signal){
   let Value=Entries.get(Job.requestId);if(Value){Job.captionSession=Value.transport;return Value;}
   const Controller=new AbortController(),Transport=Job.captionSession||{attempt:Job.captionAttempt||Job.captionStatus?.attempt,controlRevision:Job.captionStatus?.controlRevision||0};Value={job:Job,optionsKey:JSON.stringify(Job.localCaptions),controller:Controller,signal:Controller.signal,mode:CaptionModes.postprocess,attempt:Transport.attempt,cursor:0,credit:0,transport:Transport};Job.captionSession=Transport;
@@ -65,6 +73,7 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
   const State=ComposeLiveCaptionView(E.merger.snapshot(),E.preview,Finished?null:E.liveState),Snapshot=BuildLiveCaptionSnapshot(State,++E.liveRevision,Finished);
   await Request(E,'publishLive',{snapshot:Snapshot});
   E.liveState=structuredClone(State);E.liveFinished=Finished;
+  await PublishFile(E);
  }
  async function Preview(E,Value){
   const V=ValidateCaptionPreview(Value.preview);E.signal.throwIfAborted();
@@ -191,7 +200,7 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
  }
  return {
   bind(Job,Signal){return Entry(Job,Signal);},
-  liveView(Id){const E=Entries.get(Id);return E?.liveState?{job:E.job,state:structuredClone(E.liveState),revision:E.liveRevision||0,attempt:E.attempt,controlRevision:E.transport.controlRevision||0,signal:E.signal,finished:!!E.liveFinished}:null;},
+  liveView:LiveView,
   signal(Job,Signal){return AbortSignal.any([Signal,Entry(Job,Signal).signal].filter(Boolean));},
   ownership(Id){const E=Entries.get(Id);return E?{owned:true,attempt:E.attempt,pendingAttempt:E.pendingAttempt,failed:!!E.error,finalized:!!E.finalized}: {owned:false};},
   markFinalized(Job){const E=Entries.get(Job.requestId);if(E)E.finalized=true;},
@@ -228,7 +237,7 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
    let Open;try{Open=await Busy(E,'openConcurrent',{sourceFingerprint:await CaptionDigest(Fingerprint),limits:CaptionPolicy});}catch(ErrorValue){E.error=ErrorValue;E.transport.error=ErrorValue;throw ErrorValue;}E.credit=Open.credit;
    E.liveState=ComposeLiveCaptionView(E.merger.snapshot(),null);E.liveFinished=false;
    Source.bindPreparation?.((Action,Fields)=>Fields?.purpose==='preview'?Request(E,Action,Fields):Busy(E,Action,Fields));
-   Job.captionMode=E.mode;E.running=WindowLoop(E);return true;
+   Job.captionMode=E.mode;await PublishFile(E);E.running=WindowLoop(E);return true;
   },
   async finalize(Job,Timing,Signal){
    const E=Entry(Job,Signal);E.job=Job;Job.captionAttempt=E.attempt;if(E.error&&!MayFallback(E,E.error))throw E.error;

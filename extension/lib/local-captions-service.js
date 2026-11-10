@@ -10,6 +10,7 @@ import {CaptionPolicy,CaptionConcurrentReady,ValidateCaptionAttempt,ValidateCapt
 import {UnionCaptionSpans,IntersectCaptionSpans,CaptionSpanLength} from './caption-timeline.js';
 import {ValidateLiveCaptionSnapshot} from './live-caption-output.js';
 import {ValidateCaptionPreview} from './caption-preview.js';
+import {ReadLiveCaptionFile,ForgetLiveCaptionFile,ClearPendingLiveCaptionFiles} from './live-caption-file-store.js';
 
 const IdPattern=/^[a-f\d-]{36}$/i;
 const ModelOperationPattern=/^[a-f\d]{32}$/;
@@ -38,6 +39,7 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
    // session storage survives worker suspension, but is cleared by app restart.
    const Key='captionBrowserSession';
    if((await Api.storage.session.get(Key))[Key])return;
+   await ClearPendingLiveCaptionFiles().catch(()=>{});
    const OldJobs=await listJobs(),Canceled=[];
    for(const Previous of OldJobs){
     await updateJob(JobKey(Previous.requestId),J=>{
@@ -276,7 +278,7 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
     const Attempt=ValidateCaptionAttempt((Job.captionStatus?.attempt||0)+1),Probe=await ProbeJob(Job);
     const Current=await updateJob(JobKey(Id),J=>{
      if(!MayPublish(J))return J;
-    return {...J,state:'active',captionStatus:{...J.captionStatus,attempt:Attempt,phase:'waiting',handoffRevision:null,liveTranscript:null,mode:'postprocess',recognitionStarted:false,inputSealed:false,committedSamples:0,rawCommittedSamples:0,recognitionFinalized:false,finalSamples:null,finalCoverage:null,recognitionStartSample:null,resultRevision:null,outputReceipts:{},translationLanguage:null,offset:0,preparationError:false,error:null,prepared:false,legacyNative:!CaptionConcurrentReady(Probe),...(Message.fallbackReason?{fallbackReason:String(Message.fallbackReason).slice(0,96)}:{})}};
+    return {...J,state:'active',captionStatus:{...J.captionStatus,attempt:Attempt,phase:'waiting',handoffRevision:null,liveTranscript:null,liveFile:null,mode:'postprocess',recognitionStarted:false,inputSealed:false,committedSamples:0,rawCommittedSamples:0,recognitionFinalized:false,finalSamples:null,finalCoverage:null,recognitionStartSample:null,resultRevision:null,outputReceipts:{},translationLanguage:null,offset:0,preparationError:false,error:null,prepared:false,legacyNative:!CaptionConcurrentReady(Probe),...(Message.fallbackReason?{fallbackReason:String(Message.fallbackReason).slice(0,96)}:{})}};
     });
     if(Current?.captionStatus?.attempt!==Attempt)throw Error('caption_stale_attempt');InternalCancellation.delete(Id);return {attempt:Attempt};
    }finally{Handoffs.delete(Id);}
@@ -302,6 +304,17 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
    await Update(Id,{offset:Message.offset});return {};
   }
   if(Job.captionPipeline==='staged'){
+   if(['liveFileCheck','liveFileState'].includes(Message.action)){
+    const MayWrite=J=>J&&Attempt&&J.captionStatus?.attempt===Attempt&&(J.captionStatus.controlRevision||0)===(Message.controlRevision||0)&&['active','starting'].includes(J.state)&&J.pendingAction!=='cancel'&&!J.captionStatus.cancelRequested&&!['failed','canceled','complete'].includes(J.captionStatus.phase)&&J.captionStatus.mode==='windowed';
+    if(!MayWrite(Job))throw Error('caption_stale_attempt');
+    if(Message.action==='liveFileState'){
+     if(!['awaiting-selection','writing','saved','failed'].includes(Message.phase)||Message.filename!==undefined&&(typeof Message.filename!=='string'||Message.filename.length>512||/[\\/\x00]/.test(Message.filename))||Message.revision!==undefined&&(!Number.isSafeInteger(Message.revision)||Message.revision<0)||Message.bytes!==undefined&&(!Number.isSafeInteger(Message.bytes)||Message.bytes<0||Message.bytes>CaptionPolicy.maxLedgerBytes)||Message.error!==undefined&&(typeof Message.error!=='string'||!/^caption_[a-z_]{1,80}$/.test(Message.error)))throw Error('caption_invalid');
+     const Fields={phase:Message.phase,error:Message.error||null};for(const K of ['filename','revision','bytes'])if(Message[K]!==undefined)Fields[K]=Message[K];
+     const Current=await updateJob(JobKey(Id),J=>MayWrite(J)?{...J,captionStatus:{...J.captionStatus,liveFile:{...J.captionStatus.liveFile,...Fields}}}:J);
+     if(!MayWrite(Current))throw Error('caption_stale_attempt');
+    }
+    return {attempt:Attempt,controlRevision:Job.captionStatus.controlRevision||0};
+   }
    if(Message.action==='publishLive'){
     const Snapshot=ValidateLiveCaptionSnapshot(Message.snapshot);
     const MayPublish=J=>J&&Attempt&&J.captionStatus?.attempt===Attempt&&(J.captionStatus.controlRevision||0)===(Message.controlRevision||0)&&['active','starting'].includes(J.state)&&J.pendingAction!=='cancel'&&!J.captionStatus.cancelRequested&&!['failed','canceled','complete'].includes(J.captionStatus.phase)&&J.captionStatus.mode==='windowed';
@@ -454,6 +467,13 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
    }
    if(Message.type==='captionControl'){
     if(!IdPattern.test(Message.requestId))throw new Error('caption_invalid');
+    if(Message.action==='attachLiveFile'){
+     const Current=await Read(Message.requestId),Scope=Current?.captionStatus;
+     if(Current?.captionPipeline!=='staged'||!Current.localCaptions?.enabled||!['active','starting'].includes(Current.state)||Current.pendingAction==='cancel'||Scope?.cancelRequested||['failed','canceled','complete'].includes(Scope?.phase)||Scope?.mode!=='windowed'||Scope.attempt!==Message.attempt||(Scope.controlRevision||0)!==(Message.controlRevision||0))throw Error('caption_stale_attempt');
+     const Record=await ReadLiveCaptionFile(Message.fileKey);
+     if(!Record||Record.requestId!==Message.requestId||Record.attempt!==Message.attempt||Record.controlRevision!==(Message.controlRevision||0))throw Error('caption_stale_attempt');
+     try{const Result=await Api.runtime.sendMessage({type:'captionLiveFileSelected',requestId:Message.requestId,fileKey:Message.fileKey,attempt:Message.attempt,controlRevision:Message.controlRevision||0});if(!Result?.ok)throw Error(Result?.error||'caption_live_file_missing');return {};}finally{await ForgetLiveCaptionFile(Message.fileKey);}
+    }
     if(Message.action==='retry')return Start(Message.requestId,true);
     if(Message.action==='cancel'){
      const Job=await Read(Message.requestId);if(Job?.captionPipeline==='staged'&&Job.captionStatus?.phase==='complete')throw Error('caption_state');
