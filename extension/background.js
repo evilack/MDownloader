@@ -26,6 +26,10 @@ import {HandleTranslationConfiguration} from './lib/translation-configuration.js
 import {CandidateSubtitleStatuses, CandidateSubtitleOptions} from './detection.js';
 import {ReconcileExplorerRemoval} from './lib/explorer-lifecycle.js';
 import {CreateDownloadNotifications} from './lib/download-notifications.js';
+import {CreateCaptionService,CaptionSenderAllowed} from './lib/local-captions-service.js';
+const CaptionService=CreateCaptionService();
+void CaptionService.recover().catch(ReportDebugFailure);
+chrome.storage.onChanged.addListener((Changes,Area)=>{if(Area==='local')void CaptionService.jobsChanged(Changes).catch(ReportDebugFailure);});
 const DownloadNotifications=CreateDownloadNotifications();
 chrome.runtime.onConnect.addListener(Port=>{DownloadNotifications.connectView(Port);});
 import {DiscoverYoutube, SetYoutubeRequestContext} from './features/youtube/entry.js';
@@ -99,6 +103,10 @@ async function Route(Message)
 
 chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 {
+	if(['captionProbe','captionPrepareModel','captionCancelModel','captionDeleteModel','captionReconnect','captionControl','captionStage'].includes(Message?.type)){
+		if(!CaptionSenderAllowed(Message,Sender,chrome))return;
+		void CaptionService.handle(Message,Sender).then(Data=>Respond({ok:true,data:Data}),E=>Respond({ok:false,error:SerializeError(E)}));return true;
+	}
 	if (HandleTranslationConfiguration(Message, Sender, Respond)) return true;
 	if (Message.type === 'youtubeRequestContext' && !Sender.tab && Sender.id === chrome.runtime.id && Sender.url === HlsRunnerUrl())
 	{
@@ -174,6 +182,7 @@ chrome.webRequest.onSendHeaders?.addListener(ObserveRequest, MediaRequestFilter,
 chrome.webRequest.onErrorOccurred?.addListener(ForgetRequest, MediaRequestFilter);
 chrome.downloads.onChanged.addListener(Change =>
 {
+	void CaptionService.downloadChanged(Change).catch(ReportDebugFailure);
 	void DownloadNotifications.downloadChanged(Change).catch(ReportDebugFailure);
 	FinishDownloadNaming(Change);
 	void RecordBrowserDownload(Change).catch(() =>
