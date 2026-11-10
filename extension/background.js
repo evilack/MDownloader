@@ -28,7 +28,7 @@ import {ReconcileExplorerRemoval} from './lib/explorer-lifecycle.js';
 import {CreateDownloadNotifications} from './lib/download-notifications.js';
 import {CreateCaptionService,CaptionSenderAllowed} from './lib/local-captions-service.js';
 const CaptionService=CreateCaptionService();
-void CaptionService.recover().catch(ReportDebugFailure);
+void CaptionService.initialize().catch(ReportDebugFailure);
 chrome.storage.onChanged.addListener((Changes,Area)=>{if(Area==='local')void CaptionService.jobsChanged(Changes).catch(ReportDebugFailure);});
 const DownloadNotifications=CreateDownloadNotifications();
 chrome.runtime.onConnect.addListener(Port=>{DownloadNotifications.connectView(Port);});
@@ -65,6 +65,7 @@ async function RefreshActionTitle()
 
 async function Route(Message)
 {
+	await CaptionService.initialize();
 	switch (Message.type)
 	{
 		case 'scan':
@@ -132,7 +133,7 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	if (Message.type === 'webrtcRecordingData' && Sender.id === chrome.runtime.id && HostPattern(Sender.origin) &&
 		Sender.documentId && Sender.frameId === 0 && Number.isInteger(Sender.tab?.id))
 	{
-		void RelayWebRtc(Message, Sender).then(Respond, () => Respond({ok: false}));
+		void CaptionService.initialize().then(()=>RelayWebRtc(Message, Sender)).then(Respond, () => Respond({ok: false}));
 		return true;
 	}
 	if (Message.type === 'mdownloader-stream-ready' && Sender.id === chrome.runtime.id &&
@@ -165,7 +166,7 @@ chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 	// 두 화면이 동시에 열려 있어도 같은 탭의 스캔을 공유하지 않습니다.
 	// 이후 후보 조회는 요청을 시작한 화면의 스캔에서만 수행합니다.
 	const Scope = bFromManager ? 'sidepanel' : 'popup';
-	(bFromHls ? UpdateHls(Message) : bFromPlayback ? Message.type === 'authorizePlayback' ? AuthorizePlayback(Message) : EnqueuePlayback(Message) : Route({ ...Message, scope: Scope })).then(
+	CaptionService.initialize().then(() => bFromHls ? UpdateHls(Message) : bFromPlayback ? Message.type === 'authorizePlayback' ? AuthorizePlayback(Message) : EnqueuePlayback(Message) : Route({ ...Message, scope: Scope })).then(
 	Data => Respond({ ok: true, data: Data }),
 	ErrorValue => Respond({ ok: false, error: SerializeError(ErrorValue) }),
 	);

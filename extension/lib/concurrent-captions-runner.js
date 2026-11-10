@@ -2,6 +2,7 @@ import {CaptionPolicy,CaptionModes,SelectConcurrentCaptionMode,CaptionAbortableW
 import {CreateCaptionWindowMerger} from './caption-window-merge.js';
 import {CaptionFinalTimeline,UnionCaptionSpans,CaptionCovers} from './caption-timeline.js';
 import {CaptionOutputSession} from './caption-output-session.js';
+import {BuildLiveCaptionSnapshot} from './live-caption-output.js';
 
 const TimelineFailures=new Set(['caption_window_clock','caption_window_codec','caption_window_epoch','caption_window_config','caption_window_budget','caption_seam_unresolved']);
 const MayFallback=(E,ErrorValue)=>!E.source?.timeline&&TimelineFailures.has(ErrorValue.message);
@@ -19,7 +20,7 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
   E.signal.throwIfAborted();E.pendingAttempt=(E.attempt||0)+1;
   try{
    const Result=await Stage(E.job,'beginAttempt',{previousAttempt:E.attempt||0,controlRevision:E.transport.controlRevision||0,...(Reason?{fallbackReason:Reason}:{})});
-   E.signal.throwIfAborted();E.attempt=Result.attempt;E.optionsKey=JSON.stringify(E.job.localCaptions);E.cursor=0;E.finalResult=null;E.finalization=null;E.recognitionRecovery=null;E.sourceTimeline=null;E.transport.attempt=Result.attempt;E.job.captionAttempt=Result.attempt;
+   E.signal.throwIfAborted();E.attempt=Result.attempt;E.optionsKey=JSON.stringify(E.job.localCaptions);E.cursor=0;E.liveRevision=0;E.finalResult=null;E.finalization=null;E.recognitionRecovery=null;E.sourceTimeline=null;E.transport.attempt=Result.attempt;E.job.captionAttempt=Result.attempt;
    const Session=CaptionOutputSession(E.job);Session.finalMappingReceipt=null;Session.finalMappingDigest=null;Session.finalMappingResultRevision=null;delete E.job.captionFinalMappingReceipt;return Result.attempt;
   }finally{E.pendingAttempt=null;}
  }
@@ -58,20 +59,25 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
   Result=await Request(E,'sealWindow',{windowId:Window.id,bytes:Window.bytes,sha256:Window.sha256});E.credit=Result.credit;return Hypothesis(E,Window.id);
  }
  async function Ack(E,Value){if(Value.ackWindowIds?.length){const R=await Request(E,'ackWindows',{windowIds:Value.ackWindowIds,committedSamples:Value.committedSamples,committedSpans:Value.committedSpans});E.credit=R.credit;}}
+ async function PublishLive(E,Finished=false){
+  const Snapshot=BuildLiveCaptionSnapshot(E.merger.snapshot(),++E.liveRevision,Finished);
+  await Request(E,'publishLive',{snapshot:Snapshot});
+ }
  async function WindowLoop(E){
   try{
    for(;;){
     while((await Status(E)).credit===0)await CaptionAbortableWait(E.signal);
     E.signal.throwIfAborted();const Value=await E.source.next();if(!Value)break;
-    const H=await Submit(E,Value);let Merge=E.merger.accept(H);await Ack(E,Merge);
+    const H=await Submit(E,Value);let Merge=E.merger.accept(H);await Ack(E,Merge);await PublishLive(E);
     for(let Repair=1;Merge.repair&&Repair<=CaptionPolicy.maxRepairAttempts;Repair++){
      const Window=await E.source.repair(Merge.repair.boundary,Merge.repair.parentId,Repair),Result=await Submit(E,Window);
-     Merge=E.merger.repair(Result);await Ack(E,Merge);if(Merge.resolved)break;
+     Merge=E.merger.repair(Result);await Ack(E,Merge);await PublishLive(E);if(Merge.resolved)break;
     }
     if(Merge.repair)throw Error('caption_seam_unresolved');
     E.source.releaseBefore(Value.window.coreEndSample);
    }
    const Final=E.merger.seal();if(Final.unresolved)throw Error('caption_seam_unresolved');
+   await PublishLive(E,true);
    await Ack(E,{ackWindowIds:[],committedSamples:Final.committedSamples});
    // Publish the final absolute frontier as a length even when the last ACK was
    // at the preceding seam. An empty ACK updates progress without re-inference.

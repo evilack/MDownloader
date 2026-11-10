@@ -8,6 +8,7 @@ import {CaptionRuntimeReady} from './caption-runtime-contract.js';
 import {MergeGeneratedSubtitleStatus} from './subtitle-status.js';
 import {CaptionPolicy,CaptionConcurrentReady,ValidateCaptionAttempt,ValidateCaptionWindow} from './concurrent-captions-contract.js';
 import {UnionCaptionSpans,IntersectCaptionSpans,CaptionSpanLength} from './caption-timeline.js';
+import {ValidateLiveCaptionSnapshot} from './live-caption-output.js';
 
 const IdPattern=/^[a-f\d-]{36}$/i;
 const ModelOperationPattern=/^[a-f\d]{32}$/;
@@ -30,7 +31,40 @@ export function CaptionSenderAllowed(Message,Sender,Api)
 export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJob=UpdateStoredJob,listJobs=ListStoredJobs,requireFolder=RequirePickedFolder,writeFolder=WriteToPickedFolder}={})
 {
  const Completing=new Map(),Starting=new Map(),Saving=new Map(),Handoffs=new Set(),PendingNative=new Map(),InternalCancellation=new Map(),CapabilityCache=new Map();
- let Reconnecting=false;
+ let Reconnecting=false,Initialization;
+ function Initialize(){
+  return Initialization??=(async()=>{
+   // session storage survives worker suspension, but is cleared by app restart.
+   const Key='captionBrowserSession';
+   if((await Api.storage.session.get(Key))[Key])return;
+   const OldJobs=await listJobs(),Canceled=[];
+   for(const Previous of OldJobs){
+    await updateJob(JobKey(Previous.requestId),J=>{
+     if(!J||J.created!==Previous.created)return J;
+     const Active=['active','starting','started','paused'].includes(J.state),CaptionPending=J.localCaptions?.enabled&&!['complete','canceled'].includes(J.captionStatus?.phase);
+     if(!Active&&!CaptionPending)return J;
+     Canceled.push({...J,requestId:Previous.requestId});
+     return {...J,restartCancellationPending:true,...(Active?{state:'canceled',pendingAction:undefined,waiting:false,connecting:false,saving:false}:{}),...(J.localCaptions?.enabled?{captionStatus:{...J.captionStatus,phase:'canceled',cancelRequested:true,canceledByRestart:true,cancellationPending:true,retryAvailable:false,retryToken:null,outputRetrying:false,controlRevision:(J.captionStatus?.controlRevision||0)+1,error:null}}:{})};
+    });
+   }
+   await Api.storage.session.set({[Key]:true});
+   for(const Job of Canceled){
+    let DownloadStopped=true,CaptionStopped=!Job.localCaptions?.enabled;
+    if(Number.isInteger(Job.downloadId)){
+     try{const [Item]=await Api.downloads.search({id:Job.downloadId});if(Item?.byExtensionId===Api.runtime.id&&Item.state==='in_progress')await Api.downloads.cancel(Job.downloadId);else if(Item?.state==='in_progress')DownloadStopped=false;}catch{DownloadStopped=false;}
+    }
+    if(Job.localCaptions?.enabled){
+     // Do not await an offscreen reply that may itself send a gated Stage.
+     void Api.runtime.sendMessage({type:'captionPipelineCanceled',requestId:Job.requestId}).catch(()=>{});
+     try{
+      const Receipt=await CancelNative(Job.requestId,Job.captionStatus?.attempt);
+      CaptionStopped=Receipt?.phase==='canceled'&&(Job.captionStatus?.attempt===undefined||Receipt.attempt===Job.captionStatus.attempt);
+     }catch{/* Logical cancellation persists; do not claim physical closure. */}
+    }
+    await updateJob(JobKey(Job.requestId),J=>J&&(!J.localCaptions?.enabled||J.captionStatus?.canceledByRestart)?{...J,restartCancellationPending:!DownloadStopped||!CaptionStopped,...(J.localCaptions?.enabled?{captionStatus:{...J.captionStatus,cancellationPending:!CaptionStopped}}:{})}:J);
+   }
+  })();
+ }
  let Execution;
  const Transport=native?null:CreateCaptionNativeClient(Api,Event=>{
   if(Event.event==='operationProgress'){Execution?.onProgress(Event);return;}
@@ -81,6 +115,7 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
   return {...J,captionStatus:{...J.captionStatus,subtitleSourceStatus:Base},subtitleStatus:MergeGeneratedSubtitleStatus(Base,Language,Target,Translation)};
  });
  async function OnNativeEvent(Event){
+  await Initialize();
   if(Event.event==='model-state'){if(['model-ready','model-failed','model-canceled'].includes(Event.phase))CapabilityCache.clear();await Api.runtime.sendMessage({type:'captionModelProgress',engine:Event.engine,model:Event.model,operationId:Event.operationId,phase:Event.phase,received:Event.received,total:Event.total,error:Event.error}).catch(()=>{});return;}
   if(Event.event==='disconnected'){
    CapabilityCache.clear();
@@ -169,9 +204,11 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
   Completing.set(Id,Task);return Task;
  }
  async function Start(Id,Retry=false){
+  await Initialize();
   if(Starting.has(Id))return Starting.get(Id);
   const Task=(async()=>{
    let Job=await Read(Id);if(!Job?.localCaptions?.enabled||Job.snapshot)return;
+   if(Job.captionStatus?.canceledByRestart)throw Error('caption_canceled');
    if(Retry&&!Job.localCaptions.model&&Api.storage?.local){
     const Saved=NormalizeCaptionSettings((await Api.storage.local.get(CaptionSettingKey))[CaptionSettingKey],(await Api.runtime.getPlatformInfo()).os);
     if(Saved.model){await updateJob(JobKey(Id),J=>J?{...J,localCaptions:{...J.localCaptions,engine:Saved.engine,model:Saved.model}}:J);Job=await Read(Id);}
@@ -238,7 +275,7 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
     const Attempt=ValidateCaptionAttempt((Job.captionStatus?.attempt||0)+1),Probe=await ProbeJob(Job);
     const Current=await updateJob(JobKey(Id),J=>{
      if(!MayPublish(J))return J;
-     return {...J,state:'active',captionStatus:{...J.captionStatus,attempt:Attempt,phase:'waiting',handoffRevision:null,mode:'postprocess',recognitionStarted:false,inputSealed:false,committedSamples:0,rawCommittedSamples:0,recognitionFinalized:false,finalSamples:null,finalCoverage:null,recognitionStartSample:null,resultRevision:null,outputReceipts:{},translationLanguage:null,offset:0,preparationError:false,error:null,prepared:false,legacyNative:!CaptionConcurrentReady(Probe),...(Message.fallbackReason?{fallbackReason:String(Message.fallbackReason).slice(0,96)}:{})}};
+    return {...J,state:'active',captionStatus:{...J.captionStatus,attempt:Attempt,phase:'waiting',handoffRevision:null,liveTranscript:null,mode:'postprocess',recognitionStarted:false,inputSealed:false,committedSamples:0,rawCommittedSamples:0,recognitionFinalized:false,finalSamples:null,finalCoverage:null,recognitionStartSample:null,resultRevision:null,outputReceipts:{},translationLanguage:null,offset:0,preparationError:false,error:null,prepared:false,legacyNative:!CaptionConcurrentReady(Probe),...(Message.fallbackReason?{fallbackReason:String(Message.fallbackReason).slice(0,96)}:{})}};
     });
     if(Current?.captionStatus?.attempt!==Attempt)throw Error('caption_stale_attempt');InternalCancellation.delete(Id);return {attempt:Attempt};
    }finally{Handoffs.delete(Id);}
@@ -264,6 +301,13 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
    await Update(Id,{offset:Message.offset});return {};
   }
   if(Job.captionPipeline==='staged'){
+   if(Message.action==='publishLive'){
+    const Snapshot=ValidateLiveCaptionSnapshot(Message.snapshot);
+    const MayPublish=J=>J&&Attempt&&J.captionStatus?.attempt===Attempt&&(J.captionStatus.controlRevision||0)===(Message.controlRevision||0)&&['active','starting'].includes(J.state)&&J.pendingAction!=='cancel'&&!J.captionStatus.cancelRequested&&!['failed','canceled','complete'].includes(J.captionStatus.phase)&&J.captionStatus.mode==='windowed';
+    const Current=await updateJob(JobKey(Id),J=>MayPublish(J)&&Snapshot.revision>(J.captionStatus.liveTranscript?.revision||0)?{...J,captionStatus:{...J.captionStatus,liveTranscript:Snapshot}}:J);
+    if(!MayPublish(Current))throw Error('caption_stale_attempt');
+    return {revision:Current.captionStatus.liveTranscript?.revision||0};
+   }
    const DecoderActions={decoderOpen:['sourceFingerprint','access'],decoderPoll:['decoderToken','afterEvent','maxEvents','maxBytes'],decoderSupply:['decoderToken','requestId','offset','data','eof'],decoderAck:['decoderToken','throughEvent','throughFrame'],decoderClose:['decoderToken']};
    if(Object.hasOwn(DecoderActions,Message.action)){
     if(!Attempt||Message.action!=='decoderClose'&&(!['active','starting'].includes(Job.state)||(Job.captionStatus?.controlRevision||0)!==(Message.controlRevision||0)))throw Error('caption_stale_attempt');
@@ -364,8 +408,10 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
   if(Message.action==='status'&&Result.phase==='audio-ready')await Update(Id,{prepared:true});return Result;
  }
  return {
+  initialize:Initialize,
   async handle(Message,Sender){
    if(!CaptionSenderAllowed(Message,Sender,Api))throw new Error('caption_forbidden');
+   await Initialize();
    if(Message.type==='captionStage')return Stage(Message);
    if(Message.type==='captionReconnect'){
     const Jobs=await listJobs();
@@ -404,10 +450,12 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
    throw new Error('caption_invalid');
   },
   async downloadChanged(Change){
+   await Initialize();
    if(Change.state?.current!=='complete')return;
    for(const Job of await listJobs())if(Job.downloadId===Change.id&&Job.localCaptions?.enabled)await Start(Job.requestId);
   },
   async jobsChanged(Changes){
+   await Initialize();
    for(const [Key,Change]of Object.entries(Changes)){
     if(!Key.startsWith('job:'))continue;
     const Job=Change.newValue,Previous=Change.oldValue;
@@ -421,25 +469,6 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
     if(Job?.localCaptions?.enabled&&Job.downloadId!==undefined&&Job.downloadId!==Previous?.downloadId)await Start(Job.requestId);
    }
   },
-  async recover(){
-   const Jobs=(await listJobs()).filter(J=>J.localCaptions?.enabled);
-   if(!Jobs.length)return;
-   if(typeof Native.pruneExpired==='function')await Native.pruneExpired();
-   for(const Job of Jobs){
-    if(Job.captionPipeline==='staged'){
-     if(['complete','canceled'].includes(Job.captionStatus?.phase))continue;
-     let Available=false;try{const Result=await Api.runtime.sendMessage({type:'captionPipelineState',requestId:Job.requestId});Available=Result?.available===true;}catch{}
-     if(!Available)await Update(Job.requestId,{phase:'failed',retryAvailable:false,error:'caption_source_missing'});
-     continue;
-    }
-    if(['complete','canceled','failed'].includes(Job.captionStatus?.phase))continue;
-    try{
-     const Status=await SendNative({action:'status',jobId:Job.requestId,...(Job.captionStatus?.attempt?{attempt:Job.captionStatus.attempt}:{})});
-     if(Status.phase==='recognized'){if(Job.captionPipeline!=='staged')await SaveResults(Job.requestId,Job.localCaptions.formats);continue;}
-     if(Status.phase==='failed'||Status.phase==='canceled'){await Update(Job.requestId,{phase:Status.phase,error:Status.error});continue;}
-     if((await BrowserFile(Job)||Job.pickedDownloadFolder&&['complete','interrupted'].includes(Job.state))&&(!Status.phase||['staged','audio-ready','complete'].includes(Status.phase))){await Start(Job.requestId,true);}
-    }catch{if(await BrowserFile(Job))await Update(Job.requestId,{phase:'failed',error:'caption_helper_missing'});}
-   }
-  },start:Start,onNativeEvent:OnNativeEvent,
+  start:Start,onNativeEvent:OnNativeEvent,
  };
 }
