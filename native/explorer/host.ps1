@@ -39,10 +39,12 @@ try {
     $Manifest=Get-Content -LiteralPath $ManifestPath -Encoding UTF8 -Raw | ConvertFrom-Json
     if($CallerOrigin -cnotmatch '^chrome-extension://[a-p]{32}/$' -or $Manifest.allowed_origins -cnotcontains $CallerOrigin){throw 'origin_denied'}
     $Header=Read-Exact $InputStream 4;$Size=[BitConverter]::ToUInt32($Header,0)
-    if($Size -eq 0 -or $Size -gt 16384){throw 'invalid_message'}
+    if($Size -eq 0 -or $Size -gt 2097152){throw 'invalid_message'}
     $Message=[Text.Encoding]::UTF8.GetString((Read-Exact $InputStream ([int]$Size))) | ConvertFrom-Json
+    if($Size -gt 16384 -and $Message.action -cne 'installCaptions'){throw 'invalid_message'}
     if($Message.action -ceq 'ping'){
-        $Status=@{ok=$true;protocol=1}
+        $Status=@{ok=$true;protocol=1;platform='win';helperVersion=9;helperRevision=1;capabilities=@('explorer')}
+        if([IO.File]::Exists((Join-Path $PSScriptRoot 'common-setup.ps1'))){$Status.capabilities+=@('captionSetup','captionPackageUpdate','genericPackageManifest')}
         if(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'lifecycle.ps1')){
             . (Join-Path $PSScriptRoot 'lifecycle.ps1')
             $Identity=Get-ExplorerIdentity $PSScriptRoot
@@ -52,7 +54,23 @@ try {
         $Header=[BitConverter]::GetBytes([uint32]$Payload.Length);$OutputStream.Write($Header,0,4);$OutputStream.Write($Payload,0,$Payload.Length);$OutputStream.Flush()
         return
     }
-    if($Message.action -ceq 'uninstall'){
+    if($Message.action -cin @('installCaptions','captionSetupStatus')){
+        $AllowedKeys=if($Message.action -ceq 'installCaptions'){@('action','jobId','package')}else{@('action','jobId')}
+        if(@($Message.PSObject.Properties.Name|Where-Object {$_ -cnotin $AllowedKeys}).Count -gt 0){throw 'invalid_message'}
+        if(-not [IO.File]::Exists((Join-Path $PSScriptRoot 'common-setup.ps1'))){throw 'common_helper_update_required'}
+        . (Join-Path $PSScriptRoot 'common-setup.ps1')
+        if($Message.action -ceq 'installCaptions'){
+            if($Message.jobId){throw 'invalid_message'}
+            if($Message.PSObject.Properties.Name -ccontains 'package'){
+                if($null -eq $Message.package){throw 'invalid_setup_payload'}
+                $Response=Start-CommonCaptionSetup $PSScriptRoot $CallerOrigin -Package $Message.package
+            }else{$Response=Start-CommonCaptionSetup $PSScriptRoot $CallerOrigin}
+        }else{
+            if($Message.jobId -cnotmatch '^[a-f0-9]{32}$'){throw 'invalid_setup_job'}
+            $Response=Get-CommonSetupState $PSScriptRoot $CallerOrigin $Message.jobId
+        }
+    } elseif($Message.action -ceq 'uninstall'){
+        if([IO.File]::Exists((Join-Path $PSScriptRoot 'common-setup.ps1'))){. (Join-Path $PSScriptRoot 'common-setup.ps1');if(Test-CommonSetupBusy $PSScriptRoot){throw 'common_setup_busy'}}
         . (Join-Path $PSScriptRoot 'lifecycle.ps1')
         $Identity=Get-ExplorerIdentity $PSScriptRoot
         if(-not $Identity -or $Message.installationId -cne $Identity.installationId){throw 'invalid_message'}
@@ -64,11 +82,11 @@ try {
         $Payload=[Text.Encoding]::UTF8.GetBytes('{"ok":true,"scheduled":true}')
         $Header=[BitConverter]::GetBytes([uint32]$Payload.Length);$OutputStream.Write($Header,0,4);$OutputStream.Write($Payload,0,$Payload.Length);$OutputStream.Flush()
         return
-    }
+    } else {
     $ParsedGuid=[Guid]::Empty
     if($Message.action -cne 'reveal' -or -not [Guid]::TryParse([string]$Message.folderKey,[ref]$ParsedGuid)){throw 'invalid_message'}
     $Name=[string]$Message.filename
-    if(-not $Name -or $Name -ne [IO.Path]::GetFileName($Name) -or $Name.IndexOfAny([IO.Path]::GetInvalidFileNameChars()) -ge 0 -or [IO.Path]::GetExtension($Name).ToLowerInvariant() -notin @('.mp4','.m4v','.f4v','.m4a','.webm','.weba','.mov','.mkv','.avi','.flv','.mp3','.aac','.ogg','.oga','.ogv','.opus','.wav','.flac')){throw 'invalid_filename'}
+    if(-not $Name -or $Name -ne [IO.Path]::GetFileName($Name) -or $Name.IndexOfAny([IO.Path]::GetInvalidFileNameChars()) -ge 0){throw 'invalid_filename'}
     if([string]$Message.sampleHash -cnotmatch '^[a-f0-9]{64}$' -or [long]$Message.size -lt 0){throw 'invalid_message'}
     $Sid=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
     $Mutex=New-Object Threading.Mutex($false,('Local\MDownloaderExplorerBridge-'+$Sid))
@@ -102,9 +120,20 @@ try {
         Start-Process -FilePath $Explorer -ArgumentList ('/select,"'+$Path+'"')
     }
     $Response=@{ok=$true;testMode=[bool]$TestMode}
+    }
 } catch {
-    $Codes=@('origin_denied','invalid_message','invalid_filename','folder_missing','folder_mismatch','file_missing','file_mismatch','binding_required','canceled')
-    $Code=$_.Exception.Message;if($Code -notin $Codes){$Code='reveal_failed'}
+    $Failure=$_;$IsSetup=$Message.action -cin @('installCaptions','captionSetupStatus')
+    $Codes=@('origin_denied','invalid_message','invalid_filename','folder_missing','folder_mismatch','file_missing','file_mismatch','binding_required','canceled','common_helper_update_required','invalid_setup_job','invalid_setup_state','invalid_setup_payload','unsafe_setup_path','common_setup_busy','caption_package_write_failed')
+    $Code=$Failure.Exception.Message;if($Code -notin $Codes){$Code=if($IsSetup){'common_setup_failed'}else{'reveal_failed'}}
+    if($IsSetup){try{
+        if(Get-Command Assert-CommonSetupPath -CommandType Function -ErrorAction SilentlyContinue){
+            $DiagnosticPath=Assert-CommonSetupPath (Join-Path $PSScriptRoot 'helper-last-error.json') $PSScriptRoot
+            $Cause=$Failure.Exception.GetBaseException();$Detail=[string]$Cause.Message
+            if($Detail.Length -gt 1000){$Detail=$Detail.Substring(0,1000)}
+            $Diagnostic=@{code=$Code;action=$Message.action;helperVersion=9;helperRevision=1;exceptionType=$Cause.GetType().FullName;hResult=$Cause.HResult;message=$Detail;script=[IO.Path]::GetFileName($Failure.InvocationInfo.ScriptName);line=$Failure.InvocationInfo.ScriptLineNumber;updated=[DateTime]::UtcNow.ToString('o')}
+            [IO.File]::WriteAllText($DiagnosticPath,($Diagnostic|ConvertTo-Json -Compress -Depth 3),[Text.UTF8Encoding]::new($false))
+        }
+    }catch{}}
     $Response=@{ok=$false;code=$Code}
 }
 finally {if($Locked){$Mutex.ReleaseMutex()};if($Mutex){$Mutex.Dispose()}}

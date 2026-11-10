@@ -7,6 +7,7 @@ import {LocalizedError, ReceivedError} from './lib/i18n.js';
 import {ResolveCandidate} from './detection.js';
 import {LoadSourceProviders} from './lib/source-provider-data.js';
 import {RequireWebRtcConnection} from './lib/webrtc-descriptor.js';
+import {RecordingMimeTypes} from './lib/recording-format.js';
 const Prefix = 'webrtc-control:';
 const CancelPrefix = 'webrtc-canceled:';
 const WasCanceled = async Id => (await chrome.storage.session.get(CancelPrefix + Id))[CancelPrefix + Id] === true;
@@ -18,7 +19,7 @@ async function CheckCanceled(Id)
 async function RunPage(Source, Fields)
 {
 	const [Frame] = await chrome.scripting.executeScript({target: {tabId: Source.tabId, documentIds: [Source.documentId]},
-		func: WebRtcPageTask, args: [{...Source, excludedSelector: RuntimePolicy.Detection.AuxiliaryPlayerSelector, ...Fields}]});
+		func: WebRtcPageTask, args: [{...Source, mimeTypes:RecordingMimeTypes(Source.localCaptions?.enabled), excludedSelector: RuntimePolicy.Detection.AuxiliaryPlayerSelector, ...Fields}]});
 	if (Frame?.documentId !== Source.documentId || Frame.result?.error)
 		throw new LocalizedError(Frame?.result?.error || 'webrtc_source_changed');
 	return Frame.result;
@@ -44,7 +45,7 @@ export async function LaunchWebRtc(Job, Candidate, TabId, Quality)
 {
 	AssertMediaAllowed(Candidate);
 	const Source = {tabId: TabId, documentId: Candidate.documentId, page: Candidate.page,
-		trackId: Candidate.trackId, requestId: Job.requestId, token: crypto.randomUUID(), background: true};
+		trackId: Candidate.trackId, requestId: Job.requestId, token: crypto.randomUUID(), background: true,localCaptions:Job.localCaptions};
 	await chrome.storage.session.set({[Prefix + Job.requestId]: Source});
 	try
 	{

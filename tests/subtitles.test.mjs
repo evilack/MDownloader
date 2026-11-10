@@ -12,6 +12,38 @@ test('space-only WebVTT payload lines are not cue separators',async()=>{
 });
 
 const vtt = 'WEBVTT\n\n00:00:01.000 --> 00:00:02.000\nHello\n';
+test('every declared caption HTTP failure is an error even with legacy optional flags and callbacks',async()=>{
+ for(const status of [404,410,401,403,429,500]){
+  let omitted=0;
+  await assert.rejects(ReadSubtitles([{url:'https://subs.test/en.vtt',optional:true}],{authorize:async()=>{},
+   fetch:async()=>new Response('error',{status}),onUnavailable:async()=>{omitted++;}}),{key:'subtitle_download_failed',args:['http_'+status]});
+  assert.equal(omitted,0);
+ }
+});
+test('a failed declared caption rejects successful siblings rather than returning a captionless success',async()=>{
+ await assert.rejects(ReadSubtitles([{url:'https://subs.test/en.vtt',language:'en'},{url:'https://subs.test/ja.vtt',language:'ja'}],{
+  authorize:async()=>{},fetch:async url=>url.includes('/en.')?new Response(vtt):new Response('error',{status:404}),
+ }),{key:'subtitle_download_failed'});
+});
+
+test('an explicit subtitle error handler preserves successful tracks and reports every failed track',async()=>{
+ const failures=[];
+ const tracks=await ReadSubtitles([{url:'https://subs.test/en.vtt',language:'en'},
+  {url:'https://subs.test/ja.vtt',language:'ja'},{text:'broken',language:'de'}],{
+  authorize:async()=>{},onError:async event=>failures.push(event),
+  fetch:async url=>url.includes('/en.')?new Response(vtt):new Response('error',{status:404}),
+ });
+ assert.deepEqual(tracks.map(t=>t.language),['en']);assert.equal(failures.at(-1).failed,2);
+});
+
+test('subtitle error recovery never converts user cancellation into success',async()=>{
+ const Controller=new AbortController();let Reported=0;
+ await assert.rejects(ReadSubtitles([{url:'https://subs.test/en.vtt'}],{signal:Controller.signal,
+  authorize:async()=>{},onError:async()=>{Reported++;},fetch:async()=>{Controller.abort();throw Controller.signal.reason;},
+ }),{name:'AbortError'});
+ assert.equal(Reported,0);
+});
+
 test('all declared languages are retained and SRT/TTML become WebVTT', async () => {
  const tracks = await ReadSubtitles([
   {text: vtt, language:'en', label:'English'},

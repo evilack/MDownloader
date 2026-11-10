@@ -18,7 +18,9 @@ export async function ReadStreamThumbnail(Source, ParentSignal)
 		{
 			Metadata = Value;
 		});
-		return { ...Metadata, ...await ReadSampleThumbnail(Sample, Controller.signal) };
+		const Thumbnail = await ReadSampleThumbnail(Sample, Controller.signal);
+		return { ...Metadata, ...Thumbnail,
+			resolution: Source.resolution ?? Metadata?.resolution ?? Thumbnail.resolution };
 	}
 	finally
 	{
@@ -28,7 +30,7 @@ export async function ReadStreamThumbnail(Source, ParentSignal)
 }
 
 /** 오직 메모리의 작은 MP4 샘플만 디코딩합니다. 종료·실패 시 영상과 객체 URL을 함께 정리합니다. */
-export async function ReadSampleThumbnail(Sample, Signal)
+async function ReadSampleThumbnail(Sample, Signal)
 {
 	Signal.throwIfAborted();
 	const Video = document.createElement('video');

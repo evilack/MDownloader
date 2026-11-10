@@ -45,23 +45,23 @@ test('YouTube keeps scratch and active ownership until native save finishes',asy
  assert.equal(JSON.stringify(events).includes('secret'),false);
  finishSave();await wait();assert.equal(release,1);assert.deepEqual(await handle({type:'youtubeActive'}),[]);
 });
-test('YouTube received captions are muxed before save and caption failure cannot save an AV-only success',async()=>{
+test('YouTube received captions are muxed before save and caption errors remain separate from video success',async()=>{
  for(const fail of [false,true]){
   const calls=[],events=[];const directory={async getFileHandle(name){return{async getFile(){return new Blob([name]);},async createWritable(){return{abort:async()=>{}};}};}};
   const handle=CreateYoutubeRunner({client:{async ResolveYoutubeCaptions(){return[];},async ResolveYoutubeSelection(){return{config:{},selection:{}};}},workspaces:{async create(){return directory;},async release(){calls.push('release');}},
    async receiveCaptions(){calls.push('captions');if(fail)throw new LocalizedError('subtitle_download_failed');return{tracks:[{language:'ko',content:'source-vtt'}],receipt:{count:1,phase:'ready'}};},
    async receive(){calls.push('av');return{bytes:{video:2,audio:1},videoEndMs:1000,audioEndMs:1000};},async remux(){calls.push('av-mux');},
    async muxCaptions(_file,tracks){calls.push('caption-mux');assert.equal(tracks[0].content,'source-vtt');}});
-  await handle({type:'youtubeRun',job:{requestId:Id},quality:{}},{report:async(...args)=>events.push(args),saveFile:async(_job,file)=>{calls.push('save');assert.equal(await file.text(),'subtitled.mp4');}});await wait();await wait();
-  if(fail){assert.equal(calls.includes('save'),false);assert.equal(events.at(-1)[2].error.key,'subtitle_download_failed');}
+  await handle({type:'youtubeRun',job:{requestId:Id},quality:{}},{report:async(...args)=>events.push(args),saveFile:async(_job,file)=>{calls.push('save');assert.equal(await file.text(),fail?'result.mp4':'subtitled.mp4');}});await wait();await wait();
+  if(fail){assert.equal(calls.includes('save'),true);assert.equal(events.some(e=>e[1]==='failure'),false);assert.equal(events.findLast(e=>e[1]==='subtitleStatus')[2].status.phase,'failed');}
   else{assert.deepEqual(calls,['captions','av','av-mux','caption-mux','save','release']);assert.equal(events.find(e=>e[1]==='youtubeCaptions')[2].receipt.count,1);}
  }
 });
-test('YouTube subtitle mux failure aborts output and releases ownership without native save',async()=>{
+test('YouTube subtitle mux failure saves the original AV and reports only a subtitle error',async()=>{
  let aborted=0,released=0,saved=0;const reports=[];
  const directory={async getFileHandle(){return{async getFile(){return new Blob(['media']);},async createWritable(){return{async abort(){aborted++;}};}};}};
  const handle=CreateYoutubeRunner({client:{async ResolveYoutubeSelection(){return{config:{},selection:{}};}},workspaces:{async create(){return directory;},async release(){released++;}},
   receiveCaptions:async()=>({tracks:[{language:'ko',content:'vtt'}],receipt:{phase:'ready',count:1,completed:1}}),receive:async()=>({bytes:{video:2,audio:1}}),remux:async()=>{},muxCaptions:async()=>{throw Error('destination-failed');}});
  await handle({type:'youtubeRun',job:{requestId:Id},quality:{}},{report:async(...a)=>reports.push(a),saveFile:async()=>saved++});await wait();await wait();
- assert.equal(saved,0);assert.equal(aborted,1);assert.equal(released,1);assert.deepEqual(await handle({type:'youtubeActive'}),[]);assert.equal(reports.at(-1)[2].error.key,'subtitle_mux_failed');
+ assert.equal(saved,1);assert.equal(aborted,1);assert.equal(released,1);assert.deepEqual(await handle({type:'youtubeActive'}),[]);assert.equal(reports.some(e=>e[1]==='failure'),false);assert.equal(reports.findLast(e=>e[1]==='subtitleStatus')[2].status.phase,'failed');
 });

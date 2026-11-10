@@ -1,0 +1,2 @@
+# Include the downloadable website asset despite the root's generic ZIP ignore.
+!MDownloader-development.zip

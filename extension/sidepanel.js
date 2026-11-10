@@ -13,9 +13,10 @@ import { CreateMediaPreview } from './media-preview.js';
 import { PreviewTile, ObserveCandidateThumbnails } from './media-thumbnails.js';
 import { CreateCandidateList } from './candidate-list.js';
 import { CreateJobRow, GetJobRowSignature, UpdateJobRowMetrics } from './job-row.js';
-import { GetSetting, OnSettingChanged, SettingKeys } from './lib/settings.js';
+import { CreateSettingsCache, SettingKeys } from './lib/settings.js';
 import { JobGroup } from './lib/browser-job-state.js';
 import {ObserveYoutubePolicyNotice} from './lib/youtube-policy-notice.js';
+import {BindPanelMediaResize} from './panel-media-resize.js';
 await InitializeLocale();
 LocalizePage();
 WatchLanguage();
@@ -34,34 +35,31 @@ else
 {
 	const MediaSection = document.querySelector('#panel-media');
 	const Divider = document.querySelector('#panel-media-divider');
+	const StaticDivider=document.querySelector('#panel-media-static-divider');
+	const DownloadSection=document.querySelector('#panel-downloads');
+	const ResizeMedia=BindPanelMediaResize(document.querySelector('#panel-workspace'),MediaSection,Divider);
 	const Candidates = CreateCandidateList({ root: MediaSection, mediaPreview: MediaPreview, followTabs: true });
-	let ShowMedia = false, PolicyBlocked = false;
-	function SetMediaVisible(Enabled)
+	let PolicyBlocked = false;
+	function SetMediaVisible()
 	{
-		ShowMedia = Enabled;
-		MediaSection.hidden = Divider.hidden = !Enabled || PolicyBlocked;
-		Candidates.setEnabled(Enabled && !PolicyBlocked);
+		const Visible=PanelSettings.Get(SettingKeys.showPanelMedia)&&!PolicyBlocked,Resizable=Visible&&PanelSettings.Get(SettingKeys.showPanelMediaResize);
+		if(!Resizable)ResizeMedia.setEnabled(false);
+		MediaSection.hidden=!Visible;Divider.hidden=!Resizable;StaticDivider.hidden=!Visible||Resizable;
+		document.body.classList.toggle('panel-resizable',Resizable);
+		for(const Pane of [MediaSection,DownloadSection]){if(Resizable)Pane.setAttribute('tabindex','0');else Pane.removeAttribute('tabindex');}
+		if(Resizable)ResizeMedia.setEnabled(true);
+		document.querySelector('#scan').hidden=!Visible;
+		Candidates.setEnabled(Visible);
 	}
+	const PanelSettings=CreateSettingsCache([SettingKeys.showPanelMedia,SettingKeys.showPanelMediaResize],chrome.storage,SetMediaVisible);
 	ObserveYoutubePolicyNotice(Blocked =>
 	{
 		PolicyBlocked = Blocked;
 		document.querySelector('[data-youtube-policy-notice]').hidden = !Blocked;
-		SetMediaVisible(ShowMedia);
+		SetMediaVisible();
 	});
-	let bChanged = false;
-	OnSettingChanged(SettingKeys.showPanelMedia, Change =>
-	{
-		bChanged = true;
-		SetMediaVisible(Change.newValue === true);
-	});
-	void (async () =>
-	{
-		const Enabled = await GetSetting(SettingKeys.showPanelMedia).catch(() => false);
-		if (!bChanged)
-		{
-			SetMediaVisible(Enabled);
-		}
-	})();
+	void PanelSettings.Ready.catch(SetMediaVisible);
+	window.addEventListener('pagehide',()=>PanelSettings.Dispose(),{once:true});
 }
 const SectionLabels = {
 	attention: 'view_jobs_attention', active: 'view_jobs_active', complete: 'view_jobs_complete',
@@ -179,7 +177,7 @@ function UpdateRow(Job, Now)
 		Previous?.row.replaceWith(Entry.row);
 		Rows.set(Job.requestId, Entry);
 	}
-	UpdateJobRowMetrics(Entry, Job, Now, CountFormat);
+	UpdateJobRowMetrics(Entry, Job, Now);
 	return Entry;
 }
 

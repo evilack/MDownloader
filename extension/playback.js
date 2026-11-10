@@ -45,11 +45,12 @@ async function CapturePlayback(Address)
 		{
 			const Capture = new PlaybackHls(Address, (Filename, Bytes) => StorePlaybackSegment(Directory, Filename, Bytes));
 			const Network = chrome.devtools.network;
-			const PageTitle = new Promise(Resolve =>
+		const PageInfo = new Promise(Resolve =>
 			{
-				chrome.devtools.inspectedWindow.eval('document.title', (Title, ErrorValue) =>
+			chrome.devtools.inspectedWindow.eval('({title: document.title, url: location.href})', (Info, ErrorValue) =>
 				{
-					Resolve(!ErrorValue && typeof Title === 'string' ? Title : '');
+				Resolve(!ErrorValue && Info && typeof Info.title === 'string' && typeof Info.url === 'string'
+				? Info : {title: '', url: ''});
 				});
 			});
 			let Tail = Promise.resolve();
@@ -130,8 +131,9 @@ async function CapturePlayback(Address)
 					try
 					{
 						const { playlist: Playlist, bytes: Bytes } = Capture.LocalInput();
+						const Info = await PageInfo;
 						await SendRequest('savePlayback', {
-							requestId: RequestId, bytes: Bytes, count: Capture.count, pageTitle: await PageTitle,
+							requestId: RequestId, bytes: Bytes, count: Capture.count, pageTitle: Info.title, pageUrl: Info.url,
 							playlist: Playlist,
 						});
 						// 저장 요청을 인수한 전송 문서는 수집 잠금을 기다립니다. 이후 임시 파일 정리는 전송 문서가 담당합니다.

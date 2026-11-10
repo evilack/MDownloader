@@ -18,7 +18,7 @@ function Forget(Download)
 	}
 }
 
-export async function DownloadNamedFile(Url, Filename)
+export async function DownloadNamedFile(Url, Filename, {saveAs} = {})
 {
 	AssertMediaAllowed({url: Url});
 	if (!CanUseYoutube()) await PrepareDistributionNetwork();
@@ -32,7 +32,7 @@ export async function DownloadNamedFile(Url, Filename)
 	Naming.add(Download);
 	try
 	{
-		Download.start = chrome.downloads.download({ url: Url, filename: Filename, conflictAction: ConflictAction });
+		Download.start = chrome.downloads.download({ url: Url, filename: Filename, conflictAction: ConflictAction, ...(saveAs===undefined?{}:{saveAs}) });
 		Download.id = await Download.start;
 		NamingById.set(Download.id, Download);
 		return Download.id;

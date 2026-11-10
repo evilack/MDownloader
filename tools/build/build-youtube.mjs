@@ -6,13 +6,13 @@ import {fileURLToPath} from 'node:url';
 const Root = fileURLToPath(new URL('../../', import.meta.url));
 const Output = Path.join(Root, 'extension/vendor/youtube');
 await mkdir(Output, {recursive: true});
-for (const [Input, Name] of [['tools/build/youtube-client-entry.mjs', 'client-bundle.mjs'], ['tools/build/youtube-evaluator-worker.mjs', 'evaluator-worker.mjs'], ['tools/build/youtube-sabr-entry.mjs', 'sabr-bundle.mjs']])
+for (const [Input, Name] of [['tools/build/youtube-client-entry.mjs', 'client-bundle.mjs'], ['tools/build/youtube-sabr-entry.mjs', 'sabr-bundle.mjs']])
 {
 	const Result = await build({absWorkingDir: Root, entryPoints: [Input], outfile: Path.join(Output, Name), bundle: true, platform: 'browser', format: 'esm', target: 'chrome116', legalComments: 'eof', metafile: true, sourcemap: false});
 	await mkdir(Path.join(Root, 'artifacts/youtube-implementation'), {recursive: true});
 	await writeFile(Path.join(Root, 'artifacts/youtube-implementation', Name + '.meta.json'), JSON.stringify(Result.metafile, null, 2));
 }
-for (const Name of ['youtubei.js', 'jintr', 'googlevideo', '@bufbuild/protobuf', 'fflate', 'meriyah', 'acorn'])
+for (const Name of ['youtubei.js', 'googlevideo', '@bufbuild/protobuf', 'fflate', 'meriyah'])
 {
 	const Directory = Path.join(Root, 'node_modules', Name);
 	for (const File of await readdir(Directory)) if (/^(?:LICENSE|COPYING|NOTICE)/i.test(File)) await copyFile(Path.join(Directory, File), Path.join(Output, Name.replaceAll('/', '-') + '-' + File));
@@ -25,6 +25,6 @@ await readFile(Path.join(Output, 'bufbuild-protobuf-LICENSE-APACHE'));
 const Files = {};
 for (const File of await readdir(Output)) if (File !== 'provenance.json') Files[File] = createHash('sha256').update(await readFile(Path.join(Output, File))).digest('hex');
 const Lock = JSON.parse(await readFile(Path.join(Root, 'package-lock.json'), 'utf8'));
-const Versions = Object.fromEntries(['youtubei.js', 'jintr', 'googlevideo', 'esbuild', '@bufbuild/protobuf', 'fflate', 'meriyah', 'acorn'].map(Name => [Name, Lock.packages['node_modules/' + Name].version]));
+const Versions = Object.fromEntries(['youtubei.js', 'googlevideo', 'esbuild', '@bufbuild/protobuf', 'fflate', 'meriyah'].map(Name => [Name, Lock.packages['node_modules/' + Name].version]));
 await writeFile(Path.join(Output, 'provenance.json'), JSON.stringify({versions: Versions, lockfileSha256: createHash('sha256').update(await readFile(Path.join(Root, 'package-lock.json'))).digest('hex'), files: Files}, null, 2) + '\n');
 console.log(JSON.stringify({output: Output, files: Object.keys(Files).length}));

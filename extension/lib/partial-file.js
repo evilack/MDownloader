@@ -114,16 +114,27 @@ export async function ReadFilePrefix(Source, Workspace, Signal, Progress)
 /** MP4/MOV에서 mdat 전체를 다시 받지 않고 top-level box 크기로 moov를 찾습니다.
  * 메타데이터 요청의 응답 크기·자원 크기·검증자를 함께 확인해 다른 파일을 섞지 않습니다.
  */
-export async function ReadMp4Metadata(Prefix, Signal)
+export async function ReadMp4Metadata(Prefix, Signal, {strictIdentity: StrictIdentity = false, captureHeaders: CaptureHeaders = false} = {})
 {
 	AssertMediaAllowed(Prefix);
 	const BaseHeaderBytes = 8, ExtendedHeaderBytes = 16;
-	let Requested = 0;
+	let Requested = 0, OverlayBytes = 0;
+	const Overlays = [];
+	function Cache(Start, Data)
+	{
+		if (CaptureHeaders)
+		{
+			OverlayBytes += Data.byteLength;
+			if (OverlayBytes > RuntimePolicy.Transfer.MaxSnapshotMetadataBytes) throw new LocalizedError('job_snapshot_metadata');
+			Overlays.push({start: Start, data: Data});
+		}
+		return Data;
+	}
 	async function Read(Start, End)
 	{
 		if (End <= Prefix.file.size)
 		{
-			return new Uint8Array(await Prefix.file.slice(Start, End).arrayBuffer());
+			return Cache(Start, new Uint8Array(await Prefix.file.slice(Start, End).arrayBuffer()));
 		}
 		Requested += End - Start;
 		if (Requested > RuntimePolicy.Transfer.MaxSnapshotMetadataBytes)
@@ -133,6 +144,20 @@ export async function ReadMp4Metadata(Prefix, Signal)
 		const Response = await fetch(Prefix.url, {credentials: 'include', redirect: 'error', signal: AbortSignal.any([Signal, AbortSignal.timeout(RuntimePolicy.Transfer.RequestTimeoutMs)]),
 			headers: {Range: 'bytes=' + Start + '-' + (End - 1), ...(Prefix.validator ? {'If-Range': Prefix.validator} : {})}});
 		const Expected = `bytes ${Start}-${End - 1}/${Prefix.total}`;
+		if (StrictIdentity)
+		{
+			const Etag = Response.headers.get('etag'), Encoding = Response.headers.get('content-encoding');
+			if (Response.url !== Prefix.url || Etag && Etag !== Prefix.validator || Response.status === 206 && Response.headers.get('content-range') !== Expected)
+			{
+				await Response.body?.cancel();
+				throw new LocalizedError('job_snapshot_source_changed');
+			}
+			if (!/^"[^"\r\n]*"$/.test(Prefix.validator || '') || Etag !== Prefix.validator || Encoding && Encoding.toLowerCase() !== 'identity')
+			{
+				await Response.body?.cancel();
+				throw new LocalizedError('job_snapshot_metadata');
+			}
+		}
 		if (Response.status !== 206 || Response.headers.get('content-range') !== Expected)
 		{
 			await Response.body?.cancel();
@@ -182,7 +207,7 @@ export async function ReadMp4Metadata(Prefix, Signal)
 			Result.set(Part, Offset);
 			Offset += Part.byteLength;
 		}
-		return Result;
+		return Cache(Start, Result);
 	}
 	for (let Position = 0; Position + BaseHeaderBytes <= Prefix.total; )
 	{
@@ -206,7 +231,8 @@ export async function ReadMp4Metadata(Prefix, Signal)
 		}
 		if (Type === 'moov')
 		{
-			return [{start: Position, data: await Read(Position, Position + Size)}];
+			const Data = await Read(Position, Position + Size);
+			return CaptureHeaders ? Overlays : [{start: Position, data: Data}];
 		}
 		Position += Size;
 	}

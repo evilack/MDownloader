@@ -1498,100 +1498,6 @@
   "translation_capture_failed": {
     "message": "Import failed. Check native host setup, PotPlayer version and whether it is running."
   },
-  "caption_unknown": {
-    "message": "Subtitles: not checked"
-  },
-  "caption_checking": {
-    "message": "Checking subtitles…"
-  },
-  "caption_detected": {
-    "message": "Subtitles: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_undetected": {
-    "message": "Subtitles: not detected"
-  },
-  "caption_collecting": {
-    "message": "Collecting subtitles ($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_ready": {
-    "message": "Subtitles ready: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_failed": {
-    "message": "Subtitle check / acquisition failed"
-  },
-  "caption_translation_unknown": {
-    "message": "Auto translation: not checked"
-  },
-  "caption_translation_off": {
-    "message": "Auto translation: off"
-  },
-  "caption_translation_no_source": {
-    "message": "Auto translation: no source detected"
-  },
-  "caption_translation_not_needed": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_pending": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_translating": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_complete": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_failed": {
-    "message": "Translation failed"
-  },
-  "caption_stopped": {
-    "message": "Subtitle acquisition stopped"
-  },
-  "caption_translation_stopped": {
-    "message": "Auto translation stopped"
-  },
-  "caption_count": {
-    "message": "Subtitles($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
   "view_youtube_quality_checking": {
     "message": "YouTube की गुणवत्ता जाँची जा रही है…"
   },
@@ -1673,14 +1579,20 @@
   "download_options_download": {
     "message": "डाउनलोड"
   },
+  "explorer_setup_download_help": {
+    "message": "रोक दिए जाने पर डाउनलोड सूची में फ़ाइल जाँचें और स्वयं डाउनलोड करें।"
+  },
+  "explorer_setup_download_list": {
+    "message": "डाउनलोड खोलें"
+  },
   "explorer_setup_title": {
     "message": "Install Windows helper"
   },
   "explorer_setup_body": {
-    "message": "A Windows helper is needed to show files in your selected folder."
+    "message": "फ़ोल्डर को Explorer में खोलने के लिए Windows सहायक चाहिए।"
   },
   "explorer_setup_install": {
-    "message": "स्थापित करें"
+    "message": "इंस्टॉलर डाउनलोड करें"
   },
   "explorer_setup_installing": {
     "message": "Waiting for installation to finish.\nAllow any Chrome or Windows execution prompt."
@@ -1701,13 +1613,13 @@
     "message": "Install it now?"
   },
   "explorer_setup_cancel": {
-    "message": "Cancel keeps your current saved folder."
+    "message": "रद्द करने पर मौजूदा स्थान बना रहेगा।"
   },
   "explorer_setup_downloading": {
-    "message": "Downloading the installer.\nWhen it finishes, click “Run installer”."
+    "message": "इंस्टॉलर डाउनलोड हो रहा है…"
   },
   "explorer_setup_downloaded": {
-    "message": "Download complete.\nClick “Run installer” to begin installation."
+    "message": "डाउनलोड पूरा हुआ। “इंस्टॉलर चलाएँ” चुनें।"
   },
   "explorer_setup_pending": {
     "message": "Please wait…"
@@ -1795,5 +1707,83 @@
   },
   "notification_file_fallback": {
     "message": "डाउनलोड"
+  },
+  "download_options_live_start": {
+    "message": "लाइव शुरू करने का स्थान"
+  },
+  "download_options_live_beginning": {
+    "message": "उपलब्ध शुरुआत से"
+  },
+  "download_options_live_current": {
+    "message": "वर्तमान लाइव स्थिति से"
+  },
+  "download_options_live_help": {
+    "message": "शुरुआत से विकल्प सर्वर पर उपलब्ध पहले खंड से डाउनलोड करता है। वर्तमान से विकल्प कुछ सेकंड पीछे नवीनतम खंड से शुरू होता है। केवल लाइव स्ट्रीम पर लागू होता है।"
+  },
+  "issue_report_title": {
+    "message": "समस्या की रिपोर्ट करें"
+  },
+  "issue_report_intro": {
+    "message": "ऐसे पेज की रिपोर्ट करें जहाँ URL पहचान या डाउनलोड सही ढंग से काम नहीं करता।"
+  },
+  "issue_report_page": {
+    "message": "रिपोर्ट करने वाला पेज"
+  },
+  "issue_report_page_unavailable": {
+    "message": "पेज का URL उपलब्ध नहीं है।"
+  },
+  "issue_report_types": {
+    "message": "समस्या का प्रकार"
+  },
+  "issue_report_multiple": {
+    "message": "लागू होने वाले सभी विकल्प चुनें।"
+  },
+  "issue_report_detection": {
+    "message": "URL पहचान विफल"
+  },
+  "issue_report_download": {
+    "message": "डाउनलोड विफल"
+  },
+  "issue_report_other": {
+    "message": "अन्य"
+  },
+  "issue_report_details": {
+    "message": "विवरण (वैकल्पिक)"
+  },
+  "issue_report_placeholder": {
+    "message": "समस्या होने के समय आप क्या कर रहे थे, बताएँ।"
+  },
+  "issue_report_question": {
+    "message": "क्या आप इस पेज की समस्या की रिपोर्ट करना चाहते हैं?"
+  },
+  "issue_report_confirm": {
+    "message": "पुष्टि करें"
+  },
+  "issue_report_select_type": {
+    "message": "कम से कम एक समस्या प्रकार चुनें।"
+  },
+  "issue_report_send_notice": {
+    "message": "पुष्टि करने पर पेज का URL, चुने गए समस्या प्रकार और विवरण FormSubmit से भेजे जाएँगे।"
+  },
+  "issue_report_sending": {
+    "message": "रिपोर्ट भेजी जा रही है। कृपया प्रतीक्षा करें।"
+  },
+  "issue_report_sent": {
+    "message": "आपकी रिपोर्ट स्वीकार कर ली गई है।"
+  },
+  "issue_report_failed": {
+    "message": "रिपोर्ट नहीं भेजी जा सकी। बाद में फिर कोशिश करें।"
+  },
+  "issue_report_network_error": {
+    "message": "भेजने के परिणाम की पुष्टि नहीं हो सकी। रिपोर्ट पहले ही स्वीकार की जा चुकी हो सकती है।"
+  },
+  "issue_report_activation": {
+    "message": "रिपोर्ट प्राप्त करने वाला पता अभी सक्रिय नहीं है।"
+  },
+  "issue_report_invalid_page": {
+    "message": "मान्य वेब पेज URL उपलब्ध नहीं है। पेज खोलकर फिर कोशिश करें।"
+  },
+  "issue_report_close": {
+    "message": "बंद करें"
   }
 }

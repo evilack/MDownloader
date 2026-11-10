@@ -1,6 +1,6 @@
 # Current asset sources
 
-`catalog.json` maps the 17 shipped extension icons to six source groups and records hashes for the retained originals, baselines, references, and reviews. These are development sources; the browser loads only the derivatives in `extension/icons/`.
+`catalog.json` maps the 18 shipped extension icons to seven source groups and records hashes for the retained originals, baselines, references, and reviews. These are development sources; the browser loads only the derivatives in `extension/icons/`.
 
 | Group | Current role |
 |---|---|
@@ -9,6 +9,7 @@
 | `icons/actions/` | Cancel and stop/save corrected originals, initial originals, and runtime-size baselines |
 | `icons/delete/` | Single-record and section-clear source PNGs and baselines |
 | `icons/folder/` | Show-in-folder source PNG and baseline |
+| `icons/brands/` | Official platform icon reuse records; the final YouTube PNG ships once under `extension/icons/` |
 | `icons/status/` | Failed-preview source, size baselines, retained 24px comparison, and native reviews |
 
 Runtime duplicates are not copied into source folders. Generation edits and low-resolution RGB correction are separate stages. Existing image bytes have not been redesigned during repository cleanup.
@@ -18,3 +19,5 @@ For future edits, preserve the original canvas, silhouette, proportions, layout,
 The popup source collection did not contain separate saved resize baselines. Its catalog retains the original processing record and native review; this cleanup does not invent missing evidence or claim a new retouch review.
 
 Website captures are stored once in `website/assets/screenshots/en/` and `ko/`. Their adjacent catalog records actual capture versions and hashes. The local MP4 under `website/sample/media/` is also a regression-test fixture and must not be removed as an unused screenshot resource.
+
+`extension/lib/icon-catalog.js` is the shared runtime identity catalog for action icons, app sizes, preview failure and platform branding. `catalog.json` records files and hashes; `verify-project` rejects uncatalogued shipped PNGs. Manifest and static HTML declarations use the same final files.

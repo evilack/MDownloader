@@ -47,3 +47,18 @@ Test('finite HLS stop/save controls its existing transfer and marks its output a
 	Assert.equal(Object.keys(Data).length, 1);
 	Assert.equal(await UpdateHls({requestId: Id, action: 'streamPartial'}), Filename);
 });
+
+Test('stop/save leaves the stopping phase when muxing starts and preserves a later cancel request', async T =>
+{
+	const Id = 'stop-save-phases', Key = 'job:' + Id;
+	const Data = {[Key]: {requestId: Id, hls: true, state: 'active', pendingAction: 'finish'}};
+	globalThis.chrome = {storage: {local: {get: async Name => ({[Name]: Data[Name]}), set: async Values => Object.assign(Data, Values)}}};
+	T.after(() => delete globalThis.chrome);
+	await UpdateHls({requestId: Id, action: 'progress', received: 376, finished: 1, count: 2});
+	Assert.equal(Data[Key].pendingAction, 'finish');
+	await UpdateHls({requestId: Id, action: 'progress', received: 376, finished: 1, count: 1, muxing: true});
+	Assert.equal(Data[Key].pendingAction, undefined, 'show mux/save progress instead of hiding it behind Stopping');
+	Data[Key].pendingAction = 'cancel';
+	await UpdateHls({requestId: Id, action: 'progress', received: 376, finished: 1, count: 1, muxing: true});
+	Assert.equal(Data[Key].pendingAction, 'cancel');
+});

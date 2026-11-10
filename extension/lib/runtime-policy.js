@@ -26,6 +26,8 @@ export const RuntimePolicy = Object.freeze({
 		MaxMediaContextDocuments: 16,
 		MaxPendingHeaders: 128,
 		MaxObservedManifestBytes: 256 * 1024,
+		DvrMinimumWindowSeconds: 120,
+		DvrMinimumTargetDurations: 10,
 		NativeManifestProbesPerScan: 2,
 		NativeManifestRetryMs: 30_000,
 		NativeManifestTimeoutMs: 5000,
@@ -38,6 +40,9 @@ export const RuntimePolicy = Object.freeze({
 		// 선택 소스의 선언을 조사할 때는 링크 안의 대표 플레이어도 허용합니다.
 		// 실제 카드·광고 역할은 별도 관측 결과로 계속 제외합니다.
 		SourcePlayerSelector: '[hidden], [aria-hidden="true"], .preview, .hover-preview, [data-hover-preview]',
+		// Meta uses aria-hidden on visually rendered reel wrappers. Actual geometry,
+		// computed visibility and exact post ownership decide preview eligibility.
+		MetaReelPlayerSelector: '[hidden], .preview, .hover-preview, [data-hover-preview]',
 		MaxSourceConfigBytes: Units.BytesPerMebibyte,
 		MaxMetadataProbes: 5,
 		DeclaredVariantProbeLanes: 2,
@@ -80,9 +85,11 @@ export const RuntimePolicy = Object.freeze({
 		FirstHeaderRuleId: 40000,
 		MaxHeaderRules: 5000,
 		RequestTimeoutMs: 30_000,
+		FinishGraceMs: 5000,
 		MaxSnapshotMetadataBytes: 4 * Units.BytesPerMebibyte,
 		BrowserSavePollMs: 500,
 		MinLiveRefreshMs: 500,
+		LiveStartTargetDurations: 3,
 		ProgressReportIntervalMs: 750,
 		MaxVariants: 100,
 		MaxLanes: 4,
@@ -110,6 +117,7 @@ export const RuntimePolicy = Object.freeze({
 
 	// 긴 제목도 원본 파일명과 확장자를 포함할 수 있도록 길이 예산을 나눕니다.
 	Filename: Object.freeze({
+		MaxNameLength: 255,
 		MaxStemLength: 100,
 		MinTitleBudget: 32,
 		TitleSeparator: '_',

@@ -1,5 +1,6 @@
 /** 확장 문서가 자체 연결·트랙·녹화기를 소유합니다. 사이트 코드나 원본 탭을 참조하지 않습니다. */
-export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd, onStart}, Dependencies = globalThis)
+import {RecordingMimeTypes} from './recording-format.js';
+export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd, onStart, onFormat, mimeTypes=RecordingMimeTypes()}, Dependencies = globalThis)
 {
 	const D = Dependencies, Later = D.setTimeout.bind(D), Clear = D.clearTimeout.bind(D);
 	const Every = D.setInterval.bind(D), ClearEvery = D.clearInterval.bind(D);
@@ -111,10 +112,11 @@ export function StartWebRtcReceiver(Descriptor, {signal, onData, onEnd, onStart}
 	{
 		if (Reason || Recorder) return;
 		if (!Stream.getVideoTracks().some(Track => Track.readyState === 'live')) throw ErrorFor('webrtc_connection_lost');
-		Mime = ['video/mp4;codecs=avc1.42001f,mp4a.40.2', 'video/webm;codecs=vp8,opus', 'video/webm']
+		Mime = mimeTypes
 			.find(Value => D.MediaRecorder.isTypeSupported(Value));
 		if (!Mime) throw ErrorFor('webrtc_unsupported');
 		Recorder = new D.MediaRecorder(Stream, {mimeType: Mime, videoBitsPerSecond: 6000000, audioBitsPerSecond: 128000});
+		onFormat?.(Recorder.mimeType||Mime);
 		Recorder.addEventListener('dataavailable', QueueData);
 		Recorder.addEventListener('error', () => { void Stop('webrtc_recording_failed'); });
 		Recorder.addEventListener('stop', () =>

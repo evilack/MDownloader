@@ -4,7 +4,7 @@
 import { CreateContentScriptSync } from './lib/content-script-registration.js';
 const LegacyScriptIds = ['mdownloader-playback-observer', 'mdownloader-playback-bridge'];
 const Scripts = [
-	{ id: 'mdownloader-manifest-page', world: 'MAIN', js: ['data/page-policy.js', 'hls-manifest-page.js'] },
+	{ id: 'mdownloader-manifest-page', world: 'MAIN', js: ['data/main-page-policy.js', 'hls-manifest-page.js'] },
 	{ id: 'mdownloader-manifest-bridge', world: 'ISOLATED', js: ['data/page-policy.js', 'hls-manifest-bridge.js'] },
 ];
 export async function MigrateHlsDiscovery()

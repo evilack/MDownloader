@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8"><script src="site-language.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Chrome과 Microsoft Edge를 위한 미디어 다운로드 확장 프로그램. 지원되는 영상, 오디오, HLS·DASH 스트림을 저장하고 관리하세요.">
+  <meta name="description" content="Chrome·Edge에서 영상·오디오, 지원되는 HLS·DASH·WebRTC를 저장하세요. 부분 저장, 자막 내장·번역, 선택적 로컬 음성 자막 생성까지 제공합니다.">
   <meta name="theme-color" content="#101411">
   <title>MDownloader — 미디어 저장을 더 간편하게</title>
   <link rel="icon" href="assets/icon.png">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="product.css">
+  <link rel="stylesheet" href="feature-visuals.css">
   <script src="site.js" type="module"></script>
 <link rel="alternate" hreflang="en" href="index.html"><link rel="alternate" hreflang="ko" href="index-ko.html"><link rel="alternate" hreflang="x-default" href="index.html"><link rel="stylesheet" href="localization.css">
 </head>
@@ -20,43 +21,86 @@
   </header>
   <main id="main">
     <section class="hero product-hero" aria-labelledby="hero-title">
-      <div class="hero-title"><p class="eyebrow"><span></span> Media downloader · Chrome &amp; Edge</p><h1 id="hero-title">발견한 미디어를<br><em>간편하게 저장하세요.</em></h1></div>
-      <div class="hero-copy"><p>웹페이지의 영상과 오디오부터<br class="desktop-break"> 지원되는 HLS·DASH 스트림까지.<br>찾고, 확인하고, 저장하는 일을 한곳에서.</p><div class="hero-actions"><button class="button button-primary" data-store="chrome"><span class="browser-symbol" aria-hidden="true">◉</span> Chrome에 추가 <span aria-hidden="true">↗</span></button><button class="button button-outline" data-store="edge"><span class="browser-symbol" aria-hidden="true">◔</span> Edge에 추가 <span aria-hidden="true">↗</span></button></div><p class="release-note">스토어 출시 준비 중 · 로컬 미리보기</p></div>
+      <div class="hero-title"><p class="eyebrow"><span></span> Media downloader · Chrome &amp; Edge</p><h1 id="hero-title">모든 미디어를<br><em>간편하게 저장하세요.</em></h1></div>
+      <div class="hero-copy"><p>웹페이지의 영상과 오디오부터<br class="desktop-break"> 지원되는 스트림과 라이브까지.<br>화질을 고르고, 자막과 함께 저장하세요.</p><div class="hero-actions"><button class="button button-primary" data-store="chrome"><span class="browser-symbol" aria-hidden="true">◉</span> Chrome에 추가 <span aria-hidden="true">↗</span></button><button class="button button-outline" data-store="edge"><span class="browser-symbol" aria-hidden="true">◔</span> Edge에 추가 <span aria-hidden="true">↗</span></button></div><p class="release-note">현재 구현 0.2.43 · 스토어 등록 준비 중 · <a href="#development">개발판 ZIP</a></p></div>
     </section>
 
     <section class="showcase" aria-labelledby="preview-title">
-      <div class="showcase-top"><div><p class="section-kicker">A quieter way to download</p><h2 id="preview-title">브라우저 안에서, 한눈에.</h2></div><span class="preview-label">실제 실행 화면</span></div>
-      <div class="capture-grid">
-        <figure class="capture-figure sample-capture">
-          <a class="capture-link" href="assets/screenshots/ko/sample-motion.gif" target="_blank" rel="noopener" aria-label="샘플 영상 실제 재생 GIF 크게 보기 (새 탭)">
-            <img id="sample-motion" src="assets/screenshots/ko/sample-still.png" data-animated-src="assets/screenshots/ko/sample-motion.gif" data-still-src="assets/screenshots/ko/sample-still.png" alt="로고 이후 숲 장면이 실제로 재생되는 샘플 페이지의 연속 화면 캡처" width="720" height="621" decoding="async">
-          </a>
-          <figcaption class="motion-caption"><span>01 / 실제 재생 화면 · GIF</span><button class="capture-motion-toggle" type="button" aria-controls="sample-motion" hidden>일시정지</button></figcaption>
-        </figure>
-        <div class="extension-captures">
-          <figure class="capture-figure popup-capture">
-            <a class="capture-link" href="assets/screenshots/ko/media-list.png" target="_blank" rel="noopener" aria-label="확장 팝업 실제 캡처 크게 보기 (새 탭)">
-              <img src="assets/screenshots/ko/media-list.png" alt="실제 MDownloader 팝업에서 MP4 한 개를 탐지한 화면" width="420" height="213" decoding="async">
-            </a>
-            <figcaption>02 / 미디어 탐지</figcaption>
-          </figure>
-          <figure class="capture-figure downloads-capture">
-            <a class="capture-link" href="assets/screenshots/ko/downloads.png" target="_blank" rel="noopener" aria-label="다운로드 관리자 실제 캡처 크게 보기 (새 탭)">
-              <img src="assets/screenshots/ko/downloads.png" alt="실제 MDownloader 다운로드 관리자에서 샘플 MP4 저장 완료 1개와 100%를 확인한 화면" width="420" height="280" decoding="async">
-            </a>
-            <figcaption>03 / 다운로드 완료</figcaption>
-          </figure>
-        </div>
+      <div class="showcase-top"><div><p class="section-kicker">A quieter way to download</p><h2 id="preview-title">확인부터 다운로드 관리까지.</h2></div><span class="preview-label">조작 가능한 UI 프리뷰</span></div>
+      <div class="app-preview-grid">
+        <figure class="app-preview"><figcaption>01 / 감지된 미디어</figcaption><iframe src="preview/index.html?lang=ko&amp;view=popup" title="MDownloader 미디어 목록 조작 프리뷰" loading="lazy"></iframe></figure>
+        <figure class="app-preview"><figcaption>02 / 다운로드 관리</figcaption><iframe src="preview/index.html?lang=ko&amp;view=manager" title="MDownloader 다운로드 관리자 조작 프리뷰" loading="lazy"></iframe></figure>
       </div>
-      <p class="capture-note">Chrome에서 MDownloader 0.2.18을 실행한 실제 캡처입니다. 샘플 MP4 탐지와 다운로드 완료를 각각 촬영했습니다.</p>
-      <div class="format-strip"><span>브라우저에서 바로</span><span>MP4 · WebM · 오디오</span><span>HLS · DASH</span><span>사이드 패널 관리</span></div>
+      <p class="capture-note">최신 확장의 실제 UI 컴포넌트·스타일·아이콘을 사용하는 프리뷰입니다. 예시 데이터이며 실제 다운로드·설치·번역은 실행하지 않습니다. 다운로드 버튼, Shift+다운로드, 상단 설정과 작업별 저장·취소 버튼을 눌러 보세요.</p>
+      <div class="format-strip"><span>MP4 · WebM · 오디오</span><span>HLS · DASH · WebRTC</span><span>부분 저장 · 라이브</span><span>자막 내장 · 번역</span></div>
     </section>
 
-    <section class="content-section" id="features" aria-labelledby="features-title"><div class="section-heading"><div><p class="section-kicker">Small tool, less friction</p><h2 id="features-title">저장에 필요한 것만,<br>차분하게 모았습니다.</h2></div><p class="section-aside">찾는 순간부터 저장이 끝날 때까지.</p></div><div class="feature-grid"><article><span class="feature-number">01 / DISCOVER</span><h3>페이지에서 바로 발견</h3><p>현재 페이지에서 발견한 영상과 오디오를 목록으로 확인하세요. 지원되는 항목은 미리보기로 살펴볼 수 있습니다.</p></article><article><span class="feature-number">02 / SAVE</span><h3>스트림도 하나의 파일로</h3><p>지원되는 비암호화·AES 암호화 HLS와 비암호화 DASH 스트림을 MP4로 저장합니다. HLS는 Shift 키와 다운로드 버튼으로 화질을 선택할 수 있습니다.</p></article><article><span class="feature-number">03 / MANAGE</span><h3>진행 상황을 한곳에서</h3><p>사이드 패널에서 여러 다운로드의 진행률과 속도, 완료 상태를 확인하세요. 지원되는 라이브 HLS도 수집한 시점까지 저장합니다.</p></article></div></section>
+    <section class="content-section" id="features" aria-labelledby="features-title">
+      <div class="section-heading"><div><p class="section-kicker">Small tool, less friction</p><h2 id="features-title">저장부터 자막까지,<br>한곳에서 관리하세요.</h2></div><p class="section-aside">현재 구현된 기능을 기준으로 안내합니다.</p></div>
+      <div class="feature-grid feature-overview">
+        <article><span class="feature-number">01 / DISCOVER</span>
+          <div class="feature-visual" aria-hidden="true"><div class="fv-topline"><span>sample-video.mp4</span><span class="fv-dots"><i></i><i></i><i></i></span></div><div class="fv-media"><span class="fv-thumbnail"><img src="preview/icons/app-media-48.png" alt="" width="25" height="25" loading="lazy"></span><span class="fv-media-copy"><strong>샘플 영상</strong><small>02:36 · 영상 + 오디오</small></span></div><div class="fv-chips"><span class="fv-chip fv-chip-active">1080p</span><span class="fv-chip">720p</span><span class="fv-chip">오디오</span></div></div>
+          <h3>확인하고 화질 선택</h3><p>썸네일과 지원되는 미리보기로 미디어를 확인하세요. Shift+다운로드로 화질·자막·번역 옵션을 고를 수 있습니다.</p></article>
+        <article><span class="feature-number">02 / SAVE</span>
+          <div class="feature-visual" aria-hidden="true"><div class="fv-chips"><span class="fv-chip fv-chip-active">MP4</span><span class="fv-chip">HLS</span><span class="fv-chip">DASH</span><span class="fv-chip">WebRTC</span></div><div class="fv-file"><div class="fv-topline"><span>sample-video.mp4</span><span>78%</span></div><div class="fv-progress"><span style="--progress:78%"></span></div><div class="fv-footer"><span>영상 + 오디오</span><span>24.8 MB</span></div></div></div>
+          <h3>파일과 스트림 저장</h3><p>영상·오디오는 원본 형식으로, 지원 HLS·DASH는 MP4로 저장하세요. 지원 WebRTC는 백그라운드에서 수신합니다.</p></article>
+        <article><span class="feature-number">03 / LIVE</span>
+          <div class="feature-visual" aria-hidden="true"><div class="fv-topline"><span class="fv-live">LIVE</span><span>00:42</span></div><div class="fv-timeline"><span class="fv-range"></span></div><div class="fv-time-labels"><span>00:00</span><span>00:42</span></div><div class="fv-footer"><span>받은 구간</span><span class="fv-chip fv-chip-active">부분 저장</span></div></div>
+          <h3>라이브와 부분 저장</h3><p>지원 라이브 HLS의 시작 위치를 고르고, 받은 구간을 별도로 저장하세요. <a href="#live">저장 동작 알아보기</a></p></article>
+        <article><span class="feature-number">04 / SUBTITLES</span>
+          <div class="feature-visual fv-captions" aria-hidden="true"><div class="fv-caption-row"><span class="fv-lang">EN</span><span>Good to see you.</span></div><div class="fv-caption-row"><span class="fv-lang">KO</span><span>만나서 반가워요.</span></div></div>
+          <h3>자막 내장과 번역</h3><p>원본 자막을 MP4의 선택형 트랙으로 저장하세요. 번역 서비스를 설정하면 원하는 언어로 번역할 수 있습니다.</p></article>
+        <article><span class="feature-number">05 / SPEECH</span>
+          <div class="feature-visual" aria-hidden="true"><div class="fv-topline"><span>음성 자막</span><span>SRT · VTT</span></div><div class="fv-waveform"><i style="--level:6px"></i><i style="--level:11px"></i><i style="--level:8px"></i><i style="--level:19px"></i><i style="--level:26px"></i><i style="--level:16px"></i><i style="--level:30px"></i><i style="--level:22px"></i><i style="--level:13px"></i><i style="--level:25px"></i><i style="--level:33px"></i><i style="--level:20px"></i><i style="--level:10px"></i><i style="--level:17px"></i><i style="--level:27px"></i><i style="--level:21px"></i><i style="--level:12px"></i><i style="--level:7px"></i><i style="--level:14px"></i><i style="--level:24px"></i><i style="--level:18px"></i><i style="--level:10px"></i><i style="--level:6px"></i></div><div class="fv-speech-result"><span class="fv-time">00:08</span><span>지금부터 시작할게요.</span></div></div>
+          <h3>음성으로 자막 생성</h3><p>선택적 도우미와 모델로 기기에서 음성을 인식하고, 내장 자막·SRT·VTT로 저장하세요. <a href="#captions">준비 방법과 검증 상태</a></p></article>
+        <article><span class="feature-number">06 / MANAGE</span>
+          <div class="feature-visual fv-tasks" aria-hidden="true"><div class="fv-task"><img src="preview/icons/app-media-48.png" alt="" width="25" height="25" loading="lazy"><div class="fv-task-body"><div class="fv-task-head"><span>sample-video.mp4</span><span>68%</span></div><div class="fv-progress"><span style="--progress:68%"></span></div></div></div><div class="fv-task"><img src="preview/icons/app-media-48.png" alt="" width="25" height="25" loading="lazy"><div class="fv-task-body"><div class="fv-task-head"><span>live-recording.mp4</span><span>32%</span></div><div class="fv-progress"><span style="--progress:32%"></span></div></div></div><div class="fv-task"><img src="preview/icons/app-media-48.png" alt="" width="25" height="25" loading="lazy"><div class="fv-task-body"><div class="fv-task-head"><span>audio-track.m4a</span><span>완료</span></div><div class="fv-progress"><span style="--progress:100%"></span></div></div></div></div>
+          <h3>여러 작업을 한눈에</h3><p>팝업·사이드 패널에서 진행률과 속도를 확인하고 작업별로 제어하세요. 완료 파일 찾기와 선택적 완료 알림도 지원합니다.</p></article>
+      </div>
+    </section>
 
-    <section class="guide-section" id="guide" aria-labelledby="guide-title"><div><p class="section-kicker">Getting started</p><h2 id="guide-title">세 단계면<br>준비 끝.</h2><p class="muted">별도 데스크톱 프로그램은 필요하지 않습니다.</p></div><ol class="steps"><li><span>01</span><div><h3>브라우저에 설치하세요.</h3><p>Chrome 웹 스토어 또는 Microsoft Edge 추가 기능에서 설치합니다.</p></div></li><li><span>02</span><div><h3>미디어를 재생하세요.</h3><p>저장할 미디어가 있는 페이지를 열고, 필요하면 사이트 접근 권한을 허용합니다.</p></div></li><li><span>03</span><div><h3>확인하고 저장하세요.</h3><p>MDownloader에서 항목을 선택하고 다운로드합니다. 사이드 패널에서 상태를 확인할 수 있습니다.</p></div></li></ol></section>
+    <section class="guide-section" id="development" aria-labelledby="development-title">
+      <div><p class="section-kicker">Development build</p><h2 id="development-title">개발판을 직접 설치하고 최신 개발 기능을 만나보세요.</h2></div>
+      <div class="development-copy"><p class="muted">스토어 버전은 배포 정책에 따라 일부 플랫폼의 기능이 제공되지 않을 수 있습니다. 개발·테스트용 기능을 이용하려면 아래 <strong>홈페이지 전용 개발 패키지(ZIP)</strong>를 받아 수동으로 설치해 주세요.</p><p class="muted">지원 여부는 사이트의 제공 방식과 접근 권한에 따라 달라지며, 개발판 업데이트는 새 패키지를 받아 직접 적용하는 방식입니다.</p><div class="development-actions"><a class="button button-outline" href="downloads/MDownloader-development.zip" download>개발판 ZIP</a></div></div>
+    </section>
 
-    <section class="faq-section" id="faq" aria-labelledby="faq-title"><div><p class="section-kicker">Good to know</p><h2 id="faq-title">궁금한 점이 있나요?</h2></div><div class="faq-list"><details open><summary>모든 사이트의 영상을 저장할 수 있나요?</summary><p>사이트의 제공 방식과 로그인 상태, 접근 권한에 따라 달라집니다. DRM 콘텐츠와 지원하지 않는 암호화 방식·스트림 구조는 다운로드할 수 없습니다. 정상 접근 가능한 identity AES 키를 제공하는 HLS는 지원합니다.</p></details><details><summary>어떤 형식을 지원하나요?</summary><p>MP4·WebM 등의 영상과 MP3·M4A 등의 오디오 직접 링크, 지원되는 비암호화·AES 암호화 HLS와 비암호화 DASH 스트림을 처리합니다. 코덱과 스트림 구조에 따라 저장 가능 여부가 달라집니다.</p></details><details><summary>사이트 접근 권한은 왜 필요한가요?</summary><p>미디어 요청을 발견하고 다운로드하려면 해당 사이트와 미디어 서버에 접근할 권한이 필요할 수 있습니다. 접근 범위는 브라우저의 확장 프로그램 설정에서 관리할 수 있습니다.</p></details><details><summary>후원해야 사용할 수 있나요?</summary><p>아니요. 후원은 선택 사항이며 후원 여부에 따른 기능 차이는 없습니다. 개발을 응원하고 싶을 때 자유롭게 참여해 주세요.</p></details></div></section>
+    <section class="guide-section" id="guide" aria-labelledby="guide-title">
+      <div><p class="section-kicker">Getting started</p><h2 id="guide-title">지금은 수동 설치로<br>시작하세요.</h2><p class="muted">Chrome 116 이상 또는 호환되는 최신 Edge가 필요합니다. 기본 미디어 다운로드는 브라우저에서 실행하며, 음성 자막 생성과 일부 파일 연결 기능은 선택적 도우미를 사용합니다.</p></div>
+      <ol class="steps">
+        <li><span>01</span><div><h3>확장 설치</h3><p><strong>개발자 모드</strong>를 켜고 <strong>압축해제된 확장 프로그램 로드</strong>에서 <code>extension</code> 폴더를 선택하세요.</p><p class="setup-addresses"><code>chrome://extensions</code><code>edge://extensions</code></p></div></li>
+        <li><span>02</span><div><h3>권한 허용 후 재생</h3><p>설정의 <strong>사이트 권한</strong>에서 접근을 허용한 뒤 영상을 재생하세요.</p></div></li>
+        <li><span>03</span><div><h3>옵션 선택 후 저장</h3><p><strong>다운로드</strong>로 저장하거나, <strong>Shift + 다운로드</strong>로 화질·자막을 고르세요.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="content-section" id="live" aria-labelledby="live-title">
+      <div class="section-heading"><div><p class="section-kicker">Your download, your timing</p><h2 id="live-title">필요한 구간만,<br>원하는 때에 저장하세요.</h2></div></div>
+      <div class="feature-grid">
+        <article><span class="feature-number">01 / START</span><h3>라이브 시작 위치</h3><p>지원 HLS는 서버에 남아 있는 가장 이른 구간 또는 현재 시점 부근부터 받을 수 있습니다. DVR은 서버가 제공하는 되감기 범위이며, 사라진 과거 구간은 복원할 수 없습니다.</p></article>
+        <article><span class="feature-number">02 / SNAPSHOT</span><h3>현재까지 저장</h3><p>확보한 재생 가능 구간을 별도 부분 파일로 내보내고 원래 다운로드를 계속합니다. 소스 형식과 확보된 데이터에 따라 사용 가능 여부가 달라집니다.</p></article>
+        <article><span class="feature-number">03 / FINISH</span><h3>중지 및 저장</h3><p>지원 작업의 새 수신을 끝내고 저장 가능한 구간을 파일로 만듭니다. ‘취소’는 작업을 중단하고 완성 전 임시 출력을 버리는 동작입니다.</p></article>
+      </div>
+      <p class="capture-note">독립 수신이 시작된 지원 스트림은 원본 탭을 닫아도 계속 받습니다. 브라우저는 켜 두셔야 하며, 종료·확장 새로고침으로 중단된 수신의 자동 복구는 제공하지 않습니다.</p>
+    </section>
+
+    <section class="guide-section" id="captions" aria-labelledby="captions-title">
+      <div><p class="section-kicker">Optional local speech captions</p><h2 id="captions-title">자막이 없어도,<br>음성에서 시작하세요.</h2><p class="muted">음성 자막은 기본 꺼짐입니다. 음성 인식은 로컬에서 실행하며, 선택적으로 번역 서비스를 사용하면 자막 텍스트가 해당 서비스로 전송됩니다.</p><p class="muted">다운로드 완료 또는 중지 및 저장 후, 선택한 영상 내장·SRT·VTT 형식으로 자동 저장합니다. 작업 행에서 처리 상태와 결과를 확인할 수 있습니다.</p></div>
+      <ol class="steps">
+        <li><span>01</span><div><h3>도우미와 모델 준비</h3><p>설정의 도우미 탭에서 연결을 확인하고 음성 자막 생성 설정에서 엔진과 모델을 준비하세요. Windows는 faster-whisper·whisper.cpp, macOS는 whisper.cpp를 선택하도록 구현되어 있습니다. 모델은 필요한 항목을 직접 다운로드합니다.</p></div></li>
+        <li><span>02</span><div><h3>인식과 출력 선택</h3><p>음성 언어, 속도·균형·정확도 프리셋과 세부 옵션을 고르세요. 컨테이너에 자막을 넣거나 SRT·VTT를 함께 출력할 수 있습니다. 번역은 서비스·인증 설정이 필요합니다.</p></div></li>
+        <li><span>03</span><div><h3>다운로드마다 조정</h3><p>Shift+다운로드에서 기본값 사용, 켜기, 끄기, 사용자 지정을 선택할 수 있습니다. 컨테이너 내장과 최종 자막·번역 출력은 준비를 마친 뒤 저장하며, 자막 진행 상태와 오류를 확인할 수 있습니다.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="faq-section" id="faq" aria-labelledby="faq-title"><div><p class="section-kicker">Good to know</p><h2 id="faq-title">궁금한 점이 있나요?</h2></div><div class="faq-list">
+      <details open><summary>모든 사이트의 영상을 저장할 수 있나요?</summary><p>사이트의 제공 방식, 로그인 상태, 접근 권한과 코덱에 따라 달라집니다. DRM 콘텐츠·지원하지 않는 암호화·라이브 DASH는 지원하지 않습니다. 정상 접근 가능한 identity AES 키를 제공하는 지원 HLS는 처리합니다.</p></details>
+      <details><summary>어떤 형식을 지원하나요?</summary><p>MP4·WebM 등 영상과 MP3·M4A 등 오디오 직접 파일, 지원 HLS·정적 비암호화 DASH, 등록된 시그널링 서비스의 WebRTC를 처리합니다. 모든 사이트의 재생 화면을 녹화하는 기능은 아닙니다.</p></details>
+      <details><summary>개발판은 어떻게 설치하고 업데이트하나요?</summary><p>ZIP을 압축 해제한 뒤 브라우저의 개발자 모드에서 extension 폴더를 불러오세요. 업데이트는 수동으로 진행합니다. <a href="#development">개발판 설치 안내</a></p></details>
+      <details><summary>자막 내장과 음성 자막 생성은 어떻게 다른가요?</summary><p>원본 자막 내장은 영상에 제공되는 지원 자막을 받아 MP4에 넣습니다. 음성 자막 생성은 별도로 준비한 로컬 엔진·모델로 음성을 인식합니다. 번역은 설정한 외부 서비스를 사용하며 서비스별 인증·요금 조건이 적용될 수 있습니다.</p></details>
+      <details><summary>별도 프로그램을 설치해야 하나요?</summary><p>기본 다운로드에는 별도 다운로더가 필요하지 않습니다. 로컬 음성 자막은 선택적 도우미·엔진·모델을 사용합니다. Windows에서 선택 폴더로 직접 저장한 파일의 ‘폴더에서 보기’에도 도우미와 최초 폴더 연결이 필요합니다. 설치 과정에는 브라우저·운영체제 확인이 표시될 수 있습니다.</p></details>
+      <details><summary>다운로드가 안 되면 어떻게 하나요?</summary><p>페이지·미디어 서버 권한, 로그인과 링크 만료 여부를 확인하고 재생·새로고침 후 다시 시도하세요. 확장 안의 문제 신고에서 페이지 주소와 문제 유형을 확인해 전송할 수 있습니다. 미리보기 실패만으로 다운로드 실패가 확정되지는 않습니다.</p></details>
+      <details><summary>후원해야 사용할 수 있나요?</summary><p>아니요. 후원은 선택 사항이며 후원 여부에 따른 기능 차이는 없습니다. 개발을 응원하고 싶을 때 자유롭게 참여해 주세요.</p></details>
+    </div></section>
 
     <section class="support-banner"><div><p class="section-kicker">Built independently, supported together</p><h2>유용하게 쓰고 계신가요?</h2><p>작은 후원이 꾸준한 개선을 이어가는 힘이 됩니다.</p></div><a class="button button-primary" href="https://evilack.github.io/donate.html">개발 후원하기 <span aria-hidden="true">↗</span></a></section>
     <p class="usage-note">본인이 소유하거나 다운로드 권한을 가진 콘텐츠에 사용해 주세요.</p>

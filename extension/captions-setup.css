@@ -1,0 +1,99 @@
+/* Reading layout for the installation guide; the settings workspace keeps its own density. */
+body.settings-page.captions-setup {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.captions-setup .setup-shell {
+  inline-size: min(58rem, calc(100% - 2rem));
+  margin: 2rem auto 3rem;
+}
+.captions-setup .setup-header { margin-block-end: 1.75rem; }
+.captions-setup h1 {
+  margin: 0 0 .75rem;
+  font-size: clamp(1.5rem, 1.1rem + 1.3vw, 1.875rem);
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.captions-setup h2 {
+  margin: 0 0 .75rem;
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+.captions-setup p {
+  max-inline-size: 75ch;
+  margin: .75rem 0;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.captions-setup .setup-prerequisite { margin-block-start: 1rem; }
+.captions-setup #setup-install { min-block-size: 44px; padding: .625rem 1.5rem; font: inherit; font-weight: 600; }
+.captions-setup code {
+  font: .9375rem/1.65 ui-monospace, Consolas, monospace;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.captions-setup .setup-content { display: grid; gap: 1.5rem; }
+.captions-setup .setup-card {
+  min-inline-size: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.5rem;
+  background: var(--surface);
+}
+.captions-setup .setup-card > :last-child { margin-block-end: 0; }
+.captions-setup .setup-steps, .captions-setup .setup-facts {
+  margin: 1rem 0;
+  padding-inline-start: 1.5rem;
+}
+.captions-setup li { padding-inline-start: .25rem; }
+.captions-setup li + li { margin-block-start: .625rem; }
+.captions-setup li::marker { color: var(--mint); font-weight: 600; }
+.captions-setup .setup-command {
+  max-inline-size: 100%;
+  margin: .875rem 0 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--outline);
+  border-radius: 6px;
+  background: var(--input);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.captions-setup .setup-details {
+  margin-block-start: 1.25rem;
+  padding-block-start: .75rem;
+  border-block-start: 1px solid var(--line);
+}
+.captions-setup summary {
+  min-block-size: 44px;
+  padding-block: .5rem;
+  color: var(--blue);
+  cursor: pointer;
+}
+.captions-setup summary:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.captions-setup .setup-model-note { color: var(--text); }
+.captions-setup .setup-footer { margin-block-start: 1.75rem; }
+.captions-setup .setup-return {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding: .625rem 1rem;
+  border: 1px solid var(--mint);
+  border-radius: 6px;
+  background: var(--mint);
+  color: #10291f;
+  font-weight: 600;
+}
+@media (hover: hover) {
+  .captions-setup summary:hover { text-decoration: underline; }
+  .captions-setup .setup-return:hover { background: #9df9ca; }
+}
+@media (max-width: 600px) {
+  .captions-setup .setup-shell { margin-block-start: 1.25rem; }
+  .captions-setup .setup-card { padding: 1.25rem; }
+  .captions-setup .setup-command { padding: .75rem; }
+  .captions-setup .setup-command code { font-size: .875rem; }
+}

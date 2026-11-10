@@ -3,6 +3,7 @@
  */
 import { ReceivedError, Translate } from './i18n.js';
 import { DebugLog } from './debug-log.js';
+import { IconCatalog } from './icon-catalog.js';
 export function CreateElement(Tag, TextValue, ClassName)
 {
 	const LocalNode = document.createElement(Tag);
@@ -37,7 +38,7 @@ export function SetButtonIcon(Control, Label, Name)
 	Control.classList.add('icon-button');
 	SetControlLabel(Control, Label);
 	const Icon = CreateElement('img', '', 'button-icon');
-	Icon.src = `icons/${Name}.png`;
+	Icon.src = IconCatalog.actions[Name];
 	Icon.alt = '';
 	Control.replaceChildren(Icon);
 	return Control;
@@ -58,7 +59,9 @@ export function MountOptionsButton(Header, Announce)
 	});
 	Control.id = 'options';
 	SetButtonIcon(Control, Translate('html_options'), 'options');
-	Header.append(Control);
+	let Actions=Header.querySelector('.window-actions');
+	if(!Actions) {Actions=CreateElement('div','','window-actions');Header.append(Actions);}
+	Actions.append(Control);
 }
 
 export async function SendRequest(Type, Data = {})

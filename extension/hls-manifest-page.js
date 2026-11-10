@@ -15,7 +15,7 @@
 		return;
 	}
 	const MaxBytes = Policy.MaxManifestBytes;
-	const Matches = Url => /\.m3u8(?:\?|$)/i.test(Url);
+	const Matches = Url => /\.(?:m3u8|mpd)(?:\?|$)/i.test(Url);
 	function Publish(Url, TextValue, Page)
 	{
 		if (typeof TextValue !== 'string' || TextValue.length > MaxBytes)

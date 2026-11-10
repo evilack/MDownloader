@@ -7,6 +7,11 @@ export async function CreateInnertube({fetch, evaluate})
 	Platform.shim.eval = evaluate;
 	return Innertube.create({fetch, retrieve_player: true, enable_session_cache: false, generate_session_locally: false, fail_fast: true});
 }
+/** Parse an authorized response captured from the exact source document, without importing cookies. */
+export function ParseWatchPlayer(Tube,Player)
+{
+	return new YT.VideoInfo([{data:Player}],Tube.actions,crypto.randomUUID().replaceAll('-','').slice(0,16));
+}
 /** Same session/client, with the reload context supplied by the SABR server. */
 export async function ReloadPlayerInfo(Tube, VideoId, ReloadContext)
 {

@@ -1,162 +1,80 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-i18n="html_options_title">MDownloader</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-i18n="html_options_title">MDownloader · 설정</title>
 <link rel="stylesheet" href="style.css">
-<body class="options">
-<header class="brand"><strong>MDownloader</strong><span data-i18n="html_options"></span></header>
-<main>
-  <h1 data-i18n="html_extension_options"></h1>
-  <section class="option-group" aria-labelledby="language-settings">
-    <h2 id="language-settings" data-i18n="opt_language"></h2>
-    <div class="option-field">
-      <label for="language" data-i18n="opt_display_language"></label>
-      <select id="language" disabled>
-        <option value="auto" data-i18n="opt_language_auto"></option>
-      </select>
-    </div>
-    <p id="language-status" class="notice" role="status"></p>
-  </section>
-  <section class="option-group" aria-labelledby="download-settings">
-    <h2 id="download-settings" data-i18n="opt_download_settings"></h2>
-    <div class="option-toggle">
-      <input id="debug-downloads" type="checkbox" aria-describedby="debug-help" disabled>
-      <label for="debug-downloads" data-i18n="opt_debug"></label>
-    </div>
-    <p id="debug-help" class="muted" data-i18n="opt_debug_help"></p>
-    <div class="option-toggle">
-      <input id="debug-logging" type="checkbox" aria-describedby="debug-logging-help" disabled>
-      <label for="debug-logging" data-i18n="opt_debug_logging"></label>
-    </div>
-    <p id="debug-logging-help" class="muted"></p>
-    <div class="option-toggle">
-      <input id="use-page-title" type="checkbox" aria-describedby="filename-help" disabled>
-      <label for="use-page-title" data-i18n="opt_page_title"></label>
-    </div>
-    <p id="filename-help" class="muted" data-i18n="opt_page_title_help"></p>
-    <div class="option-toggle">
-      <input id="use-download-date-time" type="checkbox" aria-describedby="date-time-help" disabled>
-      <label for="use-download-date-time" data-i18n="opt_download_date_time"></label>
-    </div>
-    <p id="date-time-help" class="muted" data-i18n="opt_download_date_time_help"></p>
-    <div id="youtube-caption-settings" hidden>
-      <div class="option-toggle">
-        <input id="include-youtube-auto-captions" type="checkbox" aria-describedby="youtube-auto-captions-help" disabled>
-        <label for="include-youtube-auto-captions" data-i18n="opt_youtube_auto_captions"></label>
+<link rel="stylesheet" href="settings.css">
+<link rel="stylesheet" href="local-captions.css">
+<link rel="stylesheet" href="common-helper-setup.css">
+
+<body class="options settings-page">
+
+<div class="app-shell" id="settings-app">
+  <header class="app-bar"><a class="app-brand" href="options.html"><img src="icons/app-media-24.png" alt="" width="24" height="24"><strong>MDownloader</strong><span>설정</span></a><span class="pill" id="build-badge">개발판</span></header>
+  <div class="workspace">
+    <aside class="sidebar"><p class="nav-label">환경설정</p><nav aria-label="설정 카테고리" id="settings-nav">
+      <a href="?section=general" data-section="general"><strong>일반</strong><span>언어, 사이드 패널, 알림</span></a>
+      <a href="?section=download" data-section="download"><strong>다운로드·파일명</strong><span>저장 위치와 이름 규칙</span></a>
+      <a href="?section=translation" data-section="translation"><strong>자막·번역</strong><span>서비스, 인증, 모델</span></a>
+      <a href="?section=captions" data-section="captions"><strong>음성 자막 생성</strong><span>음성 인식과 모델 관리</span></a>
+      <a href="?section=helper" data-section="helper"><strong>도우미</strong><span>설치, 삭제와 연결 진단</span></a>
+      <a href="?section=permissions" data-section="permissions"><strong>사이트 권한</strong><span>사이트와 미디어 서버</span></a>
+      <a href="?section=diagnostics" data-section="diagnostics"><strong>진단·로그</strong><span>문제 확인과 기록</span></a>
+      <a href="?section=about" data-section="about"><strong>앱 정보</strong><span>버전과 배포판</span></a>
+    </nav><div class="sidebar-note"><span class="status-dot"></span> 설정</div></aside>
+    <main class="pane">
+      <header class="pane-heading"><p>환경설정 <span>/</span> <span id="breadcrumb">일반</span></p><h1 id="page-title" tabindex="-1">일반</h1><p id="page-description">표시 언어, 사이드 패널과 Chrome 알림을 설정합니다.</p></header>
+      <div class="pane-scroll" id="pane-scroll">
+        <section class="settings-section settings-stack" id="section-general">
+          <form id="general-form" class="settings-form">
+            <fieldset class="card"><legend>표시 언어</legend><div class="field"><label for="language" data-i18n="opt_display_language">인터페이스 언어</label><select id="language" name="language" disabled><option value="auto" data-i18n="opt_language_auto">브라우저 언어 사용</option></select><p id="language-status" class="notice" role="status"></p><p class="help">팝업, 사이드 패널, 설정 화면에 적용합니다.</p></div></fieldset>
+            <fieldset class="card"><legend>사이드 패널</legend><div class="toggle-row"><label for="show-panel-media"><strong data-i18n="opt_show_panel_media">현재 탭의 미디어 목록 표시</strong><span id="panel-media-help">다운로드 목록 위에 현재 페이지의 영상을 함께 표시합니다.</span></label><input id="show-panel-media" name="panelMedia" type="checkbox" role="switch" class="switch" checked aria-describedby="panel-media-help" disabled></div><div class="toggle-row"><label for="show-panel-media-resize"><strong data-i18n="opt_show_panel_media_resize">검색 영역 높이 조절바 표시</strong><span id="panel-media-resize-help" data-i18n="opt_show_panel_media_resize_help">검색 결과와 다운로드 목록 사이의 높이를 조절합니다. 끄면 이전처럼 내용에 따라 이어서 표시합니다.</span></label><input id="show-panel-media-resize" name="panelMediaResize" type="checkbox" switch role="switch" class="switch" checked aria-describedby="panel-media-resize-help" disabled></div><p id="panel-settings-status" class="notice" role="status"></p></fieldset>
+          </form>
+          <fieldset class="card" aria-labelledby="notifications-heading">
+            <legend id="notifications-heading" data-i18n="opt_notifications"></legend>
+            <div class="toggle-row"><label for="notify-download-complete"><strong data-i18n="opt_notify_complete"></strong><span id="notify-complete-help" data-i18n="opt_notify_complete_help"></span></label><input id="notify-download-complete" type="checkbox" role="switch" class="switch" aria-describedby="notify-complete-help" disabled></div>
+            <div class="toggle-row"><label for="notify-scheduled-start"><strong data-i18n="opt_notify_scheduled_start"></strong><span id="notify-scheduled-help" data-i18n="opt_notify_scheduled_start_help"></span></label><input id="notify-scheduled-start" type="checkbox" role="switch" class="switch" aria-describedby="notify-scheduled-help" disabled></div>
+            <p class="help" data-i18n="opt_notifications_help"></p>
+            <p id="notification-settings-status" class="notice" role="status"></p>
+          </fieldset>
+        </section>
+        <section class="settings-section" id="section-download" hidden>
+          <form id="download-folder-form" class="settings-form">
+            <fieldset class="card"><legend>저장 위치</legend><fieldset class="choice-group"><legend class="field-label">저장 방식</legend><label><input type="radio" name="locationMode" value="relative" checked> 브라우저 다운로드 폴더 안에 저장</label><label><input type="radio" name="locationMode" value="picked"> 폴더 직접 선택</label></fieldset><div id="relative-location" class="field"><label for="download-folder" data-i18n="opt_download_location">하위 폴더</label><input id="download-folder" name="downloadPath" value="" placeholder="기본 폴더에 저장하려면 비워 두세요" autocapitalize="off" spellcheck="false"><p class="help">브라우저 기본 다운로드 위치를 기준으로 하는 상대 경로입니다.</p></div><div id="picked-location" hidden><div class="folder-box"><span id="picked-download-folder" hidden></span><span id="no-picked-folder">선택한 폴더 없음</span><button type="button" id="pick-download-folder" data-i18n="opt_pick_download_folder">폴더 선택</button></div><button type="button" class="text-button" id="restore-folder-access" hidden data-i18n="opt_restore_folder_access">폴더 접근 권한 다시 허용</button></div><div class="actions"><button id="save-download-folder" type="submit" hidden>저장 위치 적용</button><button id="use-default-download-folder" type="button" data-i18n="opt_use_default_download_folder">기본 위치 사용</button><button type="button" id="browser-download-settings" data-i18n="opt_change_browser_location">브라우저 다운로드 설정</button></div></fieldset>
+            <p id="download-folder-status" class="notice" role="status"></p><fieldset class="card"><legend>파일 이름</legend><div class="toggle-row"><label for="use-page-title"><strong data-i18n="opt_page_title">페이지 제목 포함</strong><span>영상 제목과 원래 파일 이름을 함께 사용합니다.</span></label><input id="use-page-title" name="pageTitle" type="checkbox" role="switch" class="switch" checked disabled></div><div class="toggle-row"><label for="use-download-date-time"><strong data-i18n="opt_download_date_time">다운로드 시작 시각 포함</strong><span>파일 이름 끝에 날짜와 시간을 붙입니다.</span></label><input id="use-download-date-time" name="fileDate" type="checkbox" role="switch" class="switch" checked disabled></div><p id="filename-help" hidden></p><p id="date-time-help" hidden></p><div class="filename-example"><span class="field-label">파일명 예시</span><code id="filename-example">example_com_여름_여행_video_2026-11-09_14-30-00.mp4</code><p class="help">사이트 도메인을 앞에 붙이고, 공백·점·파일명에 쓸 수 없는 문자는 밑줄로 정리합니다.</p></div></fieldset>
+          </form>
+        </section>
+        <section class="settings-section" id="section-translation" hidden>
+          <form id="translation-form" class="settings-form">
+            <fieldset class="card"><legend>자막과 자동 번역</legend><div class="summary-row"><div><strong>원본 자막</strong><p class="help">다운로드한 자막을 MP4에 모두 포함합니다.</p></div><span class="pill subtle">원본 유지</span></div><div class="toggle-row" id="youtube-caption-settings" hidden><label for="include-youtube-auto-captions"><strong data-i18n="opt_youtube_auto_captions">YouTube 자동 생성 자막 포함</strong><span>개발판에서 수동 자막과 자동 생성 자막을 함께 받습니다.</span></label><input id="include-youtube-auto-captions" name="autoCaptions" type="checkbox" role="switch" class="switch" checked disabled></div><p id="youtube-caption-settings-status" class="notice" role="status"></p><p id="youtube-auto-captions-help" hidden></p><div class="toggle-row"><label for="translation-enabled"><strong data-i18n="translation_enable">목표 언어 자막이 없으면 자동 번역</strong><span>번역한 자막은 원본과 함께 파일에 포함합니다.</span></label><input id="translation-enabled" name="translationEnabled" type="checkbox" role="switch" class="switch"></div><div class="field target-field"><label for="translation-target" data-i18n="translation_target">목표 언어</label><div class="language-input"><input id="translation-target" name="targetLanguage" value="ko" pattern="[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*" required autocapitalize="off" spellcheck="false" aria-describedby="target-help"><span id="target-language-name">한국어</span></div><p class="help" id="target-help">언어 코드로 지정합니다. 목표 언어 자막이 이미 있으면 번역을 건너뜁니다.</p></div><p class="inline-state" id="translation-off" hidden>자동 번역 꺼짐 · 서비스 설정은 유지됩니다.</p></fieldset>
+            <fieldset class="card"><legend>번역 서비스와 인증</legend><div class="field"><label for="translation-provider" data-i18n="translation_provider">번역 서비스</label><select id="translation-provider" name="provider"><option value="deepl">DeepL</option><option value="google">Google Cloud Translation</option><option value="azure">Azure Translator</option><option value="gemini">Gemini / Gemma</option><option value="deepseek">DeepSeek</option><option value="openai">OpenAI</option><option value="kakao">Kakao</option></select></div><div class="field"><div class="label-line"><label for="translation-key" id="key-label">API 키</label><span class="micro-tag" id="credential-status"></span></div><div class="input-action"><input id="translation-key" name="apiKey" type="password"  autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="key-feedback"><button type="button" id="translation-show-key" aria-pressed="false">표시</button></div><div class="field-tail"><p class="help" id="key-feedback">서비스별 인증정보를 각각 관리합니다.</p><button type="button" id="translation-delete" class="text-button danger" data-i18n="translation_delete">인증정보 삭제</button></div></div><div id="azure-fields" hidden><div class="field"><label for="translation-region" data-i18n="translation_region">Azure 지역</label><input id="translation-region" name="azureRegion" value="" placeholder="예: koreacentral" autocapitalize="off" spellcheck="false"></div><div class="field"><label for="translation-endpoint" data-i18n="translation_endpoint">엔드포인트 <span class="optional">선택</span></label><input id="translation-endpoint" name="azureEndpoint" type="url" value="" placeholder="https://api.cognitive.microsofttranslator.com" autocapitalize="off" spellcheck="false"></div></div><div id="kakao-import" hidden><div class="subsection-heading"><strong>팟플레이어에서 가져오기</strong><span class="micro-tag" id="helper-status">연결 시 확인</span></div><p id="translation-kakao-help" class="help">가져오기를 시작한 뒤 팟플레이어에서 자막 번역을 한 번 실행하세요.</p><div class="actions"><button type="button" id="translation-capture" data-i18n="translation_capture">인증정보 가져오기</button><button type="button" id="helper-guide" aria-expanded="false" aria-controls="helper-instructions">설치 안내</button></div><ol id="helper-instructions" class="steps" hidden><li>Python 3.11 이상과 Frida를 설치합니다.</li><li>프로젝트의 native/kakao/install.ps1을 실제 확장 ID와 Python 경로로 실행합니다.<code id="helper-command"></code></li><li>확장 프로그램을 새로고침합니다. 이 도우미는 64비트 팟플레이어 하나를 대상으로 연결합니다.</li><li>팟플레이어를 실행하고 자막이 있는 영상을 엽니다.</li><li>가져오기를 누르고 팟플레이어의 카카오 자막 번역을 실행합니다.</li></ol><p id="capture-status" class="inline-state" role="status" hidden></p></div></fieldset>
+            <fieldset class="card" id="model-card"><legend>모델과 추론</legend><div class="field" id="model-field"><div class="label-line"><label for="translation-model" data-i18n="translation_model">번역 모델</label><button type="button" id="translation-refresh" class="text-button" data-i18n="translation_refresh">목록 새로고침</button></div><select id="translation-model" name="model"></select><p id="model-status" class="help" role="status">조회한 목록에서 사용할 모델을 선택합니다.</p></div><div id="fixed-model" class="inset-note" hidden>번역 모델: NMT</div><div class="field" id="effort-field"><label for="translation-effort" data-i18n="translation_effort">추론 수준</label><select id="translation-effort" name="effort"></select><p class="help">선택한 모델에서 제공하는 수준만 표시합니다.</p></div></fieldset>
+            <p id="translation-status" class="notice" role="status"></p><p class="form-note">번역 서비스의 API 사용료가 발생할 수 있습니다. 번역에 실패하면 다운로드 항목에 실패 상태가 표시됩니다.</p>
+          </form>
+        </section>
+        <section class="settings-section" id="section-captions" hidden></section>
+        <section class="settings-section" id="section-helper" hidden>
+          <div class="settings-form"><fieldset class="card"><legend>도우미</legend>
+            <p class="help">폴더 직접 선택과 음성 인식에 필요한 도우미를 관리합니다. 설치 시 모델은 다운로드하지 않습니다.</p>
+            <div id="explorer-helper-management">
+              <div class="helper-actions"><button id="helper-install" type="button" class="primary">도우미 설치</button><button id="remove-explorer-helper" type="button" class="danger" disabled data-i18n="explorer_remove_button">도우미 삭제</button><button id="helper-diagnose" type="button">도우미 진단</button></div>
+              <p id="explorer-helper-status" class="notice" role="status">연결 확인 중…</p>
+            </div>
+            <pre id="helper-diagnostics" role="status" hidden></pre>
+          </fieldset></div>
+        </section>
+        <section class="settings-section" id="section-permissions" hidden>
+          <div class="settings-form"><fieldset class="card"><legend>사이트 접근 범위</legend><div class="toggle-row"><label for="all-sites"><strong>모든 사이트에 접근 허용</strong><span>영상 페이지와 미디어 서버에 대한 접근을 허용합니다.</span></label><input id="all-sites" name="allSites" type="checkbox" role="switch" class="switch"></div><button id="all-sites-access" type="button" hidden disabled></button><p id="all-sites-help" hidden></p><p id="all-sites-status" class="notice" role="status"></p><div class="inset-note" id="permission-scope">지정한 사이트에만 접근합니다.</div></fieldset><form id="network-form" class="settings-form"><fieldset class="card" id="site-permission-fields"><legend>사이트별 권한</legend><div class="field"><label for="site" data-i18n="opt_site_url">영상 페이지 주소</label><input id="site" name="siteUrl" type="url" required placeholder="https://example.com" autocapitalize="off" spellcheck="false"></div><div class="field"><label for="cdn" data-i18n="opt_cdn_url">미디어 서버 주소 <span class="optional">선택</span></label><input id="cdn" name="cdnUrl" type="url" placeholder="https://cdn.example.com" autocapitalize="off" spellcheck="false"><p class="help">영상 서버가 페이지와 다른 도메인에 있을 때 함께 지정합니다.</p></div><div class="actions"><button type="submit" id="allow-network" class="primary" data-i18n="opt_allow_network">접근 허용</button><button type="submit" id="revoke-network" data-i18n="opt_revoke_network">권한 해제</button></div></fieldset><p id="network-status" class="notice" role="status"></p><p id="network-help" hidden></p></form></div>
+        </section>
+        <section class="settings-section" id="section-diagnostics" hidden>
+          <form id="diagnostics-form" class="settings-form"><fieldset class="card"><legend>문제 확인</legend><div class="toggle-row"><label for="debug-downloads"><strong data-i18n="opt_debug">다운로드 진단 탭 열기</strong><span>다운로드 문제를 확인할 때 별도의 진단 탭을 엽니다.</span></label><input id="debug-downloads" name="diagnosticTabs" type="checkbox" role="switch" class="switch" disabled></div><div class="toggle-row"><label for="debug-logging"><strong data-i18n="opt_debug_logging">상세 디버그 로그</strong><span>단계 코드, 소요 시간, 수치를 확장 콘솔에 기록합니다.</span></label><input id="debug-logging" name="consoleLogging" type="checkbox" role="switch" class="switch" disabled></div></fieldset><p id="debug-status" class="notice" role="status"></p><p id="debug-help" hidden></p><p id="debug-logging-help" hidden></p><fieldset class="card"><legend id="download-log-label">다운로드 기록</legend><div class="toggle-row"><label for="log-downloads"><strong data-i18n="opt_log_downloads">다운로드 로그 보관</strong><span>문제 해결을 위해 다운로드 작업의 기록을 남깁니다.</span></label><input id="log-downloads" name="downloadLogging" type="checkbox" role="switch" class="switch" checked disabled></div><p id="download-log-help" class="help"></p><p id="download-log-empty" class="help" hidden data-i18n="opt_log_empty">저장된 기록이 없습니다.</p><div class="field"><label for="download-log">최근 기록</label><textarea id="download-log" name="logPreview" rows="5" readonly></textarea></div><div class="actions"><button type="button" id="copy-download-log" data-i18n="opt_log_copy">로그 복사</button><button type="button" id="clear-download-log" class="danger" data-i18n="opt_log_clear">로그 비우기</button></div><p id="download-log-status" class="notice" role="status"></p></fieldset></form>
+        </section>
+        <section class="settings-section" id="section-about" hidden><div class="card about-card"><h2>MDownloader</h2><dl><div><dt>버전</dt><dd id="version"></dd></div><div><dt>배포판</dt><dd id="about-build">개발판 · 수동 설치</dd></div></dl><p id="about-policy" class="help">개발판에서는 YouTube 다운로드를 사용할 수 있습니다.</p><div class="actions"><button type="button" id="reload-extension" data-i18n="opt_reload">확장 프로그램 새로고침</button></div></div></section>
       </div>
-      <p id="youtube-auto-captions-help" class="muted" data-i18n="opt_youtube_auto_captions_help"></p>
-      <p id="youtube-caption-settings-status" class="notice" role="status"></p>
-    </div>
-    <p id="debug-status" class="notice" role="status"></p>
-    <form id="download-folder-form">
-      <div class="option-field">
-        <label for="download-folder" data-i18n="opt_download_location"></label>
-        <input id="download-folder" name="downloadFolder" type="text" data-i18n-placeholder="opt_default_folder" aria-describedby="download-folder-help" autocomplete="off" autocapitalize="off" spellcheck="false" disabled>
-      </div>
-      <p id="download-folder-help" class="muted" data-i18n="opt_folder_help"></p>
-      <div class="actions">
-        <button id="save-download-folder" type="submit" class="primary" data-i18n="opt_save_location" disabled></button>
-        <button id="pick-download-folder" type="button" data-i18n="opt_pick_download_folder" hidden disabled></button>
-        <button id="use-default-download-folder" type="button" data-i18n="opt_use_default_download_folder" hidden disabled></button>
-        <button id="restore-folder-access" type="button" data-i18n="opt_restore_folder_access" hidden disabled></button>
-      </div>
-      <p id="picked-download-folder" class="muted" hidden></p>
-      <p id="download-folder-status" class="notice" role="status"></p>
-    </form>
-    <div id="explorer-helper-management" hidden>
-      <div class="actions"><button id="remove-explorer-helper" type="button" data-i18n="explorer_remove_button" disabled></button></div>
-      <p id="explorer-helper-status" class="notice" role="status"></p>
-    </div>
-  </section>
-  <section class="option-group" aria-labelledby="notifications-heading">
-    <h2 id="notifications-heading" data-i18n="opt_notifications"></h2>
-    <div class="option-toggle"><input id="notify-download-complete" type="checkbox" aria-describedby="notify-complete-help" disabled><label for="notify-download-complete" data-i18n="opt_notify_complete"></label></div>
-    <p id="notify-complete-help" class="muted" data-i18n="opt_notify_complete_help"></p>
-    <div class="option-toggle"><input id="notify-scheduled-start" type="checkbox" aria-describedby="notify-scheduled-help" disabled><label for="notify-scheduled-start" data-i18n="opt_notify_scheduled_start"></label></div>
-    <p id="notify-scheduled-help" class="muted" data-i18n="opt_notify_scheduled_start_help"></p>
-    <p class="muted" data-i18n="opt_notifications_help"></p>
-    <p id="notification-settings-status" class="notice" role="status"></p>
-  </section>
-  <section class="option-group" aria-labelledby="translation-heading">
-    <h2 id="translation-heading" data-i18n="translation_heading"></h2>
-    <form id="translation-form">
-      <div class="option-toggle"><input id="translation-enabled" type="checkbox"><label for="translation-enabled" data-i18n="translation_enable"></label></div>
-      <p class="muted" data-i18n="translation_help"></p>
-      <div class="option-field"><label for="translation-target" data-i18n="translation_target"></label><input id="translation-target" value="ko" required></div>
-      <div class="option-field"><label for="translation-provider" data-i18n="translation_provider"></label><select id="translation-provider"><option value="deepl">DeepL</option><option value="google">Google Cloud Translation</option><option value="azure">Azure Translator</option><option value="gemini">Gemini / Gemma</option><option value="deepseek">DeepSeek</option><option value="openai">OpenAI</option><option value="kakao">Kakao</option></select></div>
-      <div class="option-field"><label for="translation-key" data-i18n="translation_key"></label><input id="translation-key" type="password" autocomplete="off" spellcheck="false"></div>
-      <div class="option-toggle"><input id="translation-show-key" type="checkbox"><label for="translation-show-key" data-i18n="translation_show_key"></label></div>
-      <div class="option-field"><label for="translation-region" data-i18n="translation_region"></label><input id="translation-region" autocomplete="off"></div>
-      <div class="option-field"><label for="translation-endpoint" data-i18n="translation_endpoint"></label><input id="translation-endpoint" type="url" autocomplete="off" placeholder="https://api.cognitive.microsofttranslator.com"></div>
-      <div class="option-field"><label for="translation-model" data-i18n="translation_model"></label><select id="translation-model"><option value="" data-i18n="translation_default"></option></select></div>
-      <button id="translation-refresh" type="button" data-i18n="translation_refresh"></button>
-      <div class="option-field"><label for="translation-effort" data-i18n="translation_effort"></label><select id="translation-effort"><option value="" data-i18n="translation_default"></option></select></div>
-      <p id="translation-kakao-help" class="muted" data-i18n="translation_kakao_help" hidden></p>
-      <button id="translation-capture" type="button" data-i18n="translation_capture" hidden></button>
-      <div class="actions"><button type="submit" class="primary" data-i18n="translation_save"></button><button id="translation-delete" type="button" data-i18n="translation_delete"></button></div>
-      <p id="translation-status" class="notice" role="status"></p>
-    </form>
-  </section>
-  <section class="option-group" aria-labelledby="advanced-settings">
-    <h2 id="advanced-settings" data-i18n="opt_advanced"></h2>
-    <details open>
-      <summary data-i18n="opt_side_panel"></summary>
-      <div class="option-toggle">
-        <input id="show-panel-media" type="checkbox" aria-describedby="panel-media-help" disabled>
-        <label for="show-panel-media" data-i18n="opt_show_panel_media"></label>
-      </div>
-      <p id="panel-media-help" class="muted" data-i18n="opt_show_panel_media_help"></p>
-      <p id="panel-settings-status" class="notice" role="status"></p>
-    </details>
-    <details open>
-      <summary id="download-log-label" data-i18n="opt_download_log"></summary>
-      <div class="option-toggle">
-        <input id="log-downloads" type="checkbox" aria-describedby="download-log-help" disabled>
-        <label for="log-downloads" data-i18n="opt_log_downloads"></label>
-      </div>
-      <p id="download-log-help" class="muted"></p>
-      <p id="download-log-empty" class="muted" data-i18n="opt_log_empty" hidden></p>
-      <textarea id="download-log" rows="8" aria-labelledby="download-log-label" readonly hidden></textarea>
-      <div class="actions">
-        <button id="copy-download-log" type="button" data-i18n="opt_log_copy" disabled></button>
-        <button id="clear-download-log" type="button" data-i18n="opt_log_clear" disabled></button>
-      </div>
-      <p id="download-log-status" class="notice" role="status"></p>
-    </details>
-    <details open>
-      <summary data-i18n="opt_network_permissions"></summary>
-      <p id="all-sites-help" class="muted" data-i18n="opt_all_sites_help"></p>
-      <div class="actions">
-        <button id="all-sites-access" type="button" aria-describedby="all-sites-help" data-i18n="opt_allow_all_sites" disabled></button>
-      </div>
-      <p id="all-sites-status" class="notice" role="status"></p>
-      <form id="network-form">
-        <p id="network-help" class="muted" data-i18n="opt_network_help"></p>
-        <div class="option-field">
-          <label for="site" data-i18n="opt_site_url"></label>
-          <input id="site" name="site" type="url" dir="ltr" placeholder="https://example.com" aria-describedby="network-help" autocapitalize="off" spellcheck="false" required>
-        </div>
-        <div class="option-field">
-          <label for="cdn" data-i18n="opt_cdn_url"></label>
-          <input id="cdn" name="cdn" type="url" dir="ltr" placeholder="https://cdn.example.com" autocapitalize="off" spellcheck="false">
-        </div>
-        <div class="actions">
-          <button id="allow-network" type="submit" class="primary" data-i18n="opt_allow_network"></button>
-          <button id="revoke-network" type="submit" data-i18n="opt_revoke_network"></button>
-        </div>
-        <p id="network-status" class="notice" role="status"></p>
-      </form>
-    </details>
-  </section>
-  <section class="option-group" aria-labelledby="extension-settings">
-    <h2 id="extension-settings" data-i18n="opt_extension"></h2>
-    <p class="muted"><span data-i18n="opt_version"></span> <bdi id="version"></bdi></p>
-    <div class="actions">
-      <button id="reload-extension" type="button" data-i18n="opt_reload"></button>
-    </div>
-  </section>
-</main>
+      <footer class="save-bar" id="save-bar"><p id="save-feedback" role="status"><span class="status-dot"></span>변경사항 없음</p><div class="actions"><button type="button" id="reset-settings">되돌리기</button><button type="button" id="apply-settings" class="primary">변경사항 적용</button></div></footer>
+    </main>
+  </div>
+</div>
 <script type="module" src="options.js"></script>
-</body>
-</html>
+</body></html>

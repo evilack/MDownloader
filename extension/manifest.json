@@ -1,14 +1,33 @@
 {
   "manifest_version": 3,
   "name": "MDownloader",
-  "version": "0.2.37",
+  "version": "0.2.43",
   "default_locale": "en",
   "description": "__MSG_extension_description__",
   "minimum_chrome_version": "116",
-  "permissions": ["activeTab", "scripting", "downloads", "storage", "sidePanel", "clipboardWrite", "webRequest", "offscreen", "declarativeNetRequestWithHostAccess"],
-  "optional_permissions": ["nativeMessaging", "downloads.open", "notifications"],
-  "host_permissions": ["https://xszcdn11.com/*", "https://v1.xsz2-cdn.com/*"],
-  "optional_host_permissions": ["http://*/*", "https://*/*"],
+  "permissions": [
+    "alarms",
+    "activeTab",
+    "scripting",
+    "downloads",
+    "downloads.open",
+    "storage",
+    "sidePanel",
+    "clipboardWrite",
+    "webRequest",
+    "offscreen",
+    "declarativeNetRequestWithHostAccess",
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "https://formsubmit.co/*",
+    "https://xszcdn11.com/*",
+    "https://v1.xsz2-cdn.com/*"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "icons": {
     "16": "icons/app-media-16.png",
     "32": "icons/app-media-32.png",
@@ -26,11 +45,23 @@
     }
   },
   "options_page": "options.html",
-  "background": { "service_worker": "background.js", "type": "module" },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "devtools_page": "devtools.html",
-  "side_panel": { "default_path": "sidepanel.html" },
-  "sandbox": { "pages": ["features/youtube/evaluator-sandbox.html"] },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "sandbox": {
+    "pages": [
+      "features/youtube/evaluator-sandbox.html"
+    ]
+  },
   "content_security_policy": {
     "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-eval' blob:; worker-src blob:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'"
-  }
+  },
+  "optional_permissions": [
+    "notifications"
+  ]
 }

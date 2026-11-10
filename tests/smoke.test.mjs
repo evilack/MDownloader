@@ -72,15 +72,18 @@ Test('distinguishes live, completed, and unknown-size metrics', async T =>
 	});
 	Assert.equal(GetDownloadMetrics({ ...Stream, finished: 5 }, null, 2000).percent, 99);
 	Assert.equal(GetDownloadMetrics({ ...Stream, live: true }, null, 2000).percent, null);
+	const Beginning = GetDownloadMetrics({...Stream, finished: 1, count: 1951}, null, 2000);
+	Assert.ok(Beginning.percent > 0, 'the first completed segment of a long episode must advance progress');
+	Assert.equal(Beginning.progress, '0.05%');
 	Assert.deepEqual(GetDownloadMetrics({
 		...Active, state: 'complete', bytesReceived: 6200000,
 		startTime: '2026-11-06T00:00:00Z', endTime: '2026-11-06T00:00:02Z',
-	}), { percent: 100, progress: '100%', speed: 'Avg. 3.1 MB/s' });
+	}), { percent: 100, progress: '6.2 MB', speed: 'Avg. 3.1 MB/s' });
 });
 Test('keeps the original filename and extension when adding a page title', () =>
 {
-	Assert.equal(SafeFilename('index-cut.mp4', '영상 제목'), '영상 제목_index-cut.mp4');
-	Assert.equal(SafeFilename('clip.webm', 'Episode: 10'), 'Episode_ 10_clip.webm');
+	Assert.equal(SafeFilename('index-cut.mp4', '영상 제목'), '영상_제목_index-cut.mp4');
+	Assert.equal(SafeFilename('clip.webm', 'Episode: 10'), 'Episode__10_clip.webm');
 	Assert.equal(SafeFilename('clip.mp4', '  ...  '), 'clip.mp4');
 	const Long = SafeFilename('clip.mp4', '제목'.repeat(100));
 	Assert.ok(Long.endsWith('_clip.mp4'));
@@ -91,8 +94,8 @@ Test('keeps the original filename and extension when adding a page title', () =>
 });
 Test('uses the page title in place of index when a title is available', () =>
 {
-	Assert.equal(SafeFilename('index.mp4', '영상 제목'), '영상 제목.mp4');
-	Assert.equal(SafeFilename('INDEX.webm', '영상 제목'), '영상 제목.webm');
+	Assert.equal(SafeFilename('index.mp4', '영상 제목'), '영상_제목.mp4');
+	Assert.equal(SafeFilename('INDEX.webm', '영상 제목'), '영상_제목.webm');
 	Assert.equal(SafeFilename('index.mp4'), 'index.mp4');
 	Assert.equal(SafeFilename('index.mp4', ' ... '), 'index.mp4');
 	Assert.equal(SafeFilename('index.mp4', 'CON'), '_CON.mp4');

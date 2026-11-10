@@ -18,12 +18,12 @@ async function ParseInChrome(Cases)
 	const Profile = await Mkdtemp(Join(TempRoot, 'mdownloader-dash-'));
 	const Server = CreateServer(async (Request, Response) =>
 	{
-		const ModulePath = /^\/([a-z0-9-]+\.js)$/.exec(Request.url);
+		const ModulePath = /^\/((?:lib\/)?[a-z0-9-]+\.js)$/.exec(Request.url);
 		if (ModulePath)
 		{
 			try
 			{
-				const Source = await ReadFile(new URL(`../extension/lib/${ModulePath[1]}`, import.meta.url));
+				const Source = await ReadFile(new URL(`../extension/${ModulePath[1]}`, import.meta.url));
 				Response.writeHead(200, { 'Content-Type': 'text/javascript' }).end(Source);
 			}
 			catch
@@ -34,12 +34,16 @@ async function ParseInChrome(Cases)
 		}
 		Response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }).end(`<!doctype html>
       <body><script type="module">
-        import * as dash from './dash.js';
+        import * as dash from './lib/dash.js';
+        import { ParseDashInitializationUrls } from './lib/dash-initialization.js';
         const cases = ${JSON.stringify(Cases).replaceAll('<', '\\u003c')};
         const address = 'https://example.test/path/stream.mpd';
         const result = await Promise.all(cases.map(async (fixture) => {
           try {
             if (typeof fixture === 'string') return dash.ParseDash(fixture, address);
+            if (fixture.initializations) {
+              return ParseDashInitializationUrls(fixture.text, address, location.href, 200);
+            }
             const requests = [];
             const parsed = dash.ParseDash(fixture.text, address);
             const expanded = await dash.ResolveDash(fixture.text, address, async (url, range) => {
@@ -76,6 +80,45 @@ async function ParseInChrome(Cases)
 		await Rm(ResolvedProfile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 	}
 }
+
+Test('reads exact DASH initialization resources without hiding complete byte-range files', { skip: !Chrome }, async () =>
+{
+	const [Resources, Invalid, External, Reset] = await ParseInChrome([
+		{initializations: true, text: `<MPD xmlns="urn:mpeg:dash:schema:mpd:2011"><BaseURL>../cdn/</BaseURL><Period>
+		<AdaptationSet><SegmentTemplate initialization="$RepresentationID$/init-$Bandwidth%06d$.mp4?Signature=a%2Bb&amp;key=keep"/>
+		<Representation id="video" bandwidth="123"><BaseURL>renditions/</BaseURL></Representation></AdaptationSet>
+		<AdaptationSet><Representation id="audio"><SegmentList><Initialization sourceURL="audio.mp4?sig=x%2By"/>
+		</SegmentList></Representation></AdaptationSet>
+		<AdaptationSet><Representation><SegmentBase><Initialization sourceURL="complete.mp4" range="0-900"/></SegmentBase></Representation></AdaptationSet>
+		<AdaptationSet><Representation><SegmentList><Initialization sourceURL="ranged.mp4" range="0-900"/></SegmentList></Representation></AdaptationSet>
+		</Period></MPD>`},
+		{initializations: true, text: '<MPD><broken>'},
+		{initializations: true, text: `<MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xmlns:xlink="http://www.w3.org/1999/xlink"><Period>
+		<AdaptationSet xlink:href="external.xml"><SegmentTemplate initialization="untrusted.mp4"/><Representation id="v"/></AdaptationSet>
+		</Period></MPD>`},
+		{initializations: true, text: `<MPD xmlns="urn:mpeg:dash:schema:mpd:2011"><Period><AdaptationSet>
+		<SegmentTemplate initialization="old.mp4"/><Representation><SegmentBase indexRange="0-10"/></Representation>
+		<Representation id="v"><SegmentTemplate initialization="seg-$Number$.mp4"/></Representation>
+		</AdaptationSet></Period></MPD>`},
+	]);
+	Assert.deepEqual(Resources, ['https://example.test/cdn/renditions/video/init-000123.mp4?Signature=a%2Bb&key=keep',
+		'https://example.test/cdn/audio.mp4?sig=x%2By']);
+	Assert.deepEqual(Invalid, []);
+	Assert.deepEqual(External, []);
+	Assert.deepEqual(Reset, []);
+});
+
+Test('reports DRM for a protected main period after a clear lead-in instead of a generic period error', {skip: !Chrome}, async() =>
+{
+	const Clear = '<Period><AdaptationSet mimeType="video/mp4" codecs="avc1.640028"><Representation id="v" bandwidth="1000"/></AdaptationSet></Period>';
+	const Protected = Clear.replace('<Representation', '<ContentProtection schemeIdUri="urn:mpeg:dash:mp4protection:2011" value="cenc"/><Representation');
+	const [Drm, ClearOnly] = await ParseInChrome([
+		`<MPD xmlns="urn:mpeg:dash:schema:mpd:2011">${Clear}${Protected}</MPD>`,
+		`<MPD xmlns="urn:mpeg:dash:schema:mpd:2011">${Clear}${Clear}</MPD>`,
+	]);
+	Assert.equal(Drm.error, 'stream_dash_encrypted');
+	Assert.equal(ClearOnly.error, 'stream_dash_single_period');
+});
 
 Test('expands DASH templates and selects clear H.264 video plus main AAC audio', { skip: !Chrome }, async () =>
 {

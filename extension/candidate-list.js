@@ -4,22 +4,21 @@
  */
 import { RuntimePolicy } from './lib/runtime-policy.js';
 import { ErrorText, GetLocale, LocalizedError, Translate } from './lib/i18n.js';
-import { CreateButton, CopyLink, CreateElement, SendRequest, SetButtonIcon } from './lib/ui.js';
+import { CreateElement, SendRequest } from './lib/ui.js';
 import { MediaContextCacheKey, NetworkCacheKey, ScanStorageKey } from './lib/detection-cache.js';
 import { CreateCandidateJobStatus } from './popup-job-status.js';
 import { ObserveCandidateThumbnails, PreviewTile } from './media-thumbnails.js';
 import { CreateCandidateDownloadActions } from './candidate-download.js';
-import { GetMediaFormatLabel, MediaFormat } from './lib/media.js';
-import { CreateLiveBadge } from './media-badges.js';
+import { MediaFormat } from './lib/media.js';
 import { StartVisibleSourceRefresh } from './lib/source-refresh.js';
 import { CreatePlaybackHint } from './lib/playback-hint.js';
-import {CreateSubtitleStatus, UpdateSubtitleStatus} from './subtitle-status.js';
+import {CreateCandidateRow} from './candidate-row.js';
 export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, scrollRoot: ScrollRoot = null, followTabs: bFollowTabs = false, reportShownJobs: ReportShownJobs })
 {
 	const List = Root.querySelector('#candidates');
 	const Status = Root.querySelector('[data-candidate-status]');
-	Status.before(CreatePlaybackHint());
-	const ScanButton = Root.querySelector('#scan');
+	Status.before(CreatePlaybackHint({ getPage: () => Tab }));
+	const ScanButton = Root.querySelector('#scan') ?? document.querySelector('#scan');
 	const CountFormat = new Intl.NumberFormat(GetLocale());
 	const Announce = Message =>
 	{
@@ -29,15 +28,7 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 		}
 	};
 	const DownloadActions = CreateCandidateDownloadActions(Announce, OnActionFinished, WaitForScan);
-	const LiveBadges = new Map();
-	const ShowJobStatuses = CreateCandidateJobStatus((Key, Job) =>
-	{
-		const Entry = LiveBadges.get(Key);
-		if (Entry)
-		{
-			Entry.badge.hidden = !(Entry.live === true || (Entry.live === undefined && Job?.live === true));
-		}
-	},ReportShownJobs);
+	const ShowJobStatuses = CreateCandidateJobStatus(undefined,ReportShownJobs);
 	let bEnabled = false;
 	let Tab;
 	let bRestricted = false;
@@ -66,12 +57,14 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 			for (const Item of Result)
 			{
 				const Row = Rows.find(Entry => Entry.input.candidateId === Item.id);
-				if (Row) UpdateSubtitleStatus(Row.subtitleStatus, Item.status);
+				if (Row) {
+					Row.entry.updateSource({...Object.fromEntries(Object.entries(Item).filter(([Key])=>['upcoming','scheduledStartTime','live'].includes(Key))),subtitleStatus:Item.status});
+				}
 			}
 		}
 		catch
 		{
-			if (Rows === RowContexts && Revision === SubtitleLookupRevision) for (const Row of Rows) UpdateSubtitleStatus(Row.subtitleStatus, {phase:'failed', translation:'unknown'});
+			if (Rows === RowContexts && Revision === SubtitleLookupRevision) for (const Row of Rows) Row.entry.updateSource({subtitleStatus:{phase:'failed',translation:'unknown'}});
 		}
 	}
 	async function WaitForScan()
@@ -209,52 +202,38 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 			const Thumbnails = new Map();
 			for (const Candidate of Result.candidates)
 			{
-				const Row = CreateElement('li', '', 'candidate');
-				const DisplayName = Candidate.playlistPath?.split('/').slice(-RuntimePolicy.Detection.PlaylistPathDepth).join('/') ?? Candidate.name;
-				const Filename = CreateElement('strong', DisplayName, 'filename');
-				Filename.title = Candidate.playlistPath ?? Candidate.name;
-				if (Candidate.supported)
-				{
-					const Input = { tabId: Tab.id, scanId: Result.scanId, candidateId: Candidate.id };
-					const SubtitleStatus = CreateSubtitleStatus({phase:'checking', translation:'unknown'});
-					const RowContext = { input: Input, generation: Version, subtitleStatus: SubtitleStatus };
-					RowContexts.push(RowContext);
-					const Thumbnail = PreviewTile(MediaPreview, async () =>
-					{
-						await WaitForScan();
-						return SendRequest('previewCandidate', Input);
-					},
-					async () =>
-					{
-						await WaitForScan();
-						return SendRequest('captureCandidatePreview', Input);
-					});
-					Thumbnails.set(Candidate.id, Thumbnail);
-					const Format = CreateElement('span', GetMediaFormatLabel(Candidate.format), 'candidate-format');
-					Format.dataset.format = Candidate.format;
-					const Live = CreateLiveBadge(Candidate.live === true);
-					Live.classList.add('candidate-live');
-					LiveBadges.set(Candidate.mediaKey, { badge: Live, live: Candidate.live });
-					const Details = CreateElement('div', '', 'candidate-details');
-					const JobStatus = CreateElement('span', '', 'candidate-job-status');
-					JobStatus.setAttribute('role', 'status');
-					const Heading = CreateElement('div', '', 'candidate-heading');
-					Heading.append(Filename);
-					Details.append(Heading, SubtitleStatus);
-					Badges.set(Candidate.mediaKey, JobStatus);
-					Row.append(Thumbnail.control, Format, Live, Details, JobStatus);
-					const Actions = CreateElement('div', '', 'actions');
-					const Download = DownloadActions.CreateDownloadButton(Candidate, Input, () => RowContext.generation === Generation);
-					Actions.append(Download);
-					if (Candidate.format !== 'WEBRTC') Actions.append(SetButtonIcon(CreateButton('', () => CopyLink(async () =>
-					{
-						await WaitForScan();
-						return SendRequest('candidateUrl', Input);
-					}, Announce)), Translate('view_copy_link'), 'link'));
-					Row.append(Actions);
-				}
+    let Row;
+    const DisplayName=Candidate.playlistPath?.split('/').slice(-RuntimePolicy.Detection.PlaylistPathDepth).join('/') ?? Candidate.name;
+    if(Candidate.supported) {
+     const Input={tabId:Tab.id,scanId:Result.scanId,candidateId:Candidate.id};
+     const RowContext={input:Input,generation:Version};
+     RowContexts.push(RowContext);
+     const Thumbnail=PreviewTile(MediaPreview,async()=>{await WaitForScan();return SendRequest('previewCandidate',Input);},async()=>{await WaitForScan();return SendRequest('captureCandidatePreview',Input);});
+     Thumbnails.set(Candidate.id,Thumbnail);
+     const Download=DownloadActions.CreateDownloadButton(Candidate,Input,()=>RowContext.generation===Generation,()=>{
+      // Split panes clip inline options to the media list's scroll area.
+      // Let the native dialog use the full panel viewport instead.
+      if(List.closest('.panel-resizable')) return;
+      const Slot=CreateElement('li','','quality-slot');
+      Slot.id='download-options-slot-'+crypto.randomUUID();
+      Download.setAttribute('aria-controls',Slot.id);
+      Download.setAttribute('aria-expanded','true');
+      Row.after(Slot);
+      return {container:Slot,dispose:()=>{
+       Slot.remove();Download.removeAttribute('aria-controls');Download.removeAttribute('aria-expanded');
+      }};
+     });
+     const Entry=CreateCandidateRow({...Candidate,displayName:DisplayName},{thumbnail:Thumbnail,download:Download,
+      loadLink:async()=>{await WaitForScan();return SendRequest('candidateUrl',Input);},announce:Announce});
+     RowContext.subtitleStatus=Entry.subtitleStatus;
+     RowContext.entry=Entry;
+     Badges.set(Candidate.mediaKey,Entry);
+     Row=Entry.row;
+    }
 				else
 				{
+					Row=CreateElement('li','','candidate unsupported');
+					const Filename=CreateElement('strong',DisplayName,'filename');
 					const Format = Candidate.format === MediaFormat.Unknown ? Translate('view_format_unknown') : Candidate.format;
 					Row.append(Filename, CreateElement('span', Translate('view_download_unsupported', Format), 'candidate-status muted'));
 				}
@@ -317,7 +296,6 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 		RenderSignature = undefined;
 		RowContexts = [];
 		ThumbnailInput = undefined;
-		LiveBadges.clear();
 		StopThumbnails?.();
 		StopThumbnails = undefined;
 		for (const Tile of List.querySelectorAll('.candidate-preview'))

@@ -60,7 +60,7 @@ Test('a known master 403 is shown as an independent failed job without another r
 	}, { url: chrome.runtime.getURL('popup.html') }, Resolve));
 	Assert.deepEqual(await Send({ type: 'enqueue', requestId: RequestId }), { ok: true, data: { state: 'failed' } });
 	const Job = Local['job:' + RequestId];
-	Assert.match(Job.filename, /^video_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.mp4$/);
+	Assert.match(Job.filename, /^player_test_video_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.mp4$/);
 	Assert.equal(Job.state, 'failed');
 	Assert.equal(Job.finished, 0);
 	Assert.equal(Job.diagnostic.stage, 'master-request');
@@ -96,4 +96,20 @@ Test('a known master 403 is shown as an independent failed job without another r
 			requestId: ChosenId, url: Qualities[1].url, variantUrl: undefined, requestContext: RequestContext,
 		} });
 	Assert.equal(fetch.mock.callCount(), 0);
+	// A rendition observed during playback can contain video only. Its master's
+	// separate audio declaration must survive the direct-rendition launch path.
+	Qualities[1].audioUrl = Cdn + '/audio.m3u8?signature=a%2Bb';
+	const AudioId = '4a288cad-dbc8-4b93-8353-c94f8ec78671';
+	Assert.deepEqual(await Send({ type: 'enqueue', requestId: AudioId, variantUrl: Qualities[1].url }),
+	{ ok: true, data: { state: 'started' } });
+	Assert.equal(Launched.job.url, Qualities[1].url);
+	Assert.equal(Launched.job.audioUrl, Qualities[1].audioUrl,
+		'observed video must retain the separate audio declared for the chosen quality');
+	Assert.equal(Launched.job.variantUrl, undefined);
+	Assert.equal(fetch.mock.callCount(), 0, 'master denial must not cause another master request');
+	Qualities[0].audioUrl = Cdn + '/default-audio.m3u8';
+	const DefaultId = '9bab5bb0-224f-4f82-a212-6a1c2ef77606';
+	Assert.deepEqual(await Send({ type: 'enqueue', requestId: DefaultId }), {ok: true, data: {state: 'started'}});
+	Assert.equal(Launched.job.url, Qualities[0].url);
+	Assert.equal(Launched.job.audioUrl, Qualities[0].audioUrl, 'the default download also keeps its matching audio');
 });

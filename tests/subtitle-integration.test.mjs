@@ -52,5 +52,11 @@ Test('captioned direct files and HLS send all tracks to the offscreen runner wit
 			await Assert.rejects(UpdateHls({requestId:Id,action:'subtitleStatus',status:{...Status,key:'secret'}}));
 			Assert.equal(Local['job:' + Id].subtitleCount, 2);
 		}
+		await Assert.rejects(UpdateHls({requestId:Id,action:'subtitleCount',count:0}));
+		const Missing={phase:'failed',count:2,completed:0,languages:[],targetLanguage:'ko',translation:'unknown'};
+		await UpdateHls({requestId:Id,action:'subtitleStatus',status:Missing});
+		await UpdateHls({requestId:Id,action:'subtitleCount',count:0});
+		Assert.equal(Local['job:'+Id].subtitleCount,0);
+		Assert.deepEqual((await ListJobs([Id]))[0].subtitleStatus,Missing);
 	}
 });

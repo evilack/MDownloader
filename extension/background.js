@@ -9,7 +9,7 @@ import { MediaContextCachePrefix, NetworkCachePrefix, SourceMetadataCachePrefix 
 import { CancelHls, HlsQualities, HlsRunnerUrl } from './hls-jobs.js';
 import { MigrateHlsDiscovery, SyncHlsDiscovery } from './hls-discovery.js';
 import { SetHlsRequestRules } from './lib/hls-request-context.js';
-import { HostPattern } from './lib/media.js';
+import { HostPattern, CandidateCopyUrl } from './lib/media.js';
 import { InitializeLocale, LocalizedError, MessageRef, SerializeError, Translate } from './lib/i18n.js';
 import { SettingKeys } from './lib/settings.js';
 import { RecordBrowserDownload } from './lib/download-log.js';
@@ -23,15 +23,30 @@ import {AuthorizePlayback} from './lib/playback-authorization.js';
 import {PrepareDistributionNetwork} from './lib/distribution-network.js';
 import {CanUseYoutube} from './lib/distribution-policy.js';
 import {HandleTranslationConfiguration} from './lib/translation-configuration.js';
+import {HandleIssueReport} from './lib/issue-report.js';
 import {CandidateSubtitleStatuses, CandidateSubtitleOptions} from './detection.js';
 import {ReconcileExplorerRemoval} from './lib/explorer-lifecycle.js';
 import {CreateDownloadNotifications} from './lib/download-notifications.js';
 import {CreateCaptionService,CaptionSenderAllowed} from './lib/local-captions-service.js';
+import {StartHelperMonitor,RefreshHelperForDownload} from './lib/helper-monitor.js';
+StartHelperMonitor();
 const CaptionService=CreateCaptionService();
 void CaptionService.initialize().catch(ReportDebugFailure);
 chrome.storage.onChanged.addListener((Changes,Area)=>{if(Area==='local')void CaptionService.jobsChanged(Changes).catch(ReportDebugFailure);});
 const DownloadNotifications=CreateDownloadNotifications();
 chrome.runtime.onConnect.addListener(Port=>{DownloadNotifications.connectView(Port);});
+// Resolve the durable job at click time so notifications also work after worker suspension.
+chrome.notifications?.onClicked.addListener(async NotificationId=>
+{
+	const Match=/^mdownloader:(?:complete|start):(.+)$/.exec(NotificationId);
+	if(!Match)return;
+	try
+	{
+		await ControlJob(Match[1],'show');
+		await chrome.notifications.clear(NotificationId);
+	}
+	catch(ErrorValue){ReportDebugFailure(ErrorValue);}
+});
 import {DiscoverYoutube, SetYoutubeRequestContext} from './features/youtube/entry.js';
 void PrepareDistributionNetwork().catch(ErrorValue => ReportDebugFailure(ErrorValue, 'DistributionRulesFailed'));
 void InitializeDebugLogging(async bEnabled =>
@@ -74,7 +89,7 @@ async function Route(Message)
 			void RefreshBadgeFromScan(Message.tabId, Result);
 			return Result;
 		}
-		case 'candidateUrl': return (await ResolveCandidate(Message.tabId, Message.scanId, Message.candidateId, Message.scope)).url;
+		case 'candidateUrl': return CandidateCopyUrl(await ResolveCandidate(Message.tabId, Message.scanId, Message.candidateId, Message.scope));
 		case 'candidatePreviews': return CandidatePreviews(Message);
 		case 'candidateSubtitleStatuses': return CandidateSubtitleStatuses(Message);
 		case 'candidateSubtitleOptions': return CandidateSubtitleOptions(Message);
@@ -86,9 +101,9 @@ async function Route(Message)
 		{
 			const Item = await ResolveCandidate(Message.tabId, Message.scanId, Message.candidateId, Message.scope);
 			if (Item.format !== 'YOUTUBE') throw new LocalizedError('youtube_session_changed');
-			return DiscoverYoutube(Item);
+			return DiscoverYoutube({...Item,tabId:Message.tabId});
 		}
-		case 'enqueue': return Enqueue(Message);
+		case 'enqueue': await RefreshHelperForDownload();return Enqueue(Message);
 		case 'jobs': return ListJobs(Message.requestIds, Message.mediaKeys);
 		case 'jobUrl': return JobUrl(Message.requestId);
 		case 'previewJob': return PreviewJob(Message.requestId);
@@ -104,6 +119,7 @@ async function Route(Message)
 
 chrome.runtime.onMessage.addListener((Message, Sender, Respond) =>
 {
+	if (HandleIssueReport(Message, Sender, Respond)) return true;
 	if(['captionProbe','captionPrepareModel','captionCancelModel','captionDeleteModel','captionReconnect','captionControl','captionStage'].includes(Message?.type)){
 		if(!CaptionSenderAllowed(Message,Sender,chrome))return;
 		void CaptionService.handle(Message,Sender).then(Data=>Respond({ok:true,data:Data}),E=>Respond({ok:false,error:SerializeError(E)}));return true;

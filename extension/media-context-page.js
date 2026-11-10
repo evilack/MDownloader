@@ -46,8 +46,12 @@
 	function CardFor(ElementValue)
 	{
 		const Card = ElementValue?.closest('a[href], [role="link"]') ?? ElementValue?.closest(CardSelector);
-		const Link = Card?.matches('a[href]') ? Card : Card?.querySelector('a[href]');
-		if (!Link || !/^https?:\/\//i.test(Link.href) ||
+		// 본문 article의 작성자·댓글·추천 링크는 대표 플레이어의 이동 대상이 아닙니다.
+		// 컨테이너형 카드는 같은 카드에 속한 영상/표지 링크가 있을 때만 인정합니다.
+		const Link = Card?.matches('a[href]') ? Card : [...(Card?.querySelectorAll('a[href]') ?? [])].find(Item =>
+			!Item.matches('[rel~="author"]') && Item.closest(CardSelector + ', [role="link"]') === Card &&
+			(Item.contains(ElementValue) || Item.querySelector(ThumbnailSelector)));
+		if (!Link || Link.matches('[rel~="author"]') || !/^https?:\/\//i.test(Link.href) ||
 		Link.href.split('#', 1)[0] === location.href.split('#', 1)[0])
 		{
 			return null;

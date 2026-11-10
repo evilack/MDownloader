@@ -4,26 +4,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title data-i18n="html_sidepanel_title">MDownloader</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="media-row.css">
+<link rel="stylesheet" href="download-options.css">
+<link rel="stylesheet" href="local-captions.css">
+<link rel="stylesheet" href="sidepanel-layout.css">
 <body class="panel">
-<header class="brand brand-with-options"><strong>MDownloader</strong></header>
+<header class="brand brand-with-options"><strong>MDownloader</strong><div class="window-actions"><button id="scan" type="button" class="icon-button" data-i18n-aria-label="html_rescan" data-i18n-title="html_rescan" hidden><img class="button-icon" src="icons/refresh.png" alt="" width="20" height="20"></button></div></header>
 <main>
   <p class="notice" role="status" data-youtube-policy-notice data-i18n="youtube_store_policy_notice" hidden></p>
   <h1 id="diagnostics-title" data-i18n="view_diagnostics" hidden></h1>
-  <section id="panel-media" hidden>
+  <div id="panel-workspace" class="panel-workspace">
+  <section id="panel-media" data-i18n-aria-label="html_detected_media" hidden>
     <p class="notice" role="status" data-candidate-status></p>
     <ul id="candidates" data-i18n-aria-label="html_detected_media"></ul>
-    <div class="actions">
-      <button id="scan" type="button" data-i18n-aria-label="html_rescan" data-i18n-title="html_rescan">
-        <img class="button-icon" src="icons/refresh.png" alt="" width="20" height="20">
-      </button>
-    </div>
   </section>
-  <hr id="panel-media-divider" hidden>
+  <div id="panel-media-divider" class="panel-resize-controls" hidden>
+    <div id="panel-media-resizer" class="panel-resizer" role="separator" tabindex="0" aria-orientation="horizontal" aria-controls="panel-media" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" data-i18n-aria-label="panel_media_resize" data-i18n-title="panel_media_resize_help"></div>
+  </div>
+  <hr id="panel-media-static-divider" hidden>
+  <section id="panel-downloads" data-i18n-aria-label="html_download_manager">
   <p id="status" class="notice" role="status"></p>
   <p id="empty" class="muted" data-i18n="html_loading_downloads"></p>
   <section id="attention" hidden><header class="job-section-heading"><h2 data-i18n="html_needs_attention"></h2></header><ul></ul></section>
   <section id="active" hidden><header class="job-section-heading"><h2 data-i18n="html_downloading"></h2></header><ul></ul></section>
   <section id="complete" hidden><header class="job-section-heading"><h2 data-i18n="html_completed_downloads"></h2></header><ul></ul></section>
+  </section>
+  </div>
 </main>
 <script type="module" src="sidepanel.js"></script>
 </body>

@@ -63,12 +63,23 @@ export function PreviewTile(Preview, Load, Capture)
 	}
 	let ImageElement = CreateThumbnailImage();
 	let ImageRevision = 0;
+	let HasThumbnail = false, SourceDuration = '', SourceResolution = '';
+	let Presentation = {};
 	const Duration = CreateElement('span', '', 'candidate-preview-duration');
 	Duration.dir = 'ltr';
 	Duration.hidden = true;
 	const Resolution = CreateElement('span', '', 'candidate-preview-resolution');
 	Resolution.dir = 'ltr';
 	Resolution.hidden = true;
+	function RenderPresentation()
+	{
+		const Suppressed = !!Presentation.suppressPreview;
+		ImageElement.hidden = Suppressed || !HasThumbnail;
+		Duration.textContent = Presentation.elapsed || (Presentation.live ? '' : SourceDuration);
+		Duration.hidden = Suppressed || !Duration.textContent;
+		Resolution.textContent = SourceResolution;
+		Resolution.hidden = Suppressed || !SourceResolution;
+	}
 	function ShowResolution(Dimensions)
 	{
 		if (!Dimensions)
@@ -80,8 +91,8 @@ export function PreviewTile(Preview, Load, Capture)
 		{
 			return;
 		}
-		Resolution.textContent = `${Width}×${Height}`;
-		Resolution.hidden = false;
+		SourceResolution = `${Width}×${Height}`;
+		RenderPresentation();
 	}
 	Control.append(ImageElement, Duration, Resolution, Status.node);
 	Preview.attach(Control, async Signal =>
@@ -96,6 +107,12 @@ export function PreviewTile(Preview, Load, Capture)
 	State => Status.setFailed(State === 'failed'));
 	return {
 		control: Control,
+		setPresentation(Value = {})
+		{
+			Presentation = {suppressPreview: !!Value.suppressPreview, live: !!Value.live,
+				elapsed: typeof Value.elapsed === 'string' ? Value.elapsed : ''};
+			RenderPresentation();
+		},
 		async refresh(LoadThumbnail)
 		{
 			// 썸네일 조회 실패는 호버 재생의 실패가 아닙니다. 재생 결과만 상태 아이콘을 바꿉니다.
@@ -140,12 +157,12 @@ export function PreviewTile(Preview, Load, Capture)
 			ShowResolution(Preview.resolution);
 			if (Number.isFinite(Preview.duration) && Preview.duration > 0)
 			{
-				Duration.textContent = FormatDuration(Preview.duration);
-				Duration.hidden = false;
+				SourceDuration = FormatDuration(Preview.duration);
 			}
+			RenderPresentation();
 			if (!Preview.still)
 			{
-				return !ImageElement.hidden;
+				return HasThumbnail;
 			}
 			if (ImageElement.src === Preview.still && !ImageElement.hidden && ImageElement.naturalWidth)
 			{
@@ -162,9 +179,10 @@ export function PreviewTile(Preview, Load, Capture)
 				{
 					return false;
 				}
-				NextImage.hidden = false;
 				ImageElement.replaceWith(NextImage);
 				ImageElement = NextImage;
+				HasThumbnail = true;
+				RenderPresentation();
 				return true;
 			}
 			catch

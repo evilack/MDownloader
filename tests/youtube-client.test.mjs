@@ -89,3 +89,19 @@ test('SABR never switches clients for a restricted public WEB response',async()=
  const requested=[];const client=CreateYoutubeClient({hasPermission:async()=>true,createInnertube:async()=>({getBasicInfo:async(id,{client})=>{requested.push(client);return{basic_info:{id:VideoId},playability_status:{status:'LOGIN_REQUIRED'}};}})});
  await assert.rejects(client.DiscoverYoutube({pageUrl:`https://youtu.be/${VideoId}`,transport:'sabr'}),{code:'youtube_restricted'});assert.deepEqual(requested,['WEB']);
 });
+
+test('restricted anonymous lookup can use the exact authorized finite watch response without switching clients',async()=>{
+ const h=harness(),requested=[];
+ const player={videoDetails:{videoId:VideoId,title:'Member video',lengthSeconds:'5'},playabilityStatus:{status:'OK'},streamingData:{serverAbrStreamingUrl:'https://rr1.googlevideo.com/sabr?expire=9999999999',adaptiveFormats:[]},playerConfig:{mediaCommonConfig:{mediaUstreamerRequestConfig:{videoPlaybackUstreamerConfig:'fixture'}}}};
+ const parsed={...h.info,streaming_data:{...h.info.streaming_data,server_abr_streaming_url:player.streamingData.serverAbrStreamingUrl},player_config:{media_common_config:{media_ustreamer_request_config:{video_playback_ustreamer_config:'fixture'}}}};
+ const client=CreateYoutubeClient({hasPermission:async()=>true,createInnertube:async()=>({getBasicInfo:async(_id,{client})=>{requested.push(client);return{basic_info:{id:VideoId},playability_status:{status:'UNPLAYABLE'}};},session:{player:{decipher:async()=>assert.fail('played URL must not be deciphered a second time')}}}),parseWatchPlayer:async(_tube,raw)=>{assert.equal(raw,player);return parsed;}});
+ const info=await client.DiscoverYoutube({pageUrl:`https://youtu.be/${VideoId}`,transport:'sabr',watchPlayer:{player,clientVersion:'2.fixture',resolvedUrl:player.streamingData.serverAbrStreamingUrl+'&rn=1'}});
+ assert.deepEqual(requested,['WEB']);assert.equal(info.title,'Authorized fixture');
+ const resolved=await client.ResolveYoutubeSelection({sessionKey:info.sessionKey,videoId:VideoId,selection:{videoFormatId:'137:0',audioFormatId:'140:1'}});
+ assert.equal(resolved.config.clientInfo.clientName,1);assert.equal(resolved.config.clientInfo.clientVersion,'2.fixture');
+ assert.equal(resolved.config.url,player.streamingData.serverAbrStreamingUrl+'&rn=1');
+ player.videoDetails.videoId='wrong';
+ await assert.rejects(client.DiscoverYoutube({pageUrl:`https://youtu.be/${VideoId}`,transport:'sabr',watchPlayer:{player,clientVersion:'2.fixture'}}),{code:'youtube_session_changed'});
+ player.videoDetails.videoId=VideoId;player.playabilityStatus.status='LOGIN_REQUIRED';
+ await assert.rejects(client.DiscoverYoutube({pageUrl:`https://youtu.be/${VideoId}`,transport:'sabr',watchPlayer:{player,clientVersion:'2.fixture'}}),{code:'youtube_restricted'});
+});

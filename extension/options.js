@@ -5,7 +5,8 @@ void InitializeDebugLogging();
  */
 import { BindDownloadLocation } from './options-download-location.js';
 import {BeforePickDownloadFolder} from './options-explorer-setup.js';
-import {BindExplorerRemoval} from './options-explorer-remove.js';
+import {BindHelperSettings} from './options-helper.js';
+import {BindHelperRemovalNotice} from './options-helper-navigation.js';
 import { BindNetworkAccess } from './options-network-access.js';
 import { BindDownloadLog } from './options-download-log.js';
 import {
@@ -16,12 +17,17 @@ import { RuntimePolicy } from './lib/runtime-policy.js';
 import { BindTranslationSettings } from './options-translation.js';
 import {CanUseYoutube} from './lib/distribution-policy.js';
 import {BindNotificationOptions} from './options-notifications.js';
+import {BindSettingsUI} from './settings-ui.js';
+import {BindLocalCaptionSettings} from './options-local-captions.js';
 WatchLanguage();
 const Settings = await GetSettings(Object.values(SettingKeys)).catch(() => null);
 // 한꺼번에 읽은 설정에서 언어 값을 넘겨 시작할 때 같은 값을 다시 조회하지 않습니다.
 await InitializeLocale(Settings?.[SettingKeys.language] ?? AUTO_LANGUAGE);
 LocalizePage();
-void BindTranslationSettings();
+await BindTranslationSettings().catch(() =>
+{
+	document.querySelector('#translation-status').textContent = Translate('translation_error');
+});
 function BindLanguagePicker()
 {
 	const Select = document.querySelector('#language');
@@ -46,10 +52,12 @@ function BindLanguagePicker()
 		try
 		{
 			await SetSetting(SettingKeys.language, Select.value);
+			Status.dataset.error = 'false';
 		}
 		catch
 		{
 			Select.value = GetLanguagePreference();
+			Status.dataset.error = 'true';
 			Status.textContent = Translate('opt_language_save_failed');
 		}
 		finally
@@ -80,11 +88,13 @@ function BindToggles(Settings, StatusSelector, Toggles)
 			try
 			{
 				await SetSetting(Key, Enabled);
+				Status.dataset.error = 'false';
 				Status.textContent = Translate(Enabled ? 'opt_setting_enabled' : 'opt_setting_disabled', Label);
 			}
 			catch
 			{
 				Input.checked = !Enabled;
+				Status.dataset.error = 'true';
 				Status.textContent = Translate('opt_setting_save_failed', Label);
 			}
 			finally
@@ -102,17 +112,20 @@ if (CanUseYoutube())
 	document.querySelector('#youtube-caption-settings').hidden = false;
 	BindToggles(Settings, '#youtube-caption-settings-status', [[SettingKeys.includeYoutubeAutoCaptions, '#include-youtube-auto-captions', 'opt_youtube_auto_captions']]);
 }
-void BindDownloadLocation(Settings?.[SettingKeys.downloadFolder], Settings?.[SettingKeys.pickedDownloadFolder], BeforePickDownloadFolder);
-void BindExplorerRemoval();
+await BindDownloadLocation(Settings?.[SettingKeys.downloadFolder], Settings?.[SettingKeys.pickedDownloadFolder], BeforePickDownloadFolder);
 BindToggles(Settings, '#debug-status', [
 	[SettingKeys.debugLogging, '#debug-logging', 'opt_debug_logging'],
 	[SettingKeys.debugDownloads, '#debug-downloads', 'opt_debug'],
 	[SettingKeys.usePageTitle, '#use-page-title', 'opt_page_title_short'],
 	[SettingKeys.useDownloadDateTime, '#use-download-date-time', 'opt_download_date_time'],
 ]);
-BindToggles(Settings, '#panel-settings-status', [[SettingKeys.showPanelMedia, '#show-panel-media', 'opt_show_panel_media']]);
+BindToggles(Settings, '#panel-settings-status', [[SettingKeys.showPanelMedia, '#show-panel-media', 'opt_show_panel_media'],[SettingKeys.showPanelMediaResize, '#show-panel-media-resize', 'opt_show_panel_media_resize']]);
 BindDownloadLog(Settings?.[SettingKeys.logDownloads]);
 document.querySelector('#debug-logging-help').textContent = Translate('opt_debug_logging_help', new Intl.NumberFormat(GetLocale()).format(RuntimePolicy.Debug.MaxEntries));
 BindNetworkAccess(document.querySelector('#network-form'));
 document.querySelector('#version').textContent = chrome.runtime.getManifest().version;
 document.querySelector('#reload-extension').addEventListener('click', () => chrome.runtime.reload());
+await BindLocalCaptionSettings();
+await BindSettingsUI();
+BindHelperRemovalNotice();
+void BindHelperSettings();

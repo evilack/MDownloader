@@ -1,7 +1,0 @@
-# Explorer reveal repair
-
-User reports no Explorer reveal, then clarifies that the UI reports a missing helper. Existing approved HKCU registration, actual extension ID and Chrome permission were checked. Do not infer that this generic error proves the host is absent. Preserve unrelated work, development identity, Store exclusion, no Computer Use and no push.
-
-Reproduction: a file fingerprint read failure was incorrectly converted into helper-registration advice. A real first-association request also remained pending in an unowned native chooser. Fix error boundaries, keep the worker alive through a native port, and attach the chooser to Chrome's supplied HWND. Add ping for direct connection verification; refresh the already approved registration. User explicitly rejected a further confirmation popup; do not ship that UI.
-
-Verification: RED/GREEN fingerprint classification and native owner tests, host validation/origin/ping tests, full scoped suite, project/locales/distribution checks. Actual isolated Chrome loads the real development source, uses the original completed-row button and registered host, and observes an Explorer window through Shell.Application for a prelinked owned fixture. Shift playback must still decode. No native chooser selection or claim about the user's current file. Record this remaining association boundary explicitly. Commit only the repair scope locally.

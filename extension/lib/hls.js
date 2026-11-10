@@ -79,6 +79,28 @@ export function ReadHlsLiveState(TextValue)
 	return !Lines.includes('#EXT-X-ENDLIST') && !Lines.includes('#EXT-X-PLAYLIST-TYPE:VOD');
 }
 
+/** DVR is a live capability, not a transport. Short rolling playback buffers
+ * stay HLS; EVENT or a substantial retained window provides rewind history.
+ * The window threshold is display policy, not an HLS protocol DVR flag. */
+export function ReadHlsDvrState(TextValue)
+{
+	const Live = ReadHlsLiveState(TextValue);
+	if (Live !== true) return Live === false ? false : undefined;
+	const Lines = PlaylistLines(TextValue);
+	if (Lines.includes('#EXT-X-PLAYLIST-TYPE:EVENT')) return true;
+	const Target = Number(Lines.find(Line => Line.startsWith('#EXT-X-TARGETDURATION:'))?.split(':')[1]);
+	if (!Number.isFinite(Target) || Target <= 0) return undefined;
+	let Duration = 0;
+	for (const Line of Lines.filter(Line => Line.startsWith('#EXTINF:')))
+	{
+		const Seconds = Number(Line.slice(8).split(',', 1)[0]);
+		if (!Number.isFinite(Seconds) || Seconds <= 0) return undefined;
+		Duration += Seconds;
+	}
+	return Duration >= Math.max(RuntimePolicy.Detection.DvrMinimumWindowSeconds,
+		Target * RuntimePolicy.Detection.DvrMinimumTargetDurations);
+}
+
 /**
  * 다운로드 지원 여부와 별개로 재생목록에 명시된 조각의 소유 관계를 읽습니다.
  * 초기화·완전 조각·저지연 부분 조각을 독립 파일 후보에서 제외하는 데 사용하며 키 주소는 읽지 않습니다.
@@ -147,6 +169,14 @@ function SelectAudio(Renditions, Group, Address, AllowSeparateAudio)
 	return Fallback;
 }
 
+/** Dimensions belong to a declared rendition, independently of the player's adaptive decode size. */
+export function HlsVariantResolution(Variant)
+{
+	if (!/^[1-9]\d*x[1-9]\d*$/.test(Variant?.resolution ?? '')) return;
+	const [Width, Height] = Variant.resolution.split('x').map(Number);
+	if ([Width, Height].every(Number.isSafeInteger)) return {width: Width, height: Height};
+}
+
 // null은 마스터가 아니라 미디어 재생목록을 뜻합니다. 호출부에서 그 형식으로 다시 검사합니다.
 export function ParseMaster(TextValue, Address, { allowSeparateAudio: bAllowSeparateAudio = true } = {})
 {
@@ -154,6 +184,10 @@ export function ParseMaster(TextValue, Address, { allowSeparateAudio: bAllowSepa
 	if (!Lines.some(Line => /^#EXT-X-(STREAM-INF|I-FRAME-STREAM-INF|MEDIA)(?=:|$)/.test(Line)))
 	{
 		return null;
+	}
+	if (Lines.some(Line => Line.startsWith('#EXT-X-BIGO-WEB-PROTECTION')))
+	{
+		throw new LocalizedError('stream_hls_unsupported_media');
 	}
 	if (Lines.some(Line => /^#EXT(INF|\-X-(TARGETDURATION|MEDIA-SEQUENCE|ENDLIST|DEFINE|MAP|BYTERANGE|DISCONTINUITY|PART|SKIP))(?=:|$)/.test(Line)))
 	{
@@ -264,6 +298,26 @@ function ByteRange(Value, ImplicitStart)
 export function ParseMediaPlaylist(TextValue, Address)
 {
 	const Lines = PlaylistLines(TextValue);
+	const ProtectionTags = Lines.filter(Line => Line.startsWith('#EXT-X-BIGO-WEB-PROTECTION'));
+	let WebProtection;
+	if (ProtectionTags.length)
+	{
+		const Tag = '#EXT-X-BIGO-WEB-PROTECTION:';
+		if (ProtectionTags.length !== 1 || !ProtectionTags[0].startsWith(Tag) ||
+		Lines.some(Line => /^#EXT-X-(MAP|BYTERANGE|PART|PRELOAD-HINT|SESSION-KEY)(?=:|$)/.test(Line) ||
+		Line.startsWith('#EXT-X-KEY:') && Line !== '#EXT-X-KEY:METHOD=NONE'))
+		{
+			throw new LocalizedError('stream_hls_unsupported_media');
+		}
+		const Fields = ReadAttributes(ProtectionTags[0].slice(Tag.length), 'stream_hls_unsupported_media');
+		const Seed = Number(Fields.get('SEED'));
+		if (Fields.size !== 2 || Fields.get('VERSION') !== '1' || !/^\d+$/.test(Fields.get('SEED') ?? '') ||
+		!Number.isInteger(Seed) || Seed <= 0 || Seed > 0xffffffff)
+		{
+			throw new LocalizedError('stream_hls_unsupported_media');
+		}
+		WebProtection = {version: 1, seed: Seed};
+	}
 	// URL을 플레이어 내부에서 별도로 변환하는 구조는 표준 URI로 다운로드할 수 없습니다.
 	// 메타데이터의 문자열을 실제 조각 주소로 오인해 404 요청을 반복하지 않습니다.
 	if (Lines.some(Line => Line.startsWith('#EXT-X-MOUFLON:PSCH:')))
@@ -271,7 +325,8 @@ export function ParseMediaPlaylist(TextValue, Address)
 		throw new LocalizedError('stream_hls_unsupported_media');
 	}
 	const Segments = [];
-	let TargetDuration, FirstSequence, Duration, Init, RangeValue;
+	let TargetDuration, FirstSequence, Duration, Init, RangeValue, ProgramDateTime, FirstDiscontinuitySequence;
+	let DiscontinuitySequence = 0;
 	let bDiscontinuity = false;
 	let bEnded = false;
 	let bPartial = false;
@@ -313,7 +368,9 @@ export function ParseMediaPlaylist(TextValue, Address)
 			{
 				throw new LocalizedError('stream_hls_segment_scheme');
 			}
-			const Segment = { url: Url, duration: Duration, sequence: Sequence };
+			const Segment = { url: Url, duration: Duration, sequence: Sequence, discontinuitySequence: DiscontinuitySequence,
+				...(ProgramDateTime !== undefined ? {programDateTime: ProgramDateTime} : {}) };
+			if (WebProtection) Segment.webProtection = WebProtection;
 			const Key = Encryption();
 			if (Key)
 			{
@@ -343,6 +400,7 @@ export function ParseMediaPlaylist(TextValue, Address)
 				Segment.discontinuity = true;
 			}
 			Segments.push(Segment);
+			if (ProgramDateTime !== undefined) ProgramDateTime += Duration * 1000;
 			Duration = undefined;
 			RangeValue = undefined;
 			bDiscontinuity = false;
@@ -442,7 +500,20 @@ export function ParseMediaPlaylist(TextValue, Address)
 			}
 			RangeValue = Value;
 			break;
+			case '#EXT-X-DISCONTINUITY-SEQUENCE':
+			{
+				const Sequence = DecimalInteger(Value);
+				if (FirstDiscontinuitySequence !== undefined || Segments.length || bDiscontinuity || !Number.isSafeInteger(Sequence)) throw new LocalizedError('stream_hls_invalid_sequence');
+				FirstDiscontinuitySequence = DiscontinuitySequence = Sequence;
+				break;
+			}
+			case '#EXT-X-PROGRAM-DATE-TIME':
+				ProgramDateTime = Date.parse(Value);
+				if (!Number.isFinite(ProgramDateTime)) throw new LocalizedError('stream_hls_invalid_sequence');
+				break;
 			case '#EXT-X-DISCONTINUITY':
+			DiscontinuitySequence++;
+			if (!Number.isSafeInteger(DiscontinuitySequence)) throw new LocalizedError('stream_hls_invalid_sequence');
 			bDiscontinuity = true;
 			break;
 			case '#EXT-X-ENDLIST':
@@ -493,7 +564,8 @@ export function ParseMediaPlaylist(TextValue, Address)
 		}
 		TargetDuration = Math.ceil(Math.max(...Segments.map(Segment => Segment.duration)));
 	}
-	return { segments: Segments, ended: bEnded, targetDuration: TargetDuration };
+	return { segments: Segments, ended: bEnded, targetDuration: TargetDuration,
+		...(ReadHlsDvrState(TextValue) === true ? {dvr: true} : {}) };
 }
 
 export function ParseVod(TextValue, Address)
@@ -503,12 +575,13 @@ export function ParseVod(TextValue, Address)
 	{
 		throw new LocalizedError('stream_hls_vod_end_required');
 	}
-	const Segments = Lines.some(Line => Line.startsWith('#EXT-X-KEY:') && Line !== '#EXT-X-KEY:METHOD=NONE') ? ParseMediaPlaylist(TextValue, Address).segments : undefined;
+	const Segments = Lines.some(Line => Line.startsWith('#EXT-X-BIGO-WEB-PROTECTION') ||
+	Line.startsWith('#EXT-X-KEY:') && Line !== '#EXT-X-KEY:METHOD=NONE') ? ParseMediaPlaylist(TextValue, Address).segments : undefined;
 	const Urls = [];
 	let bExpectingSegment = false;
 	const Local = Lines.map(Line =>
 	{
-		if (Line.startsWith('#EXT-X-KEY:'))
+		if (Line.startsWith('#EXT-X-KEY:') || Line.startsWith('#EXT-X-BIGO-WEB-PROTECTION:'))
 		{
 			return '';
 		}

@@ -1,9 +1,18 @@
 import Assert from 'node:assert/strict';
 import {test as Test} from 'node:test';
 import {ParseMaster, ParseMediaPlaylist} from '../extension/lib/hls.js';
-import {HlsDecryptor, HlsResourceUrls} from '../extension/lib/hls-encryption.js';
+import {HlsDecryptor, HlsResourceUrls, CopyHlsResource} from '../extension/lib/hls-encryption.js';
 const Address = 'https://media.test/hls/index.m3u8';
 const Playlist = Tags => '#EXTM3U\n#EXT-X-TARGETDURATION:4\n' + Tags + '\n#EXT-X-ENDLIST';
+Test('failed encrypted reads balance provisional byte progress and never commit their ciphertext',async T=>
+{
+	let Pull=0,Pending=0;const Deltas=[];
+	T.mock.method(globalThis,'fetch',async()=>new Response(new ReadableStream({pull(C){if(Pull++===0)C.enqueue(new Uint8Array(32));else C.error(new TypeError('network interrupted'));}})));
+	const Resource={url:'https://media.test/part.ts',encryption:{method:'AES-128',url:'https://media.test/key'}};
+	await Assert.rejects(CopyHlsResource(Resource,1024,new AbortController().signal,()=>Assert.fail('unvalidated output'),new HlsDecryptor(()=>Assert.fail('key not needed')),
+		false,async Delta=>{Pending+=Delta;Deltas.push(Delta);}),TypeError);
+	Assert.deepEqual(Deltas,[32,-32]);Assert.equal(Pending,0);
+});
 Test('HLS encryption follows key rotation, sequence IVs and METHOD=NONE', () =>
 {
 	const Parsed = ParseMediaPlaylist(Playlist('#EXT-X-MEDIA-SEQUENCE:258\n#EXT-X-KEY:METHOD=AES-128,URI="../key?v=1"\n#EXTINF:4,\na.ts\n#EXTINF:4,\nb.ts\n#EXT-X-KEY:METHOD=AES-128,URI="../key?v=2",IV=0xabc\n#EXTINF:4,\nc.ts\n#EXT-X-KEY:METHOD=NONE\n#EXTINF:4,\nd.ts'), Address);

@@ -1,5 +1,6 @@
 import {RequestExplorer} from './explorer-native.js';
 import {LocalizedError} from './i18n.js';
+import {MarkHelperRemoved} from './helper-availability.js';
 export const ExplorerInstallationKey='explorerHelperInstallation';
 export const ExplorerRemovalKey='explorerHelperRemoval';
 export const ExplorerReceiptKey='explorerHelperRemovalReceipt';
@@ -17,6 +18,12 @@ export async function ReadExplorerInstallation(){
 }
 export async function RemoveExplorerInstallation(){
 	const Status=await ReadExplorerInstallation();
+	if(Status.platform==='mac'){
+		if(!Status.canUninstall)throw new LocalizedError('explorer_remove_update_required');
+		const Result=await RequestExplorer({action:'uninstall'});
+		if(!Result?.ok||!Result.removed)throw new LocalizedError('explorer_remove_failed');
+		await MarkHelperRemoved();return {removed:true};
+	}
 	if(!Status.canUninstall||!ValidId(Status.installationId)){
 		const Token=crypto.randomUUID().replaceAll('-','');await RememberExplorerInstallation(Token);return {legacy:true,token:Token};
 	}
@@ -29,8 +36,9 @@ export async function ApplyExplorerRemoval(Token){
 	const Data=await chrome.storage.local.get(ExplorerInstallationKey);
 	if(Data[ExplorerInstallationKey]?.installationId!==Token)return false;
 	try{await RequestExplorer({action:'ping'});return false;}catch(ErrorValue){if(ErrorValue?.reason!=='missing')return false;}
-	// One write resets the current selection and consumes the removal identity.
-	await chrome.storage.local.set({downloadFolder:'',pickedDownloadFolder:'',[ExplorerInstallationKey]:null,[ExplorerReceiptKey]:null,[ExplorerRemovalKey]:{removedAt:Date.now()}});
+	// Reset every dependent default before consuming the authenticated removal identity.
+	await MarkHelperRemoved();
+	await chrome.storage.local.set({[ExplorerInstallationKey]:null,[ExplorerReceiptKey]:null,[ExplorerRemovalKey]:{removedAt:Date.now()}});
 	await chrome.storage.local.remove([ExplorerInstallationKey,ExplorerReceiptKey]);
 	return true;
 }

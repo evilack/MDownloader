@@ -1,0 +1,7 @@
+# Helper direct download and explicit verification
+
+The user's latest instruction replaces automatic installer download/open and automatic connection polling in the installation dialog. Clicking Helper install immediately opens a dialog with a direct generated CMD download link (PKG on macOS), concise download/run/verify instructions, and only Cancel / Verify installation footer buttons. Opening the dialog prepares a Blob link from a freshly fetched bundled payload; it does not start a download or launch a file.
+
+Verify installation visibly disables the action, shows an indeterminate native progress bar and a checking status, then shows either an Installation complete notice or a Please install again notice with the actual failure reason. An older installed helper is distinguished from missing registration, permissions and timeouts. Only verified success followed by the result notice closes the installation dialog successfully and lets the Helper controller finish runtime preparation. Cancel prevents any late result popup from continuing the flow.
+
+Read-only local evidence on 2026-11-10: the installed host remains protocol helperVersion 2, while Downloads setup files numbered (4) and (5) contain helperVersion 3. The previous UI discarded that distinction and silently retried. No native connection, installer, model operation, browser test, syntax runner or test suite was executed for this change. Source inspection only; runtime behavior remains unverified by user instruction.

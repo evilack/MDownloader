@@ -5,6 +5,19 @@
 export const MediaFormat = Object.freeze({ Hls: 'M3U8', Dash: 'MPD', WebRtc: 'WEBRTC', Unknown: 'UNKNOWN' });
 const StreamLabels = new Map([[MediaFormat.Hls, 'HLS'], [MediaFormat.Dash, 'DASH']]);
 const AudioFormats = new Set(['MP3', 'M4A', 'WEBA', 'WAV', 'FLAC', 'OGA', 'OPUS', 'OGG']);
+export function IsMetaCdnUrl(Value)
+{
+	try { return /\.(?:fbcdn\.net|cdninstagram\.com)$/i.test(new URL(Value).hostname); }
+	catch { return false; }
+}
+
+/** Meta DASH requests use ordinary .mp4 names even for tiny audio/video byte ranges. */
+export function IsMetaMediaFragment(Value)
+{
+	if (!IsMetaCdnUrl(Value)) return false;
+	const Url = new URL(Value);
+	return /\.mp4$/i.test(Url.pathname) && ['bytestart', 'byteend'].some(Key => /^\d+$/.test(Url.searchParams.get(Key) ?? ''));
+}
 export const HlsReloadParameters = Object.freeze(['_HLS_msn', '_HLS_part', '_HLS_skip']);
 export function IsStreamFormat(Format)
 {
@@ -46,6 +59,14 @@ export function IsHlsFragmentUrl(Playlist, Resource)
 	}
 	const Stem = Parent.pathname.slice(ParentPath.length, -'.m3u8'.length);
 	const Filename = Child.pathname.slice(ParentPath.length);
+	// CHZZK의 LL-HLS는 재생목록 식별자와 조각 접두사가 다릅니다. CDN과 로컬 P2P 모두
+	// 같은 방송/인증 디렉터리와 화질 아래의 실제 chunklist·숫자 조각 형식만 연결합니다.
+	const ChzzkPart = /^(\d+p)_\d+_\d{13}_\d+_\d+_\d+(?:_\d+)?\.m4v$/i.exec(Filename);
+	if (ParentPath.startsWith('/chzzk/') && /^[a-z\d]+_(?:hls_)?chunklist$/i.test(Stem) &&
+	ChzzkPart && ParentPath.endsWith('/' + ChzzkPart[1] + '/'))
+	{
+		return true;
+	}
 	if (!Filename.startsWith(Stem))
 	{
 		return false;
@@ -58,9 +79,16 @@ export function IsAudioFormat(Format)
 	return AudioFormats.has(Format);
 }
 
-export function GetMediaFormatLabel(Format)
+export function GetMediaFormatLabel(Format, Source = {})
 {
+	if (Format === MediaFormat.Hls && Source.dvr === true) return 'DVR';
 	return Format === MediaFormat.WebRtc ? 'WebRTC' : Format === 'YOUTUBE' ? 'YouTube' : StreamLabels.get(Format) ?? Format;
+}
+
+/** A WebRTC track token is an internal identity, so its shareable link is its source page. */
+export function CandidateCopyUrl(Candidate)
+{
+	return Candidate.format===MediaFormat.WebRtc ? Candidate.page : Candidate.url;
 }
 
 /** Chrome 권한 검사는 HTTP(S) 호스트만 사용하며 경로나 인증 정보는 포함하지 않습니다. */
@@ -130,6 +158,7 @@ export function ClassifyMediaUrl(Value)
 	{
 		return null;
 	}
+	if (IsMetaMediaFragment(Address.href)) return null;
 	let Name = Address.pathname.split('/').at(-1) || 'media';
 	try
 	{

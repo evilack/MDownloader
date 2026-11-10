@@ -3,9 +3,11 @@ test('removal deletes only owned helper files and refuses other directories',{sk
  const root=await mkdtemp(Path.join(tmpdir(),'mdownloader-removal-'));t.after(async()=>{assert.ok(Path.resolve(root).startsWith(Path.resolve(tmpdir())+Path.sep));await rm(root,{recursive:true,force:true});});
  const target=Path.join(root,'MDownloader/ExplorerBridge');await mkdir(target,{recursive:true});for(const n of['host.ps1','host.cmd','host-manifest.json','folder-bindings.json','lifecycle.json'])await writeFile(Path.join(target,n),'owned');
  for(const n of['saved.mp4','captions.srt'])await writeFile(Path.join(target,n),'keep');
+ const stage=Path.join(target,'caption-setup-'+'a'.repeat(32));await mkdir(stage);await writeFile(Path.join(stage,'host.py'),'owned setup source');await writeFile(Path.join(stage,'saved.mp4'),'keep');
  const code=`$ErrorActionPreference='Stop';. '${Path.resolve('native/explorer/lifecycle.ps1')}';Remove-ExplorerFiles '${target}' '${target}'|Out-Null;try{Remove-ExplorerFiles '${root}' '${target}';throw 'unsafe accepted'}catch{if($_.Exception.Message -eq 'unsafe accepted'){throw}};Write-Output 'guard-ok'`;
  const result=spawnSync('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',code],{windowsHide:true,encoding:'utf8'});assert.equal(result.status,0,result.stdout+result.stderr);
  assert.equal(await readFile(Path.join(target,'saved.mp4'),'utf8'),'keep');assert.equal(await readFile(Path.join(target,'captions.srt'),'utf8'),'keep');await assert.rejects(readFile(Path.join(target,'folder-bindings.json')));
+ await assert.rejects(readFile(Path.join(stage,'host.py')));assert.equal(await readFile(Path.join(stage,'saved.mp4'),'utf8'),'keep');
 });
 test('removal refuses junction roots and foreign registry ownership',{skip:process.platform!=='win32'},async t=>{
  const root=await mkdtemp(Path.join(tmpdir(),'mdownloader-guards-')),target=Path.join(root,'MDownloader/ExplorerBridge'),media=Path.join(root,'media');await mkdir(Path.dirname(target),{recursive:true});await mkdir(media);await writeFile(Path.join(media,'saved.mp4'),'keep');await symlink(media,target,'junction');

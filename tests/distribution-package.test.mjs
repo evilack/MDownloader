@@ -20,6 +20,7 @@ test('flavor is mandatory, independent packages exclude executable YouTube files
   if (flavor === 'chrome-store') {
    const manifest = JSON.parse(await readFile(`${root}/manifest.json`, 'utf8'));
    assert.ok(manifest.permissions.includes('declarativeNetRequest'));
+   assert.ok(manifest.permissions.includes('tabs'), 'store side panel reads the active page URL without host access');
    assert.ok(!manifest.permissions.includes('declarativeNetRequestWithHostAccess'));
    assert.equal(manifest.sandbox,undefined);assert.equal(manifest.content_security_policy?.sandbox,undefined);
    assert.deepEqual(await readdir(`${root}/features/youtube`), ['entry.js']);

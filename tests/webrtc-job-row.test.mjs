@@ -11,6 +11,7 @@ Test('WebRTC manager reveals current save between cancel and stop/save after its
 		append(...Items) { this.children.push(...Items); }
 		replaceChildren(...Items) { this.children = Items; }
 		setAttribute(Key, Value) { this.attributes[Key] = Value; }
+		removeAttribute(Key) { delete this.attributes[Key]; }
 		addEventListener(Key, Value) { this.events[Key] = Value; }
 		get childElementCount() { return this.children.length; }
 	}

@@ -1,26 +1,21 @@
 {
   "versions": {
     "youtubei.js": "18.3.0",
-    "jintr": "3.3.1",
     "googlevideo": "5.0.1",
     "esbuild": "0.28.2",
     "@bufbuild/protobuf": "2.17.0",
     "fflate": "0.8.3",
-    "meriyah": "7.4.2",
-    "acorn": "8.19.0"
+    "meriyah": "7.4.2"
   },
-  "lockfileSha256": "cde088a6f8f70043c3b1d4b6026e20355d245621ff1981a0fe56f5c82bbb190d",
+  "lockfileSha256": "0d42a77f728a83444746e79bcae92c8481e8a63d43e6eeeb165bf15e13b882a8",
   "files": {
-    "acorn-LICENSE": "76a876cf886ff9be2a8b5e2e86514fed06223c8c9f0c1e9ee9606e93841e00b7",
     "bufbuild-protobuf-LICENSE-APACHE": "c04b4216f1cd4c5a4f7fb2f2a1b0ae70d847e9e0cac7c9dee9bf8cc03177c449",
     "bufbuild-protobuf-LICENSE-BSD": "182a1bc8985a586e8e0ca3b5a3af1ff3c28bd3475833a07f50b42b53dd7ac889",
-    "client-bundle.mjs": "e34f7ab79608e3e5cbc4f9ac25596463946ba81dd6f6a80c837ba1c7030fab39",
-    "evaluator-worker.mjs": "2b2ebbd1f4bfd9c81c1a78ad2658efc9d5597079a2e7762a5904ed37a761b4d7",
+    "client-bundle.mjs": "0419117fe5fb27050a306911094828bcb91554c837174f1a7552d1f3868c05a8",
     "fflate-LICENSE": "0a1df3a083d0c010560aa342e87959c8c1070e6fd54545741f083f22d0c8b551",
     "googlevideo-LICENSE": "69bb14fee2d102583d6cccdf1e0e2ced4d2bbfd3c42b172e0a9f4e32a9c48c88",
-    "jintr-LICENSE": "680452b767b11016d24f73a9f43e756e5b077a66afc7914b42f4a31cb8ad00ab",
     "meriyah-LICENSE.md": "e9a5df5a6ae5cd51ca430715f4c62fb5424946e8da07b7caa058a1ba0582a848",
-    "sabr-bundle.mjs": "801f5a9ddca2fbd44c1718d3c435a0bb4f33f83120f2001de36a78f3a5c50819",
+    "sabr-bundle.mjs": "e38f5b0d1ec6821ab781ddc239933f3839946b6d5faf4576593c855581d02644",
     "youtubei.js-LICENSE": "bf82e28381c6256138322a79da2082db5ddb040b4b7009b520f08a419d722c69"
   }
 }

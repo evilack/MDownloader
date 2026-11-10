@@ -66,3 +66,13 @@ test('only selected YouTube captions are resolved and an unselected expired trac
  const result=await ReceiveYoutubeCaptions(h.client,info,new AbortController().signal,{trackIds:[info.captions[1].id],translation:{enabled:false},hasPermission:async()=>true,fetch:async()=>{fetched++;return new Response('WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nHello\n');}});
  assert.equal(fetched,1); assert.deepEqual(result.tracks.map(t=>t.language),['en']);
 });
+
+test('YouTube target-language deselection survives client resolution and caption receiver filtering',async()=>{
+ const english={...caption,language_code:'en',vss_id:'a.en',base_url:caption.base_url+'&lang=en'};
+ const h=harness([english,caption]),info=await h.client.DiscoverYoutube({pageUrl:`https://youtu.be/${Id}`});
+ const translation={enabled:true,targetLanguage:'ko'},trackIds=[info.captions[0].id];
+ const selected=await h.client.ResolveYoutubeCaptions(info,new AbortController().signal,{trackIds,translation});assert.deepEqual(selected.map(t=>t.language),['en']);
+ const result=await ReceiveYoutubeCaptions({ResolveYoutubeCaptions:async()=>[...selected,{id:info.captions[1].id,url:caption.base_url,language:'ko',format:'vtt'}]},info,new AbortController().signal,{trackIds,translation,hasPermission:async()=>true,
+  fetch:async()=>new Response('WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nEnglish source\n')});
+ assert.deepEqual(result.tracks.map(t=>t.language),['en']);
+});

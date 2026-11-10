@@ -1,5 +1,6 @@
 import {GetSettings,SettingKeys} from './settings.js';
 import {InitializeLocale,Translate} from './i18n.js';
+import {IconCatalog} from './icon-catalog.js';
 import {JobIdFromKey,JobKey,ReadJob,ListStoredJobs} from './job-storage.js';
 import {GetBrowserDownload,SummarizeJob} from './browser-job-state.js';
 import {NotificationViewPort,NotificationViewRefresh} from './notification-view.js';
@@ -39,7 +40,7 @@ export function CreateDownloadNotifications({waitForUi=()=>new Promise(R=>setTim
 			await initializeLocale();
 			const Filename=String(Job.filename??'').split(/[\\/]/).at(-1).replace(/[\r\n\t]/g,' ').slice(0,200)||Translate('notification_file_fallback');
 			await chrome.notifications.create('mdownloader:'+Event+':'+Job.requestId,{
-				type:'basic',iconUrl:chrome.runtime.getURL('icons/app-media-128.png'),
+				type:'basic',iconUrl:chrome.runtime.getURL(IconCatalog.app[128]),
 				title:Translate(Event==='complete'?'notification_complete_title':'notification_scheduled_start_title'),message:Filename,
 			});
 		}catch{/* A notification never owns or fails the download. */}
@@ -63,8 +64,9 @@ export function CreateDownloadNotifications({waitForUi=()=>new Promise(R=>setTim
 			for(const [Key,{oldValue:Old,newValue:Next}]of Object.entries(Changes)){
 				const Id=JobIdFromKey(Key);if(!Id)continue;
 				if(!Next){Pending.push(Enqueue(()=>chrome.storage.local.remove(MarkerKey(Id))));continue;}
-				if(Old?.state==='complete'&&Next.state==='complete')continue;
-				const CheckCompletion=Next.state==='complete'||Number.isInteger(Next.downloadId)&&Next.downloadId!==Old?.downloadId;
+				const CaptionFinished=Next.captionPipeline==='staged'&&Next.captionStatus?.phase==='complete'&&Old?.captionStatus?.phase!=='complete';
+				if(Old?.state==='complete'&&Next.state==='complete'&&!CaptionFinished)continue;
+				const CheckCompletion=CaptionFinished||Next.state==='complete'||Number.isInteger(Next.downloadId)&&Next.downloadId!==Old?.downloadId;
 				if(CheckCompletion||Next.waiting!==Old?.waiting||Next.bytesReceived>0&&!(Old?.bytesReceived>0))
 					Pending.push(Enqueue(()=>ChangedJob(Id,Old,Next,CheckCompletion)));
 			}

@@ -6,16 +6,23 @@ import { ReportDebugFailure } from './lib/debug-log.js';
 import { RuntimePolicy } from './lib/runtime-policy.js';
 import {CreateSharedThumbnailCache} from './lib/shared-thumbnail-cache.js';
 const SharedThumbnails = CreateSharedThumbnailCache({ttl: RuntimePolicy.Preview.ThumbnailRefreshMs, limit: RuntimePolicy.Preview.MaxCachedThumbnails});
-import { ClassifyMediaUrl, HlsReloadParameters, HostPattern, IsStreamFormat, MediaResourceKey, StreamPreviewPath } from './lib/media.js';
+import { ClassifyMediaUrl, HlsReloadParameters, HostPattern, IsStreamFormat, MediaResourceKey, StreamPreviewPath, IsMetaCdnUrl, IsMetaMediaFragment } from './lib/media.js';
+import {DiscoverMetaReel, MetaReelIdentity} from './lib/meta-reel.js';
 import { FilterAllowedNetworkCandidates, IsAuxiliaryMedia, MaxObservedMediaPerTab, NetworkCandidates, ReadMediaContext } from './network.js';
 import { LocalizedError } from './lib/i18n.js';
 import { ScanStorageKey } from './lib/detection-cache.js';
 import { CollectPlayerPreviews, ThumbnailFrame } from './lib/player-previews.js';
-import { MatchesHlsVariant } from './lib/hls.js';
+import {CaptureVisiblePlayerThumbnail} from './lib/visible-player-thumbnail.js';
+import { HlsVariantResolution, MatchesHlsVariant } from './lib/hls.js';
 import { DiscoverDeclaredHls } from './lib/declared-streams.js';
 import { DiscoverNativeHls } from './lib/native-hls-discovery.js';
+import {DiscoverHlsDvr} from './lib/hls-dvr-discovery.js';
+import {DiscoverDashInitialization} from './lib/dash-initialization.js';
 import { DiscoverSelectedHls } from './lib/selected-hls.js';
+import {DiscoverNaverClip} from './lib/naver-clip.js';
+import {DiscoverBilibili, IdentifyBilibiliPage} from './lib/bilibili.js';
 import {WebRtcPageTask} from './lib/webrtc-page.js';
+import {RecordingMimeTypes} from './lib/recording-format.js';
 import {DiscoverSubtitles} from './lib/subtitle-discovery.js';
 import {SubtitleStatus} from './lib/subtitle-status.js';
 import {DescribeSubtitleTracks} from './lib/download-options-selection.js';
@@ -75,7 +82,10 @@ function CollectVideos(MaxPlaylists, ExcludedSelector, SourcePlayerSelector)
 	// 링크는 영상의 이동 대상일 수도 있습니다. 직접 URL 수집용 카드 제외와
 	// 영상 요소에 연결된 선택 API 조회 대상을 구분해 대표 플레이어를 놓치지 않습니다.
 	const SourceExclusion = SourcePlayerSelector ?? ExcludedSelector;
-	const SourcePlayers = Players.filter(Player => !SourceExclusion || !Player.closest(SourceExclusion));
+	// 광고 SDK 등이 만든 소스 없는 대기 요소는 실제 두 번째 플레이어가 아닙니다.
+	// 선언된 소스가 있는 요소는 정지/로딩 중이어도 남겨 소유권을 추측하지 않습니다.
+	const SourcePlayers = Players.filter(Player => (!SourceExclusion || !Player.closest(SourceExclusion)) &&
+		(Player.currentSrc || Player.srcObject || Player.getAttribute?.('src') || Player.querySelector?.('source[src]')));
 	const SourceUrls = Player => [Player.currentSrc, Player.hasAttribute('src') ? Player.src : '',
 		...[...Player.querySelectorAll('source[src]')].map(Source => Source.src)].filter(Boolean);
 	return {
@@ -102,6 +112,36 @@ function CollectVideos(MaxPlaylists, ExcludedSelector, SourcePlayerSelector)
 	};
 }
 
+/** Read existing player metadata only; a stale SPA response cannot describe the current candidate. */
+function ReadYoutubeBroadcast({page: Page, videoId: VideoId})
+{
+	if (location.href !== Page) return null;
+	const Response = globalThis.ytInitialPlayerResponse;
+	const Details = Response?.videoDetails;
+	if (Details?.videoId !== VideoId) return null;
+	const Broadcast = Response.microformat?.playerMicroformatRenderer?.liveBroadcastDetails;
+	const Upcoming = Details.isUpcoming === true;
+	const Time = Broadcast?.startTimestamp ? new Date(Broadcast.startTimestamp).getTime() : NaN;
+	return {videoId: VideoId, upcoming: Upcoming,
+		...(Upcoming ? {live: false} : typeof Broadcast?.isLiveNow === 'boolean' ? {live: Broadcast.isLiveNow}
+			: typeof Details.isLive === 'boolean' ? {live: Details.isLive} : {}),
+		...(Upcoming && Number.isFinite(Time) ? {scheduledStartTime: new Date(Time).toISOString()} : {})};
+}
+
+async function YoutubeBroadcastInDocument(TabId, DocumentId, Page, VideoId)
+{
+	try
+	{
+		const [Frame] = await chrome.scripting.executeScript({target: {tabId: TabId, documentIds: [DocumentId]},
+			world: 'MAIN', func: ReadYoutubeBroadcast, args: [{page: Page, videoId: VideoId}]});
+		if (Frame?.documentId !== DocumentId || Frame.result?.videoId !== VideoId) return {};
+		const {upcoming: Upcoming, scheduledStartTime: ScheduledStartTime, live: Live} = Frame.result;
+		return {upcoming: Upcoming, ...(ScheduledStartTime ? {scheduledStartTime: ScheduledStartTime} : {}),
+			...(typeof Live === 'boolean' ? {live: Live} : {})};
+	}
+	catch {return {};}
+}
+
 export async function FindMedia(TabId)
 {
 	// Chrome은 주입할 함수를 직렬화합니다. 모듈의 설정값은 함수 밖에 두고 호출 인자로 넘깁니다.
@@ -115,12 +155,23 @@ export async function FindMedia(TabId)
 	{
 		const Title = Frame.result.pageTitle?.replace(/^\(\d+\)\s*/, '').replace(/\s+-\s+YouTube\s*$/i, '').trim();
 		const Name = Title && Title !== 'YouTube' ? Title : 'YouTube-' + Youtube.videoId;
+		const Broadcast = await YoutubeBroadcastInDocument(TabId, Frame.documentId, Page, Youtube.videoId);
 		return {documentId: Frame.documentId, page: Page, observed: [], items: [{url: Youtube.canonicalUrl,
-			name: Name + '.mp4', format: 'YOUTUBE', supported: true, page: Page}]};
+			name: Name + '.mp4', format: 'YOUTUBE', supported: true, page: Page, ...Broadcast}]};
 	}
 	if (!['http:', 'https:'].includes(new URL(Page).protocol))
 	{
 		return null;
+	}
+	const NaverClip = await DiscoverNaverClip(TabId, Frame.documentId, Page);
+	if (NaverClip.length)
+	{
+		return {documentId: Frame.documentId, page: Page, observed: [], items: NaverClip};
+	}
+	const Bilibili = await DiscoverBilibili(TabId, Frame.documentId, Page);
+	if (Bilibili.length)
+	{
+		return {documentId: Frame.documentId, page: Page, observed: [], items: Bilibili};
 	}
 	if (Frame.result.observerReady === false)
 	{
@@ -146,6 +197,7 @@ export async function FindMedia(TabId)
 	.flatMap(Item => [Item.url, ...(Item.variants ?? [])]).map(MediaResourceKey));
 	const IsCurrentSource = Item => (!Item.page || Item.page === Page) && (!Item.declaredPage || Item.declaredPage === Page);
 	Observed = Observed.filter(IsCurrentSource);
+	const DashInitialization = await DiscoverDashInitialization(TabId, Frame.documentId, Page, Observed);
 	let Context = await ReadMediaContext(TabId);
 	// 응답 헤더가 카드 역할 메시지보다 먼저 도착해도, 현재 DOM이 미리보기 전용임을
 	// 확인한 중간 상태의 미분류 주소는 노출하지 않습니다. 다른 문서의 본편은 유지합니다.
@@ -184,7 +236,13 @@ export async function FindMedia(TabId)
 		Context = await ReadMediaContext(TabId);
 	}
 	// 요청 출처가 같아도 서로 다른 프레임의 미디어 판정은 섞지 않습니다.
-	const AllowedObserved = Observed.filter(Item => !IsAuxiliary(Item.url, Item.documentId, undefined, Item.format)).map(Item =>
+	if (!Frame.result.previewOnly && (Frame.result.opaquePlayer || Sources.some(Url=>ClassifyMediaUrl(Url)?.format==='M3U8')) &&
+		await DiscoverHlsDvr(TabId,Frame.documentId,Page,Observed.filter(Item=>!IsAuxiliary(Item.url,Item.documentId,undefined,Item.format))))
+	{
+		Observed=(await NetworkCandidates(TabId,Frame.documentId)).filter(IsCurrentSource);
+		Context=await ReadMediaContext(TabId);
+	}
+	const AllowedObserved = Observed.filter(Item => !IsAuxiliary(Item.url, Item.documentId, undefined, Item.format)).map(({dashManifest: _DashManifest, ...Item}) =>
 	{
 		if (SelectedHls && Item.documentId === Frame.documentId && MediaResourceKey(Item.url) === SelectedHls.url)
 		{
@@ -215,7 +273,9 @@ export async function FindMedia(TabId)
 		// 주소나 사이트명으로 라이브를 추측하지 않고 같은 문서에서 성공한 화질 응답만 연결합니다.
 		const Live = Item.live ?? Observed.find(Entry => Entry.documentId === Item.documentId && typeof Entry.live === 'boolean' &&
 		Qualities.some(Quality => Quality.url === Entry.url))?.live;
-		return { ...Item, ...(Live !== undefined ? { live: Live } : {}), qualities: Qualities, variants: Qualities.map(Quality => Quality.url) };
+		const Dvr = Item.dvr ?? Observed.find(Entry => Entry.documentId === Item.documentId && typeof Entry.dvr === 'boolean' &&
+		Qualities.some(Quality => Quality.url === Entry.url))?.dvr;
+		return { ...Item, ...(Live !== undefined ? { live: Live } : {}), ...(Dvr !== undefined ? {dvr: Dvr} : {}), qualities: Qualities, variants: Qualities.map(Quality => Quality.url) };
 	});
 	const Direct = Sources.filter(Url => !PreviousDeclared.has(MediaResourceKey(Url)) &&
 	!IsAuxiliary(Url, Frame.documentId)).map(ClassifyMediaUrl).filter(Boolean);
@@ -239,10 +299,17 @@ export async function FindMedia(TabId)
 			break;
 		}
 	}
+	const MetaReel = await DiscoverMetaReel(TabId, Frame.documentId, Page);
 	const Items = new Map();
-	for (const Item of [...Direct.filter(Item => Item.supported && !IsStreamFormat(Item.format)), ...AllowedObserved, ...Playback.values(), ...Direct])
+	for (const Item of [...(MetaReel ? [MetaReel] : []), ...Direct.filter(Item => Item.supported && !IsStreamFormat(Item.format)), ...AllowedObserved, ...Playback.values(), ...Direct])
 	{
+		if ((Item.documentId ?? Frame.documentId) === Frame.documentId && DashInitialization.has(MediaResourceKey(Item.url))) continue;
 		if (YoutubeSourceBlocked({...Item, pageUrl: Page})) continue;
+		if (IsMetaMediaFragment(Item.url)) continue;
+		// Once this post declares its complete MP4, its CDN tracks and prefetched neighbours
+		// are not separate downloads. Other frames and non-Meta media retain their own scope.
+		const IsRootSource = Item.documentId === Frame.documentId || (Item.documentId === undefined && !Item.fromPlayback);
+		if (MetaReel && Item !== MetaReel && IsRootSource && IsMetaCdnUrl(Item.url)) continue;
 		const ResourceKey = MediaResourceKey(Item.url);
 		if (!Items.has(ResourceKey))
 		{
@@ -253,7 +320,8 @@ export async function FindMedia(TabId)
 	// 원본 관측과 화질 정보는 남겨 다운로드 선택과 요청 문맥 확인에 계속 사용합니다.
 	const Roots = [...Items.values()].filter(Item => Item.variants?.length || !AllowedObserved.some(Master =>
 	Master.documentId === (Item.documentId ?? Frame.documentId) && Master.url !== Item.url &&
-	Master.variants?.some(Url => MediaResourceKey(Url) === MediaResourceKey(Item.url))))
+	(Master.variants?.some(Url => MediaResourceKey(Url) === MediaResourceKey(Item.url)) ||
+	Master.qualities?.some(Quality => Quality.audioUrl && MediaResourceKey(Quality.audioUrl) === MediaResourceKey(Item.url)))))
 	.filter(Item => !SelectedHls || Item.format !== 'M3U8' || (Item.documentId ?? Frame.documentId) !== Frame.documentId ||
 	MediaResourceKey(Item.url) === SelectedHls.url);
 	return { documentId: Frame.documentId, page: Page, observed: AllowedObserved, items: [...WebRtcItems, ...Roots] };
@@ -262,7 +330,7 @@ export async function FindMedia(TabId)
 async function ProbeWebRtc(TabId, DocumentId, Page)
 {
 	const [Frame] = await chrome.scripting.executeScript({target: {tabId: TabId, documentIds: [DocumentId]}, func: WebRtcPageTask,
-		args: [{action: 'probe', page: Page, excludedSelector: RuntimePolicy.Detection.AuxiliaryPlayerSelector}]}).catch(() => []);
+		args: [{action: 'probe', page: Page, mimeTypes:RecordingMimeTypes(), excludedSelector: RuntimePolicy.Detection.AuxiliaryPlayerSelector}]}).catch(() => []);
 	return Frame?.documentId === DocumentId && Frame.result?.page === Page ? Frame.result : null;
 }
 
@@ -323,9 +391,12 @@ export async function Scan(TabId, Scope)
 				PlaylistNameCounts.set(Name, (PlaylistNameCounts.get(Name) ?? 0) + 1);
 			}
 		}
-		return { scanId: ScanId, candidates: Candidates.map(({ id: Id, name: Name, format: Format, supported: Supported, live: Live, serverPermission: ServerPermission, url: Url, mediaKey: MediaKey }) => ({
+		return { scanId: ScanId, candidates: Candidates.map(({ id: Id, name: Name, format: Format, supported: Supported, live: Live, dvr: Dvr, upcoming: Upcoming,
+			scheduledStartTime: ScheduledStartTime, serverPermission: ServerPermission, url: Url, mediaKey: MediaKey }) => ({
 				id: Id, name: Name, format: Format, supported: Supported, serverPermission: ServerPermission, mediaKey: MediaKey,
 				...(Live !== undefined ? { live: Live } : {}),
+				...(Dvr !== undefined ? {dvr: Dvr} : {}),
+				...(Upcoming !== undefined ? {upcoming: Upcoming} : {}), ...(ScheduledStartTime ? {scheduledStartTime: ScheduledStartTime} : {}),
 				playlistPath: IsStreamFormat(Format) && PlaylistNameCounts.get(Name) > 1 ? new URL(Url).pathname : undefined,
 			})) };
 	}
@@ -379,6 +450,11 @@ export async function ResolveCandidate(TabId, ScanId, CandidateId, Scope)
 		throw new LocalizedError('candidate_changed');
 	}
 	AssertMediaAllowed({...Candidate, pageUrl: Saved.page});
+	if (Candidate.sourceIdentity?.startsWith('bilibili:'))
+	{
+		const Current = await DiscoverBilibili(TabId, Saved.documentId, Saved.page);
+		if (!Current.some(Item => Item.sourceIdentity === Candidate.sourceIdentity)) throw new LocalizedError('candidate_changed');
+	}
 	if (Candidate.format === 'YOUTUBE')
 	{
 		if (!IsSingleDocumentStream(Saved, Candidate)) throw new LocalizedError('candidate_changed');
@@ -448,8 +524,31 @@ export async function ResolveCandidate(TabId, ScanId, CandidateId, Scope)
 	return { ...Item, observedVariants: Allowed.slice(1) };
 }
 
+function PagePlayerOptions(Item, Page, DocumentId)
+{
+	if (Item.format === 'YOUTUBE') return {pagePlayer: true};
+	if (Page && Item.format === 'MP4' && Item.documentId === DocumentId && IdentifyBilibiliPage(Page) &&
+		Item.sourceIdentity?.startsWith('bilibili:')) return {pagePlayer: true};
+	if (!Page || Item.format !== 'MP4' || Item.documentId !== DocumentId || !IsMetaCdnUrl(Item.url)) return {};
+	const Identity = MetaReelIdentity(Page);
+	return Identity && Item.sourceIdentity === `${Identity.site}:${Identity.id}`
+		? {pagePlayer: true, metaReelPlayer: true} : {};
+}
+
 async function ReadPreviews(TabId, DocumentId, Candidates, FrameSize, Page = null)
 {
+	if (FrameSize === ThumbnailFrame && Page)
+	{
+		const Current = IdentifyYoutubeUrl(Page);
+		Candidates = Candidates.map(Item =>
+		{
+			const Video = Item.pagePlayer && !Item.metaReelPlayer && IdentifyYoutubeUrl(Item.url);
+			// Bind the cover to the validated current video. Hover/capture requests
+			// keep using decoded player frames; only list/job stills get this hint.
+			return Video && Video.videoId === Current?.videoId
+				? {...Item, thumbnailUrl: `https://i.ytimg.com/vi/${Video.videoId}/mqdefault.jpg`} : Item;
+		});
+	}
 	if (FrameSize === ThumbnailFrame && Candidates.length === 1 && Candidates[0].pagePlayer === true && DocumentId && Page)
 	{
 		const Item = Candidates[0];
@@ -461,18 +560,50 @@ async function ReadPreviews(TabId, DocumentId, Candidates, FrameSize, Page = nul
 }
 async function CollectPreviews(TabId, DocumentId, Candidates, FrameSize, Page)
 {
+	// A validated current reel may itself live inside article/link markup. Keep the
+	// general card exclusion for all other sources and ambiguous multi-source batches.
+	const ExcludedSelector = Candidates.length === 1 && Candidates[0].metaReelPlayer
+		? RuntimePolicy.Detection.MetaReelPlayerSelector : RuntimePolicy.Detection.AuxiliaryPlayerSelector;
 	const [Frame] = await chrome.scripting.executeScript({
 		target: DocumentId ? { tabId: TabId, documentIds: [DocumentId] } : { tabId: TabId },
-		func: CollectPlayerPreviews, args: [Candidates, {...FrameSize, excludedSelector: RuntimePolicy.Detection.AuxiliaryPlayerSelector}, Page],
+		func: CollectPlayerPreviews, args: [Candidates, {...FrameSize, excludedSelector: ExcludedSelector}, Page],
 	}).catch(() => []);
-	return Frame?.result ?? [];
+	const Results = Frame?.result ?? [];
+	if (Candidates.length !== 1 || !Candidates[0].metaReelPlayer || Frame?.documentId !== DocumentId || !Page) return Results;
+	return Promise.all(Results.map(async Preview =>
+	{
+		const {viewportCrop: Crop, ...Value} = Preview;
+		if (!Crop) return Value;
+		const Still = await CaptureVisiblePlayerThumbnail(TabId, DocumentId, Page, Crop, FrameSize);
+		return Still ? {...Value, still: Still} : Value;
+	}));
+}
+
+/** A provider's dimensions describe this file; a Blob player may be decoding a different rendition. */
+function WithCandidateResolution(Item, Preview)
+{
+	let Resolution;
+	if ([Item.width, Item.height].every(Value => Number.isSafeInteger(Value) && Value > 0))
+	{
+		Resolution = {width: Item.width, height: Item.height};
+	}
+	else if (Item.format === 'M3U8')
+	{
+		// Match StartJob: an observed rendition is used directly; otherwise the
+		// default download selects the master's highest-bandwidth rendition.
+		const SelectedUrl = Item.variantUrl ?? Item.observedVariants?.[0]?.url;
+		const Quality = SelectedUrl ? Item.qualities?.find(Value => Value.url === SelectedUrl)
+		: Item.qualities?.reduce((Best, Value) => !Best || Value.bandwidth > Best.bandwidth ? Value : Best, undefined);
+		Resolution = HlsVariantResolution(Quality);
+	}
+	return Resolution ? {...Preview, id: Item.id, resolution: Resolution} : Preview;
 }
 
 export async function ReadCandidateThumbnail(TabId, Item)
 {
 	AssertMediaAllowed({...Item, pageUrl: Item.page});
-	const Previews = await ReadPreviews(TabId, Item.documentId, [{ id: Item.id, url: Item.url, variants: Item.variants ?? [], singleStream: Item.singleStream, ...(Item.format === 'YOUTUBE' ? {pagePlayer: true} : {}), selectedSource: Item.selectedSource }], ThumbnailFrame, Item.previewPage);
-	return Array.isArray(Previews) ? Previews[0] : undefined;
+	const Previews = await ReadPreviews(TabId, Item.documentId, [{ id: Item.id, url: Item.url, variants: Item.variants ?? [], singleStream: Item.singleStream, ...PagePlayerOptions(Item, Item.previewPage, Item.documentId), selectedSource: Item.selectedSource }], ThumbnailFrame, Item.previewPage);
+	return WithCandidateResolution(Item, Array.isArray(Previews) ? Previews[0] : undefined);
 }
 
 export async function CandidateSubtitleStatuses({tabId, scanId, candidateIds, scope})
@@ -485,13 +616,16 @@ export async function CandidateSubtitleStatuses({tabId, scanId, candidateIds, sc
 	{
 		Results.push(...await Promise.all(candidateIds.slice(Index, Index + 3).map(async id =>
 		{
+			let Broadcast = {};
 			try
 			{
 				const Item = await ResolveCandidate(tabId, scanId, id, scope);
+				Broadcast = Item.format === 'YOUTUBE' ? await YoutubeBroadcastInDocument(tabId, Item.documentId, Item.page,
+					IdentifyYoutubeUrl(Item.url)?.videoId) : {};
 				const Tracks = [...(Item.qualities?.[0]?.subtitles || []), ...await DiscoverSubtitles(tabId, Item)];
-				return {id, status: SubtitleStatus(Tracks, Settings)};
+				return {id, status: SubtitleStatus(Tracks, Settings), ...Broadcast};
 			}
-			catch {return {id, status: {phase: 'failed', translation: Settings.enabled ? 'unknown' : 'off'}};}
+			catch {return {id, status: {phase: 'failed', translation: Settings.enabled ? 'unknown' : 'off'}, ...Broadcast};}
 		})));
 	}
 	return Results;
@@ -532,17 +666,19 @@ export async function CandidatePreviews({ tabId: TabId, scanId: ScanId, candidat
 		{
 			Documents.set(DocumentId, []);
 		}
-		Documents.get(DocumentId).push({ id: Id, url: Url, ...(Variants ? { variants: Variants } : {}), singleStream: IsSingleDocumentStream(Saved, Item), ...(Item.format === 'YOUTUBE' ? {pagePlayer: true} : {}), ...(Item.selectedSource ? { selectedSource: true } : {}) });
+		Documents.get(DocumentId).push({ id: Id, url: Url, ...(Variants ? { variants: Variants } : {}), singleStream: IsSingleDocumentStream(Saved, Item), ...PagePlayerOptions(Item, Saved.page, Saved.documentId), ...(Item.selectedSource ? { selectedSource: true } : {}) });
 	}
 	const Previews = await Promise.all([...Documents].map(([DocumentId, Candidates]) =>
 	ReadPreviews(TabId, DocumentId, Candidates, ThumbnailFrame, DocumentId === Saved.documentId ? Saved.page : null)));
-	return Previews.flat();
+	const ById = new Map(Previews.flat().map(Preview => [Preview.id, Preview]));
+	return Allowed.map(Item => WithCandidateResolution(Item, ById.get(Item.id))).filter(Boolean);
 }
 
 export async function PreviewCandidate({ tabId: TabId, scanId: ScanId, candidateId: CandidateId, scope: Scope })
 {
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
-	const [Preview] = await ReadPreviews(TabId, Item.documentId, [{ id: Item.id, url: Item.url, variants: Item.variants ?? [], singleStream: Item.singleStream, ...(Item.format === 'YOUTUBE' ? {pagePlayer: true} : {}), selectedSource: Item.selectedSource }], RuntimePolicy.Preview.HoverFrame, Item.previewPage);
+	const [PlayerPreview] = await ReadPreviews(TabId, Item.documentId, [{ id: Item.id, url: Item.url, variants: Item.variants ?? [], singleStream: Item.singleStream, ...PagePlayerOptions(Item, Item.previewPage, Item.documentId), selectedSource: Item.selectedSource }], RuntimePolicy.Preview.HoverFrame, Item.previewPage);
+	const Preview = WithCandidateResolution(Item, PlayerPreview);
 	// 마스터와 연결된 화질 중 이 문서에서 성공한 CDN 응답만 보호된 스트림의 미리보기에 사용합니다.
 	const Playback = Item.observedVariants?.[0] ?? (Item.requestContext ? Item : undefined);
 	return {

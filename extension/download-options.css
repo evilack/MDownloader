@@ -1,0 +1,125 @@
+/* Production download-options editor. Loaded after style.css; main/outer dialog owns scrolling. */
+/* Grow inline options up to Chrome's popup height limit, then scroll main.
+   Document scrolling changes the native popup's preferred width and position. */
+.popup:has(.quality-slot .download-options-editor:not([hidden])) {
+  max-height: 600px;
+  max-block-size: 600px;
+}
+.quality-slot {min-inline-size:0;}
+.quality-slot .download-options-editor {inline-size:100%;}
+.download-options-dialog {
+  inline-size: min(420px, calc(100% - 24px));
+  width: min(420px, calc(100% - 24px));
+  max-inline-size: 560px;
+  max-block-size: calc(100dvh - 24px);
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.download-options-dialog::backdrop { background: #080b12b8; overflow: hidden; overscroll-behavior: contain; }
+.download-options-dialog:modal { overscroll-behavior: contain; }
+.download-options-editor,
+.download-options-dialog .download-options-editor {
+  display: block;
+  container: options-editor / inline-size;
+  margin: 0;
+  min-inline-size: 0;
+  max-block-size: none;
+  max-height: none;
+  color: var(--text);
+  font: 12px/1.5 system-ui, 'Malgun Gothic', sans-serif;
+}
+.download-options-editor { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.download-options-dialog .download-options-editor { border: 0; border-radius: 0; }
+.download-options-editor > header,
+.download-options-dialog .download-options-editor > header {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px; border-block-end: 1px solid var(--line);
+}
+.download-options-editor header > div { min-inline-size: 0; }
+.download-options-editor h2 { margin: 0; padding: 0; border: 0; font-size: 16px; line-height: 1.35; font-weight: 650; }
+.download-options-editor .download-options-media-name { margin: 4px 0 0; color: var(--muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.download-options-editor .download-options-body {
+  padding: 12px; display: grid; gap: 10px;
+  min-block-size: 0; max-block-size: none; max-height: none; overflow: visible;
+}
+.download-options-editor .download-options-body section { display: grid; gap: 8px; margin: 0; min-inline-size: 0; }
+.download-options-editor .download-options-body section + section { padding-block-start: 10px; border-block-start: 1px solid var(--line); }
+.download-options-editor h3 { margin: 0; font-size: 12px; font-weight: 650; }
+.download-options-editor .download-options-count { margin-inline-start: 5px; color: var(--muted); font-size: 10px; font-weight: 400; }
+.download-options-editor .download-options-live-help { margin: 0; font-size: 11px; line-height: 1.6; }
+.download-options-editor .download-options-field { display: flex; flex-direction: column; gap: 5px; min-inline-size: 0; color: var(--muted); font-size: 11px; }
+.download-options-editor :is(select,input[type=search],input:not([type])) {
+  inline-size: 100%; min-inline-size: 0; min-block-size: 34px; padding: 7px 9px;
+  background: #171c24; color: var(--text); border: 1px solid var(--control-line); border-radius: 6px;
+  font: 12px/1.4 system-ui, 'Malgun Gothic', sans-serif;
+}
+.download-options-editor .download-options-subtitle-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-inline-size: 0; }
+.download-options-editor .download-options-subtitle-heading h3 { white-space: nowrap; }
+.download-options-editor .download-options-tools { display: flex; justify-content: flex-end; gap: 4px; margin-inline-start: auto; }
+.download-options-editor .download-options-tools button { white-space: nowrap; }
+.download-options-editor .download-options-tools button,
+.download-options-editor .download-options-link { min-block-size: 24px; padding: 0 4px; border: 0; background: none; font-size: 11px; font-weight: 400; color: var(--transfer-text); text-decoration: none; }
+.download-options-editor .download-options-tracks {
+  display: grid; gap: 0; max-block-size: none; max-height: none; overflow: visible;
+  border: 1px solid var(--line); border-radius: 6px;
+}
+.download-options-editor .download-options-tracks label { display: flex; align-items: center; gap: 8px; padding: 8px 9px; min-inline-size: 0; cursor: pointer; }
+.download-options-editor .download-options-tracks label + label { border-block-start: 1px solid #333b47; }
+.download-options-editor .download-options-tracks input { inline-size: 14px; block-size: 14px; margin: 0; accent-color: var(--mint); flex: none; }
+.download-options-editor .download-options-tracks span { font-size: 11px; flex: 1; min-inline-size: 0; }
+.download-options-editor .download-options-tracks small { color: var(--muted); font-size: 10px; }
+.download-options-editor .download-options-toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
+.download-options-toggle > span { min-inline-size: 0; flex: 1; }
+.download-options-toggle strong { display: block; font-size: 11px; font-weight: 550; }
+.download-options-toggle small { display: block; margin-block-start: 3px; color: var(--muted); font-size: 10px; line-height: 1.6; }
+.download-options-toggle input {
+  appearance: none; position: relative; inline-size: 34px; block-size: 20px; margin: 0;
+  border-radius: 20px; border: 1px solid var(--control-line); background: #3c4552; flex: none; cursor: pointer;
+}
+.download-options-toggle input::before { content: ''; position: absolute; inset-block-start: 2px; inset-inline-start: 2px; inline-size: 14px; block-size: 14px; border-radius: 50%; background: #d6dee9; }
+.download-options-toggle input:checked { background: var(--mint); border-color: var(--mint); }
+.download-options-toggle input:checked::before { inset-inline-start: 16px; background: #14372a; }
+.download-options-editor .download-options-translation-fields { display: grid; gap: 10px; margin-block-start: 5px; }
+.download-options-editor .download-options-service { margin: 0; border: 1px solid var(--line); border-radius: 6px; min-inline-size: 0; }
+.download-options-service summary { padding: 8px 9px; cursor: pointer; font-size: 10px; line-height: 1.7; overflow-wrap: anywhere; }
+.download-options-service-fields { padding: 9px; display: grid; gap: 10px; border-block-start: 1px solid var(--line); }
+.download-options-editor .notice:not(:empty),
+.download-options-editor .download-options-credential {
+  margin: 0; padding: 9px 10px; border: 1px solid #76f5b640; background: #76f5b608; border-radius: 5px;
+  color: var(--mint); font-size: 11px; line-height: 1.6; overflow-wrap: anywhere;
+}
+.download-options-editor .notice[data-error=true]:not(:empty),
+.download-options-editor .download-options-credential { border-color: #ffb4ac66; background: #ffb4ac08; color: #ffb4ac; }
+.download-options-credential a { color: inherit; text-decoration: underline; }
+.download-options-editor > footer,
+.download-options-dialog .download-options-editor > footer { padding: 10px 12px; border-block-start: 1px solid var(--line); background: var(--surface); display: grid; gap: 8px; justify-content: stretch; }
+.download-options-editor .download-options-summary { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.download-options-caption-fields { display: grid; gap: 12px; min-inline-size: 0; }
+.download-options-editor .download-options-caption-formats { margin: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; min-inline-size: 0; }
+.download-options-caption-formats legend { padding-inline: 4px; font-size: 12px; }
+.download-options-caption-formats label { display: inline-flex; align-items: center; gap: 6px; min-block-size: 32px; margin-inline-end: 16px; cursor: pointer; }
+.download-options-caption-formats input { margin: 0; accent-color: var(--mint); }
+.download-options-actions { display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+.download-options-editor .icon-button { inline-size: 32px; block-size: 32px; min-inline-size: 32px; min-block-size: 32px; padding: 5px; flex: none; border-radius: 6px; }
+.download-options-editor :is(button,input,select,a,summary):focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+.download-options-editor [hidden] { display: none !important; }
+@container options-editor (width >= 360px) {
+  .download-options-translation-fields { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+  .download-options-translation-fields > :not(.download-options-field) { grid-column: 1 / -1; }
+  .download-options-translation-fields > .download-options-custom-target { grid-column: 1 / -1; }
+}
+@media (hover:hover) {
+  .download-options-editor .download-options-tools button:hover, .download-options-editor .download-options-link:hover { text-decoration: underline; }
+  .download-options-editor .download-options-tracks label:hover { background: #2a323f; }
+}
+@media (forced-colors:active) {
+  .download-options-toggle input, .download-options-toggle input:checked { border: 1px solid ButtonText; background: Canvas; }
+  .download-options-toggle input::before { background: ButtonText; }
+  .download-options-toggle input:checked::before { background: Highlight; }
+}

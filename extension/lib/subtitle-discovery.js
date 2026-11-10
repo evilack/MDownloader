@@ -95,9 +95,10 @@ export function ReadPageSubtitles(Options = {})
 			if (Results.length >= MaxDescriptors) Exceeded();
 			const Ext = Url ? new URL(Url).pathname.match(/\.(vtt|srt|ttml|dfxp|m3u8)$/i)?.[1].toLowerCase() : 'vtt';
 			const Format = Metadata(Input.format, Ext, 64);
+			const Descriptor = {...(Url ? {url: Url} : {text: Text}), language: Language, label: Label,
+				...(Format ? {format: Format} : {})};
 			Seen.add(Key);
-			Results.push({...(Url ? {url: Url} : {text: Text}), language: Language, label: Label,
-				...(Format ? {format: Format} : {})});
+			Results.push(Descriptor);
 		};
 		const TrackElements = [...Owner.querySelectorAll('track')];
 		if (TrackElements.length > 1024) Exceeded();

@@ -1498,100 +1498,6 @@
   "translation_capture_failed": {
     "message": "Import failed. Check native host setup, PotPlayer version and whether it is running."
   },
-  "caption_unknown": {
-    "message": "Subtitles: not checked"
-  },
-  "caption_checking": {
-    "message": "Checking subtitles…"
-  },
-  "caption_detected": {
-    "message": "Subtitles: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_undetected": {
-    "message": "Subtitles: not detected"
-  },
-  "caption_collecting": {
-    "message": "Collecting subtitles ($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_ready": {
-    "message": "Subtitles ready: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_failed": {
-    "message": "Subtitle check / acquisition failed"
-  },
-  "caption_translation_unknown": {
-    "message": "Auto translation: not checked"
-  },
-  "caption_translation_off": {
-    "message": "Auto translation: off"
-  },
-  "caption_translation_no_source": {
-    "message": "Auto translation: no source detected"
-  },
-  "caption_translation_not_needed": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_pending": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_translating": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_complete": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_failed": {
-    "message": "Translation failed"
-  },
-  "caption_stopped": {
-    "message": "Subtitle acquisition stopped"
-  },
-  "caption_translation_stopped": {
-    "message": "Auto translation stopped"
-  },
-  "caption_count": {
-    "message": "Subtitles($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
   "view_youtube_quality_checking": {
     "message": "正在检查 YouTube 画质…"
   },
@@ -1673,14 +1579,20 @@
   "download_options_download": {
     "message": "下载"
   },
+  "explorer_setup_download_help": {
+    "message": "若被阻止，请在下载列表中检查文件并手动下载。"
+  },
+  "explorer_setup_download_list": {
+    "message": "打开下载列表"
+  },
   "explorer_setup_title": {
     "message": "Install Windows helper"
   },
   "explorer_setup_body": {
-    "message": "A Windows helper is needed to show files in your selected folder."
+    "message": "在资源管理器中打开文件夹需要 Windows 助手。"
   },
   "explorer_setup_install": {
-    "message": "安装"
+    "message": "下载安装程序"
   },
   "explorer_setup_installing": {
     "message": "Waiting for installation to finish.\nAllow any Chrome or Windows execution prompt."
@@ -1701,13 +1613,13 @@
     "message": "Install it now?"
   },
   "explorer_setup_cancel": {
-    "message": "Cancel keeps your current saved folder."
+    "message": "取消将保留当前保存位置。"
   },
   "explorer_setup_downloading": {
-    "message": "Downloading the installer.\nWhen it finishes, click “Run installer”."
+    "message": "正在下载安装程序…"
   },
   "explorer_setup_downloaded": {
-    "message": "Download complete.\nClick “Run installer” to begin installation."
+    "message": "下载完成。请点击“运行安装程序”。"
   },
   "explorer_setup_pending": {
     "message": "Please wait…"
@@ -1795,5 +1707,83 @@
   },
   "notification_file_fallback": {
     "message": "下载"
+  },
+  "download_options_live_start": {
+    "message": "直播开始位置"
+  },
+  "download_options_live_beginning": {
+    "message": "从可用的最早位置开始"
+  },
+  "download_options_live_current": {
+    "message": "从当前直播位置开始"
+  },
+  "download_options_live_help": {
+    "message": "从头开始会下载服务器保留的最早片段。从当前开始会从最新片段开始，可能相差几秒。仅适用于直播。"
+  },
+  "issue_report_title": {
+    "message": "报告问题"
+  },
+  "issue_report_intro": {
+    "message": "请报告无法正常检测 URL 或下载的页面。"
+  },
+  "issue_report_page": {
+    "message": "要报告的页面"
+  },
+  "issue_report_page_unavailable": {
+    "message": "无法获取页面地址。"
+  },
+  "issue_report_types": {
+    "message": "问题类型"
+  },
+  "issue_report_multiple": {
+    "message": "请选择所有适用项。"
+  },
+  "issue_report_detection": {
+    "message": "URL 检测失败"
+  },
+  "issue_report_download": {
+    "message": "下载失败"
+  },
+  "issue_report_other": {
+    "message": "其他"
+  },
+  "issue_report_details": {
+    "message": "详细信息（可选）"
+  },
+  "issue_report_placeholder": {
+    "message": "请描述发生问题时您正在执行的操作。"
+  },
+  "issue_report_question": {
+    "message": "是否报告此页面的问题？"
+  },
+  "issue_report_confirm": {
+    "message": "确认"
+  },
+  "issue_report_select_type": {
+    "message": "请至少选择一种问题类型。"
+  },
+  "issue_report_send_notice": {
+    "message": "点击确认后，将通过 FormSubmit 发送页面地址、所选问题类型和您输入的内容。"
+  },
+  "issue_report_sending": {
+    "message": "正在发送报告，请稍候。"
+  },
+  "issue_report_sent": {
+    "message": "报告已受理。"
+  },
+  "issue_report_failed": {
+    "message": "无法发送报告，请稍后重试。"
+  },
+  "issue_report_network_error": {
+    "message": "无法确认发送结果，报告可能已被受理。"
+  },
+  "issue_report_activation": {
+    "message": "报告接收设置尚未激活。"
+  },
+  "issue_report_invalid_page": {
+    "message": "无法获取有效的网页地址，请打开页面后重试。"
+  },
+  "issue_report_close": {
+    "message": "关闭"
   }
 }

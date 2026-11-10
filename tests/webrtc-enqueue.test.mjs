@@ -29,7 +29,7 @@ Test('the existing enqueue registers WebRTC before receiving and controls it fro
 					Assert.equal(Local['job:' + Id].state, 'active');
 					Assert.equal(Message.job.background, true);
 					Assert.deepEqual(Message.job.subtitles,Captions);
-					Assert.match(Message.job.filename, /^방송 제목_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.mp4$/);
+					Assert.match(Message.job.filename, /^player_test_방송_제목_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.mp4$/);
 					Assert.doesNotMatch(Message.job.filename, /WebRTC|playback|MDownloader/);
 					return {ok: true, started: {mimeType: 'video/mp4'}};
 				}

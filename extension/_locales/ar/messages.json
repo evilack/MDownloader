@@ -1498,100 +1498,6 @@
   "translation_capture_failed": {
     "message": "Import failed. Check native host setup, PotPlayer version and whether it is running."
   },
-  "caption_unknown": {
-    "message": "Subtitles: not checked"
-  },
-  "caption_checking": {
-    "message": "Checking subtitles…"
-  },
-  "caption_detected": {
-    "message": "Subtitles: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_undetected": {
-    "message": "Subtitles: not detected"
-  },
-  "caption_collecting": {
-    "message": "Collecting subtitles ($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_ready": {
-    "message": "Subtitles ready: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_failed": {
-    "message": "Subtitle check / acquisition failed"
-  },
-  "caption_translation_unknown": {
-    "message": "Auto translation: not checked"
-  },
-  "caption_translation_off": {
-    "message": "Auto translation: off"
-  },
-  "caption_translation_no_source": {
-    "message": "Auto translation: no source detected"
-  },
-  "caption_translation_not_needed": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_pending": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_translating": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_complete": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_failed": {
-    "message": "Translation failed"
-  },
-  "caption_stopped": {
-    "message": "Subtitle acquisition stopped"
-  },
-  "caption_translation_stopped": {
-    "message": "Auto translation stopped"
-  },
-  "caption_count": {
-    "message": "Subtitles($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
   "view_youtube_quality_checking": {
     "message": "جارٍ التحقق من جودة YouTube…"
   },
@@ -1673,14 +1579,20 @@
   "download_options_download": {
     "message": "تنزيل"
   },
+  "explorer_setup_download_help": {
+    "message": "إذا حُظر الملف، راجعه في التنزيلات ونزّله يدويًا."
+  },
+  "explorer_setup_download_list": {
+    "message": "فتح التنزيلات"
+  },
   "explorer_setup_title": {
     "message": "Install Windows helper"
   },
   "explorer_setup_body": {
-    "message": "A Windows helper is needed to show files in your selected folder."
+    "message": "يلزم مساعد Windows لفتح المجلد في مستكشف الملفات."
   },
   "explorer_setup_install": {
-    "message": "تثبيت"
+    "message": "تنزيل برنامج التثبيت"
   },
   "explorer_setup_installing": {
     "message": "Waiting for installation to finish.\nAllow any Chrome or Windows execution prompt."
@@ -1701,13 +1613,13 @@
     "message": "Install it now?"
   },
   "explorer_setup_cancel": {
-    "message": "Cancel keeps your current saved folder."
+    "message": "الإلغاء يحتفظ بموقع الحفظ الحالي."
   },
   "explorer_setup_downloading": {
-    "message": "Downloading the installer.\nWhen it finishes, click “Run installer”."
+    "message": "جارٍ تنزيل برنامج التثبيت…"
   },
   "explorer_setup_downloaded": {
-    "message": "Download complete.\nClick “Run installer” to begin installation."
+    "message": "اكتمل التنزيل. اختر «تشغيل برنامج التثبيت»."
   },
   "explorer_setup_pending": {
     "message": "Please wait…"
@@ -1795,5 +1707,83 @@
   },
   "notification_file_fallback": {
     "message": "تنزيل"
+  },
+  "download_options_live_start": {
+    "message": "موضع بدء البث المباشر"
+  },
+  "download_options_live_beginning": {
+    "message": "من البداية المتاحة"
+  },
+  "download_options_live_current": {
+    "message": "من موضع البث الحالي"
+  },
+  "download_options_live_help": {
+    "message": "تبدأ البداية من أول مقطع يحتفظ به الخادم. يبدأ الحالي قرب البث المباشر مع تأخير بضع ثوانٍ. ينطبق على البث المباشر فقط."
+  },
+  "issue_report_title": {
+    "message": "الإبلاغ عن مشكلة"
+  },
+  "issue_report_intro": {
+    "message": "أبلغ عن صفحة لا يعمل فيها اكتشاف عنوان URL أو التنزيل بشكل صحيح."
+  },
+  "issue_report_page": {
+    "message": "الصفحة المراد الإبلاغ عنها"
+  },
+  "issue_report_page_unavailable": {
+    "message": "عنوان الصفحة غير متاح."
+  },
+  "issue_report_types": {
+    "message": "نوع المشكلة"
+  },
+  "issue_report_multiple": {
+    "message": "حدد كل ما ينطبق."
+  },
+  "issue_report_detection": {
+    "message": "فشل اكتشاف عنوان URL"
+  },
+  "issue_report_download": {
+    "message": "فشل التنزيل"
+  },
+  "issue_report_other": {
+    "message": "أخرى"
+  },
+  "issue_report_details": {
+    "message": "التفاصيل (اختياري)"
+  },
+  "issue_report_placeholder": {
+    "message": "صف ما كنت تفعله عند حدوث المشكلة."
+  },
+  "issue_report_question": {
+    "message": "هل تريد الإبلاغ عن مشكلة في هذه الصفحة؟"
+  },
+  "issue_report_confirm": {
+    "message": "تأكيد"
+  },
+  "issue_report_select_type": {
+    "message": "حدد نوع مشكلة واحدًا على الأقل."
+  },
+  "issue_report_send_notice": {
+    "message": "عند التأكيد، سيتم إرسال عنوان الصفحة وأنواع المشكلات والتفاصيل عبر FormSubmit."
+  },
+  "issue_report_sending": {
+    "message": "جارٍ إرسال البلاغ. يرجى الانتظار."
+  },
+  "issue_report_sent": {
+    "message": "تم قبول بلاغك."
+  },
+  "issue_report_failed": {
+    "message": "تعذر إرسال البلاغ. حاول مرة أخرى لاحقًا."
+  },
+  "issue_report_network_error": {
+    "message": "تعذر تأكيد نتيجة الإرسال. ربما تم قبول البلاغ بالفعل."
+  },
+  "issue_report_activation": {
+    "message": "لم يتم تفعيل مستلم البلاغات بعد."
+  },
+  "issue_report_invalid_page": {
+    "message": "لا يتوفر عنوان صفحة ويب صالح. افتح الصفحة وحاول مجددًا."
+  },
+  "issue_report_close": {
+    "message": "إغلاق"
   }
 }

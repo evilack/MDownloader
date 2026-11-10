@@ -5,7 +5,7 @@ import { RuntimePolicy } from './runtime-policy.js';
 import { LocalizedError } from './i18n.js';
 import { BufferTarget } from '../vendor/mediabunny-1.65.2.mjs';
 import { ResolveDash } from './dash.js';
-import { ParseMaster, ParseMediaPlaylist } from './hls.js';
+import { HlsVariantResolution, ParseMaster, ParseMediaPlaylist } from './hls.js';
 import { CopyResponse, FetchMedia, ReadIndexRange, ReadPlaylist } from './hls-http.js';
 import { RemuxHls } from './hls-remux.js';
 import { InitializationKey, LocalPlaylist } from './stream-transfer.js';
@@ -40,6 +40,7 @@ export async function StreamPreview({ url: Url, format: Format, pageStream: Page
 	await RequireAccess([Url]);
 	let TextValue = await ReadLocalPlaylist(Url);
 	let Video;
+	let Resolution;
 	if (Format === 'MPD')
 	{
 		({ video: Video } = await ResolveDash(TextValue, Url, async (Address, LocalRange) =>
@@ -50,7 +51,10 @@ export async function StreamPreview({ url: Url, format: Format, pageStream: Page
 	}
 	else
 	{
-		const Variant = ParseMaster(TextValue, Url)?.[0];
+		const Variants = ParseMaster(TextValue, Url);
+		// Keep the sample small, but report the rendition selected by a default download.
+		Resolution = HlsVariantResolution(Variants?.at(-1));
+		const Variant = Variants?.[0];
 		if (Variant)
 		{
 			Url = Variant.url;
@@ -59,7 +63,7 @@ export async function StreamPreview({ url: Url, format: Format, pageStream: Page
 		}
 		Video = ParseMediaPlaylist(TextValue, Url);
 	}
-	OnMetadata?.({ live: !Video.ended,
+	OnMetadata?.({ live: !Video.ended, ...(Resolution ? {resolution: Resolution} : {}),
 		...(Video.ended ? { duration: Video.segments.reduce((Total, Segment) => Total + Segment.duration, 0) } : {}) });
 	// 첫 조각이 매우 짧으면 다음 조각도 사용합니다. 초기화 데이터를 포함한 전체 미리보기는 메모리 상한 안에서 처리합니다.
 	const Start = Video.ended ? 0 : Math.max(0, Video.segments.length - 2);

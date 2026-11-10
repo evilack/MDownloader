@@ -45,20 +45,24 @@ export async function RemuxYoutubeTracks(VideoFile,AudioFile,Destination,Signal,
 		Result.addVideoTrack(VideoOut);Result.addAudioTrack(AudioOut);await Result.start();
 		async function Copy(Track,Sink)
 		{
-			const Decoder=await Track.getDecoderConfig();let Count=0;
+			const Decoder=await Track.getDecoderConfig();let Count=0,First=null,Last=null;const Spans=[];
 			for await(const Packet of new EncodedPacketSink(Track).packets())
 			{
 				Signal.throwIfAborted();
 				if(Packet.timestamp+Packet.duration>End+0.000001)continue;
 				if(Packet.timestamp<Start)continue;
 				await Sink.add(Packet.clone({timestamp:Packet.timestamp-Start}),Count?undefined:{decoderConfig:Decoder});Count++;
+				const EndTime=Packet.timestamp+Packet.duration,Previous=Spans.at(-1);
+				if(Previous&&Packet.timestamp<=Previous.end)Previous.end=Math.max(Previous.end,EndTime);else Spans.push({start:Packet.timestamp,end:EndTime});
+				First=First===null?Packet.timestamp:Math.min(First,Packet.timestamp);Last=Last===null?Packet.timestamp+Packet.duration:Math.max(Last,Packet.timestamp+Packet.duration);
 			}
 			if(!Count)throw new YoutubeError('youtube_sabr_receive_failed');
-			Sink.close();return Count;
+			Sink.close();return {count:Count,start:First,end:Last,spans:Spans};
 		}
 		Copies=[Copy(Video,VideoOut),Copy(Audio,AudioOut)];
 		const [VideoPackets,AudioPackets]=await Promise.all(Copies);await Result.finalize();
-		return {start:Start,duration:End-Start,videoPackets:VideoPackets,audioPackets:AudioPackets};
+		const OutputEnd=Math.max(VideoPackets.end,AudioPackets.end);
+		return {start:Start,duration:OutputEnd-Start,outputEnd:OutputEnd,audioStart:AudioPackets.start,audioEnd:AudioPackets.end,copiedAudioSpans:AudioPackets.spans,trackShift:0,shiftApplied:true,videoPackets:VideoPackets.count,audioPackets:AudioPackets.count};
 	}
 	catch(ErrorValue){await Result?.cancel().catch(()=>{});await Promise.allSettled(Copies);throw ErrorValue;}
 	finally{VideoInput.dispose();AudioInput.dispose();}

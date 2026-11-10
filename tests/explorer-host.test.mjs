@@ -5,14 +5,15 @@ test('Windows Explorer host validates native framing, origin, folder/file identi
  const manifest=Path.join(root,'manifest.json'),bindings=Path.join(root,'bindings.json');await writeFile(manifest,JSON.stringify({allowed_origins:[origin]}));
  const message={action:'reveal',folderKey:key,folderName:'저장 폴더',filename:name,size:bytes.length,sampleHash:createHash('sha256').update(bytes).digest('hex')};
  function run(msg,source=origin,extra=[],input){const payload=Buffer.from(JSON.stringify(msg)),header=Buffer.alloc(4);header.writeUInt32LE(payload.length);const r=spawnSync(Path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/powershell.exe'),['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',Path.resolve('native/explorer/host.ps1'),source,'-ManifestPath',manifest,'-BindingsPath',bindings,'-TestMode',...extra,'--parent-window=0'],{input:input??Buffer.concat([header,payload]),windowsHide:true,maxBuffer:1024*1024});assert.equal(r.status,0,r.stderr?.toString());assert.ok(r.stdout.length>=4,r.stderr?.toString());const size=r.stdout.readUInt32LE();assert.equal(r.stdout.length,size+4);return JSON.parse(r.stdout.subarray(4).toString('utf8'));}
- assert.deepEqual(run({action:'ping'}),{ok:true,protocol:1});
+ const Ping=run({action:'ping'});assert.equal(Ping.ok,true);assert.equal(Ping.protocol,1);assert.equal(Ping.helperVersion,9);assert.equal(Ping.helperRevision,1);assert.ok(Ping.capabilities.includes('explorer'));assert.ok(Ping.capabilities.includes('genericPackageManifest'));
  assert.equal(run({action:'ping'},'chrome-extension://'+'b'.repeat(32)+'/').code,'origin_denied');
  assert.deepEqual(run(message,origin,['-TestFolder',folder]),{ok:true,testMode:true});assert.equal(Object.keys(JSON.parse(await readFile(bindings,'utf8'))).length,1);
  assert.deepEqual(run(message),{ok:true,testMode:true});
  for(const extension of['mkv','flac','opus','weba','m4v','f4v','mov','avi','flv','oga','ogv']){const filename='saved.'+extension;await writeFile(Path.join(folder,filename),bytes);assert.deepEqual(run({...message,filename}),{ok:true,testMode:true});}
- assert.equal(run({...message,filename:'../evil.mp4'}).code,'invalid_filename');assert.equal(run({...message,filename:'evil.html'}).code,'invalid_filename');
+ assert.equal(run({...message,filename:'../evil.mp4'}).code,'invalid_filename');assert.equal(run({...message,filename:'evil.html'},origin,['-TestFolder',folder]).code,'file_missing');
+ await writeFile(Path.join(folder,'saved.future-format'),bytes);assert.deepEqual(run({...message,filename:'saved.future-format'}),{ok:true,testMode:true});
  assert.equal(run(message,'chrome-extension://'+'b'.repeat(32)+'/').code,'origin_denied');
- const badHeader=Buffer.alloc(4);badHeader.writeUInt32LE(16385);assert.equal(run(message,origin,[],badHeader).code,'invalid_message');
+ const badHeader=Buffer.alloc(4);badHeader.writeUInt32LE(2097153);assert.equal(run(message,origin,[],badHeader).code,'invalid_message');assert.equal(run({...message,padding:'x'.repeat(16384)}).code,'invalid_message');
  await writeFile(Path.join(folder,name),'changed');assert.equal(run(message,origin,['-TestFolder',folder]).code,'file_mismatch');
 });
 

@@ -5,7 +5,7 @@ import {DownloadStages, DownloadResults} from './download-events.js';
  * 원문 오류/주소/헤더를 받아 재귀적으로 지우지 않고, 처음부터 코드·수치만 허용합니다.
  */
 import { RuntimePolicy } from './runtime-policy.js';
-export const DebugEvents = Object.freeze([
+const DebugEvents = Object.freeze([
 	'ActionTitleFailed', 'NetworkCacheFailed', 'DeclaredSourceFailed', 'DebugViewFailed', 'StreamFailed', 'JobControlRequested',
 	'RequestStarted', 'RequestFinished', 'RequestFailed', 'Observation', 'PageChanged', 'PermissionsChanged',
 	'RulesUpdated', 'QualityOptions', 'QualitySelected', 'JobRegistered', 'TransferStarted', 'TransferStage',

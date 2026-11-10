@@ -1498,100 +1498,6 @@
   "translation_capture_failed": {
     "message": "Import failed. Check native host setup, PotPlayer version and whether it is running."
   },
-  "caption_unknown": {
-    "message": "Subtitles: not checked"
-  },
-  "caption_checking": {
-    "message": "Checking subtitles…"
-  },
-  "caption_detected": {
-    "message": "Subtitles: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_undetected": {
-    "message": "Subtitles: not detected"
-  },
-  "caption_collecting": {
-    "message": "Collecting subtitles ($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_ready": {
-    "message": "Subtitles ready: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_failed": {
-    "message": "Subtitle check / acquisition failed"
-  },
-  "caption_translation_unknown": {
-    "message": "Auto translation: not checked"
-  },
-  "caption_translation_off": {
-    "message": "Auto translation: off"
-  },
-  "caption_translation_no_source": {
-    "message": "Auto translation: no source detected"
-  },
-  "caption_translation_not_needed": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_pending": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_translating": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_complete": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_failed": {
-    "message": "Translation failed"
-  },
-  "caption_stopped": {
-    "message": "Subtitle acquisition stopped"
-  },
-  "caption_translation_stopped": {
-    "message": "Auto translation stopped"
-  },
-  "caption_count": {
-    "message": "Subtitles($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
   "view_youtube_quality_checking": {
     "message": "Vérification de la qualité YouTube…"
   },
@@ -1673,14 +1579,20 @@
   "download_options_download": {
     "message": "Télécharger"
   },
+  "explorer_setup_download_help": {
+    "message": "Si le fichier est bloqué, vérifiez-le dans Téléchargements et téléchargez-le manuellement."
+  },
+  "explorer_setup_download_list": {
+    "message": "Ouvrir les téléchargements"
+  },
   "explorer_setup_title": {
     "message": "Install Windows helper"
   },
   "explorer_setup_body": {
-    "message": "A Windows helper is needed to show files in your selected folder."
+    "message": "L’assistant Windows ouvre le dossier dans l’Explorateur."
   },
   "explorer_setup_install": {
-    "message": "Installer"
+    "message": "Télécharger le programme d’installation"
   },
   "explorer_setup_installing": {
     "message": "Waiting for installation to finish.\nAllow any Chrome or Windows execution prompt."
@@ -1701,13 +1613,13 @@
     "message": "Install it now?"
   },
   "explorer_setup_cancel": {
-    "message": "Cancel keeps your current saved folder."
+    "message": "Annuler conserve le dossier actuel."
   },
   "explorer_setup_downloading": {
-    "message": "Downloading the installer.\nWhen it finishes, click “Run installer”."
+    "message": "Téléchargement du programme d’installation…"
   },
   "explorer_setup_downloaded": {
-    "message": "Download complete.\nClick “Run installer” to begin installation."
+    "message": "Téléchargé. Cliquez sur « Lancer l’installation »."
   },
   "explorer_setup_pending": {
     "message": "Please wait…"
@@ -1795,5 +1707,83 @@
   },
   "notification_file_fallback": {
     "message": "Téléchargement"
+  },
+  "download_options_live_start": {
+    "message": "Début du direct"
+  },
+  "download_options_live_beginning": {
+    "message": "Depuis le début disponible"
+  },
+  "download_options_live_current": {
+    "message": "Depuis le direct actuel"
+  },
+  "download_options_live_help": {
+    "message": "Début utilise le premier segment conservé par le serveur. Actuel commence près du direct, avec quelques secondes de retard. Uniquement pour les diffusions en direct."
+  },
+  "issue_report_title": {
+    "message": "Signaler un problème"
+  },
+  "issue_report_intro": {
+    "message": "Signalez une page sur laquelle la détection des URL ou le téléchargement ne fonctionne pas correctement."
+  },
+  "issue_report_page": {
+    "message": "Page à signaler"
+  },
+  "issue_report_page_unavailable": {
+    "message": "L’URL de la page est indisponible."
+  },
+  "issue_report_types": {
+    "message": "Type de problème"
+  },
+  "issue_report_multiple": {
+    "message": "Sélectionnez toutes les réponses pertinentes."
+  },
+  "issue_report_detection": {
+    "message": "Échec de détection de l’URL"
+  },
+  "issue_report_download": {
+    "message": "Échec du téléchargement"
+  },
+  "issue_report_other": {
+    "message": "Autre"
+  },
+  "issue_report_details": {
+    "message": "Détails (facultatif)"
+  },
+  "issue_report_placeholder": {
+    "message": "Décrivez ce que vous faisiez lorsque le problème est survenu."
+  },
+  "issue_report_question": {
+    "message": "Voulez-vous signaler un problème avec cette page ?"
+  },
+  "issue_report_confirm": {
+    "message": "Confirmer"
+  },
+  "issue_report_select_type": {
+    "message": "Sélectionnez au moins un type de problème."
+  },
+  "issue_report_send_notice": {
+    "message": "La confirmation envoie l’URL, les types de problème et vos détails via FormSubmit."
+  },
+  "issue_report_sending": {
+    "message": "Envoi du signalement. Veuillez patienter."
+  },
+  "issue_report_sent": {
+    "message": "Votre signalement a été accepté."
+  },
+  "issue_report_failed": {
+    "message": "Impossible d’envoyer le signalement. Réessayez plus tard."
+  },
+  "issue_report_network_error": {
+    "message": "Le résultat de l’envoi n’a pas pu être confirmé. Le signalement a peut-être déjà été accepté."
+  },
+  "issue_report_activation": {
+    "message": "Le destinataire des signalements n’a pas encore été activé."
+  },
+  "issue_report_invalid_page": {
+    "message": "Aucune URL de page web valide n’est disponible. Ouvrez la page et réessayez."
+  },
+  "issue_report_close": {
+    "message": "Fermer"
   }
 }

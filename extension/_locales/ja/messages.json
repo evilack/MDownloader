@@ -1498,100 +1498,6 @@
   "translation_capture_failed": {
     "message": "Import failed. Check native host setup, PotPlayer version and whether it is running."
   },
-  "caption_unknown": {
-    "message": "Subtitles: not checked"
-  },
-  "caption_checking": {
-    "message": "Checking subtitles…"
-  },
-  "caption_detected": {
-    "message": "Subtitles: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_undetected": {
-    "message": "Subtitles: not detected"
-  },
-  "caption_collecting": {
-    "message": "Collecting subtitles ($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_ready": {
-    "message": "Subtitles ready: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_failed": {
-    "message": "Subtitle check / acquisition failed"
-  },
-  "caption_translation_unknown": {
-    "message": "Auto translation: not checked"
-  },
-  "caption_translation_off": {
-    "message": "Auto translation: off"
-  },
-  "caption_translation_no_source": {
-    "message": "Auto translation: no source detected"
-  },
-  "caption_translation_not_needed": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_pending": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_translating": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_complete": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_failed": {
-    "message": "Translation failed"
-  },
-  "caption_stopped": {
-    "message": "Subtitle acquisition stopped"
-  },
-  "caption_translation_stopped": {
-    "message": "Auto translation stopped"
-  },
-  "caption_count": {
-    "message": "Subtitles($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
   "view_youtube_quality_checking": {
     "message": "YouTube の画質を確認しています…"
   },
@@ -1673,14 +1579,20 @@
   "download_options_download": {
     "message": "ダウンロード"
   },
+  "explorer_setup_download_help": {
+    "message": "ブロックされた場合は、ダウンロード一覧で確認して手動で取得してください。"
+  },
+  "explorer_setup_download_list": {
+    "message": "ダウンロード一覧を開く"
+  },
   "explorer_setup_title": {
     "message": "Install Windows helper"
   },
   "explorer_setup_body": {
-    "message": "A Windows helper is needed to show files in your selected folder."
+    "message": "フォルダーをエクスプローラーで開くには Windows ヘルパーが必要です。"
   },
   "explorer_setup_install": {
-    "message": "インストール"
+    "message": "インストーラーをダウンロード"
   },
   "explorer_setup_installing": {
     "message": "Waiting for installation to finish.\nAllow any Chrome or Windows execution prompt."
@@ -1701,13 +1613,13 @@
     "message": "Install it now?"
   },
   "explorer_setup_cancel": {
-    "message": "Cancel keeps your current saved folder."
+    "message": "キャンセルしても保存先は変わりません。"
   },
   "explorer_setup_downloading": {
-    "message": "Downloading the installer.\nWhen it finishes, click “Run installer”."
+    "message": "インストーラーをダウンロード中です。"
   },
   "explorer_setup_downloaded": {
-    "message": "Download complete.\nClick “Run installer” to begin installation."
+    "message": "ダウンロードしました。「インストーラーを実行」を押してください。"
   },
   "explorer_setup_pending": {
     "message": "Please wait…"
@@ -1795,5 +1707,83 @@
   },
   "notification_file_fallback": {
     "message": "ダウンロード"
+  },
+  "download_options_live_start": {
+    "message": "ライブの開始位置"
+  },
+  "download_options_live_beginning": {
+    "message": "利用可能な最初から"
+  },
+  "download_options_live_current": {
+    "message": "現在のライブ位置から"
+  },
+  "download_options_live_help": {
+    "message": "最初からはサーバーに残っている最初の区間から取得します。現在からは最新の区間から数秒遅れて開始します。ライブ配信にのみ適用されます。"
+  },
+  "issue_report_title": {
+    "message": "問題を報告"
+  },
+  "issue_report_intro": {
+    "message": "URL の検出やダウンロードが正常に動作しないページを報告してください。"
+  },
+  "issue_report_page": {
+    "message": "報告するページ"
+  },
+  "issue_report_page_unavailable": {
+    "message": "ページの URL を取得できません。"
+  },
+  "issue_report_types": {
+    "message": "問題の種類"
+  },
+  "issue_report_multiple": {
+    "message": "該当する項目をすべて選択してください。"
+  },
+  "issue_report_detection": {
+    "message": "URL の検出に失敗"
+  },
+  "issue_report_download": {
+    "message": "ダウンロードに失敗"
+  },
+  "issue_report_other": {
+    "message": "その他"
+  },
+  "issue_report_details": {
+    "message": "詳細（任意）"
+  },
+  "issue_report_placeholder": {
+    "message": "問題が発生したときの操作を教えてください。"
+  },
+  "issue_report_question": {
+    "message": "このページの問題を報告しますか？"
+  },
+  "issue_report_confirm": {
+    "message": "確認"
+  },
+  "issue_report_select_type": {
+    "message": "問題の種類を1つ以上選択してください。"
+  },
+  "issue_report_send_notice": {
+    "message": "確認を押すと、ページ URL、選択した問題の種類、入力内容が FormSubmit 経由で送信されます。"
+  },
+  "issue_report_sending": {
+    "message": "報告を送信しています。しばらくお待ちください。"
+  },
+  "issue_report_sent": {
+    "message": "報告を受け付けました。"
+  },
+  "issue_report_failed": {
+    "message": "報告を送信できませんでした。しばらくしてから再試行してください。"
+  },
+  "issue_report_network_error": {
+    "message": "送信結果を確認できませんでした。すでに受け付けられている可能性があります。"
+  },
+  "issue_report_activation": {
+    "message": "報告の受信設定がまだ有効になっていません。"
+  },
+  "issue_report_invalid_page": {
+    "message": "有効なウェブページ URL を取得できません。ページを開いて再試行してください。"
+  },
+  "issue_report_close": {
+    "message": "閉じる"
   }
 }

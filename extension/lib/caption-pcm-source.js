@@ -1,6 +1,7 @@
 import {CaptionPolicy as Policy,CaptionDigest,CaptionAbortableWait,ValidateCaptionWindow} from './concurrent-captions-contract.js';
 import {CaptionRationalSample,CaptionRationalSeconds,UnionCaptionSpans} from './caption-timeline.js';
 import {CaptionPreviewPolicy,ValidateCaptionPreview} from './caption-preview.js';
+import {CaptionDecoderError} from './caption-failure.js';
 
 const PCM_BYTES=2,WAV_BYTES=44;
 const Decode=S=>Uint8Array.from(atob(S),C=>C.charCodeAt(0));
@@ -34,7 +35,7 @@ export function CreateCaptionPcmSource({job:Job,stage:Stage,bytes:Bytes,metadata
    if(Seekable&&(!Safe(Access.knownSize)||typeof Metadata.readAt!=='function'))throw Error('caption_source_identity');
    Signal.throwIfAborted();let R;
    const Fingerprint=await CaptionDigest(JSON.stringify(Bytes.snapshot().resourceIdentity??{}));
-   for(;;){try{OpenUnconfirmed=true;R=await Stage(Job,'decoderOpen',{attempt:Job.captionAttempt||Job.captionSession?.attempt,sourceFingerprint:Fingerprint,access:Access});break;}catch(E){
+   for(;;){try{OpenUnconfirmed=true;R=await Stage(Job,'decoderOpen',{attempt:Job.captionAttempt||Job.captionSession?.attempt,sourceFingerprint:Fingerprint,access:Access,...(Metadata?.resample?{resample:Metadata.resample}:{})});break;}catch(E){
     if(!['caption_helper_missing','caption_native_failed','caption_prepare_failed'].includes(E.message))OpenUnconfirmed=false;
     if(E.message!=='caption_busy'&&E.message!=='caption_window_backpressure')throw E;await CaptionAbortableWait(Signal);
    }}
@@ -63,7 +64,7 @@ export function CreateCaptionPcmSource({job:Job,stage:Stage,bytes:Bytes,metadata
    }
   }
   if(!(Data instanceof Uint8Array)||Data.length>Length||!Data.length&&!Eof||Seekable&&Eof&&Requested.offset+Data.length!==Metadata.access.knownSize)throw Error('caption_source_short_read');
-  const R=await Request('decoderSupply',{decoderToken:Token,requestId:Requested.id,offset:Requested.offset,data:Encode(Data),eof:Eof});
+  const R=await Request('decoderSupply',{decoderToken:Token,inputRequestId:Requested.id,offset:Requested.offset,data:Encode(Data),eof:Eof});
   if(R.acceptedBytes!==Data.length)throw Error('caption_source_short_read');
  }
  async function RetainFrame(F){
@@ -72,7 +73,7 @@ export function CreateCaptionPcmSource({job:Job,stage:Stage,bytes:Bytes,metadata
   const Pts={ticks:F.pts,timeBaseNum:F.timeBaseNum,timeBaseDen:F.timeBaseDen};const Seconds=CaptionRationalSeconds(Pts);
   if(Origin===null){OriginRational=Seconds<0?{...Pts}:{ticks:0,timeBaseNum:1,timeBaseDen:1};Origin=CaptionRationalSeconds(OriginRational);}
   const Start=CaptionRationalSample(Pts,OriginRational),End=Start+F.samples;
-  if(!Safe(End)||LastEnd!==null&&Start<LastEnd)throw Error('caption_window_clock');
+  if(!Safe(End)||LastEnd!==null&&Start<LastEnd)throw CaptionDecoderError({error:'caption_window_clock',sequence:F.sequence,pts:F.pts,timeBaseNum:F.timeBaseNum,timeBaseDen:F.timeBaseDen,samples:F.samples,startSample:Start,endSample:End,previousEndSample:LastEnd});
   if(!Current||Start!==LastEnd){
    if(Current){Current.closed=true;Epoch++;}
    if(Epochs.length>=Policy.maxWindows)throw Error('caption_result_limit');
@@ -94,9 +95,9 @@ export function CreateCaptionPcmSource({job:Job,stage:Stage,bytes:Bytes,metadata
    if(E.eventId!==Cursor+1)throw Error('caption_worker_protocol');Cursor=E.eventId;
    if(E.type==='pcm')await RetainFrame(E);
    else if(E.type==='input'){if(PendingInput)throw Error('caption_worker_protocol');PendingInput=E;}
-   else if(E.type==='error')throw Error(E.error||'caption_decode_failed');
+   else if(E.type==='error')throw CaptionDecoderError(E);
    else if(E.type==='terminal'){
-    if(E.error)throw Error(E.error);
+    if(E.error)throw CaptionDecoderError(E);
     if(!E.demuxEnded||!E.decoderFlushed||!E.resamplerFlushed||E.lastFrame!==ThroughFrame||E.outputFrames!==ThroughFrame||E.outputSamples!==ObservedSamples||E.outputBytes!==ObservedSamples*PCM_BYTES)throw Error('caption_worker_protocol');
     Terminal={...E};if(Current)Current.closed=true;
    }else if(E.type!=='opened')throw Error('caption_worker_protocol');
@@ -165,7 +166,7 @@ export function CreateCaptionPcmSource({job:Job,stage:Stage,bytes:Bytes,metadata
  return {start:Start,next:Next,
   async repair(Boundary,ParentId,Attempt){
    const E=Epochs.find(E=>E.startSample<Boundary&&E.endSample>Boundary);if(!E)throw Error('caption_window_epoch');
-   const Half=Policy.chunkSeconds*Policy.sampleRate/2,Context=Policy.contextSeconds*Policy.sampleRate,Start=Math.max(E.startSample,Boundary-Half),End=Math.min(E.endSample,Boundary+Half);
+   const Half=Policy.chunkSeconds*Policy.sampleRate/2,Context=Policy.contextSeconds*Policy.sampleRate,Shift=(Attempt-1)*Context,Start=Math.max(E.startSample,Boundary-Half+Shift),End=Math.min(E.endSample,Boundary+Half+Shift);
    return MakeWindow(E,Math.min(Boundary,Start+Context),Math.max(Boundary,End-Context),Start,End,{repairOf:ParentId,repairAttempt:Attempt});
   },
   releaseBefore(Sample){const Before=Sample-Policy.chunkSeconds*Policy.sampleRate/2;while(Ring.length&&Ring[0].endSample<=Before){const F=Ring.shift();RingBytes-=F.data.length;EvidenceBytes-=F.metadataBytes;}},

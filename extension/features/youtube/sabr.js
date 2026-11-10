@@ -1,7 +1,18 @@
 import {CanUseYoutube} from '../../lib/distribution-policy.js';
 import {YoutubeError} from './evaluator.js';
 const Fail = Code => {throw new YoutubeError(Code);};
-/** 일반 공개 watch 응답의 데이터만 사용하며 페이지 코드는 실행하지 않습니다. */
+/** A played URL may differ only in the player's transformed n and normal request counters. */
+export function ValidateWatchPlaybackUrl(Source,Observed)
+{
+	const Base=new URL(Source),Url=new URL(Observed),Extra=new Set(['cpn','cver','rn','alr']);
+	if(Url.protocol!=='https:'||Url.origin!==Base.origin||Url.pathname!==Base.pathname||Url.username||Url.password||Url.hash||!Url.hostname.endsWith('.googlevideo.com'))Fail('youtube_session_changed');
+	for(const Key of new Set([...Base.searchParams.keys(),...Url.searchParams.keys()])){
+		if(Key==='n'||Extra.has(Key)&&!Base.searchParams.has(Key))continue;
+		if(JSON.stringify(Base.searchParams.getAll(Key))!==JSON.stringify(Url.searchParams.getAll(Key)))Fail('youtube_session_changed');
+	}
+	return Url.href;
+}
+/** Accept only a matching playable response; account credentials never enter the receiver. */
 export function NormalizeWatchPlayer(Player, VideoId, Client = {})
 {
 	if (Player?.videoDetails?.videoId !== VideoId) Fail('youtube_session_changed');
@@ -17,7 +28,7 @@ export function NormalizeWatchPlayer(Player, VideoId, Client = {})
 
 /** SABR/UMP의 영상·음성 출력을 독립 파일에 순서대로 씁니다. 실패한 출력을 저장 완료로 올리지 않습니다. */
 export async function ReceiveSabrTracks(Config, Selection, {createStream, createWriter, fetch: Fetch = globalThis.fetch, hasPermission = async () => false,
-	signal: Signal = new AbortController().signal, stopSignal: StopSignal, report = () => {}, limit: Limit = 16 * 1024 ** 3, keepReceivedOnFailure: KeepReceived = false} = {})
+	signal: Signal = new AbortController().signal, stopSignal: StopSignal, report = () => {}, trackReady:TrackReady, limit: Limit = 16 * 1024 ** 3, keepReceivedOnFailure: KeepReceived = false} = {})
 {
 	if (!CanUseYoutube()) Fail('youtube_distribution_disabled');
 	Signal.throwIfAborted();
@@ -85,6 +96,7 @@ export async function ReceiveSabrTracks(Config, Selection, {createStream, create
 				}
 				if (Failure) throw Failure;
 				if (!Bytes[Kind]) Fail('youtube_sabr_receive_failed');
+				if(!Config.live&&!StopSignal?.aborted)TrackReady?.(Kind);
 			}
 			finally {Reader.releaseLock();}
 		});

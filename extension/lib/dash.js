@@ -498,6 +498,11 @@ export function ParseDash(TextValue, Address)
 	const Periods = Children(Mpd, 'Period');
 	if (Periods.length !== 1)
 	{
+		// 광고/안내 구간 뒤의 보호된 본편도 실제 DRM 제한을 안내합니다.
+		if (Periods.some(LocalPeriod => Object.values(Candidates(Mpd, LocalPeriod)).flat().some(Track => Track.encrypted)))
+		{
+			throw new LocalizedError('stream_dash_encrypted');
+		}
 		throw new LocalizedError('stream_dash_single_period');
 	}
 	const [Period] = Periods;

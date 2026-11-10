@@ -360,6 +360,83 @@
         "description": "Existing native review captures are retained.",
         "evidence": []
       }
+    },
+    "brands": {
+      "sourceTool": "Official YouTube brand favicon; unmodified reuse",
+      "sourceUrl": "https://brand.youtube/",
+      "processing": {
+        "method": "Original 32px PNG displayed at 20px; no regeneration or retouching"
+      },
+      "artifacts": [
+        {
+          "path": "assets/icons/brands/youtube.md",
+          "sha256": "1eb387d663e13fb2d44b0f7ce480133d01fbad0aad4f99bc3093389d67af8579"
+        }
+      ]
+    },
+    "issueReport": {
+      "sourceTool": "Built-in OpenAI ImageGen, transparent generation and source color correction",
+      "generation": "Create one small desktop browser-extension toolbar icon for Report an issue. A simple light silver / pale cool gray outlined flag on a short pole, with one clearly visible dark exclamation mark on its flag field. Front-facing, crisp flat graphical silhouette, thick legible strokes and minimal internal detail, slightly rounded corners, matching compact pale silver PNG control icons used on charcoal #191d25 UI. Entire mark centered with 10% transparent margin inside a square. No text, no emoji, no 3D, no shading, no shadows, no glow, no button container. Genuine transparent background. It must be recognizable at 20 px. Output a single isolated flag icon.",
+      "sourceCorrection": "Precisely correct this existing report-issue flag icon for a dark charcoal toolbar: preserve the exact existing flag outline, pole, canvas and composition. ONLY change the nearly black exclamation mark to the SAME pale silver-gray color as the flag outline, so both exclamation bar and dot are equally visible on a dark #191d25 background. Keep the exclamation mark’s current shape and size. No other alterations. Keep genuine transparency and clean antialiasing. Flat monochrome icon.",
+      "processing": "Full source canvas, Lanczos3 contain at 16/24/32/48; visible RGB channels +6 clamped to 255, alpha unchanged. No crop or silhouette modification.",
+      "artifacts": [
+        {
+          "path": "assets/icons/issue-report/v1/baseline/report-issue-16.png",
+          "sha256": "e21136a74228941bae255b09f44cdb417c60f3ef34e51d3e4cdd2745f7a67162"
+        },
+        {
+          "path": "assets/icons/issue-report/v1/retouched/report-issue-16.png",
+          "sha256": "59a3f8f94d50b603ca63072acace79eaaafb4ed5c3cc65c7db21e9d36387eb7e"
+        },
+        {
+          "path": "assets/icons/issue-report/v1/baseline/report-issue-24.png",
+          "sha256": "ef8ae34daf0680cf3ac2ca8a86879646a0974524acd1c492fb23b4cb703472ec"
+        },
+        {
+          "path": "assets/icons/issue-report/v1/retouched/report-issue-24.png",
+          "sha256": "142ca1f71ff55936d99cac0d3996f2d2209e6d74d8b91accfc7c0f4bc34abb12"
+        },
+        {
+          "path": "assets/icons/issue-report/v1/baseline/report-issue-32.png",
+          "sha256": "4b8b9b8502899468877fde159c4a0a74da4cc3372abd5de7f61766a292343736"
+        },
+        {
+          "path": "assets/icons/issue-report/v1/retouched/report-issue-32.png",
+          "sha256": "7a987178b902c1418de8f42f2037e6584c663033c859d09e7b6deaf251c50c7e"
+        },
+        {
+          "path": "assets/icons/issue-report/v1/baseline/report-issue-48.png",
+          "sha256": "0aeca0784b4c7e218f9c7f6b55d9ee53f94377ca7e6397a2b55af09950754c8a"
+        },
+        {
+          "path": "assets/icons/issue-report/v1/retouched/report-issue-48.png",
+          "sha256": "c9da4533bed7373bd54bd961ad4c1375c6b9d4bea2bb4e062a3713ff40e3d3e0"
+        },
+        {
+          "path": "assets/icons/issue-report/v1/originals/initial.png",
+          "sha256": "8e810b72ade35c3403968281bfe0ccbc5c8a1bc1481c1b2e7906453e9f8cb95f"
+        },
+        {
+          "path": "assets/icons/issue-report/v1/originals/report-issue.png",
+          "sha256": "a33de9137fdb9c294128381a649d9c4859ddac27351ee38a8154b99932a9a120"
+        },
+        {
+          "path": "assets/icons/issue-report/v1/provenance.json",
+          "sha256": "182b6c7e8e56cc901df8bb30d24ea81ff4c34f9be00472deabe8abf1ed227233"
+        },
+        {
+          "path": "assets/icons/issue-report/v1/display-sizes.png",
+          "sha256": "43ab61c9a571ad614144105cfa519ac4be32c83e2fe467b20ff9da33b7212a1e"
+        }
+      ],
+      "visualReview": {
+        "description": "Native 16/24/32/48 baseline/final comparison on charcoal and actual popup at 20px; initial dark exclamation was corrected in a separate generated source before alpha-preserving RGB retouch.",
+        "evidence": [
+          "assets/icons/issue-report/v1/display-sizes.png",
+          "artifacts/issue-report-ui/extension-popup.png",
+          "artifacts/issue-report-ui/dialog-filled.png"
+        ]
+      }
     }
   },
   "runtime": [
@@ -447,6 +524,16 @@
       "path": "extension/icons/stop-save.png",
       "sha256": "3017a66121321852d69bd540153c0cac5feedde28eaf4a20d4177cfbd2c7055b",
       "group": "actions"
+    },
+    {
+      "path": "extension/icons/youtube-brand-32.png",
+      "sha256": "11fa885b12c4b56a2bc16632afa6615f871d55451f5b70d1ec19564dd0f7f2f8",
+      "group": "brands"
+    },
+    {
+      "path": "extension/icons/report-issue-32.png",
+      "sha256": "7a987178b902c1418de8f42f2037e6584c663033c859d09e7b6deaf251c50c7e",
+      "group": "issueReport"
     }
   ],
   "sharedFiles": [

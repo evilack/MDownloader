@@ -5,13 +5,14 @@ import { DebugLog, ReportDebugFailure } from './lib/debug-log.js';
  */
 import { RuntimePolicy } from './lib/runtime-policy.js';
 import { ClassifyMediaUrl, ClassifyResponseMedia, HostPattern, IsHlsFragmentUrl, MediaResourceKey } from './lib/media.js';
-import { MatchesHlsVariant, ParseMaster, ReadHlsLiveState, ReadHlsMediaResources } from './lib/hls.js';
+import { MatchesHlsVariant, ParseMaster, ReadHlsLiveState, ReadHlsDvrState, ReadHlsMediaResources } from './lib/hls.js';
 import { ValidHlsRequestContext } from './lib/hls-request-context.js';
-import { MediaContextCacheKey, MediaContextCachePrefix, NetworkCacheKey, NetworkCachePrefix, SourceMetadataCacheKey, SourceMetadataCachePrefix } from './lib/detection-cache.js';
+import { MediaContextCacheKey, MediaContextCachePrefix, NetworkCacheKey, NetworkCachePrefix, RequestContextCacheKey, RequestContextCachePrefix, SourceMetadataCacheKey, SourceMetadataCachePrefix } from './lib/detection-cache.js';
 import { NormalizeHlsProtocol } from './lib/hls-protocol.js';
 import { LoadSourceProviders } from './lib/source-provider-data.js';
 import { CreateMediaPageScopes } from './lib/media-page-scope.js';
 import {YoutubeSourceBlocked} from './lib/youtube-source-policy.js';
+import {FindHlsSubtitles} from './lib/subtitles.js';
 export const MaxObservedMediaPerTab = RuntimePolicy.Detection.MaxObservedMedia;
 const MediaResponseStatus = new Set([200, 206]);
 let Writes = Promise.resolve();
@@ -261,17 +262,23 @@ function Write(Operation)
 export function ObserveRequest(Details)
 {
 	if (Details.tabId < 0 || Details.frameId < 0 || Details.method !== 'GET' ||
-	ClassifyMediaUrl(Details.url)?.format !== 'M3U8' || !Details.documentId)
+	!HostPattern(Details.url) || !HostPattern(Details.initiator) || !Details.documentId)
 	{
 		return;
 	}
 	const ServerOrigin = new URL(Details.url).origin;
 	const Header = Name => Details.requestHeaders?.find(Value => Value.name.toLowerCase() === Name)?.value;
 	const Context = { serverOrigin: ServerOrigin, origin: Header('origin'), referer: Header('referer') };
+	// Keep only the credential mode. Chrome owns cookie values and sends them to
+	// their original server; they must never enter our candidate/session cache.
+	if (Header('cookie')) Context.includeCredentials = true;
 	if (Context.origin !== Details.initiator || !ValidHlsRequestContext(Context))
 	{
 		return;
 	}
+	// The response MIME, not the URL suffix, confirms HLS. Some players serve
+	// playlists from .html or extensionless endpoints. Keep this bounded pending
+	// context until ObserveResponse confirms the exact URL and document as HLS.
 	ObservedHeaders.set(Details.requestId, { documentId: Details.documentId, url: Details.url, context: Context });
 	if (ObservedHeaders.size > RuntimePolicy.Detection.MaxPendingHeaders)
 	{
@@ -285,6 +292,23 @@ export function ForgetRequest(Details)
 	RequestPages.delete(Details.requestId);
 }
 
+function RememberResourceContext(Details, Request)
+{
+	if (!MediaResponseStatus.has(Details.statusCode) || !Request || Request.url !== Details.url ||
+	Request.documentId !== Details.documentId || Request.context.origin !== Details.initiator) return;
+	return Write(async () =>
+	{
+		if (!await HasOrigins([Details.initiator, Details.url])) return;
+		const Key = RequestContextCacheKey(Details.tabId);
+		const Stored = (await chrome.storage.session.get(Key))[Key] ?? [];
+		const Previous = Stored.find(Entry => Entry.documentId === Details.documentId && Entry.context.serverOrigin === Request.context.serverOrigin);
+		if (Previous && Previous.context.origin === Request.context.origin && Previous.context.referer === Request.context.referer &&
+			Previous.context.includeCredentials === Request.context.includeCredentials) return;
+		await chrome.storage.session.set({[Key]: [{documentId: Details.documentId, context: Request.context},
+			...Stored.filter(Entry => Entry !== Previous)].slice(0, RuntimePolicy.Detection.MaxPendingHeaders)});
+	});
+}
+
 export function ObserveResponse(Details)
 {
 	const HttpRequest = ObservedHeaders.get(Details.requestId);
@@ -292,6 +316,9 @@ export function ObserveResponse(Details)
 	ForgetRequest(Details);
 	if (YoutubeSourceBlocked(Details)) return;
 	const Candidate = ClassifyResponse(Details);
+	// HLS already stores its primary context in the network candidate. Record
+	// other successful resources too, including fMP4s classified as media.
+	if (Candidate?.format !== 'M3U8') void RememberResourceContext(Details, HttpRequest);
 	if (Candidate && DebugLog.IsEnabled())
 	{
 		DebugLog.Record('Observation', () => ({ tabId: Details.tabId, status: Details.statusCode }));
@@ -335,6 +362,11 @@ export function ObserveResponse(Details)
 			Entry.parentDocumentId = Details.parentDocumentId;
 		}
 		const Previous = Stored.find(Item => MediaResourceKey(Item.url) === ResourceKey && Item.documentId === Entry.documentId);
+		if (Entry.format === 'MPD' && Previous?.format === 'MPD' && Previous.page === Entry.page)
+		{
+			if (Previous.resources) Entry.resources = Previous.resources;
+			if (Previous.dashManifest) Entry.dashManifest = Previous.dashManifest;
+		}
 		if (Scope?.previewOnly || Previous?.mediaRole === 'preview')
 		{
 			Entry.mediaRole = 'preview';
@@ -350,6 +382,7 @@ export function ObserveResponse(Details)
 			{
 				Entry.live = Previous.live;
 			}
+			if (bSamePlaylist && Previous.dvr !== undefined) Entry.dvr = Previous.dvr;
 			if (DeclaredPage)
 			{
 				Entry.declaredPage = DeclaredPage;
@@ -389,6 +422,7 @@ export function ObserveResponse(Details)
 		Previous.page === Entry.page && Previous.declaredPage === Entry.declaredPage && Previous.mediaRole === Entry.mediaRole &&
 		Previous.name === Entry.name && Previous.requestContext?.origin === Entry.requestContext?.origin &&
 		Previous.requestContext?.referer === Entry.requestContext?.referer &&
+		Previous.requestContext?.includeCredentials === Entry.requestContext?.includeCredentials &&
 		Previous.requestContext?.serverOrigin === Entry.requestContext?.serverOrigin)
 		{
 			return;
@@ -547,7 +581,7 @@ export function ObserveManifest(Sender, { url: Url, text: TextValue, page: Page 
 	{
 		let Stored = (await chrome.storage.session.get(Key))[Key] ?? [];
 		let Item = Stored.find(Entry => MediaResourceKey(Entry.url) === MediaResourceKey(Url) && Entry.documentId === Sender.documentId &&
-		Entry.initiator === Sender.origin && Entry.format === 'M3U8');
+		Entry.initiator === Sender.origin && ['M3U8', 'MPD'].includes(Entry.format));
 		if (!Item || !await HasOrigins([Item.initiator, Item.url]))
 		{
 			return;
@@ -564,6 +598,23 @@ export function ObserveManifest(Sender, { url: Url, text: TextValue, page: Page 
 			Item = Updated;
 			await chrome.storage.session.set({ [Key]: Stored });
 		}
+		if (Item.format === 'MPD')
+		{
+			if (Item.dashManifest === TextValue) return;
+			// 재요청 때 바뀌는 CDN/서명 대신 실제 응답을 세션 안에서만 보관합니다.
+			// 한 탭의 원문 보관량은 재생목록 한도 이하로 제한합니다.
+			let Budget = RuntimePolicy.Transfer.MaxPlaylistBytes;
+			const Entries = Stored.map(Entry => Entry === Item ? {...Item, dashManifest: TextValue} : Entry).map(Entry =>
+			{
+				if (typeof Entry.dashManifest !== 'string') return Entry;
+				const Size = Entry.dashManifest.length * 2;
+				if (Size <= Budget) {Budget -= Size; return Entry;}
+				const {dashManifest: _Discarded, ...Kept} = Entry;
+				return Kept;
+			});
+			await chrome.storage.session.set({[Key]: Entries});
+			return;
+		}
 		if (TextValue.trimStart().split(/\r?\n/, 1)[0] !== '#EXTM3U')
 		{
 			if (!Item.invalidPlaylist)
@@ -575,10 +626,15 @@ export function ObserveManifest(Sender, { url: Url, text: TextValue, page: Page 
 			return;
 		}
 		TextValue = await NormalizeHlsProtocol(TextValue, Url);
-		const Qualities = ParseMaster(TextValue, Url)?.reverse();
+		const Qualities = ParseMaster(TextValue, Url)?.reverse().map(Quality =>
+		{
+			const Subtitles = FindHlsSubtitles(TextValue, Url, Quality.url);
+			return Subtitles.length ? {...Quality, subtitles: Subtitles} : Quality;
+		});
 		if (!Qualities)
 		{
 			const Live = ReadHlsLiveState(TextValue);
+			const Dvr = ReadHlsDvrState(TextValue);
 			const Resources = ReadHlsMediaResources(TextValue, Url).map(MediaResourceKey);
 			if (!Resources.length && Live === undefined)
 			{
@@ -591,8 +647,8 @@ export function ObserveManifest(Sender, { url: Url, text: TextValue, page: Page 
 			const ResourcesSet = new Set(Merged);
 			const Entries = Stored.filter(Entry => Entry === Item || Entry.documentId !== Sender.documentId ||
 			!ResourcesSet.has(MediaResourceKey(Entry.url))).map(Entry => Entry === Item
-			? { ...Item, ...(Live !== undefined ? { live: Live } : {}), resources: Merged, invalidPlaylist: false } : Entry);
-			if (Item.invalidPlaylist || Item.live !== Live || JSON.stringify(Item.resources) !== JSON.stringify(Merged) || Entries.length !== Stored.length)
+			? { ...Item, ...(Live !== undefined ? { live: Live } : {}), ...(Dvr !== undefined ? {dvr: Dvr} : {}), resources: Merged, invalidPlaylist: false } : Entry);
+			if (Item.invalidPlaylist || Item.live !== Live || Item.dvr !== Dvr || JSON.stringify(Item.resources) !== JSON.stringify(Merged) || Entries.length !== Stored.length)
 			{
 				await chrome.storage.session.set({ [Key]: Entries });
 			}
@@ -602,7 +658,8 @@ export function ObserveManifest(Sender, { url: Url, text: TextValue, page: Page 
 		{
 			const Previous = Item.qualities[Index];
 			return Quality.url === Previous.url && Quality.bandwidth === Previous.bandwidth &&
-			Quality.resolution === Previous.resolution && Quality.audioUrl === Previous.audioUrl;
+			Quality.resolution === Previous.resolution && Quality.audioUrl === Previous.audioUrl &&
+			JSON.stringify(Quality.subtitles ?? []) === JSON.stringify(Previous.subtitles ?? []);
 		}))
 		{
 			return;
@@ -612,12 +669,39 @@ export function ObserveManifest(Sender, { url: Url, text: TextValue, page: Page 
 	});
 }
 
+/** 문서 안에서 실제 MPD가 선언한 초기화 파일은 CDN 갱신 뒤에도 조각으로 보존합니다. */
+export function RememberDashInitialization(TabId, DocumentId, Page, Url, Resources)
+{
+	return Write(async() =>
+	{
+		const Key = NetworkCacheKey(TabId);
+		const Stored = (await chrome.storage.session.get(Key))[Key] ?? [];
+		const Item = Stored.find(Entry => Entry.format === 'MPD' && Entry.documentId === DocumentId && Entry.url === Url &&
+			(!Entry.page || Entry.page === Page) && Entry.initiator === new URL(Page).origin);
+		if (!Item || !await HasOrigins([Page, Url])) return;
+		const Exact = Resources.filter(Value => typeof Value === 'string' && Value.length <= RuntimePolicy.Detection.MaxUrlChars && HostPattern(Value)).map(MediaResourceKey);
+		const Merged = [...new Set([...(Item.resources ?? []), ...Exact])].slice(-RuntimePolicy.Dash.MaxRepresentations);
+		await chrome.storage.session.set({[Key]: Stored.map(Entry => Entry === Item ? {...Item, resources: Merged} : Entry)});
+		return Merged;
+	});
+}
+
 export async function NetworkCandidates(TabId, DocumentId)
 {
 	await Writes;
 	const Key = NetworkCacheKey(TabId);
 	const Items = (await chrome.storage.session.get(Key))[Key] ?? [];
-	return FilterAllowedNetworkCandidates(Items, TabId, DocumentId);
+	const Allowed = await FilterAllowedNetworkCandidates(Items, TabId, DocumentId);
+	const ContextKey = RequestContextCacheKey(TabId);
+	const Contexts = (await chrome.storage.session.get(ContextKey))[ContextKey] ?? [];
+	return Allowed.map(Item =>
+	{
+		if (!Item.requestContext) return Item;
+		const Resources = Contexts.filter(Entry => Entry.documentId === Item.documentId &&
+			Entry.context.origin === Item.requestContext.origin && Entry.context.referer === Item.requestContext.referer &&
+			Entry.context.serverOrigin !== Item.requestContext.serverOrigin).map(Entry => Entry.context);
+		return Resources.length ? {...Item, requestContext: {...Item.requestContext, resources: Resources}} : Item;
+	});
 }
 
 async function FrameDocument(TabId, FrameId)
@@ -696,10 +780,10 @@ export function ForgetNetwork(TabId)
 	{
 		if (TabId !== undefined)
 		{
-			return chrome.storage.session.remove([NetworkCacheKey(TabId), MediaContextCacheKey(TabId), SourceMetadataCacheKey(TabId)]);
+			return chrome.storage.session.remove([NetworkCacheKey(TabId), MediaContextCacheKey(TabId), SourceMetadataCacheKey(TabId), RequestContextCacheKey(TabId)]);
 		}
 		const Keys = Object.keys(await chrome.storage.session.get(null)).filter(Key =>
-		Key.startsWith(NetworkCachePrefix) || Key.startsWith(MediaContextCachePrefix) || Key.startsWith(SourceMetadataCachePrefix));
+		Key.startsWith(NetworkCachePrefix) || Key.startsWith(MediaContextCachePrefix) || Key.startsWith(SourceMetadataCachePrefix) || Key.startsWith(RequestContextCachePrefix));
 		await chrome.storage.session.remove(Keys);
 	});
 }

@@ -1,11 +1,12 @@
 import {CaptionModelCatalog,CaptionPackageVersion,CaptionProcessingPolicy as Policy} from '../data/caption-runtime-metadata.js';
 import {NormalizeRecognitionOptions} from './caption-engine-options.js';
-import {CaptionOutputName} from './local-captions-settings.js';
+import {CaptionOutputName,CaptionOptionsKey} from './local-captions-settings.js';
 import {CaptionTextForFormat} from './generated-caption-translation.js';
 import {ValidateCaptionWindow} from './concurrent-captions-contract.js';
 import {CreateCaptionAudioPreparation} from './caption-audio-preparation.js';
 import {CreateCaptionPreviewExecution} from './caption-preview.js';
 import {CaptionSpans,UnionCaptionSpans,IntersectCaptionSpans,CaptionSpanLength,CaptionCovers,CaptionRationalSeconds} from './caption-timeline.js';
+import {CaptionCueSource,CorrectCaptionOverlaps} from './caption-timing-correction.js';
 
 const Encoder=new TextEncoder(),Decoder=new TextDecoder('utf-8',{fatal:true});
 const Fail=Code=>{throw Error(Code);};
@@ -175,7 +176,7 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
   const EngineReady=P.engineReady&&(M.engine!=='whisper.cpp'||M.recognition?.useGpu!==false||P.gpuToggleReady!==false||P.cliReady===true);
   const Result={...P,engineReady:EngineReady,modelReady:Installed.includes(M.model),installedModels:Installed,modelManagement:true,modelDownloadVersion:3,captionTranslationVersion:1,recognitionOptionsVersion:1,
    captionConcurrencyVersion:EngineReady?1:0,captionWindowVersion:EngineReady?2:0,captionFinalizeVersion:2,captionTimelineVersion:2,captionWindowProfiles:['aac','pcm-s16-wav-16000-mono-v1'],processing:{...Policy},captionPackageVersion:P.captionPackageVersion};
-  ProbeCache.set(JSON.stringify([M.engine,M.model,M.recognition]),Result);return Result;
+  ProbeCache.set(CaptionOptionsKey([M.engine,M.model,M.recognition]),Result);return Result;
  }
  async function ModelOperation(M){
   const O=Options({...M,formats:M.formats?.length?M.formats:['vtt']}),Token=M.operationId;
@@ -222,7 +223,7 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
   while(SessionOwners.size>=Policy.maxInferenceSessions){Check(R);await new Promise(Resolve=>setTimeout(Resolve,Policy.pollIntervalMs));}
   Check(R);SessionOwners.add(R.scope);R.sessionSlot=R.scope;
   try{await State(R,{phase:'loading-model'});
-   const Capabilities=ProbeCache.get(JSON.stringify([O.engine,O.model,O.recognition]))||await Probe(O);
+   const Capabilities=ProbeCache.get(CaptionOptionsKey([O.engine,O.model,O.recognition]))||await Probe(O);
    const Backend=Capabilities.persistentReady!==false&&(O.engine!=='whisper.cpp'||O.recognition.useGpu||Capabilities.gpuToggleReady!==false)?'binding':'cli';
    if(Backend==='cli'&&!Capabilities.cliReady)Fail('caption_engine_options_unsupported');
    R.session=Id;
@@ -232,9 +233,11 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
  }
  async function Infer(R,Audio,Name,Provisional=false){
   const SessionId=await Session(R);if(!Provisional)await State(R,{phase:'recognizing'});
-  const Result=await Run(R,'sessionInfer',{sessionId:SessionId,audio:Audio,language:R.state.language&&R.state.language!=='auto'?R.state.language:R.state.options.language,output:File(R,Name+'.json')});
+  const Words=R.state.options.engine==='faster-whisper';
+  if(Words){const P=ProbeCache.get(CaptionOptionsKey([R.state.options.engine,R.state.options.model,R.state.options.recognition]))||await Probe(R.state.options);if(!(P.wordTimestampsVersion>=1))Fail('caption_helper_update_required');}
+  const Result=await Run(R,'sessionInfer',{sessionId:SessionId,audio:Audio,language:R.state.language&&R.state.language!=='auto'?R.state.language:R.state.options.language,output:File(R,Name+'.json'),...(Words?{wordTimestamps:true}:{})});
   const Value=JSON.parse(Decoder.decode(await Read(Result.path,R.scope,Policy.maxWorkerResultBytes)));Check(R);
-  if(!Array.isArray(Value.segments))Fail('caption_result_invalid');
+  if(!Array.isArray(Value.segments)||Words&&!Array.isArray(Value.words))Fail('caption_inference_result');
   const Speech=Value.segments.some(S=>typeof S[2]==='string'&&S[2].trim());
   if(!Provisional){if(R.state.options.language!=='auto')R.state.language=R.state.options.language;
    else if(!R.state.language&&Speech&&Value.language&&!['auto','und'].includes(Value.language))R.state.language=Value.language;}
@@ -260,9 +263,11 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
   if(M.action==='decoderOpen'){
    if(R.state.mode!=='windowed'||R.state.inputSealed||R.state.resultRevision||!/^[a-f0-9]{64}$/.test(M.sourceFingerprint||''))Fail('caption_state');
    const Access=M.access;if(!Access||typeof Access.seekable!=='boolean'||Access.knownSize!==null&&!Integer(Access.knownSize)||Access.seekable&&Access.knownSize===null)Fail('caption_invalid');
-   if(R.decoders.size){const [Token,D]=R.decoders.entries().next().value;if(D.identity!==JSON.stringify([M.sourceFingerprint,Access]))Fail('caption_session_conflict');return {decoderToken:Token,attempt:R.state.attempt};}
+   const Resample=M.resample===undefined?{async:0}:M.resample;if(!Resample||Object.keys(Resample).join(',')!=='async'||!Integer(Resample.async)||Resample.async>1000)Fail('caption_invalid');
+   const Identity=JSON.stringify([M.sourceFingerprint,Access,Resample]);
+   if(R.decoders.size){const [Token,D]=R.decoders.entries().next().value;if(D.identity!==Identity)Fail('caption_session_conflict');return {decoderToken:Token,attempt:R.state.attempt};}
    EncodedPreparation.admitDecoder(R);if(DecoderReceipts.size+DecoderOwners.size>=Policy.maxWindows)Fail('caption_result_limit');
-   const O=R.state.options,Key=JSON.stringify([O.engine,O.model,O.recognition]);let P=ProbeCache.get(Key);if(!P)P=await Probe(O);if(!(P.avDecodeStreamVersion>=1))Fail('caption_concurrency_unsupported');
+   const O=R.state.options,Key=CaptionOptionsKey([O.engine,O.model,O.recognition]);let P=ProbeCache.get(Key);if(!P)P=await Probe(O);if(!(P.avDecodeStreamVersion>=1))Fail('caption_concurrency_unsupported');if(Resample.async&&P.avDecodeStreamVersion<2)Fail('caption_helper_update_required');
    // Named transport/primitive ceilings; processing choices derive from Policy.
    const NativeFrameCeiling=131072,NativeMetadataCeiling=4*1024*1024,ResponseReserve=4096,NativeQueueCeiling=64*1024*1024;
    const FrameBytes=Math.min(NativeFrameCeiling,Math.floor((Policy.resultPageBytes-ResponseReserve)*3/4/2)*2,Policy.uploadChunkBytes);
@@ -270,11 +275,11 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
     maxMetadataBytes:Math.min(NativeMetadataCeiling,Policy.maxLedgerBytes),maxLogBytes:0,cancelGraceMs:Policy.cancelGraceMs,pollIntervalMs:Policy.pollIntervalMs};
    await Admission(R,Limits.queuedOutputBytes*2+Limits.maxMetadataBytes,true);
    EncodedPreparation.admitDecoder(R);if(DecoderReceipts.size+DecoderOwners.size>=Policy.maxWindows)Fail('caption_result_limit');
-   const Token=crypto.randomUUID(),D={id:crypto.randomUUID(),scope:R.scope,attempt:R.state.attempt,identity:JSON.stringify([M.sourceFingerprint,Access]),lastEvent:0,lastFrame:0,ackedEvent:0,ackedFrame:0,events:new Map()};
+   const Token=crypto.randomUUID(),D={id:crypto.randomUUID(),scope:R.scope,attempt:R.state.attempt,identity:Identity,lastEvent:0,lastFrame:0,ackedEvent:0,ackedFrame:0,events:new Map()};
    // Register before awaiting Open, so cancellation owns even an opening child.
    R.decoders.set(Token,D);DecoderOwners.add(Token);
    try{await Run(R,'avDecodeOpen',{decoderId:D.id,work:File(R,'decoder'),input:{seekable:Access.seekable,knownSize:Access.knownSize,bufferBytes:Policy.uploadChunkBytes},demux:{format:null,options:{}},audio:{index:0},
-    output:{rate:Policy.sampleRate,channels:1,sampleFormat:'s16',byteOrder:'little'},limits:Limits});}catch(E){
+    output:{rate:Policy.sampleRate,channels:1,sampleFormat:'s16',byteOrder:'little'},...(Resample.async?{resample:Resample}:{}),limits:Limits});}catch(E){
     try{await CloseDecoders(R);}catch(CloseError){return {decoderToken:Token,state:'cleanup-pending',error:E.message,cleanupError:CloseError.message,attempt:R.state.attempt};}throw E;
    }
    D.openAccepted=true;return {decoderToken:Token,attempt:R.state.attempt};
@@ -355,10 +360,16 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
   for(const Q of RawCues){
    if(!Integer(Q.epoch??0)||!Integer(Q.startSample)||!Integer(Q.endSample,Q.startSample+1)||typeof Q.text!=='string')Fail('caption_result_invalid');
    if(R.state.mode==='windowed'){
-    const W=R.windows.get(Q.windowId);if(!W||W.phase!=='acked'||Q.revision!==W.result.revision||!Integer(Q.cueIndex)||Q.epoch!==W.window.epoch)Fail('caption_result_invalid');
-    const Key=Q.windowId+':'+Q.revision+':'+Q.cueIndex;if(Seen.has(Key))Fail('caption_result_conflict');Seen.add(Key);
-    if(HypothesisId!==Q.windowId){Hypothesis=JSON.parse(Decoder.decode(await Read(File(R,'windows/'+Q.windowId+'/hypothesis.json'),R.scope,Policy.maxWorkerResultBytes)));HypothesisId=Q.windowId;}
-    const Original=Hypothesis.cues[Q.cueIndex];if(!Original||Original.startSample!==Q.startSample||Original.endSample!==Q.endSample||Original.text!==Q.text)Fail('caption_result_conflict');
+    const Parts=Q.parts||[Q];if(!Array.isArray(Parts)||!Parts.length||Parts.length>Policy.maxWindows)Fail('caption_result_invalid');
+    const Sources=[];
+    for(const Part of Parts){
+     const W=R.windows.get(Part.windowId);if(!W||W.phase!=='acked'||Part.revision!==W.result.revision||!Integer(Part.cueIndex)||Part.epoch!==W.window.epoch||Part.epoch!==Q.epoch)Fail('caption_result_invalid');
+     if(HypothesisId!==Part.windowId){Hypothesis=JSON.parse(Decoder.decode(await Read(File(R,'windows/'+Part.windowId+'/hypothesis.json'),R.scope,Policy.maxWorkerResultBytes)));HypothesisId=Part.windowId;}
+     const Source=CaptionCueSource(Part,Hypothesis);Sources.push(Source);
+     if(Source.text!==Part.text||Part.startSample<Source.startSample||Part.endSample>Source.endSample||Part.endSample<=Part.startSample||Part.sourceStartSample!==undefined&&Part.sourceStartSample!==Source.startSample||Part.sourceEndSample!==undefined&&Part.sourceEndSample!==Source.endSample)Fail('caption_result_conflict');
+     for(const Unit of Source.keys){const Key=Part.windowId+':'+Part.revision+':'+Unit;if(Seen.has(Key))Fail('caption_result_conflict');Seen.add(Key);}
+    }
+    if(Q.startSample<Math.min(...Sources.map(S=>S.startSample))||Q.endSample>Math.max(...Sources.map(S=>S.endSample))||Q.text!==Sources.map(S=>S.text).join(Q.parts?'\n':''))Fail('caption_result_conflict');
    }
    for(const E of Mapping){if(E.epoch!==(Q.epoch??0))continue;
     const A=Math.max(Q.startSample,E.validStartSample),B=Math.min(Q.endSample,E.validEndSample);if(B<=A)continue;
@@ -367,6 +378,8 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
    }
   }
   Cues.sort((A,B)=>A.start-B.start||A.end-B.end);
+  const Corrected=CorrectCaptionOverlaps(Cues.map(C=>({...C,startSample:Math.round(C.start*Policy.sampleRate),endSample:Math.round(C.end*Policy.sampleRate),epoch:0})));
+  if(Corrected.warnings)Cues.splice(0,Cues.length,...Corrected.cues.map(C=>({...C,start:C.startSample/Policy.sampleRate,end:C.endSample/Policy.sampleRate})));
   if(M.audioBoundOnly!==undefined&&typeof M.audioBoundOnly!=='boolean')Fail('caption_invalid');
   const Receipt={mapping:Mapping.map(({offset,...E})=>E),expectedCoverage:Coverage,outputStart:M.outputStart,outputEnd:M.outputEnd,audioBoundOnly:M.audioBoundOnly===true,formats:[...new Set(M.formats)].sort()},Signature=await Digest(Encoder.encode(JSON.stringify({receipt:Receipt,cues:Cues})));
   if(R.state.resultSignature===Signature){
@@ -375,7 +388,7 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
   }const Revision=(R.state.resultRevision||0)+1;
   for(const F of Receipt.formats)await Write(File(R,'result-'+Revision+'.'+F),Encoder.encode(CaptionTextForFormat({cues:Cues},F)),R.scope);
   await Write(File(R,'mapped-cues-'+Revision+'.json'),Encoder.encode(JSON.stringify(Cues)),R.scope);
-  return State(R,{phase:'recognized',finalizationPending:false,formats:Receipt.formats,resultRevision:Revision,resultSignature:Signature,finalMappingReceipt:Receipt,outputs:{},committedSamples:CaptionSpanLength(Coverage),finalSamples:CaptionSpanLength(Coverage),language:R.state.language||R.state.options?.language||'auto',error:null});
+  return State(R,{phase:'recognized',finalizationPending:false,formats:Receipt.formats,resultRevision:Revision,resultSignature:Signature,finalMappingReceipt:Receipt,outputs:{},committedSamples:CaptionSpanLength(Coverage),finalSamples:CaptionSpanLength(Coverage),language:R.state.language||R.state.options?.language||'auto',...(Corrected.warnings?{warningCount:Corrected.warnings,warningCode:'caption_timing_adjusted'}:{}),error:null});
  }
  function Credit(R){return Math.max(0,Math.min(Policy.maxQueuedWindows-WindowOwners.size,Policy.maxQueuedWindows-[...R.windows.values()].filter(W=>W.phase!=='acked'||!W.creditReleased).length));}
  async function WindowLoop(R){
@@ -384,9 +397,12 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
     await Admission(R,Policy.maxWorkerResultBytes,true);
     const V=W.window,Dir=File(R,'windows/'+V.id),D=W.prepareToken?{files:[{path:await EncodedPreparation.slice(R,V,W.prepareToken),frames:V.inputEndSample-V.inputStartSample}]}:await Run(R,'decode',{source:Dir+'/input.media',output:Dir+'/audio',rate:Policy.sampleRate,chunkSeconds:Policy.chunkSeconds,alignOrigin:false,maxOutputBytes:Policy.maxPcmWindows*Policy.sampleRate*Policy.chunkSeconds*2,minFreeBytes:Policy.minFreeBytes,
      trim:{before:V.trimStartSamples||0,frames:V.inputEndSample-V.inputStartSample,expectedFrames:V.inputEndSample-V.inputStartSample+(V.trimStartSamples||0)+(V.trimEndSamples||0)}});
-    if(D.files.length!==1||D.files[0].frames!==V.inputEndSample-V.inputStartSample)Fail('caption_window_clock');const H=await Infer(R,D.files[0].path,'windows/'+V.id+'/inference');
+    // WindowLoop is serial; read each scratch result before the next inference.
+    // Keep the atomic writer's temporary suffix below Windows' path limit.
+    if(D.files.length!==1||D.files[0].frames!==V.inputEndSample-V.inputStartSample)Fail('caption_window_clock');const H=await Infer(R,D.files[0].path,'window-inference');
     W.result={windowId:V.id,revision:(V.repairAttempt||0)+1,...(V.repairOf?{repairOf:V.repairOf,repairAttempt:V.repairAttempt}:{}),language:R.state.language||R.state.options.language,cues:H.segments.map(([A,B,T])=>({startSample:V.inputStartSample+Math.round(A*Policy.sampleRate),endSample:V.inputStartSample+Math.round(B*Policy.sampleRate),text:T})),coverage:{epoch:V.epoch,startSample:V.inputStartSample,endSample:V.inputEndSample},diagnostics:{epoch:V.epoch,coreStartSample:V.coreStartSample,coreEndSample:V.coreEndSample}};
-    const Bytes=Encoder.encode(JSON.stringify(W.result));if(Bytes.length>Policy.maxWorkerResultBytes)Fail('caption_result_limit');await Write(Dir+'/hypothesis.json',Bytes,R.scope);W.resultBytes=Bytes.length;W.result={...W.result,cues:undefined,resultRef:true,bytes:Bytes.length,sha256:await Digest(Bytes)};W.phase='recognized';R.results.push(V.id);
+    if(H.words)W.result.words=H.words.map(([A,B,T,Index,Probability])=>({startSample:V.inputStartSample+Math.round(A*Policy.sampleRate),endSample:V.inputStartSample+Math.round(B*Policy.sampleRate),text:T,segmentIndex:Index,probability:Probability}));
+    const Bytes=Encoder.encode(JSON.stringify(W.result));if(Bytes.length>Policy.maxWorkerResultBytes)Fail('caption_result_limit');await Write(Dir+'/hypothesis.json',Bytes,R.scope);W.resultBytes=Bytes.length;W.result={...W.result,cues:undefined,words:undefined,resultRef:true,bytes:Bytes.length,sha256:await Digest(Bytes)};W.phase='recognized';R.results.push(V.id);
     await Run(R,'remove',{area:'jobs',path:Dir+'/audio'});await State(R,{credit:Credit(R),completed:R.results.length,total:R.windows.size});
    }}finally{R.windowTask=null;}
    if(R.state.inputSealed){await CloseSession(R);await State(R,{phase:'windowed-ready'});}
@@ -449,7 +465,7 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
   if(M.action==='decoderClose')return DispatchDecoder(R,M);
   if(['begin','openConcurrent'].includes(M.action)){
    if(R.tasks.size||R.recognizing||R.sessionSlot)Fail('caption_busy');if(R.state.attempt!==undefined&&M.attempt<=R.state.attempt){
-    if(M.attempt===R.state.attempt){if((M.action==='openConcurrent')!==(R.state.mode==='windowed')||M.action==='openConcurrent'&&(M.sourceFingerprint!==R.state.sourceFingerprint||JSON.stringify(Options(M.options))!==JSON.stringify(R.state.options)))Fail('caption_session_conflict');return {...R.state,credit:Credit(R)};}Fail('caption_stale_attempt');
+    if(M.attempt===R.state.attempt){if((M.action==='openConcurrent')!==(R.state.mode==='windowed')||M.action==='openConcurrent'&&(M.sourceFingerprint!==R.state.sourceFingerprint||CaptionOptionsKey(Options(M.options))!==CaptionOptionsKey(R.state.options)))Fail('caption_session_conflict');return {...R.state,credit:Credit(R)};}Fail('caption_stale_attempt');
    }
    if(M.action==='openConcurrent'&&!/^[a-f0-9]{64}$/.test(M.sourceFingerprint||''))Fail('caption_invalid');
    await CloseDecoders(R);await CloseSession(R);await EncodedPreparation.release(R);

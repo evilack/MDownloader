@@ -141,6 +141,24 @@ if (typeof html5player.setSubtitles === 'function') { html5player.setSubtitles('
 [{"l":"en","n":"English","f":"https://subs.test/en.vtt"},
 {"l":"ko","n":"Korean","f":"https://subs.test/ko.vtt"}]); }`;
 
+Test('provider and standard captions have the same error semantics', () =>
+{
+	Assert.ok(Page({scripts: [ProviderScript]}).run().every(Item => Item.optional === undefined));
+	Assert.equal(Page({players: [Player({tracks: [Track({src: '/en.vtt'})]})]}).run()[0].optional, undefined);
+});
+
+Test('loaded player duplicates preserve original labels without suppressing errors', () =>
+{
+	const Tracks=[Track({src:'https://subs.test/en.vtt',label:'English player label'}),
+		Track({src:'https://subs.test/ko.vtt',srclang:'ko',label:'Korean player label'}),
+		Track({src:'https://subs.test/other.vtt',srclang:'ja',label:'Unrelated standard track'})];
+	const Result=Page({players:[Player({tracks:Tracks})],scripts:[ProviderScript]}).run();
+	Assert.equal(Result.length,3);
+	Assert.deepEqual(Result.slice(0,2).map(Item=>Item.optional),[undefined,undefined]);
+	Assert.deepEqual(Result.slice(0,2).map(Item=>Item.label),['English player label','Korean player label']);
+	Assert.equal(Result[2].optional,undefined);
+});
+
 Test('reads only literal provider configuration owned by the selected player without executing scripts', () =>
 {
 	const Subject = Page({scripts: [ProviderScript + '; throw Error("must never execute");']});

@@ -6,6 +6,7 @@ import { RetryableTransferError } from './segment-transfer.js';
 import { LocalizedError } from './i18n.js';
 import { NormalizeHlsProtocol } from './hls-protocol.js';
 import {AssertMediaAllowed} from './youtube-source-policy.js';
+import {HlsResourceRequestContext} from './hls-request-context.js';
 export class HlsHttpError extends LocalizedError
 {
 	constructor(Key, Status, bChallenge = false, ...Args)
@@ -16,17 +17,22 @@ export class HlsHttpError extends LocalizedError
 	}
 }
 
-export async function FetchMedia(Address, Signal, bObservedContext = false, LocalRange, bFresh = false)
+export async function FetchMedia(Address, Signal, ObservedContext = false, LocalRange, bFresh = false)
 {
 	AssertMediaAllowed({url: Address});
+	// A captured cookie mode belongs only to the observed CDN. Do not spread it
+	// to a different asset/key host declared by that server's playlist.
+	const IncludeCredentials = !ObservedContext || HlsResourceRequestContext(ObservedContext, Address)?.includeCredentials === true;
 	let HttpResponse;
+	const Deadline = new AbortController();
+	const Timer = setTimeout(() => Deadline.abort(new DOMException('Media response timed out', 'TimeoutError')), RuntimePolicy.Transfer.RequestTimeoutMs);
 	try
 	{
 		HttpResponse = await fetch(Address, {
-			signal: AbortSignal.any([Signal, AbortSignal.timeout(RuntimePolicy.Transfer.RequestTimeoutMs)]),
+			signal: AbortSignal.any([Signal, Deadline.signal]),
 			redirect: 'error',
-			credentials: bObservedContext ? 'omit' : 'include',
-			...(bObservedContext || bFresh ? { cache: 'no-store' } : {}),
+			credentials: IncludeCredentials ? 'include' : 'omit',
+			...(ObservedContext || bFresh ? { cache: 'no-store' } : {}),
 			...(LocalRange ? { headers: { Range: `bytes=${LocalRange.start}-${LocalRange.end}` } } : {}),
 		});
 	}
@@ -38,6 +44,7 @@ export async function FetchMedia(Address, Signal, bObservedContext = false, Loca
 		}
 		throw ErrorValue;
 	}
+	finally { clearTimeout(Timer); }
 	if (HttpResponse.status === 429 || HttpResponse.status >= 500)
 	{
 		await HttpResponse.body?.cancel();
@@ -65,6 +72,26 @@ export async function FetchMedia(Address, Signal, bObservedContext = false, Loca
 	return HttpResponse;
 }
 
+async function ReadResponseChunk(Reader, Signal)
+{
+	let Timer, OnAbort;
+	try
+	{
+		Signal.throwIfAborted();
+		return await Promise.race([Reader.read(), new Promise((_Resolve, Reject) =>
+		{
+			OnAbort = () => Reject(Signal.reason);
+			Signal.addEventListener('abort', OnAbort, {once: true});
+			Timer = setTimeout(() => Reject(new DOMException('Media response stalled', 'TimeoutError')), RuntimePolicy.Transfer.RequestTimeoutMs);
+		})]);
+	}
+	finally
+	{
+		clearTimeout(Timer);
+		if (OnAbort) Signal.removeEventListener('abort', OnAbort);
+	}
+}
+
 export async function CopyResponse(HttpResponse, Limit, Signal, Consume)
 {
 	const Reader = HttpResponse.body.getReader();
@@ -74,7 +101,10 @@ export async function CopyResponse(HttpResponse, Limit, Signal, Consume)
 		for (; ; )
 		{
 			Signal.throwIfAborted();
-			const { value: Value, done: Done } = await Reader.read();
+			// Each delivered chunk renews the idle deadline. A slow but progressing
+			// segment must not be aborted by the earlier response-header deadline.
+			const { value: Value, done: Done } = await ReadResponseChunk(Reader, Signal);
+			Signal.throwIfAborted();
 			if (Done)
 			{
 				break;

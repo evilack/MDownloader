@@ -18,7 +18,13 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 	const SingleStreams = new Set(Candidates.filter(Item => Item.singleStream).map(Item => Item.id));
 	const SelectedSources = new Set(Candidates.filter(Item => Item.selectedSource).map(Item => Item.id));
 	const PageSources = new Set(Candidates.filter(Item => Item.pagePlayer === true).map(Item => Item.id));
+	const MetaReelSources = new Set(Candidates.filter(Item => Item.metaReelPlayer === true).map(Item => Item.id));
 	const Results = new Map();
+	const Thumbnails = new Map(!Capture && !bMetadataOnly && Page
+		? Candidates.filter(Item => Item.thumbnailUrl && Item.pagePlayer).map(Item => [Item.id, Item.thumbnailUrl]) : []);
+	// A video cover exists independently of a decoded frame (paused/loading players).
+	// The exact document URL was checked above, including after SPA navigation.
+	for (const [Id, Still] of Thumbnails) Results.set(Id, {id: Id, still: Still});
 
 	// 주입 함수는 모듈을 가져올 수 없으므로, 워커가 넘긴 표준 갱신 쿼리 이름으로 비교 키를 만듭니다.
 	// 실제 요청 주소는 바꾸지 않습니다. 서명·인증 쿼리는 그대로 남아 다른 세션과 구분됩니다.
@@ -166,12 +172,13 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 		}
 	}
 
-	function Snapshot(Player)
+	function Snapshot(Player, Thumbnail, MetaReel)
 	{
 		const Live = Player.duration === Infinity ? { live: true } : {};
 		const Duration = Number.isFinite(Player.duration) && Player.duration > 0 ? Player.duration : undefined;
 		const Resolution = Player.videoWidth > 0 && Player.videoHeight > 0
 		? { resolution: { width: Player.videoWidth, height: Player.videoHeight } } : {};
+		if (Thumbnail) return {still: Thumbnail, duration: Duration, ...Live, ...Resolution};
 		const Poster = /^https?:\/\//i.test(Player.poster ?? '') ? Player.poster : undefined;
 		// 재생 위치가 처음이면 영상의 첫 프레임 대신 플레이어 표지 이미지를 사용합니다.
 		// 재생이 진행된 뒤에는 현재 프레임을 읽습니다.
@@ -179,7 +186,7 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 		{
 			return { still: Poster, duration: Duration, ...Live, ...Resolution };
 		}
-		let Still;
+		let Still, ViewportCrop;
 		if (Player.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && Player.videoWidth)
 		{
 			try
@@ -194,9 +201,17 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 			catch
 			{
 				/* 출처가 다른 영상은 Chrome이 캔버스 픽셀 읽기를 거부할 수 있습니다. */
+				if (MetaReel && Player.currentSrc)
+				{
+					const Bounds = Player.getBoundingClientRect();
+					const X = Math.max(0, Bounds.left), Y = Math.max(0, Bounds.top);
+					ViewportCrop = {source: Player.currentSrc, x: X, y: Y,
+						width: Math.min(window.innerWidth, Bounds.right) - X, height: Math.min(window.innerHeight, Bounds.bottom) - Y,
+						viewportWidth: window.innerWidth, viewportHeight: window.innerHeight, excludedSelector: ExcludedSelector};
+				}
 			}
 		}
-		return { still: Still ?? Poster, duration: Duration, ...Live, ...Resolution };
+		return { still: Still ?? Poster, duration: Duration, ...Live, ...Resolution, ...(ViewportCrop ? {viewportCrop: ViewportCrop} : {}) };
 	}
 
 	for (const Frame of Frames)
@@ -248,8 +263,21 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 			// A provider may bind its canonical page (not a media URL) to one decoded visible player.
 			// The worker must have validated this exact top-level document; never borrow child/ambiguous players.
 			const PagePlayers = Page && Frame === window && PageSources.size === 1 && Candidates.length === 1
-				? Players.filter(Player => Player.videoWidth > 0 && Player.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA &&
-					Player.getBoundingClientRect().width > 0 && Player.getBoundingClientRect().height > 0) : [];
+				? Players.filter(Player =>
+				{
+					if (!Player.videoWidth || Player.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return false;
+					const Bounds = Player.getBoundingClientRect();
+					if (MetaReelSources.size && Frame.getComputedStyle)
+					{
+						for (let Node = Player; Node; Node = Node.parentElement)
+						{
+							const Style = Frame.getComputedStyle(Node);
+							if (Node === Player && Style.visibility !== 'visible' || Style.opacity === '0') return false;
+						}
+					}
+					return Bounds.width > 0 && Bounds.height > 0 && (!MetaReelSources.size ||
+						Bounds.bottom > 0 && Bounds.right > 0 && Bounds.top < Frame.innerHeight && Bounds.left < Frame.innerWidth);
+				}) : [];
 			for (const [Id, Url] of Pending)
 			{
 				const Related = new Set([Url, ...(Capture?.variants ?? Variants.get(Id))].map(PlaybackKey));
@@ -326,7 +354,7 @@ export function CollectPlayerPreviews(Candidates, { maxWidth: MaxWidth, maxHeigh
 				}
 				if (!ByPlayer.has(Player))
 				{
-					ByPlayer.set(Player, Snapshot(Player));
+					ByPlayer.set(Player, Snapshot(Player, Thumbnails.get(Id), MetaReelSources.has(Id)));
 				}
 				const Preview = ByPlayer.get(Player);
 				if (Preview.still || Preview.duration || Preview.resolution)

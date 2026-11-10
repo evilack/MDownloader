@@ -1,7 +1,7 @@
 import {CanUseYoutube} from '../../lib/distribution-policy.js';
 import {IdentifyYoutubeUrl} from '../../lib/youtube-source-policy.js';
 import {CreateEvaluator, YoutubeError} from './evaluator.js';
-import {SameLanguage} from '../../lib/subtitle-translation.js';
+import {NormalizeWatchPlayer,ValidateWatchPlaybackUrl} from './sabr.js';
 const Fail = Code => {throw new YoutubeError(Code);};
 function Captions(Info, Id)
 {
@@ -32,7 +32,7 @@ const DefaultRequestContext = async Enabled =>
 	if (!Result?.ok) Fail('youtube_network_failed');
 };
 /** URL/쿠키/토큰/플레이어 스크립트는 세션 메모리 밖으로 기록하지 않습니다. */
-export function CreateYoutubeClient({createInnertube, reloadPlayer: ReloadPlayer = async (...Args) => (await import('../../vendor/youtube/client-bundle.mjs')).ReloadPlayerInfo(...Args), hasPermission = DefaultPermission, requestContext: RequestContext = DefaultRequestContext, fetch: Fetch = globalThis.fetch, evaluate = CreateEvaluator(), report = () => {}} = {})
+export function CreateYoutubeClient({createInnertube, parseWatchPlayer:ParseWatchPlayer=async(...Args)=>(await import('../../vendor/youtube/client-bundle.mjs')).ParseWatchPlayer(...Args), reloadPlayer: ReloadPlayer = async (...Args) => (await import('../../vendor/youtube/client-bundle.mjs')).ReloadPlayerInfo(...Args), hasPermission = DefaultPermission, requestContext: RequestContext = DefaultRequestContext, fetch: Fetch = globalThis.fetch, evaluate = CreateEvaluator(), report = () => {}} = {})
 {
 	const Sessions = new Map();
 	async function Permission(Url)
@@ -73,7 +73,7 @@ export function CreateYoutubeClient({createInnertube, reloadPlayer: ReloadPlayer
 		return ResponseValue;
 	}
 	return {
-		async DiscoverYoutube({pageUrl: PageUrl, transport: Transport = 'direct'}, Signal = new AbortController().signal)
+		async DiscoverYoutube({pageUrl: PageUrl, transport: Transport = 'direct',watchPlayer:WatchPlayer}, Signal = new AbortController().signal)
 		{
 			if (!CanUseYoutube()) Fail('youtube_distribution_disabled');
 			Signal.throwIfAborted();
@@ -97,15 +97,28 @@ export function CreateYoutubeClient({createInnertube, reloadPlayer: ReloadPlayer
 			Signal.throwIfAborted();
 			if (Info.basic_info?.id !== Identity.videoId) Fail('youtube_session_changed');
 			if (Info.basic_info?.is_upcoming && ['OK', 'LIVE_STREAM_OFFLINE'].includes(Info.playability_status?.status))
-				return {...Identity, mode: 'upcoming', title: Info.basic_info.title ?? '', formats: [], captions: []};
+			{
+				const Start = Info.basic_info.start_timestamp;
+				const Time = Start == null ? NaN : new Date(Start).getTime();
+				return {...Identity, mode: 'upcoming', title: Info.basic_info.title ?? '', formats: [], captions: [],
+					...(Number.isFinite(Time) ? {scheduledStartTime: new Date(Time).toISOString()} : {})};
+			}
+			let AuthorizedWatch=false,AuthorizedPlaybackUrl;
+			if(Info.playability_status?.status!=='OK'&&Transport==='sabr'&&WatchPlayer){
+				const Source=NormalizeWatchPlayer(WatchPlayer.player,Identity.videoId,{clientVersion:WatchPlayer.clientVersion});
+				if(WatchPlayer.resolvedUrl)AuthorizedPlaybackUrl=ValidateWatchPlaybackUrl(Source.url,WatchPlayer.resolvedUrl);
+				if(WatchPlayer.player.videoDetails.isLive||!/^[-\w.]{1,64}$/.test(WatchPlayer.clientVersion??''))Fail('youtube_restricted');
+				Info=await ParseWatchPlayer(Tube,WatchPlayer.player);AuthorizedWatch=true;
+				if(Info.basic_info?.id!==Identity.videoId)Fail('youtube_session_changed');
+			}
 			if (Info.playability_status?.status !== 'OK') Fail('youtube_restricted');
 			let Live = !!Info.basic_info?.is_live;
 			let CaptionTracks = Captions(Info, Identity.videoId);
 			let Profile;
 			if (Transport === 'sabr')
 			{
-				Profile = (await import('../../vendor/youtube/client-bundle.mjs')).SabrClientProfile;
-				try { Info = await Tube.getBasicInfo(Identity.videoId, {client: Profile.name}); }
+				Profile = AuthorizedWatch?{clientInfo:{clientName:1,clientVersion:WatchPlayer.clientVersion}}:(await import('../../vendor/youtube/client-bundle.mjs')).SabrClientProfile;
+				try { if(!AuthorizedWatch)Info = await Tube.getBasicInfo(Identity.videoId, {client: Profile.name}); }
 				catch (ErrorValue) { if (ErrorValue instanceof YoutubeError) throw ErrorValue; Fail('youtube_extraction_failed'); }
 				if (Info.basic_info?.id !== Identity.videoId) Fail('youtube_session_changed');
 				if (Info.playability_status?.status !== 'OK' || Info.basic_info?.is_upcoming) Fail('youtube_restricted');
@@ -129,10 +142,10 @@ export function CreateYoutubeClient({createInnertube, reloadPlayer: ReloadPlayer
 				const Heartbeat = Info.page?.[0]?.heartbeat_params;
 				Sabr = {videoId: Identity.videoId, title: Info.basic_info.title ?? '', ...(Live ? {live: true, heartbeatParams: {
 					heartbeatToken: Heartbeat?.heartbeat_token, heartbeatServerData: Heartbeat?.heartbeat_server_data, intervalMilliseconds: Heartbeat?.interval_milliseconds,
-				}} : {}), postLiveDvr: !!Info.basic_info.is_post_live_dvr, duration: Info.basic_info.duration, url: Url.href, ustreamerConfig: Config, formats: Formats, clientInfo: Profile.clientInfo};
+				}} : {}), postLiveDvr: !!Info.basic_info.is_post_live_dvr, duration: Info.basic_info.duration, url: AuthorizedPlaybackUrl||Url.href, ustreamerConfig: Config, formats: Formats, clientInfo: Profile.clientInfo};
 			}
 			const SessionKey = crypto.randomUUID();
-			Sessions.set(SessionKey, {tube: Tube, fetchScope: FetchScope, videoId: Identity.videoId, formats: Formats, created: Date.now(), sabr: Sabr, captions: CaptionTracks});
+			Sessions.set(SessionKey, {tube: Tube, fetchScope: FetchScope, videoId: Identity.videoId, formats: Formats, created: Date.now(), sabr: Sabr, sabrUrlResolved:!!AuthorizedPlaybackUrl, captions: CaptionTracks});
 			while (Sessions.size > 8) Sessions.delete(Sessions.keys().next().value);
 			return {...Identity, ...(Sabr ? {transport: 'sabr'} : {}), ...(Live ? {mode: 'live'} : {}), title: Info.basic_info.title ?? '', duration: Info.basic_info.duration,
 				captions: CaptionTracks.map(({url: _Url, identity: _Identity, ...Track}) => Track),
@@ -141,7 +154,7 @@ export function CreateYoutubeClient({createInnertube, reloadPlayer: ReloadPlayer
 					container: Format.mime_type?.split(';')[0].split('/')[1], codecs: Format.mime_type?.match(/codecs="([^"]+)"/)?.[1].split(',').map(Value => Value.trim()) ?? [],
 					width: Format.width, height: Format.height, fps: Format.fps, bitrate: Format.bitrate, contentLength: Format.content_length, language: Format.language}))};
 		},
-		async ResolveYoutubeCaptions({sessionKey: Key, videoId: Id}, Signal = new AbortController().signal, {includeAutoGenerated: IncludeAutoGenerated = true, trackIds: TrackIds, translation: Translation} = {})
+		async ResolveYoutubeCaptions({sessionKey: Key, videoId: Id}, Signal = new AbortController().signal, {includeAutoGenerated: IncludeAutoGenerated = true, trackIds: TrackIds} = {})
 		{
 			if (!CanUseYoutube()) Fail('youtube_distribution_disabled');
 			Signal.throwIfAborted();
@@ -149,7 +162,7 @@ export function CreateYoutubeClient({createInnertube, reloadPlayer: ReloadPlayer
 			if (!Session || Session.videoId !== Id || Date.now() - Session.created > 30 * 60 * 1000) Fail('youtube_session_changed');
 			Session.fetchScope.signal = Signal;
 			await Permission('https://www.youtube.com/');
-			const Selected = Session.captions.filter(Track => (IncludeAutoGenerated || Track.kind !== 'asr') && (!TrackIds || TrackIds.includes(Track.id) || Translation?.enabled && SameLanguage(Track.language, Translation.targetLanguage)));
+			const Selected = Session.captions.filter(Track => (IncludeAutoGenerated || Track.kind !== 'asr') && (!TrackIds || TrackIds.includes(Track.id)));
 			for (const Track of Selected)
 			{
 				const Url = new URL(Track.url);
@@ -173,7 +186,7 @@ export function CreateYoutubeClient({createInnertube, reloadPlayer: ReloadPlayer
 				const Video = Session.formats[VideoIndex], Audio = Session.formats[AudioIndex];
 				if (!Video || !Audio || !Video.mime_type?.includes('avc1') || !Audio.mime_type?.includes('mp4a')) Fail('youtube_format_unavailable');
 				let Url;
-				try { Url = new URL(await Session.tube.session.player.decipher(Session.sabr.url)); }
+				try { Url = new URL(Session.sabrUrlResolved?Session.sabr.url:await Session.tube.session.player.decipher(Session.sabr.url)); }
 				catch (ErrorValue) { if (ErrorValue instanceof YoutubeError) throw ErrorValue; Fail('youtube_evaluator_failed'); }
 				if (Url.protocol !== 'https:' || !Url.hostname.endsWith('.googlevideo.com')) Fail('youtube_unexpected_host');
 				if (Number(Url.searchParams.get('expire') || Infinity) * 1000 <= Date.now() + 30000) Fail('youtube_url_expired');

@@ -59,6 +59,7 @@ function Fixture(Options = {})
 		crypto: {randomUUID: () => 'independent-session'}, navigator: {userAgent: 'test-agent', appVersion: 'test-os'},
 		setTimeout: (...Args) => setTimeout(...Args).unref(), clearTimeout, setInterval: (...Args) => setInterval(...Args).unref(), clearInterval, Date};
 	const Receiver = StartWebRtcReceiver(Descriptor, {signal: Options.signal,
+		onStart: Options.onStart,
 		onData: async BlobValue => { if (Options.onData) await Options.onData(BlobValue); Data.push(await BlobValue.text()); }, onEnd: Reason => Ends.push(Reason)}, Dependencies);
 	const Info = {status: true, mediaSessionId: 'independent-session', profiles: {source: {width: 1920, height: 1080, bitrate: 4000000}}};
 	async function Connect()
@@ -73,7 +74,9 @@ function Fixture(Options = {})
 
 Test('independent signaling validates server quality and starts MP4 recording before readiness', async () =>
 {
-	const F = Fixture(); await F.Connect();
+	let StartedAt;
+	const F = Fixture({onStart: Value => {StartedAt = Value;}}); await F.Connect();
+	Assert.ok(Number.isFinite(StartedAt), 'the caption clock is aligned when recording starts, before readiness');
 	Assert.equal(F.Sockets[0].url, F.Descriptor.url);
 	Assert.equal(F.Sockets[0].sent[0].message, 'connection');
 	Assert.deepEqual(F.Sockets[0].sent[0].data[0].custom, F.Descriptor.connection.custom);

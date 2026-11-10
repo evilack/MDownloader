@@ -68,22 +68,30 @@ export function CreateMediaPreview()
 		{
 			DebugLog.Record('PreviewClosed');
 		}
-		const { controller: Controller, player: Player, objectUrl: ObjectUrl } = Active;
+		const Session = Active;
 		Active = undefined;
 		clearTimeout(CloseTimer);
-		Controller.abort();
+		Session.controller.abort();
+		ReleasePlayer(Session);
+		Media.replaceChildren();
+		ShowPath();
+	}
+
+	function ReleasePlayer(Session)
+	{
+		const {player: Player, objectUrl: ObjectUrl} = Session;
+		Session.player = Session.objectUrl = undefined;
 		if (Player)
 		{
 			Player.pause();
 			Player.removeAttribute('src');
 			Player.load();
+			Player.remove();
 		}
 		if (ObjectUrl)
 		{
 			URL.revokeObjectURL(ObjectUrl);
 		}
-		Media.replaceChildren();
-		ShowPath();
 	}
 
 	function ShowPath(StreamPath)
@@ -112,7 +120,7 @@ export function CreateMediaPreview()
 		{
 			return;
 		}
-		if (RelatedTarget instanceof Node && (Hover.contains(RelatedTarget) || Active.trigger.contains(RelatedTarget)))
+		if (RelatedTarget instanceof Node && Active.trigger.contains(RelatedTarget))
 		{
 			return;
 		}
@@ -120,7 +128,8 @@ export function CreateMediaPreview()
 		CloseTimer = setTimeout(() => Close(), RuntimePolicy.Preview.HoverCloseDelayMs);
 	}
 
-	Hover.addEventListener('pointerenter', () => clearTimeout(CloseTimer));
+	// The preview is display-only: entering it must not keep thumbnail hover alive.
+	Hover.addEventListener('pointerenter', () => Close());
 	Hover.addEventListener('pointerleave', UiEvent => ScheduleClose(UiEvent.relatedTarget));
 	Hover.addEventListener('beforetoggle', UiEvent =>
 	{
@@ -170,7 +179,7 @@ export function CreateMediaPreview()
 		function ReportPlayback(State)
 		{
 			// 이미 닫힌 세션의 늦은 실패가 다른 행의 상태를 바꾸지 못하게 합니다.
-			if (Signal.aborted || Active !== Session || PlaybackState === State)
+			if (Signal.aborted || Active !== Session || PlaybackState === State || PlaybackState === 'failed')
 			{
 				return;
 			}
@@ -182,12 +191,27 @@ export function CreateMediaPreview()
 			if (State !== 'loading')
 			{
 				clearTimeout(PlaybackTimer);
-			}
-			if (State === 'failed')
-			{
 				Loading.remove();
 			}
 			OnPlaybackState?.(State);
+			if (State === 'failed')
+			{
+				// A deadline is terminal for this hover, including late lookups,
+				// stream reads and frame callbacks. Re-entering starts a fresh session.
+				Controller.abort();
+				ReleasePlayer(Session);
+				if (Still)
+				{
+					Still.removeAttribute('aria-hidden');
+					Media.replaceChildren(Still);
+					PositionHover();
+				}
+				else
+				{
+					Media.replaceChildren();
+					if (Hover.matches(':popover-open')) Hover.hidePopover();
+				}
+			}
 		}
 		ReportPlayback('loading');
 		// 로딩이 끝나지 않는 경우에도 재생 시작 제한 시간을 지난 뒤에만 실패를 알립니다.
@@ -246,6 +270,7 @@ export function CreateMediaPreview()
 
 		function ShowPlayer(Source, LocalAudio, Sample)
 		{
+			if (Signal.aborted) return;
 			const Player = CreateElement(LocalAudio ? 'audio' : 'video');
 			Session.player = Player;
 			if (Source instanceof Blob)
@@ -258,46 +283,47 @@ export function CreateMediaPreview()
 			Player.muted = true;
 			Player.loop = Sample;
 			Player.playsInline = true;
-			Player.addEventListener('playing', () => ReportPlayback('playing'), { signal: Signal });
+			let StartedPlaying = false, FirstFrame = LocalAudio;
+			function CheckPlayback()
+			{
+				if (StartedPlaying && FirstFrame) ReportPlayback('playing');
+			}
+			Player.addEventListener('playing', () =>
+			{
+				StartedPlaying = true;
+				CheckPlayback();
+			}, { signal: Signal });
+			if (!LocalAudio)
+			{
+				// Register before loading so even a short clip's first frame is observed.
+				// An init-only MP4 can emit playing/ended without submitting any frame.
+				const Frame = Player.requestVideoFrameCallback(() =>
+				{
+					if (Signal.aborted) return;
+					FirstFrame = true;
+					Still?.setAttribute('aria-hidden', 'true');
+					Player.classList.remove('preview-video-entering');
+					CheckPlayback();
+				});
+				Signal.addEventListener('abort', () => Player.cancelVideoFrameCallback(Frame), { once: true });
+			}
+			Player.addEventListener('ended', () =>
+			{
+				if (!FirstFrame || !StartedPlaying) ReportPlayback('failed');
+			}, { signal: Signal });
 			Player.addEventListener('loadeddata', () =>
 			{
 				if (LocalAudio || !Still?.isConnected)
 				{
-					Loading.remove();
 					Show(Player);
 					return;
 				}
 				// 플레이어가 첫 프레임을 제출할 때까지 영상 레이어를 투명하게 두어 아래 썸네일이 보이게 합니다.
-				Player.classList.add('preview-video-entering');
+				if (!FirstFrame) Player.classList.add('preview-video-entering');
 				Still.after(Player);
 				PositionHover();
-				const Frame = Player.requestVideoFrameCallback(() =>
-				{
-					if (!Player.isConnected)
-					{
-						return;
-					}
-					Loading.remove();
-					Still.setAttribute('aria-hidden', 'true');
-					Player.classList.remove('preview-video-entering');
-				});
-				Signal.addEventListener('abort', () => Player.cancelVideoFrameCallback(Frame), { once: true });
 			}, { once: true, signal: Signal });
-			Player.addEventListener('error', () =>
-			{
-				ReportPlayback('failed');
-				Loading.remove();
-				// 재생이 실패해도 준비된 썸네일을 보여 줍니다. 이미지도 없으면 빈 팝오버를 열지 않습니다.
-				if (Still)
-				{
-					Still.removeAttribute('aria-hidden');
-					Show(Still);
-				}
-				else if (Player.isConnected)
-				{
-					Close(Trigger);
-				}
-			}, { signal: Signal });
+			Player.addEventListener('error', () => ReportPlayback('failed'), { signal: Signal });
 			Player.src = Source;
 			void Player.play().catch(() => ReportPlayback('failed'));
 		}

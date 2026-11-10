@@ -1,5 +1,6 @@
 import {Translate} from './i18n.js';
-import {CreateElement} from './ui.js';
+import {CreateButton, CreateElement, SetButtonIcon} from './ui.js';
+import {ShowIssueReportDialog} from '../issue-report-dialog.js';
 
 /** 팝업과 사이드 패널의 공통 안내입니다. 문장 순서는 번역 카탈로그가 정하고,
  * 새로고침 구절만 별도 요소로 강조합니다. 번역 문자열을 HTML로 실행하지 않습니다.
@@ -21,9 +22,15 @@ function CreateHintLine(MessageKey, EmphasisKey)
 	return Line;
 }
 
-export function CreatePlaybackHint()
+export function CreatePlaybackHint({getPage = () => undefined} = {})
 {
+	const Row = CreateElement('div', '', 'playback-hint-row');
 	const Hint = CreateElement('p', '', 'playback-hint');
 	Hint.append(CreateHintLine('hint_stream_playback', 'hint_playback_actions'), CreateHintLine('hint_stream_retry', 'hint_reload_page'));
-	return Hint;
+	const Report = CreateButton('', () => ShowIssueReportDialog(getPage()));
+	SetButtonIcon(Report, Translate('issue_report_title'), 'report-issue');
+	Report.classList.add('issue-report-button');
+	Report.setAttribute('aria-haspopup', 'dialog');
+	Row.append(Hint, Report);
+	return Row;
 }

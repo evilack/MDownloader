@@ -1,5 +1,8 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+.language-code-control { display: grid; gap: 6px; min-inline-size: 0; }
+.language-code-control > label { font-size: 12px; }
+.language-code-custom { display: grid; gap: 6px; margin-block-start: 4px; min-inline-size: 0; }
 :root {
   color-scheme: dark;
   font: 14px/1.5 system-ui, 'Malgun Gothic', sans-serif;
@@ -17,21 +20,57 @@
   --preview-surface: #10131a;
   --control-line: #656f7e;
   --action-icon-size: 20px;
+  --popup-inline-size: 500px;
   --preview-spinner-period: 850ms;
   --preview-fade-duration: 300ms;
 }
 body { margin: 0; background: var(--bg); color: var(--text); }
-.popup { inline-size: 420px; max-height: 460px; display: flex; flex-direction: column; }
+.popup { inline-size: var(--popup-inline-size); max-height: 460px; display: flex; flex-direction: column; }
 .brand { padding: 13px 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; border-bottom: 1px solid var(--line); }
 .brand strong { color: var(--mint); font-size: 16px; }
 .playback-hint { margin-block: 12px 0; color: var(--muted); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
 .playback-hint > span { display: block; }
 .playback-hint strong { color: var(--mint); }
+.playback-hint-row { display: flex; align-items: center; gap: 10px; margin-block-start: 12px; }
+.playback-hint-row .playback-hint { flex: 1; min-inline-size: 0; margin: 0; }
+.playback-hint-row .issue-report-button { flex: none; inline-size: 32px; min-block-size: 32px; }
+.popup:has(.issue-report-dialog[open]) { min-block-size: 560px; max-block-size: 560px; }
+.issue-report-dialog { inline-size: min(460px, calc(100vw - 20px)); max-inline-size: none; max-block-size: calc(100dvh - 20px); margin: auto; padding: 0; border: 1px solid var(--line); border-radius: 10px; color: var(--text); background: var(--surface); overscroll-behavior: contain; }
+.issue-report-dialog::backdrop { background: rgb(0 0 0 / .65); overflow: hidden; overscroll-behavior: contain; }
+.issue-report-dialog form { display: flex; flex-direction: column; max-block-size: calc(100dvh - 22px); }
+.issue-report-dialog header, .issue-report-dialog footer { flex: none; display: flex; align-items: center; gap: 8px; padding: 12px 16px; }
+.issue-report-dialog header { border-block-end: 1px solid var(--line); }
+.issue-report-dialog h2 { margin: 0; padding: 0; border: 0; font-size: 16px; }
+.issue-report-dialog footer { justify-content: flex-end; border-block-start: 1px solid var(--line); }
+.issue-report-dialog footer button { min-inline-size: 72px; }
+.issue-report-body { display: grid; gap: 12px; min-block-size: 0; overflow: auto; padding: 14px 16px; font-size: 12px; scrollbar-width: thin; overscroll-behavior: contain; }
+.issue-report-body p { margin: 0; }
+.issue-report-field { display: grid; gap: 6px; min-inline-size: 0; }
+.issue-report-field > label, .issue-report-types legend { font-weight: 650; }
+.issue-report-field input, .issue-report-field textarea { inline-size: 100%; min-inline-size: 0; padding: 8px 10px; border: 1px solid var(--control-line); border-radius: 6px; background: var(--bg); color: var(--text); font: inherit; }
+.issue-report-field input[readonly] { color: var(--muted); }
+.issue-report-field textarea { min-block-size: 72px; resize: vertical; }
+.issue-report-field textarea::placeholder { color: var(--muted); opacity: 1; }
+.issue-report-types { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
+.issue-report-types legend { padding: 0; margin-block-end: 4px; }
+.issue-report-choices { display: flex; flex-wrap: wrap; gap: 6px; margin-block-start: 8px; }
+.issue-report-choice { display: flex; align-items: center; gap: 6px; min-block-size: 34px; padding: 5px 8px; border: 1px solid var(--control-line); border-radius: 6px; cursor: pointer; }
+.issue-report-choice:has(input:checked) { border-color: var(--mint); background: #76f5b610; }
+.issue-report-choice input { accent-color: var(--mint); margin: 0; }
+.issue-report-question { font-weight: 650; }
+.issue-report-feedback { color: var(--mint); }
+.issue-report-feedback:empty { display: none; }
+.issue-report-feedback[data-error="true"] { color: #ffb4ac; }
+.issue-report-message { inline-size: min(380px, calc(100vw - 32px)); }
+.issue-report-message::backdrop { background: rgb(0 0 0 / .45); }
+.issue-report-message-body { display: grid; gap: 16px; min-block-size: 0; overflow: auto; padding: 20px 16px; }
+.issue-report-message-body p { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
+.issue-report-message-body progress { inline-size: 100%; block-size: 6px; accent-color: var(--mint); }
 .brand span { color: var(--muted); font-size: 12px; }
 .brand-with-options { align-items: center; flex-wrap: nowrap; padding-block: 9px; }
 .brand-with-options > #options { margin-inline-start: auto; min-height: 32px; }
 main { padding: 12px 16px 16px; }
-.popup main { min-height: 0; overflow: auto; overscroll-behavior: contain; }
+.popup main { min-height: 0; overflow: auto; scrollbar-width: thin; scrollbar-gutter: stable; overscroll-behavior: contain; }
 h1 { font-size: 23px; margin: 0 0 8px; }
 h2 { font-size: 17px; margin: 20px 0 0; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
 p { margin: 5px 0; }
@@ -52,10 +91,10 @@ ul { list-style: none; padding: 0; margin: 0; }
 @supports (color: contrast-color(red)) {
   .media-live { color: contrast-color(var(--live-surface)); }
 }
-.candidate-job-status { flex: 0 1 auto; max-inline-size: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--muted); }
-.candidate-job-status:not(:empty) { margin-inline-start: 6px; }
+.candidate-job-status { flex: 0 0 12ch; inline-size: 12ch; block-size: 30px; max-inline-size: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; color: var(--muted); display: flex; align-items: center; justify-content: end; }
+.candidate-job-status:empty { visibility: hidden; }
 .candidate-job-status:not(:empty), .state[data-state="canceled"], .job-end > .job-measure { padding-inline: 6px; border: 1px solid var(--line); border-radius: 999px; }
-.candidate-job-status[data-state="active"] { color: var(--transfer-text); flex: 0 1 12ch; }
+.candidate-job-status[data-state="active"] { color: var(--transfer-text); }
 .candidate-job-status[data-state="active"], .job-end > .job-measure { inline-size: 12ch; max-inline-size: 100%; min-inline-size: 0; font-size: 11px; padding-block: 2px; border-radius: 6px; }
 .candidate-job-status[data-state="complete"] { color: var(--mint); }
 .candidate-job-status[data-state="canceled"] { color: var(--mint); }
@@ -77,6 +116,27 @@ ul { list-style: none; padding: 0; margin: 0; }
 /* 선택 영역은 대상 행 아래의 문서 흐름에 놓습니다. 창 끝에서도 목록과 함께 스크롤됩니다. */
 .quality-dialog { position: static; margin: 0; inline-size: 100%; max-inline-size: none; max-block-size: none; padding: 16px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--text); overscroll-behavior: contain; }
 .quality-dialog h2 { margin: 0 0 12px; }
+.download-options-dialog { box-sizing: border-box; width: min(480px, calc(100vw - 16px)); max-width: none; max-height: calc(100dvh - 16px); padding: 0; border: 1px solid var(--line); border-radius: 9px; color: var(--text); background: var(--surface); overscroll-behavior: contain; }
+.download-options-dialog::backdrop { background: rgb(0 0 0 / 0.65); overflow: hidden; overscroll-behavior: contain; }
+.download-options-dialog form { display: flex; flex-direction: column; max-height: calc(100dvh - 18px); min-height: 0; }
+.download-options-dialog header, .download-options-dialog footer { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 12px; flex: none; }
+.download-options-dialog header { border-bottom: 1px solid var(--line); }
+.download-options-dialog h2, .download-options-dialog h3 { margin: 0; }
+.download-options-dialog h2 { font-size: 16px; padding: 0; border: 0; }
+.download-options-dialog h3 { font-size: 14px; }
+.download-options-dialog button { min-height: 32px; }
+.download-options-dialog .notice[data-error="true"] { color: #ffb4ac; }
+.download-options-dialog footer { border-top: 1px solid var(--line); justify-content: flex-end; }
+.download-options-body { overflow: auto; min-height: 0; padding: 12px; display: grid; gap: 14px; }
+.download-options-body section { display: grid; gap: 8px; min-width: 0; }
+.download-options-field { display: grid; gap: 4px; min-width: 0; }
+.download-options-field input, .download-options-field select, .download-options-body input[type="search"] { width: 100%; min-width: 0; box-sizing: border-box; }
+.download-options-tools { display: flex; justify-content: flex-end; gap: 4px; }
+.download-options-tracks { display: grid; gap: 4px; max-height: 150px; overflow: auto; }
+.download-options-tracks label { display: flex; align-items: center; gap: 8px; overflow-wrap: anywhere; }
+.download-options-dialog details { margin-top: 8px; }
+.download-options-dialog details > label { margin-top: 8px; }
+.download-options-dialog [hidden] { display: none !important; }
 #preview-hover { position: fixed; inset: auto; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--preview-surface); overflow: hidden; }
 #preview-hover:popover-open { display: block; }
 #preview-media { position: relative; display: grid; background: inherit; --preview-loading-size: 34px; }
@@ -118,9 +178,9 @@ button:disabled { opacity: .68; cursor: default; }
 .job-section-heading h2 { margin: 0; padding: 0; border: 0; min-inline-size: 0; overflow-wrap: anywhere; }
 .job-section-heading > .icon-button { flex: none; }
 #panel-media-divider { margin-block: 16px; border: 0; border-block-start: 1px solid var(--line); }
-.job-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.job-top { display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; }
 .job-top-with-status { flex-wrap: nowrap; }
-.job-summary { display: flex; align-items: center; gap: 8px; flex: 1; min-inline-size: min-content; }
+.job-summary { display: flex; align-items: center; gap: 8px; flex: 1; min-inline-size: 0; }
 .name-wrap { display: flex; align-items: center; gap: 5px; position: relative; flex: 1; min-width: 0; max-width: 100%; }
 /* 이름만 줄이고 라이브 배지와 오른쪽 조작 버튼은 각각의 너비를 유지합니다. */
 .name-wrap > .filename { display: block; flex: 1; inline-size: 0; min-inline-size: 4ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -129,14 +189,23 @@ button:disabled { opacity: .68; cursor: default; }
 .job-measure { display: grid; min-inline-size: 0; line-height: 1.2; text-align: end; font-variant-numeric: tabular-nums; }
 .job-measure > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .job-measure-speed { color: var(--muted); }
-.job-end { display: grid; grid-auto-flow: column; grid-template-columns: minmax(0, 1fr) auto; flex: 0 1 auto; align-items: center; gap: 8px; margin-inline-start: auto; max-inline-size: 100%; }
+.job-end { display: grid; grid-template-columns: 12ch 116px; flex: 0 0 auto; align-items: center; gap: 8px; margin-inline-start: auto; font-size: 11px; }
 /* 수치 박스의 글자·너비·여백은 팝업의 활성 상태와 같은 규칙을 사용합니다. */
 .job-end > .job-measure { color: var(--transfer-text); }
-.job-inline-actions { display: flex; flex: none; align-items: center; gap: 7px; }
+.job-inline-actions { display: grid; grid-template-columns: repeat(3, 34px); align-items: center; gap: 7px; }
+.job-inline-actions > [data-action="cancel"] { grid-column: 1; }
+.job-inline-actions > [data-action="snapshot"], .job-inline-actions > [data-action="show"] { grid-column: 2; }
+.job-inline-actions > [data-action="finish"], .job-inline-actions > [data-action="remove"] { grid-column: 3; }
+/* 완료 후에는 실제 남은 버튼만 배치하고 평균 속도 전체 길이에 맞춥니다. */
+.job[data-state="complete"] .job-end { grid-template-columns: max-content max-content; }
+.job[data-state="complete"] .job-inline-actions { display: flex; }
+.job[data-state="complete"] .job-end > .job-measure { inline-size: max-content; min-inline-size: 12ch; max-inline-size: none; }
+.job[data-state="complete"] .job-measure > span { overflow: visible; text-overflow: clip; }
 .tooltip { position: absolute; z-index: 2; inset-block-start: 100%; inset-inline-start: 0; width: max-content; max-width: calc(100vw - 42px); max-height: 40vh; overflow: auto; overscroll-behavior: contain; padding: 7px 9px; border: 1px solid #a8b2c1; border-radius: 7px; background: #0e1219; color: var(--text); overflow-wrap: anywhere; }
 progress { display: block; width: 100%; height: 8px; margin: 9px 0 0; accent-color: var(--mint); }
 .tooltip[data-above] { inset-block: auto 100%; }
 .state { color: var(--mint); }
+.state[data-state="failed"] { color: #ffb4ac; }
 .job-status-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-block-start: 6px; }
 .job-status-line > button { flex: none; margin-inline-start: auto; }
 .job-status-copy { display: grid; align-content: center; align-self: stretch; position: relative; min-inline-size: 0; }
@@ -157,43 +226,23 @@ progress { display: block; width: 100%; height: 8px; margin: 9px 0 0; accent-col
 .option-field { margin-top: 12px; }
 .option-field :is(input, select) { display: block; width: 100%; margin-top: 4px; padding: 8px 10px; border: 1px solid var(--control-line); border-radius: 7px; background: var(--bg); color: var(--text); font: inherit; }
 #download-log { width: 100%; padding: 8px 10px; border: 1px solid var(--control-line); border-radius: 7px; background: var(--bg); color: var(--text); font: inherit; resize: vertical; }
-
-.download-options-dialog { box-sizing: border-box; width: min(480px, calc(100vw - 16px)); max-width: none; max-height: calc(100dvh - 16px); padding: 0; border: 1px solid var(--line); border-radius: 9px; color: var(--text); background: var(--surface); overscroll-behavior: contain; }
-.download-options-dialog::backdrop { background: rgb(0 0 0 / 0.65); overflow: hidden; overscroll-behavior: contain; }
-.download-options-dialog form { display: flex; flex-direction: column; max-height: calc(100dvh - 18px); min-height: 0; }
-.download-options-dialog header, .download-options-dialog footer { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 12px; flex: none; }
-.download-options-dialog header { border-bottom: 1px solid var(--line); }
-.download-options-dialog h2, .download-options-dialog h3 { margin: 0; }
-.download-options-dialog h2 { font-size: 16px; padding: 0; border: 0; }
-.download-options-dialog h3 { font-size: 14px; }
-.download-options-dialog footer { border-top: 1px solid var(--line); justify-content: flex-end; }
-.download-options-body { overflow: auto; min-height: 0; padding: 12px; display: grid; gap: 14px; }
-.download-options-body section { display: grid; gap: 8px; min-width: 0; }
-.download-options-field { display: grid; gap: 4px; min-width: 0; }
-.download-options-field input, .download-options-field select, .download-options-body input[type="search"] { width: 100%; min-width: 0; box-sizing: border-box; }
-.download-options-tools { display: flex; justify-content: flex-end; gap: 4px; }
-.download-options-tracks { display: grid; gap: 4px; max-height: 150px; overflow: auto; }
-.download-options-tracks label { display: flex; align-items: center; gap: 8px; overflow-wrap: anywhere; }
-.download-options-dialog details { margin-top: 8px; }
-.download-options-dialog details > label { margin-top: 8px; }
-.download-options-dialog [hidden] { display: none !important; }
 /* Shared subtitle metadata line in the detection list and download manager. */
 .candidate-details { flex-direction: column; align-items: stretch; gap: 3px; }
 .candidate-heading { display: flex; align-items: center; min-inline-size: 0; block-size: 18px; }
 .subtitle-status { display: flex; flex-wrap: nowrap; gap: 8px; block-size: 15px; overflow: hidden; color: var(--muted); font-size: 10px; line-height: 15px; min-inline-size: 0; }
 .subtitle-status > span { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.subtitle-status[data-phase="failed"], .subtitle-status[data-failed="true"] { color: #ffb4ac; }
+.subtitle-status > .metadata-failed { color: var(--row-error, #ffb4ac); }
 .job-description { display: flex; flex-direction: column; gap: 3px; flex: 1; min-inline-size: 0; }
 .job-description .name-wrap { flex: auto; block-size: 18px; }
 .job-description .subtitle-status { display: flex; gap: 8px; block-size: 15px; }
 
 .download-options-field :is(input,select), .download-options-body input[type="search"] { padding: 7px 8px; border: 1px solid var(--control-line); border-radius: 6px; color: var(--text); background: var(--bg); font: inherit; }
-
-.download-options-dialog button { min-height: 32px; }
-.download-options-dialog .notice[data-error="true"] { color: #ffb4ac; }
 .explorer-setup-dialog { width: min(440px, calc(100vw - 16px)); }
-.explorer-setup-dialog header, .explorer-setup-dialog footer { padding: 10px 12px; }
-.explorer-setup-dialog .explorer-setup-body { gap: 4px; padding: 12px; }
-.explorer-setup-dialog .explorer-setup-body p { margin: 0; line-height: 1.5; white-space: pre-line; }
-.explorer-setup-dialog .explorer-setup-note { margin-top: 4px; }
+.explorer-setup-dialog header { padding: 14px 16px; }
+.explorer-setup-dialog footer { padding: 12px 16px; gap: 8px; flex-wrap: wrap; }
+.explorer-setup-dialog .explorer-setup-body { gap: 12px; padding: 16px; font: 12px/1.65 system-ui, 'Malgun Gothic', sans-serif; }
+.explorer-setup-dialog .explorer-setup-body p,
+.explorer-setup-dialog .explorer-setup-body p.notice { margin: 0; font: inherit; white-space: pre-line; text-wrap: pretty; }
+.explorer-setup-dialog .explorer-setup-download-help { display: grid; gap: 8px; padding-block-start: 12px; border-block-start: 1px solid var(--line); }
+.explorer-setup-dialog .explorer-setup-download-help button { justify-self: start; font-size: 12px; }
 .explorer-setup-dialog button.danger { background: #9f3343; color: #fff; border-color: #bd5363; }

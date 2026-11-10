@@ -30,7 +30,22 @@ export function ValidHlsRequestContext(Context)
 
 export function HlsRequestSource(Address, Context)
 {
-	return Context ? Address + '\n' + Context.origin + '\n' + Context.referer : Address;
+	// A denial recorded without cookies does not describe a later authenticated
+	// request. Keep the legacy key for unchanged requests, with no cookie values.
+	return Context ? Address + '\n' + Context.origin + '\n' + Context.referer +
+		(Context.includeCredentials === true ? '\ncredentials:include' : '') : Address;
+}
+
+/** Resource CDNs must have succeeded with the same player origin and Referer.
+ * Never infer a header context from a new hostname declared by a playlist. */
+export function HlsResourceRequestContext(Context, Address)
+{
+	if (!ValidHlsRequestContext(Context)) return;
+	const Origin = new URL(Address).origin;
+	if (Origin === Context.serverOrigin) return Context;
+	if (!Array.isArray(Context.resources) || Context.resources.length > RuntimePolicy.Detection.MaxPendingHeaders) return;
+	return Context.resources.find(Resource => ValidHlsRequestContext(Resource) &&
+		Resource.serverOrigin === Origin && Resource.origin === Context.origin && Resource.referer === Context.referer);
 }
 
 export function SetHlsRequestRules(Context, Urls = [], RequestId)
@@ -44,16 +59,28 @@ export function SetHlsRequestRules(Context, Urls = [], RequestId)
 	return Update;
 }
 
-/** 다른 CDN에는 관측하지 않은 헤더를 복사하지 않습니다. 해당 주소는 일반
- * 권한 확인을 거친 정상 요청으로 읽고, 이 문맥의 정확한 CDN 주소에만 규칙을 만듭니다.
- */
+/** Called only after host authorization for explicit playlist resources. An
+ * origin-only Referer is public playback context and can follow a multi-CDN
+ * playlist. Full page paths/queries and cookies never spread to new CDNs. */
 export function SetScopedHlsRequestRules(Context, Urls, RequestId)
 {
 	if (!ValidHlsRequestContext(Context))
 	{
 		throw new LocalizedError('headers_reuse_denied');
 	}
-	return SetHlsRequestRules(Context, Urls.filter(Address => new URL(Address).origin === Context.serverOrigin), RequestId);
+	const Resources = new Map((Context.resources ?? []).map(Resource => [Resource.serverOrigin, Resource]));
+	if (Context.referer === Context.origin + '/')
+	{
+		for (const Address of Urls)
+		{
+			const Server = new URL(Address);
+			if (['http:', 'https:'].includes(Server.protocol) && !Server.username && !Server.password &&
+				Server.origin !== Context.serverOrigin && !Resources.has(Server.origin))
+				Resources.set(Server.origin, {origin: Context.origin, referer: Context.referer, serverOrigin: Server.origin});
+		}
+	}
+	const Scoped = Resources.size ? {...Context, resources: [...Resources.values()]} : Context;
+	return SetHlsRequestRules(Scoped, Urls.filter(Address => HlsResourceRequestContext(Scoped, Address)), RequestId);
 }
 
 async function UpdateRules(Context, Urls, RequestId)
@@ -89,14 +116,16 @@ async function UpdateRules(Context, Urls, RequestId)
 		}
 		for (const Address of Owner.urls)
 		{
+			const ResourceContext = HlsResourceRequestContext(Owner.context, Address);
+			if (!ResourceContext) throw new LocalizedError('headers_url_outside_cdn');
 			const Previous = Resources.get(Address);
 			// 한 오프스크린 출처의 동일 URL에는 서로 다른 Referer를 동시에 적용할 수 없습니다.
 			// 문맥이 충돌하면 새 작업만 거절하고 이미 실행 중인 작업의 규칙은 그대로 둡니다.
-			if (Previous && (Previous.origin !== Owner.context.origin || Previous.referer !== Owner.context.referer))
+			if (Previous && (Previous.origin !== ResourceContext.origin || Previous.referer !== ResourceContext.referer))
 			{
 				throw new LocalizedError('headers_reuse_denied');
 			}
-			Resources.set(Address, Owner.context);
+			Resources.set(Address, ResourceContext);
 		}
 	}
 	if (Resources.size > MaxHeaderRules)

@@ -1498,100 +1498,6 @@
   "translation_capture_failed": {
     "message": "Import failed. Check native host setup, PotPlayer version and whether it is running."
   },
-  "caption_unknown": {
-    "message": "Subtitles: not checked"
-  },
-  "caption_checking": {
-    "message": "Checking subtitles…"
-  },
-  "caption_detected": {
-    "message": "Subtitles: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_undetected": {
-    "message": "Subtitles: not detected"
-  },
-  "caption_collecting": {
-    "message": "Collecting subtitles ($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_ready": {
-    "message": "Subtitles ready: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_failed": {
-    "message": "Subtitle check / acquisition failed"
-  },
-  "caption_translation_unknown": {
-    "message": "Auto translation: not checked"
-  },
-  "caption_translation_off": {
-    "message": "Auto translation: off"
-  },
-  "caption_translation_no_source": {
-    "message": "Auto translation: no source detected"
-  },
-  "caption_translation_not_needed": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_pending": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_translating": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_complete": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_failed": {
-    "message": "Translation failed"
-  },
-  "caption_stopped": {
-    "message": "Subtitle acquisition stopped"
-  },
-  "caption_translation_stopped": {
-    "message": "Auto translation stopped"
-  },
-  "caption_count": {
-    "message": "Subtitles($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
   "view_youtube_quality_checking": {
     "message": "Проверка качества YouTube…"
   },
@@ -1673,14 +1579,20 @@
   "download_options_download": {
     "message": "Скачать"
   },
+  "explorer_setup_download_help": {
+    "message": "Если загрузка заблокирована, проверьте файл в списке загрузок и скачайте его вручную."
+  },
+  "explorer_setup_download_list": {
+    "message": "Открыть загрузки"
+  },
   "explorer_setup_title": {
     "message": "Install Windows helper"
   },
   "explorer_setup_body": {
-    "message": "A Windows helper is needed to show files in your selected folder."
+    "message": "Помощник Windows открывает папку в Проводнике."
   },
   "explorer_setup_install": {
-    "message": "Установить"
+    "message": "Скачать установщик"
   },
   "explorer_setup_installing": {
     "message": "Waiting for installation to finish.\nAllow any Chrome or Windows execution prompt."
@@ -1701,13 +1613,13 @@
     "message": "Install it now?"
   },
   "explorer_setup_cancel": {
-    "message": "Cancel keeps your current saved folder."
+    "message": "Отмена сохранит текущую папку."
   },
   "explorer_setup_downloading": {
-    "message": "Downloading the installer.\nWhen it finishes, click “Run installer”."
+    "message": "Загрузка установщика…"
   },
   "explorer_setup_downloaded": {
-    "message": "Download complete.\nClick “Run installer” to begin installation."
+    "message": "Загрузка завершена. Выберите «Запустить установщик»."
   },
   "explorer_setup_pending": {
     "message": "Please wait…"
@@ -1795,5 +1707,83 @@
   },
   "notification_file_fallback": {
     "message": "Загрузка"
+  },
+  "download_options_live_start": {
+    "message": "Начало прямого эфира"
+  },
+  "download_options_live_beginning": {
+    "message": "С доступного начала"
+  },
+  "download_options_live_current": {
+    "message": "С текущего момента"
+  },
+  "download_options_live_help": {
+    "message": "Начало — с первого доступного на сервере фрагмента. Текущий момент — рядом с прямым эфиром, с задержкой в несколько секунд. Только для прямых трансляций."
+  },
+  "issue_report_title": {
+    "message": "Сообщить о проблеме"
+  },
+  "issue_report_intro": {
+    "message": "Сообщите о странице, на которой поиск URL или скачивание работает неправильно."
+  },
+  "issue_report_page": {
+    "message": "Страница с проблемой"
+  },
+  "issue_report_page_unavailable": {
+    "message": "URL страницы недоступен."
+  },
+  "issue_report_types": {
+    "message": "Тип проблемы"
+  },
+  "issue_report_multiple": {
+    "message": "Выберите все подходящие варианты."
+  },
+  "issue_report_detection": {
+    "message": "Ошибка поиска URL"
+  },
+  "issue_report_download": {
+    "message": "Ошибка скачивания"
+  },
+  "issue_report_other": {
+    "message": "Другое"
+  },
+  "issue_report_details": {
+    "message": "Подробности (необязательно)"
+  },
+  "issue_report_placeholder": {
+    "message": "Опишите, что вы делали, когда возникла проблема."
+  },
+  "issue_report_question": {
+    "message": "Сообщить о проблеме на этой странице?"
+  },
+  "issue_report_confirm": {
+    "message": "Подтвердить"
+  },
+  "issue_report_select_type": {
+    "message": "Выберите хотя бы один тип проблемы."
+  },
+  "issue_report_send_notice": {
+    "message": "При подтверждении URL страницы, типы проблем и описание будут отправлены через FormSubmit."
+  },
+  "issue_report_sending": {
+    "message": "Отправка сообщения. Подождите."
+  },
+  "issue_report_sent": {
+    "message": "Ваше сообщение принято."
+  },
+  "issue_report_failed": {
+    "message": "Не удалось отправить сообщение. Повторите попытку позже."
+  },
+  "issue_report_network_error": {
+    "message": "Не удалось подтвердить результат отправки. Возможно, сообщение уже принято."
+  },
+  "issue_report_activation": {
+    "message": "Получатель сообщений ещё не активирован."
+  },
+  "issue_report_invalid_page": {
+    "message": "Нет допустимого URL веб-страницы. Откройте страницу и повторите попытку."
+  },
+  "issue_report_close": {
+    "message": "Закрыть"
   }
 }

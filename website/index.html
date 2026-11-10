@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8"><script src="site-language.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A media downloader for Chrome and Microsoft Edge. Save and manage supported video, audio, HLS and DASH streams.">
+  <meta name="description" content="Save video, audio and supported HLS, DASH and WebRTC streams in Chrome and Edge. Includes partial saves, embedded subtitles, translation and optional local speech captions.">
   <meta name="theme-color" content="#101411">
   <title>MDownloader — Save media with ease</title>
   <link rel="icon" href="assets/icon.png">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="product.css">
+  <link rel="stylesheet" href="feature-visuals.css">
   <script src="site.js" type="module"></script>
 <link rel="alternate" hreflang="en" href="index.html"><link rel="alternate" hreflang="ko" href="index-ko.html"><link rel="alternate" hreflang="x-default" href="index.html"><link rel="stylesheet" href="localization.css">
 </head>
@@ -21,42 +22,85 @@
   <main id="main">
     <section class="hero product-hero" aria-labelledby="hero-title">
       <div class="hero-title"><p class="eyebrow"><span></span> Media downloader · Chrome &amp; Edge</p><h1 id="hero-title">Find your media.<br><em>Save it with ease.</em></h1></div>
-      <div class="hero-copy"><p>From video and audio on the web<br class="desktop-break"> to supported HLS and DASH streams.<br>Find, preview and save, all in one place.</p><div class="hero-actions"><button class="button button-primary" data-store="chrome"><span class="browser-symbol" aria-hidden="true">◉</span> Add to Chrome <span aria-hidden="true">↗</span></button><button class="button button-outline" data-store="edge"><span class="browser-symbol" aria-hidden="true">◔</span> Add to Edge <span aria-hidden="true">↗</span></button></div><p class="release-note">Store launch coming soon · Local preview</p></div>
+      <div class="hero-copy"><p>From video and audio on the web<br class="desktop-break"> to supported streams and live broadcasts.<br>Choose a quality. Save with subtitles.</p><div class="hero-actions"><button class="button button-primary" data-store="chrome"><span class="browser-symbol" aria-hidden="true">◉</span> Add to Chrome <span aria-hidden="true">↗</span></button><button class="button button-outline" data-store="edge"><span class="browser-symbol" aria-hidden="true">◔</span> Add to Edge <span aria-hidden="true">↗</span></button></div><p class="release-note">Current implementation 0.2.43 · Store listing pending · <a href="#development">Development ZIP</a></p></div>
     </section>
 
     <section class="showcase" aria-labelledby="preview-title">
-      <div class="showcase-top"><div><p class="section-kicker">A quieter way to download</p><h2 id="preview-title">Inside your browser. All in view.</h2></div><span class="preview-label">Actual app captures</span></div>
-      <div class="capture-grid">
-        <figure class="capture-figure sample-capture">
-          <a class="capture-link" href="assets/screenshots/en/sample-motion.gif" target="_blank" rel="noopener" aria-label="View the actual playback GIF (opens in a new tab)">
-            <img id="sample-motion" src="assets/screenshots/en/sample-still.png" data-animated-src="assets/screenshots/en/sample-motion.gif" data-still-src="assets/screenshots/en/sample-still.png" alt="A sequence of actual sample-page captures showing the forest scene playing after the opening logo" width="720" height="619" decoding="async">
-          </a>
-          <figcaption class="motion-caption"><span>01 / Actual playback · GIF</span><button class="capture-motion-toggle" type="button" aria-controls="sample-motion" hidden>Pause</button></figcaption>
-        </figure>
-        <div class="extension-captures">
-          <figure class="capture-figure popup-capture">
-            <a class="capture-link" href="assets/screenshots/en/media-list.png" target="_blank" rel="noopener" aria-label="View the actual extension popup capture (opens in a new tab)">
-              <img src="assets/screenshots/en/media-list.png" alt="The actual MDownloader popup detecting one MP4 file" width="420" height="283" decoding="async">
-            </a>
-            <figcaption>02 / Media detected</figcaption>
-          </figure>
-          <figure class="capture-figure downloads-capture">
-            <a class="capture-link" href="assets/screenshots/en/downloads.png" target="_blank" rel="noopener" aria-label="View the actual download manager capture (opens in a new tab)">
-              <img src="assets/screenshots/en/downloads.png" alt="The actual MDownloader download manager showing one completed sample MP4 at 100%" width="420" height="280" decoding="async">
-            </a>
-            <figcaption>03 / Download complete</figcaption>
-          </figure>
-        </div>
+      <div class="showcase-top"><div><p class="section-kicker">A quieter way to download</p><h2 id="preview-title">Inside your browser. All in view.</h2></div><span class="preview-label">Interactive UI preview</span></div>
+      <div class="app-preview-grid">
+        <figure class="app-preview"><figcaption>01 / Detected media</figcaption><iframe src="preview/index.html?lang=en&amp;view=popup" title="Interactive MDownloader media list preview" loading="lazy"></iframe></figure>
+        <figure class="app-preview"><figcaption>02 / Download manager</figcaption><iframe src="preview/index.html?lang=en&amp;view=manager" title="Interactive MDownloader download manager preview" loading="lazy"></iframe></figure>
       </div>
-      <p class="capture-note">Captured in Chrome with MDownloader 0.2.24. The sample MP4 was detected and downloaded using the actual extension.</p>
-      <div class="format-strip"><span>Right in your browser</span><span>MP4 · WebM · Audio</span><span>HLS · DASH</span><span>Side panel management</span></div>
+      <p class="capture-note">A preview using the current extension’s actual UI components, styles and icons. Example data only; no real downloads, installations or translations run. Try Download, Shift-click Download, the settings icon and per-job save or cancel controls.</p>
+      <div class="format-strip"><span>MP4 · WebM · Audio</span><span>HLS · DASH · WebRTC</span><span>Partial saves · Live</span><span>Subtitles · Translation</span></div>
     </section>
 
-    <section class="content-section" id="features" aria-labelledby="features-title"><div class="section-heading"><div><p class="section-kicker">Small tool, less friction</p><h2 id="features-title">Everything you need.<br>Room to focus.</h2></div><p class="section-aside">From the first discovery to the finished download.</p></div><div class="feature-grid"><article><span class="feature-number">01 / DISCOVER</span><h3>Discover media on the page</h3><p>See the video and audio found on your current page. Preview supported items before you save them.</p></article><article><span class="feature-number">02 / SAVE</span><h3>Save streams as one file</h3><p>Save supported clear or AES-encrypted HLS, and unencrypted DASH streams, as MP4. For HLS, hold Shift when clicking Download to choose a quality.</p></article><article><span class="feature-number">03 / MANAGE</span><h3>Keep track in one place</h3><p>Follow download progress, speed and completion in the side panel. Supported live HLS can also be saved up to the point captured.</p></article></div></section>
+    <section class="content-section" id="features" aria-labelledby="features-title">
+      <div class="section-heading"><div><p class="section-kicker">Small tool, less friction</p><h2 id="features-title">From media to subtitles.<br>All in one place.</h2></div><p class="section-aside">Based on the features currently implemented.</p></div>
+      <div class="feature-grid feature-overview">
+        <article><span class="feature-number">01 / DISCOVER</span>
+          <div class="feature-visual" aria-hidden="true"><div class="fv-topline"><span>sample-video.mp4</span><span class="fv-dots"><i></i><i></i><i></i></span></div><div class="fv-media"><span class="fv-thumbnail"><img src="preview/icons/app-media-48.png" alt="" width="25" height="25" loading="lazy"></span><span class="fv-media-copy"><strong>Sample video</strong><small>02:36 · Video + audio</small></span></div><div class="fv-chips"><span class="fv-chip fv-chip-active">1080p</span><span class="fv-chip">720p</span><span class="fv-chip">Audio</span></div></div>
+          <h3>Preview and choose a quality</h3><p>Check media with thumbnails and supported previews. Shift-click Download to choose quality, subtitle and translation options.</p></article>
+        <article><span class="feature-number">02 / SAVE</span>
+          <div class="feature-visual" aria-hidden="true"><div class="fv-chips"><span class="fv-chip fv-chip-active">MP4</span><span class="fv-chip">HLS</span><span class="fv-chip">DASH</span><span class="fv-chip">WebRTC</span></div><div class="fv-file"><div class="fv-topline"><span>sample-video.mp4</span><span>78%</span></div><div class="fv-progress"><span style="--progress:78%"></span></div><div class="fv-footer"><span>Video + audio</span><span>24.8 MB</span></div></div></div>
+          <h3>Save files and streams</h3><p>Keep video and audio in their original format, or save supported HLS and DASH as MP4. Supported WebRTC streams are received in the background.</p></article>
+        <article><span class="feature-number">03 / LIVE</span>
+          <div class="feature-visual" aria-hidden="true"><div class="fv-topline"><span class="fv-live">LIVE</span><span>00:42</span></div><div class="fv-timeline"><span class="fv-range"></span></div><div class="fv-time-labels"><span>00:00</span><span>00:42</span></div><div class="fv-footer"><span>Received portion</span><span class="fv-chip fv-chip-active">Save portion</span></div></div>
+          <h3>Live and partial saves</h3><p>Choose where supported live HLS starts and save the received portion separately. <a href="#live">Explore save controls</a></p></article>
+        <article><span class="feature-number">04 / SUBTITLES</span>
+          <div class="feature-visual fv-captions" aria-hidden="true"><div class="fv-caption-row"><span class="fv-lang">EN</span><span>Good to see you.</span></div><div class="fv-caption-row"><span class="fv-lang">KO</span><span>만나서 반가워요.</span></div></div>
+          <h3>Embed and translate subtitles</h3><p>Save original subtitles as selectable MP4 tracks. Configure a translation service to translate into another language.</p></article>
+        <article><span class="feature-number">05 / SPEECH</span>
+          <div class="feature-visual" aria-hidden="true"><div class="fv-topline"><span>Speech captions</span><span>SRT · VTT</span></div><div class="fv-waveform"><i style="--level:6px"></i><i style="--level:11px"></i><i style="--level:8px"></i><i style="--level:19px"></i><i style="--level:26px"></i><i style="--level:16px"></i><i style="--level:30px"></i><i style="--level:22px"></i><i style="--level:13px"></i><i style="--level:25px"></i><i style="--level:33px"></i><i style="--level:20px"></i><i style="--level:10px"></i><i style="--level:17px"></i><i style="--level:27px"></i><i style="--level:21px"></i><i style="--level:12px"></i><i style="--level:7px"></i><i style="--level:14px"></i><i style="--level:24px"></i><i style="--level:18px"></i><i style="--level:10px"></i><i style="--level:6px"></i></div><div class="fv-speech-result"><span class="fv-time">00:08</span><span>Let’s get started.</span></div></div>
+          <h3>Generate captions from speech</h3><p>Use an optional helper and model to recognize speech locally, then save embedded captions, SRT or VTT. <a href="#captions">Setup and verification status</a></p></article>
+        <article><span class="feature-number">06 / MANAGE</span>
+          <div class="feature-visual fv-tasks" aria-hidden="true"><div class="fv-task"><img src="preview/icons/app-media-48.png" alt="" width="25" height="25" loading="lazy"><div class="fv-task-body"><div class="fv-task-head"><span>sample-video.mp4</span><span>68%</span></div><div class="fv-progress"><span style="--progress:68%"></span></div></div></div><div class="fv-task"><img src="preview/icons/app-media-48.png" alt="" width="25" height="25" loading="lazy"><div class="fv-task-body"><div class="fv-task-head"><span>live-recording.mp4</span><span>32%</span></div><div class="fv-progress"><span style="--progress:32%"></span></div></div></div><div class="fv-task"><img src="preview/icons/app-media-48.png" alt="" width="25" height="25" loading="lazy"><div class="fv-task-body"><div class="fv-task-head"><span>audio-track.m4a</span><span>Done</span></div><div class="fv-progress"><span style="--progress:100%"></span></div></div></div></div>
+          <h3>Keep every job in view</h3><p>Track progress and speed in the popup or side panel, with controls for each job, saved-file access and optional completion alerts.</p></article>
+      </div>
+    </section>
 
-    <section class="guide-section" id="guide" aria-labelledby="guide-title"><div><p class="section-kicker">Getting started</p><h2 id="guide-title">Three steps.<br>Ready to save.</h2><p class="muted">No separate desktop app required.</p></div><ol class="steps"><li><span>01</span><div><h3>Add it to your browser.</h3><p>Install from the Chrome Web Store or Microsoft Edge Add-ons.</p></div></li><li><span>02</span><div><h3>Play your media.</h3><p>Open the page with the media you want to save. Allow site access if requested.</p></div></li><li><span>03</span><div><h3>Choose it and save.</h3><p>Select an item in MDownloader and download it. Check its status in the side panel.</p></div></li></ol></section>
+    <section class="guide-section" id="development" aria-labelledby="development-title">
+      <div><p class="section-kicker">Development build</p><h2 id="development-title">Install the<br>development build.</h2><p class="muted">A manual-install package for development and testing. Available features and installation may differ from store distributions.</p></div>
+      <div class="development-copy"><p class="muted">Extract the archive, enable Developer mode in your browser and load the <code>extension</code> folder. Keep the folder while using the extension.</p><p class="muted">Updates are manual. Finish active jobs before replacing files and reloading the extension. <a href="#guide">Installation instructions</a></p><div class="development-actions"><a class="button button-outline" href="downloads/MDownloader-development.zip" download>Development ZIP</a></div></div>
+    </section>
 
-    <section class="faq-section" id="faq" aria-labelledby="faq-title"><div><p class="section-kicker">Good to know</p><h2 id="faq-title">A few things to know.</h2></div><div class="faq-list"><details open><summary>Can I download videos from every site?</summary><p>Availability depends on how a site delivers media, your sign-in status and access permissions. DRM-protected content and unsupported encryption or stream structures cannot be downloaded. HLS with accessible identity AES keys is supported.</p></details><details><summary>Which formats are supported?</summary><p>Direct video links such as MP4 and WebM, audio links such as MP3 and M4A, and supported clear or AES-encrypted HLS and unencrypted DASH streams. Compatibility depends on the codec and stream structure.</p></details><details><summary>Why does it need site access?</summary><p>Finding media requests and downloading files may require access to the site and its media servers. Manage site access in your browser’s extension settings.</p></details><details><summary>Do I need to contribute to use it?</summary><p>No. Contributions are optional and do not change the available features. You are welcome to contribute if you would like to support development.</p></details></div></section>
+    <section class="guide-section" id="guide" aria-labelledby="guide-title">
+      <div><p class="section-kicker">Getting started</p><h2 id="guide-title">Start with a<br>manual installation.</h2><p class="muted">Requires Chrome 116 or later, or a compatible current Edge. Basic media downloads run in the browser. Speech captions and some file integration features use an optional helper.</p></div>
+      <ol class="steps">
+        <li><span>01</span><div><h3>Install the extension</h3><p>Enable <strong>Developer mode</strong>, choose <strong>Load unpacked</strong> and select the <code>extension</code> folder.</p><p class="setup-addresses"><code>chrome://extensions</code><code>edge://extensions</code></p></div></li>
+        <li><span>02</span><div><h3>Allow access and play</h3><p>Allow access under <strong>Site permissions</strong> in Options, then play the media.</p></div></li>
+        <li><span>03</span><div><h3>Choose options and save</h3><p>Click <strong>Download</strong> to save, or <strong>Shift + Download</strong> to choose quality and subtitles.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="content-section" id="live" aria-labelledby="live-title">
+      <div class="section-heading"><div><p class="section-kicker">Your download, your timing</p><h2 id="live-title">Save the portion you need.<br>When you need it.</h2></div></div>
+      <div class="feature-grid">
+        <article><span class="feature-number">01 / START</span><h3>Choose a live starting point</h3><p>For supported HLS, start from the earliest segment still available or near the current live edge. DVR covers only the rewind range supplied by the server; expired segments cannot be recovered.</p></article>
+        <article><span class="feature-number">02 / SNAPSHOT</span><h3>Save received portion</h3><p>Export an available playable portion as a separate partial file while the original download continues. Availability depends on the source format and data already received.</p></article>
+        <article><span class="feature-number">03 / FINISH</span><h3>Stop and save</h3><p>End new reception for a supported job and save the playable portion. Cancel instead stops the job and discards unfinished temporary output.</p></article>
+      </div>
+      <p class="capture-note">Supported streams can continue after the source tab closes once independent reception has started. Keep the browser running. Automatic recovery after browser shutdown or extension reload is not available.</p>
+    </section>
+
+    <section class="guide-section" id="captions" aria-labelledby="captions-title">
+      <div><p class="section-kicker">Optional local speech captions</p><h2 id="captions-title">No subtitles?<br>Start with the speech.</h2><p class="muted">Speech captions are off by default. Recognition runs locally. If you enable an external translation service, subtitle text is sent to that service.</p><p class="muted">When the download finishes or you choose Stop and save, captions are saved automatically in your selected embedded, SRT or VTT formats. Follow progress and results in the download row.</p></div>
+      <ol class="steps">
+        <li><span>01</span><div><h3>Prepare the helper and model.</h3><p>Check the connection in the Helper tab in Options, then prepare an engine and model in Speech caption settings. Windows offers faster-whisper and whisper.cpp; macOS is configured for whisper.cpp. Download the models you need explicitly.</p></div></li>
+        <li><span>02</span><div><h3>Choose recognition and output.</h3><p>Select a speech language, Fast, Balanced or Accuracy preset, and individual recognition options. Embed captions in the container, export SRT or VTT, or combine outputs. Translation requires a configured service and credentials.</p></div></li>
+        <li><span>03</span><div><h3>Adjust each download.</h3><p>Shift-click Download to inherit defaults, turn speech captions on or off, or use custom settings. Embedded and final subtitle or translation outputs are saved after preparation. Caption progress and errors are shown separately.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="faq-section" id="faq" aria-labelledby="faq-title"><div><p class="section-kicker">Good to know</p><h2 id="faq-title">A few things to know.</h2></div><div class="faq-list">
+      <details open><summary>Can I download videos from every site?</summary><p>Availability depends on media delivery, sign-in status, permissions and codecs. DRM-protected content, unsupported encryption and live DASH are not supported. Compatible HLS with accessible identity AES keys can be processed.</p></details>
+      <details><summary>Which formats are supported?</summary><p>Direct video files such as MP4 and WebM, audio such as MP3 and M4A, supported HLS and static unencrypted DASH, and WebRTC from configured signaling services. This does not record every playing video on every site.</p></details>
+      <details><summary>How do I install and update the development build?</summary><p>Extract the ZIP, enable Developer mode and load the extension folder. Updates are manual. <a href="#development">Development installation details</a></p></details>
+      <details><summary>How do embedded subtitles and speech captions differ?</summary><p>Original subtitle embedding fetches supported captions supplied with the media and adds them to MP4. Speech captions recognize audio using a separately prepared local engine and model. Translation uses your configured external service, whose authentication and pricing terms may apply.</p></details>
+      <details><summary>Do I need to install another program?</summary><p>Basic downloads do not need a separate downloader. Local speech captions use an optional helper, engine and model. On Windows, Show in folder for files saved directly to a chosen folder also needs the helper and an initial folder connection. Browser or operating system confirmations may appear during setup.</p></details>
+      <details><summary>What if a download fails?</summary><p>Check page and media server access, sign-in status and expired links, then play or refresh the page and retry. The extension’s issue report lets you review and send the page address and issue types. A failed preview alone does not mean the download will fail.</p></details>
+      <details><summary>Do I need to contribute to use it?</summary><p>No. Contributions are optional and do not change the available features. You are welcome to contribute if you would like to support development.</p></details>
+    </div></section>
 
     <section class="support-banner"><div><p class="section-kicker">Built independently, supported together</p><h2>Finding it useful?</h2><p>A small contribution helps keep improvements coming.</p></div><a class="button button-primary" href="https://evilack.github.io/donate.html">Support development <span aria-hidden="true">↗</span></a></section>
     <p class="usage-note">Use with content you own or have permission to download.</p>

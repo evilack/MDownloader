@@ -119,20 +119,23 @@ export async function HlsQualities({ tabId: TabId, scanId: ScanId, candidateId: 
 	}));
 }
 
-export async function LaunchHls(Job, Url, VariantUrl, RequestContext, Format, Subtitles)
+export async function LaunchHls(Job, Url, VariantUrl, RequestContext, Format, Subtitles, AudioUrl)
 {
 	AssertMediaAllowed({...Job, url: Url, variants: [VariantUrl], requestContext: RequestContext});
+	if (AudioUrl) AssertMediaAllowed({url: AudioUrl});
 	return LaunchRunner({
 		...FolderDestination(Job), requestId: Job.requestId, url: Url, variantUrl: VariantUrl, requestContext: RequestContext,
+		...(AudioUrl ? {audioUrl: AudioUrl} : {}),
+		...(Job.liveStart ? {liveStart: Job.liveStart} : {}),
 		...(Job.subtitleOptions ? {subtitleOptions: Job.subtitleOptions} : {}),
 		...(Subtitles?.length ? {subtitles: Subtitles} : {}),
 		...(Format === 'MPD' ? { format: Format } : {}),
 	});
 }
 
-function FolderDestination({ pickedDownloadFolder: PickedDownloadFolder, filename: Filename })
+function FolderDestination({ pickedDownloadFolder: PickedDownloadFolder, filename: Filename, localCaptions:LocalCaptions,captionPipeline:CaptionPipeline })
 {
-	return PickedDownloadFolder ? { pickedDownloadFolder: PickedDownloadFolder, filename: Filename } : {};
+	return {filename:Filename,...(LocalCaptions?.enabled?{localCaptions:LocalCaptions,captionPipeline:CaptionPipeline}:{}),...(PickedDownloadFolder ? { pickedDownloadFolder: PickedDownloadFolder } : {})};
 }
 
 export async function LaunchPlaybackHls(Job, Playback, Subtitles)

@@ -1498,100 +1498,6 @@
   "translation_capture_failed": {
     "message": "Import failed. Check native host setup, PotPlayer version and whether it is running."
   },
-  "caption_unknown": {
-    "message": "Subtitles: not checked"
-  },
-  "caption_checking": {
-    "message": "Checking subtitles…"
-  },
-  "caption_detected": {
-    "message": "Subtitles: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_undetected": {
-    "message": "Subtitles: not detected"
-  },
-  "caption_collecting": {
-    "message": "Collecting subtitles ($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_ready": {
-    "message": "Subtitles ready: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_failed": {
-    "message": "Subtitle check / acquisition failed"
-  },
-  "caption_translation_unknown": {
-    "message": "Auto translation: not checked"
-  },
-  "caption_translation_off": {
-    "message": "Auto translation: off"
-  },
-  "caption_translation_no_source": {
-    "message": "Auto translation: no source detected"
-  },
-  "caption_translation_not_needed": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_pending": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_translating": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_complete": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_failed": {
-    "message": "Translation failed"
-  },
-  "caption_stopped": {
-    "message": "Subtitle acquisition stopped"
-  },
-  "caption_translation_stopped": {
-    "message": "Auto translation stopped"
-  },
-  "caption_count": {
-    "message": "Subtitles($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
   "view_youtube_quality_checking": {
     "message": "Checking YouTube quality…"
   },
@@ -1673,14 +1579,20 @@
   "download_options_download": {
     "message": "Download"
   },
+  "explorer_setup_download_help": {
+    "message": "If blocked, review the file in Downloads and download it manually."
+  },
+  "explorer_setup_download_list": {
+    "message": "Open downloads"
+  },
   "explorer_setup_title": {
-    "message": "Install Windows helper"
+    "message": "Install MDownloader helper"
   },
   "explorer_setup_body": {
-    "message": "A Windows helper is needed to show files in your selected folder."
+    "message": "The Windows helper opens your saved folder in Explorer."
   },
   "explorer_setup_install": {
-    "message": "Install"
+    "message": "Download installer"
   },
   "explorer_setup_installing": {
     "message": "Waiting for installation to finish.\nAllow any Chrome or Windows execution prompt."
@@ -1701,13 +1613,13 @@
     "message": "Install it now?"
   },
   "explorer_setup_cancel": {
-    "message": "Cancel keeps your current saved folder."
+    "message": "Cancel keeps your current save location."
   },
   "explorer_setup_downloading": {
-    "message": "Downloading the installer.\nWhen it finishes, click “Run installer”."
+    "message": "Downloading the installer…"
   },
   "explorer_setup_downloaded": {
-    "message": "Download complete.\nClick “Run installer” to begin installation."
+    "message": "Downloaded. Select “Run installer” to continue."
   },
   "explorer_setup_pending": {
     "message": "Please wait…"
@@ -1725,37 +1637,37 @@
     "message": "The installer download has not completed. Check Chrome Downloads, then try again."
   },
   "explorer_remove_button": {
-    "message": "Remove Windows helper"
+    "message": "Remove helper"
   },
   "explorer_remove_title": {
-    "message": "Remove Windows helper?"
+    "message": "Remove helper?"
   },
   "explorer_remove_body": {
-    "message": "Remove the helper and its folder-link records.\nThe download location will return to the browser default."
+    "message": "Remove the helper and its folder-link records.\nThe save mode will return to the browser download folder and speech recognition to None."
   },
   "explorer_remove_keep": {
-    "message": "Downloaded videos and subtitles will be kept."
+    "message": "Videos, subtitles, and separately installed caption engines and models will be kept."
   },
   "explorer_remove_confirm": {
     "message": "Remove"
   },
   "explorer_remove_available": {
-    "message": "Windows helper is installed."
+    "message": "The helper is installed."
   },
   "explorer_remove_update_required": {
-    "message": "An older helper is installed. A removal tool will be provided."
+    "message": "An older helper is installed. An update may be required."
   },
   "explorer_remove_absent": {
-    "message": "Windows helper is not installed."
+    "message": "The helper is not installed."
   },
   "explorer_remove_pending": {
-    "message": "Removing the Windows helper…"
+    "message": "Removing the helper…"
   },
   "explorer_remove_done": {
-    "message": "Windows helper removed. Download location reset to default."
+    "message": "The helper was removed. The save mode was reset to the browser download folder and speech recognition to None."
   },
   "explorer_remove_failed": {
-    "message": "Removal could not be verified. Check Windows and try again."
+    "message": "Removal could not be verified. Run helper diagnostics and try again."
   },
   "explorer_remove_run": {
     "message": "Run removal tool"
@@ -1795,5 +1707,88 @@
   },
   "notification_file_fallback": {
     "message": "Download"
+  },
+  "download_options_live_start": {
+    "message": "Live start position"
+  },
+  "download_options_live_beginning": {
+    "message": "From available beginning"
+  },
+  "download_options_live_current": {
+    "message": "From current live position"
+  },
+  "panel_media_resize": {"message":"Resize search results pane"},
+  "panel_media_resize_help": {"message":"Drag up or down, or use the Up and Down arrow keys to resize. Double-click to restore the default height."},
+  "opt_show_panel_media_resize": {"message":"Show search pane height resize bar"},
+  "opt_show_panel_media_resize_help": {"message":"Adjust the space between search results and downloads. Turn off to restore the original content-based layout."},
+  "panel_media_size": {"message":"Search results pane $PERCENT$%", "placeholders":{"percent":{"content":"$1"}}},
+  "download_options_live_help": {
+    "message": "Beginning uses the earliest segment the server provides. Current starts near the live edge, a few seconds behind. Applies to live streams only."
+  },
+  "issue_report_title": {
+    "message": "Report an issue"
+  },
+  "issue_report_intro": {
+    "message": "Report a page where URL detection or downloading does not work correctly."
+  },
+  "issue_report_page": {
+    "message": "Page to report"
+  },
+  "issue_report_page_unavailable": {
+    "message": "The page URL is unavailable."
+  },
+  "issue_report_types": {
+    "message": "Issue type"
+  },
+  "issue_report_multiple": {
+    "message": "Select all that apply."
+  },
+  "issue_report_detection": {
+    "message": "URL detection failed"
+  },
+  "issue_report_download": {
+    "message": "Download failed"
+  },
+  "issue_report_other": {
+    "message": "Other"
+  },
+  "issue_report_details": {
+    "message": "Details (optional)"
+  },
+  "issue_report_placeholder": {
+    "message": "Describe what you were doing when the problem occurred."
+  },
+  "issue_report_question": {
+    "message": "Would you like to report an issue with this page?"
+  },
+  "issue_report_confirm": {
+    "message": "Confirm"
+  },
+  "issue_report_select_type": {
+    "message": "Select at least one issue type."
+  },
+  "issue_report_send_notice": {
+    "message": "Confirm sends the page URL, selected issue types and your details through FormSubmit."
+  },
+  "issue_report_sending": {
+    "message": "Sending your report. Please wait."
+  },
+  "issue_report_sent": {
+    "message": "Your report was accepted."
+  },
+  "issue_report_failed": {
+    "message": "Could not send the report. Please try again later."
+  },
+  "issue_report_network_error": {
+    "message": "The submission result could not be confirmed. Your report may already have been accepted."
+  },
+  "issue_report_activation": {
+    "message": "The report recipient has not been activated yet."
+  },
+  "issue_report_invalid_page": {
+    "message": "A valid web page URL is unavailable. Open the page and try again."
+  },
+  "issue_report_close": {
+    "message": "Close"
   }
 }

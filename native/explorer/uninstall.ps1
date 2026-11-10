@@ -7,6 +7,7 @@ $NativeKey='HKCU:\Software\Google\Chrome\NativeMessagingHosts\com.mdownloader.ex
 $AppsKey='HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\MDownloaderExplorerBridge'
 if(-not $Worker){
     [void](Assert-ExplorerDirectory $Directory (Get-ExplorerDirectory))
+    if([IO.File]::Exists((Join-Path $Directory 'common-setup.ps1'))){. (Join-Path $Directory 'common-setup.ps1');if(Test-CommonSetupBusy $Directory){throw 'Caption setup is running. Try removal after setup finishes.'}}
     if(-not $Confirmed){
         Add-Type -AssemblyName System.Windows.Forms
         . (Join-Path $PSScriptRoot 'dialog.ps1')
@@ -49,7 +50,12 @@ try {
         try{$Locked=$Mutex.WaitOne(15000)}catch [Threading.AbandonedMutexException]{$Locked=$true};if(-not $Locked){throw 'lifecycle_busy'}
         $Current=Get-ExplorerIdentity $Directory
         if($Current -and -not $Snapshot.legacy -and $Current.installationId -ne $Snapshot.installationId){throw 'installation_changed'}
-        [void](Remove-ExplorerFiles $Directory (Get-ExplorerDirectory))
+        $SetupMutex=New-Object Threading.Mutex($false,('Local\MDownloaderCaptionSetup-'+[Security.Principal.WindowsIdentity]::GetCurrent().User.Value));$SetupLocked=$false
+        try{
+            try{$SetupLocked=$SetupMutex.WaitOne(15000)}catch [Threading.AbandonedMutexException]{$SetupLocked=$true};if(-not $SetupLocked){throw 'setup_busy'}
+            if([IO.File]::Exists((Join-Path $Directory 'common-setup.ps1'))){. (Join-Path $Directory 'common-setup.ps1');if(Test-CommonSetupBusy $Directory){throw 'setup_busy'}}
+            [void](Remove-ExplorerFiles $Directory (Get-ExplorerDirectory))
+        }finally{if($SetupLocked){$SetupMutex.ReleaseMutex()};$SetupMutex.Dispose()}
     }finally{if($Locked){$Mutex.ReleaseMutex()};$Mutex.Dispose()}
     if(Test-Path -LiteralPath $NativeKey){Remove-Item -LiteralPath $NativeKey}
     if(Test-Path -LiteralPath $AppsKey){Remove-Item -LiteralPath $AppsKey}

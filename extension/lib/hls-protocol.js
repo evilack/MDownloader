@@ -6,7 +6,7 @@
 import { LocalizedError } from './i18n.js';
 let CatalogPromise;
 const Digests = new Map();
-export function LoadHlsProtocols()
+function LoadHlsProtocols()
 {
 	if (!CatalogPromise)
 	{

@@ -1,3 +1,4 @@
+import {PublishCaptionChunk} from './caption-committed-input.js';
 /** 녹화 조각을 확장 OPFS에 순서대로 기록합니다. 수신 승인 전에 디스크 쓰기를 완료합니다. */
 export function IsRecordingMessage(Message, Sender, Session, ExtensionId, TabId)
 {
@@ -7,7 +8,7 @@ export function IsRecordingMessage(Message, Sender, Session, ExtensionId, TabId)
 }
 
 /** 조각별 close가 성공한 뒤에만 승인합니다. 이후 쓰기가 실패해도 이미 커밋한 파일은 남습니다. */
-export function CreateRecordingStore(Directory)
+export function CreateRecordingStore(Directory,{journal:Journal}={})
 {
 	const Handles = [];
 	let Bytes = 0;
@@ -24,6 +25,7 @@ export function CreateRecordingStore(Directory)
 		};
 	}
 	return {
+		journal:Journal,workspace:Directory,
 		get bytes() { return Bytes; },
 		async write(Data)
 		{
@@ -37,8 +39,10 @@ export function CreateRecordingStore(Directory)
 				await Directory.removeEntry(Name).catch(() => {});
 				throw ErrorValue;
 			}
+			const File=await Handle.getFile(),Offset=Bytes;
 			Handles.push(Handle);
-			Bytes += Data.byteLength;
+			Bytes += File.size;
+			PublishCaptionChunk(Journal,File,Handles.length-1,Offset);
 		},
 		async close() {},
 		async abort() {},

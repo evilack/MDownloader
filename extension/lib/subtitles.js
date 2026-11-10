@@ -454,8 +454,8 @@ function ParseText(Text, Format)
 	Unsupported(Format || 'format');
 }
 
-/** Download all descriptors or reject the whole operation; no track is silently skipped. */
-export async function ReadSubtitles(Descriptors, {signal, authorize, onProgress, fetch: Fetch = globalThis.fetch} = {})
+/** Strict by default; an explicit onError receipt lets callers retain successful tracks. */
+export async function ReadSubtitles(Descriptors, {signal, authorize, onProgress, onError, fetch: Fetch = globalThis.fetch} = {})
 {
 	if (!Array.isArray(Descriptors)) Invalid('descriptors');
 	if (Descriptors.length > SubtitleLimits.tracks) Limit('tracks');
@@ -486,7 +486,12 @@ export async function ReadSubtitles(Descriptors, {signal, authorize, onProgress,
 			throw Fail('subtitle_download_failed',ErrorValue.name === 'TimeoutError' ? 'timeout' : 'network');
 		}
 		if (Response.url) AssertMediaAllowed({url:Response.url});
-		if (!Response.ok || !Response.body) { await Response.body?.cancel(); throw Fail('subtitle_download_failed',`http_${Response.status}`); }
+		if (!Response.ok || !Response.body)
+		{
+			await Response.body?.cancel();
+			const ErrorValue = Fail('subtitle_download_failed',`http_${Response.status}`);
+			throw ErrorValue;
+		}
 		if (Number(Response.headers.get('content-length')) > SubtitleLimits.resourceBytes) { await Response.body.cancel(); Limit('resource_bytes'); }
 		const Reader = Response.body.getReader(), Decoder = new TextDecoder('utf-8',{fatal:true});
 		let Text = '', Bytes = 0;
@@ -601,7 +606,7 @@ export async function ReadSubtitles(Descriptors, {signal, authorize, onProgress,
 		return {language:Descriptor.language || 'und',label:Descriptor.label || Descriptor.language || 'Subtitles',content:Content,...(Parsed.timeBase ? {timeBase:Parsed.timeBase} : {}),...(RecordingClock ? {recordingClock:RecordingClock} : {})};
 	}
 	const Results = new Array(Descriptors.length);
-	let Next = 0, Completed = 0, Progress = Promise.resolve();
+	let Next = 0, Completed = 0, Failed = 0, Progress = Promise.resolve();
 	const Workers = Array.from({length:Math.min(SubtitleLimits.concurrency,Descriptors.length)},async()=>
 	{
 		for (;;)
@@ -609,7 +614,17 @@ export async function ReadSubtitles(Descriptors, {signal, authorize, onProgress,
 			Signal.throwIfAborted();
 			const Index = Next++;
 			if (Index >= Descriptors.length) return;
-			Results[Index] = await Read(Descriptors[Index]);
+			const Descriptor = Descriptors[Index];
+			try { Results[Index] = await Read(Descriptor); }
+			catch (ErrorValue)
+			{
+				Signal.throwIfAborted();
+				if (typeof onError !== 'function') throw ErrorValue;
+				const Receipt = {failed: ++Failed, total: Descriptors.length};
+				Progress = Progress.then(() => onError(Receipt));
+				await Progress;
+				continue;
+			}
 			const Update = {completed: ++Completed, total: Descriptors.length};
 			if (onProgress)
 			{
@@ -620,5 +635,5 @@ export async function ReadSubtitles(Descriptors, {signal, authorize, onProgress,
 	});
 	try { await Promise.all(Workers); }
 	catch (ErrorValue) { Controller.abort(); await Promise.allSettled(Workers); throw ErrorValue; }
-	return Results;
+	return Results.filter(Boolean);
 }

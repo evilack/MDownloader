@@ -10,10 +10,10 @@ test('subtitle choices use opaque identities and select only requested sources',
  assert.deepEqual(await SelectSubtitleTracks(tracks, []), []);
 });
 
-test('matching target language is included when translation is enabled', async () => {
+test('translation does not reselect a target-language track explicitly unchecked by the user', async () => {
  const tracks = [{language:'en',url:'https://example.test/en'}, {language:'ko',url:'https://example.test/ko'}];
  const choices = await DescribeSubtitleTracks(tracks);
- assert.deepEqual(await SelectSubtitleTracks(tracks, [choices[0].id], {enabled:true,targetLanguage:'ko'}), tracks);
+ assert.deepEqual(await SelectSubtitleTracks(tracks, [choices[0].id], {enabled:true,targetLanguage:'ko'}), [tracks[0]]);
 });
 
 test('stale selected track identities fail instead of silently omitting subtitles',async()=>{

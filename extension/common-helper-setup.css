@@ -1,0 +1,66 @@
+/* One install popup, including its styles, is reused by every helper entry point. */
+body.settings-page .common-helper-setup-dialog {
+  box-sizing: border-box;
+  inline-size: min(480px, calc(100vw - 24px));
+  width: min(480px, calc(100vw - 24px));
+  max-inline-size: none;
+  max-block-size: calc(100dvh - 24px);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: 16px/1.65 system-ui, 'Malgun Gothic', sans-serif;
+  overflow: auto;
+}
+.common-helper-setup-dialog:modal { overscroll-behavior: contain; }
+.common-helper-setup-dialog::backdrop {
+  background: #080b12b8;
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+body.settings-page .common-helper-setup-dialog > form {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+  max-block-size: calc(100dvh - 26px);
+  margin: 0;
+}
+body.settings-page .common-helper-setup-dialog header,
+body.settings-page .common-helper-setup-dialog footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  flex: none;
+}
+body.settings-page .common-helper-setup-dialog header { border-block-end: 1px solid var(--line); }
+body.settings-page .common-helper-setup-dialog h2 { margin: 0; padding: 0; border: 0; font-size: 18px; line-height: 1.4; }
+body.settings-page .common-helper-setup-dialog .explorer-setup-body {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  min-block-size: 0;
+  overflow: auto;
+  font: inherit;
+}
+body.settings-page .common-helper-setup-dialog .explorer-setup-body p,
+body.settings-page .common-helper-setup-dialog .explorer-setup-body p.notice {
+  margin: 0;
+  font: inherit;
+  color: var(--text);
+  white-space: pre-line;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+body.settings-page .common-helper-setup-dialog .explorer-setup-body .explorer-setup-note { color: var(--muted); }
+body.settings-page .common-helper-setup-dialog .explorer-setup-body p.notice[data-error="true"] { color: #ffb4ac; }
+body.settings-page .common-helper-setup-dialog footer { justify-content: flex-end; flex-wrap: wrap; border-block-start: 1px solid var(--line); }
+body.settings-page .common-helper-setup-dialog button { min-block-size: 40px; padding: 8px 14px; font: inherit; }
+body.settings-page .common-helper-setup-dialog .explorer-setup-download-help { display: grid; gap: 10px; padding-block-start: 14px; border-block-start: 1px solid var(--line); }
+body.settings-page .common-helper-setup-dialog .explorer-setup-download-help button { justify-self: start; }
+body.settings-page .common-helper-setup-dialog [hidden] { display: none !important; }
+body.settings-page .common-helper-setup-dialog .helper-installer-link { color:var(--blue,#b1d9ff); overflow-wrap:anywhere; text-underline-offset:3px; }
+body.settings-page .common-helper-setup-dialog .helper-installer-link[aria-disabled="true"] { color:var(--muted); }
+body.settings-page .common-helper-setup-dialog .helper-installer-link.error { color:var(--red,#ffb4ac); }
+body.settings-page .common-helper-setup-dialog .helper-setup-progress { inline-size:100%; accent-color:var(--mint,#76f5b6); }

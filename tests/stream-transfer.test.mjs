@@ -2,9 +2,119 @@ import Assert from 'node:assert/strict';
 import { test as Test } from 'node:test';
 import { ParseMediaPlaylist } from '../extension/lib/hls.js';
 import { DownloadTracks } from '../extension/lib/stream-transfer.js';
+import { RuntimePolicy } from '../extension/lib/runtime-policy.js';
+import {setImmediate as Turn} from 'node:timers/promises';
 const Address = 'https://video.test/live.m3u8';
 const Playlist = (Sequence, ...Parts) => '#EXTM3U\n#EXT-X-TARGETDURATION:1\n#EXT-X-MEDIA-SEQUENCE:' +
 Sequence + '\n' + Parts.map(Part => '#EXTINF:1,\n' + Part + '\n').join('');
+
+Test('encrypted segment bytes update transfer progress before the whole segment can be decrypted',async T=>
+{
+	const Plain=new Uint8Array(376);Plain[0]=Plain[188]=0x47;
+	const Key=new Uint8Array(16),Iv=new Uint8Array(16);
+	const Cipher=new Uint8Array(await crypto.subtle.encrypt({name:'AES-CBC',iv:Iv},await crypto.subtle.importKey('raw',Key,'AES-CBC',false,['encrypt']),Plain));
+	const Controller=new AbortController(),States=[],Target=Workspace();let Body;
+	T.mock.method(globalThis,'fetch',async Url=>Url.endsWith('/key')?new Response(Key.slice()):new Response(new ReadableStream({start(C){Body=C;C.enqueue(Cipher.slice(0,32));}})));
+	const Text=Playlist(0,'part.ts').replace('#EXTINF','#EXT-X-KEY:METHOD=AES-128,URI="key",IV=0x0\n#EXTINF')+'#EXT-X-ENDLIST';
+	const Pending=DownloadTracks([{playlist:ParseMediaPlaylist(Text,Address)}],{workspace:Target,controller:Controller,finishSignal:new AbortController().signal,authorize:async()=>{},progress:async S=>States.push(S)});
+	const Settled=Pending.then(Value=>({Value}),Error=>({Error}));
+	T.after(async()=>{Controller.abort();try{Body?.error(new DOMException('test ended','AbortError'));}catch{}await Settled;});
+	for(let I=0;I<10;I++)await Turn();
+	Assert.ok(States.some(S=>S.received===32&&S.finished===0),'received ciphertext must be visible before the pending body finishes');
+	Assert.equal(Target.files.size,0,'unvalidated ciphertext must not reach the output');
+	Body.enqueue(Cipher.slice(32));Body.close();
+	const Result=await Pending;
+	Assert.equal(Result.progress.received,376,'final accounting includes plaintext once, with no ciphertext duplication');
+	Assert.deepEqual(Target.files.get('segment-0.ts'),Plain);
+});
+
+Test('observed multi-CDN transfers start four bounded requests instead of leaving fast CDNs waiting behind two slow ones',async T=>
+{
+	const Requested=[],Bodies=[],Controller=new AbortController();
+	T.mock.method(globalThis,'fetch',async Url=>{Requested.push(Url);return new Response(new ReadableStream({start(C){Bodies.push(C);}}));});
+	const Text=Playlist(0,...['https://a.test/0.ts','https://b.test/1.ts','https://c.test/2.ts','https://d.test/3.ts','https://e.test/4.ts'])+'#EXT-X-ENDLIST';
+	const Pending=DownloadTracks([{playlist:ParseMediaPlaylist(Text,Address)}],{workspace:Workspace(),controller:Controller,finishSignal:new AbortController().signal,
+		observedContext:{origin:'https://player.test',referer:'https://player.test/',serverOrigin:'https://video.test'},authorize:async()=>{},progress:async()=>{}});
+	const Settled=Pending.catch(E=>E);
+	T.after(async()=>{Controller.abort();for(const Body of Bodies)try{Body.error(new DOMException('ended','AbortError'));}catch{}await Settled;});
+	for(let I=0;I<10;I++)await Turn();
+	Assert.equal(Requested.length,4,'four requests may run; the fifth must stay queued');
+});
+Test('running live jobs acquire DVR capability when a refreshed window provides history',async T=>
+{
+	const Stop=new AbortController(),Ts=new Uint8Array(376),States=[];Ts[0]=Ts[188]=0x47;
+	T.mock.method(globalThis,'fetch',async U=>new Response(U===Address?Playlist(0,...Array.from({length:120},(_,I)=>I+'.ts')):Ts));
+	await DownloadTracks([{url:Address,playlist:ParseMediaPlaylist(Playlist(0,'0.ts','1.ts','2.ts'),Address)}],
+		{workspace:Workspace(),controller:new AbortController(),finishSignal:Stop.signal,authorize:async()=>{},progress:async S=>{States.push(S);if(S.dvr===true||S.finished>=120)Stop.abort();}});
+	Assert.ok(States.some(S=>S.dvr===true),'a refreshed DVR playlist must update the registered job display');
+});
+Test('current live start skips DVR history once and continues every newly published segment', async T =>
+{
+	const Requested = [], Ts = new Uint8Array(376); Ts[0] = Ts[188] = 0x47;
+	T.mock.method(globalThis, 'fetch', async Url =>
+	{
+		Requested.push(Url);
+		return new Response(Url === Address ? Playlist(1, ...Array.from({length: 10}, (_, I) => I + 1 + '.ts')) + '#EXT-X-ENDLIST' : Ts);
+	});
+	const Initial = ParseMediaPlaylist(Playlist(1, ...Array.from({length: 8}, (_, I) => I + 1 + '.ts')), Address);
+	const Result = await DownloadTracks([{url: Address, playlist: Initial}], {liveStart: 'current', workspace: Workspace(),
+		controller: new AbortController(), finishSignal: new AbortController().signal, authorize: async () => {}, progress: async () => {}});
+	Assert.deepEqual(Requested.filter(U => U !== Address).map(U => new URL(U).pathname), ['/6.ts', '/7.ts', '/8.ts', '/9.ts', '/10.ts']);
+	Assert.equal(Result.progress.finished, 5);
+	Assert.equal(Initial.segments.length, 8, 'source playlist is preserved');
+});
+
+Test('beginning remains the live default and current never trims finite media', async T =>
+{
+	const Ts = new Uint8Array(376); Ts[0] = Ts[188] = 0x47;
+	for (const [Mode, Ended] of [[undefined, false], ['beginning', false], ['current', true]])
+	{
+		const Requested = [], Stop = new AbortController();
+		T.mock.method(globalThis, 'fetch', async Url => {Requested.push(new URL(Url).pathname); return new Response(Ts);});
+		await DownloadTracks([{url: Address, playlist: ParseMediaPlaylist(Playlist(1, '1.ts', '2.ts', '3.ts', '4.ts') + (Ended ? '#EXT-X-ENDLIST' : ''), Address)}],
+			{liveStart: Mode, workspace: Workspace(), controller: new AbortController(), finishSignal: Stop.signal,
+				authorize: async () => {}, progress: async S => {if (S.finished === 4) Stop.abort();}});
+		Assert.deepEqual(Requested.sort(), ['/1.ts', '/2.ts', '/3.ts', '/4.ts']);
+	}
+});
+
+Test('current start uses the same live duration for separate tracks with different sequence bases and segment sizes', async T =>
+{
+	const Requested = [], Stop = new AbortController(), Ts = new Uint8Array(376); Ts[0] = Ts[188] = 0x47;
+	T.mock.method(globalThis, 'fetch', async Url => {Requested.push(new URL(Url).pathname); return new Response(Ts);});
+	const Video = Playlist(100, ...Array.from({length: 10}, (_, I) => 'v' + I + '.ts')).replace('TARGETDURATION:1', 'TARGETDURATION:2').replaceAll('#EXTINF:1', '#EXTINF:2');
+	const Audio = Playlist(700, ...Array.from({length: 20}, (_, I) => 'a' + I + '.aac'));
+	await DownloadTracks([{url: Address, playlist: ParseMediaPlaylist(Video, Address)}, {url: Address, audio: true, playlist: ParseMediaPlaylist(Audio, Address)}],
+		{liveStart: 'current', workspace: Workspace(), controller: new AbortController(), finishSignal: Stop.signal,
+			authorize: async () => {}, progress: async S => {if (S.finished === 9) Stop.abort();}});
+	Assert.deepEqual(Requested.filter(U => U.endsWith('.ts')).sort(), ['/v7.ts', '/v8.ts', '/v9.ts']);
+	Assert.deepEqual(Requested.filter(U => U.endsWith('.aac')).sort(), ['/a14.aac', '/a15.aac', '/a16.aac', '/a17.aac', '/a18.aac', '/a19.aac']);
+});
+
+Test('current start preserves the initialization map of the retained tail and rejects invalid modes before requests', async T =>
+{
+	const Requested = [], Stop = new AbortController();
+	T.mock.method(globalThis, 'fetch', async Url => {Requested.push(new URL(Url).pathname); return new Response(new Uint8Array(32));});
+	const Text = Playlist(1, '1.m4s', '2.m4s', '3.m4s', '4.m4s', '5.m4s').replace('#EXTINF', '#EXT-X-MAP:URI="old-init.mp4"\n#EXTINF')
+		.replace('#EXTINF:1,\n3.m4s', '#EXT-X-DISCONTINUITY\n#EXT-X-MAP:URI="tail-init.mp4"\n#EXTINF:1,\n3.m4s');
+	const Sources = [{url: Address, playlist: ParseMediaPlaylist(Text, Address)}];
+	const Options = {workspace: Workspace(), controller: new AbortController(), finishSignal: Stop.signal,
+		authorize: async () => {}, progress: async S => {if (S.finished === 3) Stop.abort();}};
+	await Assert.rejects(DownloadTracks(Sources, {...Options, liveStart: 'invalid'}), {key: 'job_invalid_request'});
+	Assert.deepEqual(Requested, []);
+	const Result = await DownloadTracks(Sources, {...Options, liveStart: 'current'});
+	Assert.deepEqual(Requested.sort(), ['/3.m4s', '/4.m4s', '/5.m4s', '/tail-init.mp4']);
+	Assert.match(Result.video, /#EXT-X-MAP:URI="init-0.mp4"/);
+});
+Test('finite separated audio is offered for preparation while video is still downloading',async T=>{
+ let ReleaseVideo,Prepared=false;const VideoBody=new Uint8Array(376);VideoBody[0]=VideoBody[188]=0x47;
+ T.mock.method(globalThis,'fetch',async Url=>Url.endsWith('video2.ts')?new Promise(R=>{ReleaseVideo=()=>R(new Response(VideoBody));}):new Response(Url.endsWith('.ts')?VideoBody:new Uint8Array([1,2,3])));
+ const Target=Workspace(),End='#EXT-X-ENDLIST';
+ await DownloadTracks([{url:Address,playlist:ParseMediaPlaylist(Playlist(0,'video.ts','video2.ts')+End,Address)},{url:Address,audio:true,playlist:ParseMediaPlaylist(Playlist(0,'audio.aac')+End,Address)}],{
+  workspace:Target,controller:new AbortController(),finishSignal:new AbortController().signal,authorize:async()=>{},progress:async()=>{},
+  audioReady:Text=>{Prepared=true;Assert.match(Text,/segment-2.aac/);Assert.ok(Target.files.has('segment-2.aac'));Assert.ok(Target.files.has('segment-0.ts'));Assert.ok(!Target.files.has('segment-1.ts'));ReleaseVideo();}
+ });Assert.equal(Prepared,true);
+});
 Test('encrypted live refresh uses new keys at the same URI and commits only plaintext', async T =>
 {
 	const Plain = new Uint8Array(376);
@@ -98,6 +208,45 @@ function Workspace()
 				} };
 		} };
 }
+
+Test('stop/save bounds the drain of a trickling segment and preserves only closed contiguous files', async T =>
+{
+	T.mock.timers.enable({apis: ['setTimeout']});
+	const Stop = new AbortController(), Controller = new AbortController(), Target = Workspace();
+	const Ts = new Uint8Array(376); Ts[0] = Ts[188] = 0x47;
+	const Requested = [], Bodies = [];
+	T.mock.method(globalThis, 'fetch', async Url =>
+	{
+		Requested.push(Url);
+		if (Url.endsWith('/0.ts')) return new Response(Ts);
+		return new Response(new ReadableStream({start(Body) { Bodies.push(Body); Body.enqueue(Ts); }}));
+	});
+	const Pending = DownloadTracks([{playlist: ParseMediaPlaylist(Playlist(0, '0.ts', '1.ts', '2.ts', '3.ts', '4.ts') + '#EXT-X-ENDLIST', Address)}], {
+		workspace: Target, controller: Controller, finishSignal: Stop.signal, authorize: async () => {},
+		progress: async State => { if (State.finished) Stop.abort(); },
+	});
+	let Settled;
+	const Observed = Pending.then(Value => { Settled = {Value}; }, Error => { Settled = {Error}; });
+	T.after(async () => { for (const Body of Bodies) { try { Body.close(); } catch {} } await Observed; });
+	for (let I = 0; I < 10; I++) await Turn();
+	Assert.equal(Stop.signal.aborted, true);
+	Assert.equal(Settled, undefined, 'allow in-flight segments a short grace period');
+	T.mock.timers.tick(2000);
+	for (const Body of Bodies) Body.enqueue(Ts);
+	for (let I = 0; I < 5; I++) await Turn();
+	T.mock.timers.tick(3001);
+	for (let I = 0; I < 10; I++) await Turn();
+	Assert.ok(Settled, 'stop/save must finish draining within five seconds even while bytes keep arriving');
+	Assert.equal(Settled.Error, undefined);
+	Assert.equal(Controller.signal.aborted, false, 'output mux/save must retain its live cancellation signal');
+	Assert.equal(Settled.Value.partial, true);
+	Assert.equal(Settled.Value.progress.finished, 1);
+	Assert.equal(Settled.Value.progress.received, Ts.length);
+	Assert.equal(Target.files.size, 1, 'unfinished writers must roll back before output starts');
+	Assert.doesNotMatch(Settled.Value.video, /segment-[1-4]\.ts/);
+	Assert.equal(Requested.length, 4, 'queued fifth segment must never start');
+	Assert.equal(RuntimePolicy.Transfer.FinishGraceMs, 5000);
+});
 
 Test('stop/save seals a finite stream prefix without requesting the rest or canceling the output signal', async T =>
 {

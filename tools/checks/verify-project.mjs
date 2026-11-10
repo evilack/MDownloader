@@ -9,6 +9,7 @@ import {fileURLToPath as FileURLToPath, pathToFileURL as PathToFileURL} from 'no
 import Path from 'node:path';
 import {ProjectPath, ArtifactPath} from '../lib/tool-config.mjs';
 import {AssertExtensionFilenames} from '../lib/extension-files.mjs';
+import {IconCatalog} from '../../extension/lib/icon-catalog.js';
 const {parse: Parse} = CreateRequire(import.meta.url)('internal/deps/acorn/acorn/dist/acorn');
 const Result = {javascript: 0, json: 0, relativeImports: 0, localReferences: 0, preservedFiles: 0, failures: []};
 async function CheckReference(File, Reference)
@@ -127,7 +128,25 @@ for (const File of ['README.md', 'THIRD_PARTY_NOTICES.md'])
 
 const Catalog = JSON.parse(await ReadFile(ProjectPath('assets/catalog.json'), 'utf8'));
 const Screenshots = JSON.parse(await ReadFile(ProjectPath('website/assets/screenshots/catalog.json'), 'utf8'));
-const Artifacts = [...Catalog.runtime, ...Catalog.sharedFiles, ...Object.values(Catalog.groups).flatMap(Group => Group.artifacts), ...Screenshots.screenshots];
+const Provenance = JSON.parse(await ReadFile(ProjectPath('extension/vendor/youtube/provenance.json'), 'utf8'));
+const Artifacts = [...Catalog.runtime, ...Catalog.sharedFiles, ...Object.values(Catalog.groups).flatMap(Group => Group.artifacts), ...Screenshots.screenshots,
+	...Object.entries(Provenance.files).map(([Name, Hash]) => ({path: 'extension/vendor/youtube/' + Name, sha256: Hash})),
+	{path: 'package-lock.json', sha256: Provenance.lockfileSha256}];
+const RuntimeIcons = new Set(Catalog.runtime.map(File => File.path));
+for (const Name of await Readdir(ProjectPath('extension/icons')))
+{
+	if (Name.endsWith('.png') && !RuntimeIcons.has('extension/icons/' + Name))
+	{
+		Result.failures.push({file: Name, reason: 'Uncatalogued runtime icon'});
+	}
+}
+for (const Reference of [
+	...Object.values(IconCatalog.actions), ...Object.values(IconCatalog.app), IconCatalog.brands.youtube,
+	IconCatalog.previewFailure.src, ...IconCatalog.previewFailure.srcset.split(',').map(Value => Value.trim().split(' ')[0]),
+])
+{
+	if (!RuntimeIcons.has('extension/' + Reference)) Result.failures.push({file: Reference, reason: 'Icon component references an uncatalogued asset'});
+}
 for (const File of Artifacts)
 {
 	try

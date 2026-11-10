@@ -1,4 +1,5 @@
 import { DebugLog } from './lib/debug-log.js';
+import {NormalizeHlsLiveStart} from './lib/hls-live-start.js';
 /**
  * 다운로드 작업의 등록, 상태 변경, 삭제를 담당합니다. 저장한 작업 ID는 앱의 식별자이고 Chrome이 발급한 다운로드 ID와 별개입니다.
  * 작업 데이터는 브라우저 저장소에 남깁니다. 현재 실행 중인 요청만 메모리에서 합쳐 같은 작업이 중복 등록되는 것을 막습니다.
@@ -14,7 +15,7 @@ import {
 } from './hls-jobs.js';
 import { KnownMasterDenial, SaveTransferTrace } from './lib/hls-diagnostics.js';
 import { HlsRequestSource, SetHlsRequestRules, SetScopedHlsRequestRules } from './lib/hls-request-context.js';
-import { DeleteStoredJob, JobKey, ListStoredJobs, ReadJob, WriteJob } from './lib/job-storage.js';
+import { DeleteStoredJob, JobKey, ListStoredJobs, ReadJob, WriteJob, UpdateStoredJob } from './lib/job-storage.js';
 import { GetSetting, GetSettings, SettingKeys } from './lib/settings.js';
 import { RequirePickedFolder } from './lib/picked-download-folder.js';
 import { DeleteJobPreview, PreviewSourceKey, SaveJobPreviewSource, SaveJobThumbnail, ReadJobThumbnail } from './lib/job-preview-cache.js';
@@ -30,15 +31,26 @@ import {RequirePlaybackAuthorization} from './lib/playback-authorization.js';
 import {DiscoverSubtitles} from './lib/subtitle-discovery.js';
 import {SubtitleStatus, ValidateSubtitleStatus} from './lib/subtitle-status.js';
 import {SelectSubtitleTracks} from './lib/download-options-selection.js';
+import {SnapshotCaptionOptions} from './lib/local-captions-service.js';
 import {ResolveYoutubeSelection, CancelYoutube, FinishYoutube, SavePartialYoutube} from './features/youtube/entry.js';
 const Pending = new Map();
 const Removing = new Set();
 const PendingSnapshots = new Set();
+function CanceledJob(Current,Fields={}){
+ if(!Current)return Current;
+ return {...Current,...Fields,state:'canceled',...(Current.localCaptions?.enabled?{captionStatus:{...Current.captionStatus,phase:'canceled',cancelRequested:true,retryToken:null,controlRevision:(Current.captionStatus?.controlRevision||0)+1}}:{})};
+}
 async function RegisterMediaJob(Key, Job, TabId, Candidate, PreparePreview = true)
 {
+	Job.localCaptions ||= await SnapshotCaptionOptions(Job.captionOverride || 'inherit',chrome,Job.captionSettings);
+	delete Job.captionOverride;
+	delete Job.captionSettings;
+	if(Job.localCaptions.enabled&&!Job.snapshot)Job.captionPipeline='staged';
+	if(Job.localCaptions.enabled)Job.captionStatus={phase:'waiting'};
 	const {subtitleTranslation: StoredSettings = {}} = await chrome.storage.local.get('subtitleTranslation');
 	const Settings = Job.subtitleOptions?.translation ?? StoredSettings;
 	Job.subtitleStatus = {...SubtitleStatus(Candidate.subtitles || [], Settings), completed:0};
+ if (Candidate.subtitleError) Job.subtitleStatus={...Job.subtitleStatus,phase:'failed',translation:'unknown',errorCount:1};
 	if (Job.youtube && Job.subtitleOptions?.trackIds.length)
 		Job.subtitleStatus = {...SubtitleStatus(Job.subtitleOptions.trackIds.map(() => ({language:'und'})), Settings), completed:0};
 	Object.assign(Job, {sourcePolicyVersion: 1, youtubeSource: IsYoutubeSource({pageUrl: Candidate.page, frameUrl: Candidate.previewPage ?? Candidate.initiator, mediaUrl: Candidate.url})});
@@ -64,7 +76,7 @@ async function PrepareJobPreview(Job, TabId, Candidate)
 	}
 	else if (!bProtectedRequest)
 	{
-		Source.url = Candidate.url;
+		Source.url = Candidate.variantUrl ?? Candidate.url;
 	}
 	// 서명된 주소는 브라우저 세션에만 둡니다.
 	// 재시작 후 기록을 읽을 때 필요한 작은 썸네일과 미리보기 샘플만 디스크에 남깁니다.
@@ -125,7 +137,7 @@ export function Enqueue(Input)
 	return EnqueueOnce(Input.requestId, Key => StartJob(Key, Input));
 }
 
-export async function EnqueuePlayback({ requestId: RequestId, playlist: Playlist, count: Count, bytes: Bytes, pageTitle: PageTitle, pageUrl: PageUrl })
+export async function EnqueuePlayback({ requestId: RequestId, playlist: Playlist, count: Count, bytes: Bytes, pageTitle: PageTitle, pageUrl: PageUrl, captionOverride: CaptionOverride, captionSettings: CaptionSettings })
 {
 	const PlaybackSource = await RequirePlaybackAuthorization(RequestId);
 	if (typeof Playlist !== 'string' || Playlist.length > RuntimePolicy.Transfer.MaxPlaylistBytes ||
@@ -143,6 +155,7 @@ export async function EnqueuePlayback({ requestId: RequestId, playlist: Playlist
 		await RecordDownloadLog('started', { requestId: RequestId });
 		const Job = {
 			requestId: RequestId, ...await DownloadTarget(undefined, PageTitle, PageUrl), created: Date.now(), state: 'active',
+			localCaptions:await SnapshotCaptionOptions(CaptionOverride || 'inherit',chrome,CaptionSettings),captionPipeline:'staged',captionStatus:{phase:'waiting'},
 			sourcePolicyVersion: 1, youtubeSource: false, subtitleCount: PlaybackSource?.subtitles?.length ?? 0,
 			hls: true, bytesReceived: Bytes, finished: Count, count: Count, muxing: true,
 		};
@@ -178,7 +191,7 @@ function EnqueueOnce(RequestId, Start)
 	return Pending.get(Key);
 }
 
-async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: CandidateId, requestId: RequestId, variantUrl: VariantUrl, quality: Quality, scope: Scope, subtitleOptions: SubtitleOptions })
+async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: CandidateId, requestId: RequestId, variantUrl: VariantUrl, quality: Quality, scope: Scope, subtitleOptions: SubtitleOptions, captionOverride: CaptionOverride, captionSettings: CaptionSettings, liveStart: LiveStart })
 {
 	const Existing = await ReadJob(Key);
 	if (Existing)
@@ -186,22 +199,26 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 		return { state: Existing.downloadId !== undefined || Existing.state === 'active' ? 'started' : Existing.state };
 	}
 
+	NormalizeHlsLiveStart(LiveStart);
 	await RecordDownloadLog('started', { requestId: RequestId });
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
+	const LocalCaptions=await SnapshotCaptionOptions(CaptionOverride || 'inherit',chrome,CaptionSettings);
 	if (SubtitleOptions)
 	{
 		const T = SubtitleOptions.translation;
 		if (!Array.isArray(SubtitleOptions.trackIds) || SubtitleOptions.trackIds.length > 128 || !T || typeof T.enabled !== 'boolean' ||
 			!['targetLanguage','sourceLanguage'].every(K => typeof T[K] === 'string' && /^[a-z0-9-]{1,35}$/i.test(T[K])) ||
 			!['deepl','google','azure','gemini','deepseek','openai','kakao'].includes(T.provider) ||
-			!['model','effort'].every(K => typeof T[K] === 'string' && T[K].length <= 200)) throw new LocalizedError('subtitle_invalid');
+			!['model','effort'].every(K => typeof T[K] === 'string' && T[K].length <= 200) ||
+			T.generated!==undefined&&(typeof T.generated!=='boolean'||T.generated&&!LocalCaptions.enabled)) throw new LocalizedError('subtitle_invalid');
 	}
 	AssertMediaAllowed(Item);
 	if (VariantUrl) AssertMediaAllowed({url: VariantUrl});
 	if (Item.format === 'YOUTUBE')
 	{
-		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle, Item.page),
-			created: Date.now(), state: 'active', youtube: true, bytesReceived: 0, waiting: !!Quality?.scheduled, live: !!Quality?.live,
+		const Job = {localCaptions:LocalCaptions,requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle, Item.page),
+			created: Date.now(), state: 'active', youtube: true, bytesReceived: 0, waiting: !!Quality?.scheduled,
+			live: !Quality?.scheduled && !!Quality?.live, scheduledStartTime: Quality?.scheduledStartTime,
 			scheduled: !!Quality?.scheduled,
 			includeYoutubeAutoCaptions: await GetSetting(SettingKeys.includeYoutubeAutoCaptions), ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {})};
 		await RegisterMediaJob(Key, Job, TabId, Item);
@@ -211,14 +228,15 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 	}
 	// 자막 주소는 이 등록 호출과 전송 문서 안에서만 유지합니다. 영속 기록에는 개수만 남깁니다.
 	const ManifestSubtitles = (VariantUrl ? Item.qualities?.find(Value => Value.url === VariantUrl) : Item.qualities?.[0])?.subtitles ?? [];
-	let Subtitles = [...ManifestSubtitles, ...await DiscoverSubtitles(TabId, Item)];
+	let Subtitles=[...ManifestSubtitles];
+	try{Subtitles.push(...await DiscoverSubtitles(TabId,Item));}catch{Item.subtitleError=true;}
 	// HLS/DASH sources are complete only after the runner resolves the chosen manifest.
-	if (SubtitleOptions && !IsStreamFormat(Item.format)) Subtitles = await SelectSubtitleTracks(Subtitles, SubtitleOptions.trackIds, SubtitleOptions.translation);
+	if (SubtitleOptions && !IsStreamFormat(Item.format))try{Subtitles=await SelectSubtitleTracks(Subtitles,SubtitleOptions.trackIds,SubtitleOptions.translation);}catch{Item.subtitleError=true;Subtitles=[];}
 	Item.subtitles = Subtitles;
 	if (Item.format === 'WEBRTC')
 	{
-		const Job = {requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle, Item.page),
-			created: Date.now(), state: 'active', recording: true, live: true, bytesReceived: 0, finished: 0, subtitleCount: Subtitles.length, ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {})};
+		const Job = {localCaptions:LocalCaptions,requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(undefined, Item.pageTitle, Item.page),
+			created: Date.now(), state: 'active', recording: true, live: true, connecting: true, bytesReceived: 0, finished: 0, subtitleCount: Subtitles.length, ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {})};
 		await RegisterMediaJob(Key, Job, TabId, Item, false);
 		try
 		{
@@ -230,7 +248,7 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 		{
 			if (ErrorValue.name === 'AbortError')
 			{
-				await WriteJob(Key, {...await ReadJob(Key), state: 'canceled'});
+				await UpdateStoredJob(Key,Current=>CanceledJob(Current));
 				return {state: 'canceled'};
 			}
 			await WriteJob(Key, {...await ReadJob(Key), state: 'failed', error: SerializeError(ErrorValue)});
@@ -244,12 +262,17 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 		const Observed = VariantUrl === undefined ? Item.observedVariants?.[0]
 		: Item.observedVariants?.find(Variant => Variant.url === VariantUrl);
 		const Source = Observed ?? Item;
+		// Observed rendition URLs can be video-only. Keep the master's matching
+		// audio declaration when bypassing a denied/unnecessary master request.
+		const AudioUrl = Observed && Item.qualities?.find(Variant => Variant.url === Observed.url)?.audioUrl;
 		const Job = {
 			requestId: RequestId, mediaKey: Item.mediaKey,
+			...(Item.format==='M3U8' && LiveStart!==undefined?{liveStart:LiveStart}:{}),
 			...await DownloadTarget(Item.name.replace(/\.(m3u8|mpd)$/i, '') + '.mp4', Item.pageTitle, Item.page),
-			created: Date.now(), state: 'active', hls: true, bytesReceived: 0, finished: 0, subtitleCount: Subtitles.length, ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {}),
+			localCaptions:LocalCaptions,created: Date.now(), state: 'active', hls: true,format:Item.format, bytesReceived: 0, finished: 0, subtitleCount: Subtitles.length, ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {}),
 			// 감지 단계에서 확인한 라이브는 첫 진행 응답 전에도 관리자에 표시합니다.
 			...(typeof Item.live === 'boolean' ? {live: Item.live} : {}),
+			...(typeof Item.dvr === 'boolean' ? {dvr: Item.dvr} : {}),
 		};
 		const Denial = await KnownMasterDenial(HlsRequestSource(Source.url, Source.requestContext));
 		if (Denial)
@@ -264,10 +287,10 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 			await OpenDebugView(RequestId);
 			return { state: 'failed' };
 		}
-		await RegisterMediaJob(Key, Job, TabId, Item);
+		await RegisterMediaJob(Key, Job, TabId, VariantUrl === undefined ? Item : {...Item, variantUrl: VariantUrl});
 		try
 		{
-			await LaunchHls(Job, Source.url, Observed ? undefined : VariantUrl, Source.requestContext, Item.format, Subtitles);
+			await LaunchHls(Job, Source.url, Observed ? undefined : VariantUrl, Source.requestContext, Item.format, Subtitles, AudioUrl);
 		}
 		catch (ErrorValue)
 		{
@@ -278,12 +301,12 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 		return { state: 'started' };
 	}
 	const Job = {
-		requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(Item.name, Item.pageTitle, Item.page), created: Date.now(), state: 'starting', ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {}),
+		localCaptions:LocalCaptions,requestId: RequestId, mediaKey: Item.mediaKey, ...await DownloadTarget(Item.name, Item.pageTitle, Item.page), created: Date.now(), state: 'starting', ...(SubtitleOptions ? {subtitleOptions: SubtitleOptions} : {}),
 	};
-	if (Job.pickedDownloadFolder || Subtitles.length)
+	if (Job.pickedDownloadFolder || Subtitles.length || LocalCaptions.enabled)
 	{
 		await RequireHlsHosts([Item.url]);
-		const FolderJob = { ...Job, state: 'active', ...(Subtitles.length ? {subtitleMux: true, subtitleCount: Subtitles.length} : {}) };
+		const FolderJob = { ...Job, state: 'active', subtitleMux:true, ...(Subtitles.length ? {subtitleCount: Subtitles.length} : {}) };
 		await RegisterMediaJob(Key, FolderJob, TabId, Item);
 		try
 		{
@@ -304,11 +327,22 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 	}
 	catch
 	{
-		await WriteJob(Key, { ...Job, state: 'failed', error: MessageRef('job_browser_start_failed') });
+		await UpdateStoredJob(Key, Current => ({ ...Current ?? Job, state: 'failed', error: MessageRef('job_browser_start_failed') }));
 		await RecordDownloadLog('failed', { requestId: RequestId, reason: 'job_browser_start_failed' });
 		return { state: 'failed' };
 	}
-	await WriteJob(Key, { ...Job, downloadId: DownloadId, state: 'started' });
+	const Started = await UpdateStoredJob(Key, Current => ({ ...Current ?? Job, downloadId: DownloadId, state: 'started' }));
+	if (Started.pendingAction === 'cancel')
+	{
+		try {await chrome.downloads.cancel(DownloadId);}
+		catch (ErrorValue)
+		{
+			await UpdateStoredJob(Key, Current => ({...Current, pendingAction: undefined}));
+			throw ErrorValue;
+		}
+		await UpdateStoredJob(Key, Current => CanceledJob(Current));
+		return {state: 'canceled'};
+	}
 	return { state: 'started' };
 }
 
@@ -338,25 +372,42 @@ export async function UpdateHls(Message)
 {
 	const Key = JobKey(Message.requestId);
 	const Job = await ReadJob(Key);
+	const StoreReport=Value=>UpdateStoredJob(Key,Current=>Current?{...Current,...Object.fromEntries(Object.entries(Value).filter(([Name,Field])=>Name!=='captionStatus'&&Field!==Job[Name]))}:Current);
 	if (!Job?.hls && !Job?.recording && !Job?.youtube && !Job?.pickedDownloadFolder && !Job?.subtitleMux)
 	{
 		throw new LocalizedError('job_hls_not_found');
 	}
 	if (Message.action === 'recordingReleased' && Job.recording) return ForgetWebRtcControl(Job.requestId);
+	if(Message.action==='savedMediaState'){
+	 const Item=await GetBrowserDownload(Job.downloadId);
+	 if(Item?.state!=='complete')return {state:Item?.state||'missing'};
+	}
+	if(Message.action==='mediaReceipt'||Message.action==='savedMediaState'){
+	 const Item=await GetBrowserDownload(Job.downloadId);
+	 if(!Item||Item.state!=='complete'||Item.exists===false)throw Error('caption_save_failed');
+	 const Receipt={filename:Item.filename.split(/[\\/]/).at(-1),downloadId:Item.id,bytes:Item.fileSize>=0?Item.fileSize:Item.bytesReceived,resultRevision:Job.captionStatus?.resultRevision||0};
+	 await UpdateStoredJob(Key,Current=>Current?{...Current,filename:Receipt.filename,exists:true,bytesReceived:Receipt.bytes,totalBytes:Receipt.bytes,...(Current.localCaptions?.enabled&&Current.captionPipeline==='staged'?{captionStatus:{...Current.captionStatus,finalMediaReady:true,outputReceipts:{...Current.captionStatus.outputReceipts,media:Receipt}}}:{})}:Current);
+	 return Message.action==='savedMediaState'?{state:'complete',receipt:Receipt}:Receipt;
+	}
+	if(Message.action==='failure'){
+	 const State=Message.canceled?'canceled':'failed';
+	 await UpdateStoredJob(Key,Current=>Message.canceled?CanceledJob(Current,{error:Message.error}):Current?{...Current,state:State,error:Message.error}:Current);
+	 await RecordDownloadLog(State,{requestId:Job.requestId,reason:Message.error?.key,status:Message.error?.key==='job_browser_error'?Message.error.args?.[0]:undefined});return;
+	}
 	if (Message.action === 'previewAccess')
 	{
 		return true;
 	}
 	if (Message.action === 'partialStarted' && Job.snapshot && Job.state === 'starting')
 	{
-		return WriteJob(Key, {...Job, state: 'active'});
+		return StoreReport({...Job, state: 'active'});
 	}
 	if (Message.action === 'diagnostic')
 	{
 		const Diagnostic = Message.diagnostic.events.at(-1);
 		await Promise.all([
 			SaveTransferTrace(Message.diagnostic),
-			WriteJob(Key, { ...Job, diagnostic: Diagnostic }),
+			StoreReport({ ...Job, diagnostic: Diagnostic }),
 			RecordDownloadLog(Diagnostic.result, {
 				requestId: Job.requestId, stage: Diagnostic.stage, status: Diagnostic.status,
 			}),
@@ -376,53 +427,61 @@ export async function UpdateHls(Message)
 		}
 		return Item?.state ?? 'missing';
 	}
-	if (Job.state !== 'active' || Job.downloadId !== undefined)
+	let ReplacingSave=false;
+	if(Message.action==='save'&&Job.captionPipeline==='staged'&&Job.captionStatus?.outputRetrying&&!Job.captionStatus.outputReceipts?.media&&Job.downloadId!==undefined){
+	 const Previous=await GetBrowserDownload(Job.downloadId);ReplacingSave=!Previous||Previous.state==='interrupted';
+	}
+	if (Job.state !== 'active' || Job.downloadId !== undefined&&!ReplacingSave)
 	{
 		throw new LocalizedError('job_hls_wrong_state');
 	}
 	switch (Message.action)
 	{
+		case 'connecting':
+		if (!Job.youtube || Job.snapshot) throw new LocalizedError('job_hls_wrong_state');
+		return StoreReport({...Job, waiting: false, live: !!(Message.live || Job.live), connecting: true});
 		case 'subtitleStatus':
 		if (!ValidateSubtitleStatus(Message.status)) throw new LocalizedError('subtitle_invalid');
-		return WriteJob(Key, {...Job, subtitleStatus: Message.status});
+		return StoreReport({...Job, subtitleStatus: Message.status});
 		case 'subtitleCount':
-		if (!Number.isInteger(Message.count) || Message.count < 1 || Message.count > 128) throw new LocalizedError('subtitle_invalid');
-		return WriteJob(Key, {...Job, subtitleCount: Message.count});
+		if (!Number.isInteger(Message.count) || Message.count < 0 || Message.count > 128 ||
+		 Message.count===0 && !(Job.subtitleStatus?.phase==='failed' && Job.subtitleStatus.completed===0))throw new LocalizedError('subtitle_invalid');
+		return StoreReport({...Job, subtitleCount: Message.count});
 		case 'subtitleReady':
 		if (!Number.isInteger(Message.count) || Message.count < 1) throw new LocalizedError('subtitle_invalid');
 		const SubtitleFilename = PartialOutputFilename(Job.filename, '.mp4');
-		await WriteJob(Key, {...Job, filename: SubtitleFilename, subtitleCount: Message.count,
+		await StoreReport({...Job, filename: SubtitleFilename, outputFormat:'MP4', subtitleCount: Message.count,
 			...(Number.isSafeInteger(Message.bytes) && Message.bytes > 0 ? {bytesReceived: Message.bytes} : {})});
 		return SubtitleFilename;
 		case 'youtubePartial':
 		{
 		if (!Job.youtube) throw new LocalizedError('job_hls_wrong_state');
 		const Filename = Job.partial || Job.snapshot ? Job.filename : PartialFilename(Job.filename);
-		await WriteJob(Key, {...Job, partial: true, filename: Filename, receipt: Message.receipt});
+		await StoreReport({...Job, partial: true, filename: Filename, receipt: Message.receipt});
 		return Filename;
 		}
 		case 'youtubeReceived':
 		if (!Job.youtube) throw new LocalizedError('job_hls_wrong_state');
-		return WriteJob(Key, {...Job, receipt: Message.receipt});
+		return StoreReport({...Job, receipt: Message.receipt});
 		case 'youtubeCaptions':
 		if (!Job.youtube) throw new LocalizedError('job_hls_wrong_state');
-		return WriteJob(Key, {...Job, captionReceipt: Message.receipt, subtitleCount: Message.receipt.count,
+		return StoreReport({...Job, captionReceipt: Message.receipt, subtitleCount: Message.receipt.count,
 			subtitleStatus: {phase:['unavailable','not-selected'].includes(Message.receipt.phase) ? 'undetected' : Message.receipt.phase,
-				count:Message.receipt.count,completed:Message.receipt.completed,languages:(Message.receipt.tracks ?? []).map(Track=>Track.language),targetLanguage:'',translation:'off'}});
+				count:Message.receipt.count,completed:Message.receipt.completed,languages:(Message.receipt.tracks ?? []).map(Track=>Track.language),targetLanguage:'',translation:'off',...(Message.receipt.errorCount?{errorCount:Message.receipt.errorCount}:{})}});
 		case 'streamPartial':
 		if (!Job.hls || Job.snapshot || Job.muxing)
 		{
 			throw new LocalizedError('job_state_changed');
 		}
 		const Filename = Job.partial ? Job.filename : PartialFilename(Job.filename);
-		await WriteJob(Key, {...Job, filename: Filename, partial: true});
+		await StoreReport({...Job, filename: Filename, partial: true});
 		return Filename;
 		case 'recordingFormat':
 		{
 			if (!Job.recording || !/^video\/(mp4|webm)(?:;|$)/.test(Message.mimeType)) throw new LocalizedError('job_hls_wrong_state');
 			let Filename = PartialOutputFilename(Job.filename, Message.mimeType.startsWith('video/mp4') ? '.mp4' : '.webm');
 			if (Message.partial && !Job.partial) Filename = PartialFilename(Filename);
-			await WriteJob(Key, {...Job, filename: Filename, partial: !!Message.partial,
+			await StoreReport({...Job, filename: Filename, partial: !!Message.partial,
 				recordingInterrupted: !!Message.partial, recordingEndReason: Message.reason,
 				outputFormat: Message.mimeType.startsWith('video/mp4') ? 'MP4' : 'WEBM'});
 			return Filename;
@@ -431,9 +490,14 @@ export async function UpdateHls(Message)
 		case 'requestHeaders':
 		await RequireHlsHosts(Message.urls);
 		return SetScopedHlsRequestRules(Message.context, Message.urls, Job.requestId);
-		case 'progress': return WriteJob(Key, {
+		case 'progress': return StoreReport({
 			...Job, bytesReceived: Message.received, finished: Message.finished,
-			count: Message.count, muxing: !!Message.muxing, live: !!(Message.live ?? Job.live), waiting: !!Message.waiting, totalBytes: Message.totalBytes,
+			count: Message.count, muxing: !!Message.muxing,
+			...(Job.pendingAction === 'finish' && Message.muxing ? {pendingAction: undefined} : {}),
+			...(typeof Message.dvr === 'boolean' ? {dvr: Message.dvr} : {}),
+			live: (Message.waiting ?? Job.waiting) ? false : !!(Message.live || Job.live), waiting: !!(Message.waiting ?? Job.waiting), totalBytes: Message.totalBytes,
+			connecting: !(Message.received > 0 || Message.muxing || Message.waiting) && !!(Message.connecting ?? Job.connecting),
+			...(Message.scheduledStartTime !== undefined ? {scheduledStartTime: Message.scheduledStartTime} : {}),
 			snapshotAvailable: !!Message.snapshotAvailable,
 		});
 		case 'partialFormat':
@@ -441,11 +505,11 @@ export async function UpdateHls(Message)
 		{
 			throw new LocalizedError('job_hls_wrong_state');
 		}
-		return WriteJob(Key, {...Job, filename: PartialOutputFilename(Job.filename, Message.extension), outputFormat: Message.extension.slice(1).toUpperCase()});
+		return StoreReport({...Job, filename: PartialOutputFilename(Job.filename, Message.extension), outputFormat: Message.extension.slice(1).toUpperCase()});
 		case 'failure':
 		{
 			const State = Message.canceled ? 'canceled' : 'failed';
-			await WriteJob(Key, { ...Job, state: State, error: Message.error });
+			await StoreReport({ ...Job, state: State, error: Message.error });
 			await RecordDownloadLog(State, {
 				requestId: Job.requestId, reason: Message.error?.key,
 				status: Message.error?.key === 'job_browser_error' ? Message.error.args?.[0] : undefined,
@@ -459,7 +523,7 @@ export async function UpdateHls(Message)
 				throw new LocalizedError('job_invalid_mp4_url');
 			}
 			const DownloadId = await SaveDownload(Message.objectUrl, Job);
-			await WriteJob(Key, { ...Job, downloadId: DownloadId, state: 'started' });
+			await StoreReport({ ...Job, downloadId: DownloadId, state: 'started', connecting: false, saving: true });
 			return DownloadId;
 		}
 		case 'folderSaved':
@@ -468,7 +532,7 @@ export async function UpdateHls(Message)
 			{
 				throw new LocalizedError('job_hls_wrong_state');
 			}
-			await WriteJob(Key, {
+			await StoreReport({
 				...Job, filename: Message.filename, bytesReceived: Message.bytes, totalBytes: Message.bytes,
 				state: Job.recordingInterrupted ? 'interrupted' : 'complete', endTime: new Date().toISOString(), exists: true,
 				error: Job.recordingInterrupted ? MessageRef('webrtc_interrupted_saved') : undefined,
@@ -648,7 +712,7 @@ export async function RemoveJob(RequestId, DeleteFile, ExpectedGroup)
 		}
 		if (Job.hls || Job.recording || Job.youtube)
 		{
-			const bSaving = Job.downloadId === undefined ? Job.youtube ? (await ActiveTransfers()).youtubeIds?.includes(RequestId) : Job.recording ? (await ActiveTransfers()).recordingIds?.includes(RequestId) : await IsHlsActive(RequestId)
+			const bSaving = Job.downloadId === undefined ? Job.youtube ? (await ActiveTransfers()).youtubeIds?.includes(RequestId) : Job.recording && !Job.snapshot ? (await ActiveTransfers()).recordingIds?.includes(RequestId) : await IsHlsActive(RequestId)
 			: (ExpectedGroup ? BrowserItem : await GetBrowserDownload(Job.downloadId))?.state === 'in_progress';
 			if (bSaving)
 			{
@@ -722,7 +786,41 @@ export async function ControlJob(RequestId, Action)
 	{
 		DebugLog.Record('JobControlRequested', () => ({ requestId: RequestId, action: Action }));
 	}
-	const Job = await ReadJob(JobKey(RequestId));
+	let Job = await ReadJob(JobKey(RequestId));
+	const Transition = ['finish', 'cancel'].includes(Action) && Job && ['active', 'paused', 'started', 'starting'].includes(Job.state);
+	if (Transition) await UpdateStoredJob(JobKey(RequestId), Current =>
+	{
+		if (!Current || !['active', 'paused', 'started', 'starting'].includes(Current.state)) throw new LocalizedError('job_state_changed');
+		if (Current.pendingAction === 'cancel' || Action === 'finish' && Current.pendingAction) throw new LocalizedError('job_busy');
+		Job = Current;
+		return {...Current, pendingAction: Action,...(Action==='cancel'&&Current.localCaptions?.enabled?{captionStatus:{...Current.captionStatus,cancelRequested:true,retryToken:null,controlRevision:(Current.captionStatus?.controlRevision||0)+1}}:{})};
+	});
+	try { return await ControlJobAction(RequestId, Action, Job); }
+	catch (ErrorValue)
+	{
+		if (Transition)
+		{
+			await UpdateStoredJob(JobKey(RequestId), Current => Current?.pendingAction === Action ? {...Current, pendingAction: undefined} : Current);
+		}
+		throw ErrorValue;
+	}
+}
+
+async function ControlJobAction(RequestId, Action, Job)
+{
+	if(Action==='cancel'&&['active','starting','started','paused'].includes(Job?.state)&&Job.captionPipeline==='staged'&&Job.localCaptions?.enabled&&!Job.snapshot&&!['complete','canceled'].includes(Job.captionStatus?.phase)){
+	 await UpdateStoredJob(JobKey(RequestId),Current=>CanceledJob(Current));
+	 await chrome.runtime.sendMessage({type:'captionPipelineCanceled',requestId:RequestId}).catch(()=>{});return;
+	}
+	if (Action === 'cancel' && Job?.state === 'starting' && Job.downloadId === undefined &&
+		!Job.hls && !Job.recording && !Job.youtube && !Job.snapshot && !Job.pickedDownloadFolder && !Job.subtitleMux)
+	{
+		const Registration = Pending.get(JobKey(RequestId));
+		if (!Registration) throw new LocalizedError('job_state_changed');
+		await Registration;
+		if ((await ReadJob(JobKey(RequestId)))?.state === 'canceled') return;
+		throw new LocalizedError('job_state_changed');
+	}
 	if (['show','play'].includes(Action) && Job?.pickedDownloadFolder)
 	{
 		const Location = await SavedLocation(RequestId);
@@ -858,6 +956,8 @@ async function SaveCurrentJobOnce(Job)
 	const Partial = {requestId: crypto.randomUUID(), filename: PartialFilename(Job.filename), created: Date.now(),
 		state: 'starting', hls: !Job.youtube, ...(Job.youtube ? {youtube: true, includeYoutubeAutoCaptions: Job.includeYoutubeAutoCaptions,
 			captionReceipt: Job.captionReceipt} : {}), snapshot: true, snapshotDirect: !!Source, snapshotParent: Job.requestId,
+		...(Job.recording ? {recording: true} : {}), ...(typeof Job.live === 'boolean' ? {live: Job.live} : {}),
+		...(Job.dvr ? {dvr: true} : {}),
 		subtitleCount: Job.subtitleCount ?? 0, subtitleStatus: Job.subtitleStatus,
 		downloadFolder: Job.downloadFolder, pickedDownloadFolder: Job.pickedDownloadFolder,
 		bytesReceived: 0, finished: 0, count: Source?.bytes ?? 1};

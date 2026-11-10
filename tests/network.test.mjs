@@ -287,7 +287,7 @@ Test('pairs an observed master only with an allowed successful variant from the 
 		{ url: Variant, bandwidth: 900000, resolution: '1280x720' },
 	]);
 	Assert.deepEqual(Items.find(Item => Item.url === Variant).requestContext, {
-		serverOrigin: 'https://xszcdn11.com', origin: Origin, referer: Origin + '/',
+		serverOrigin: 'https://xszcdn11.com', origin: Origin, referer: Origin + '/', includeCredentials: true,
 	});
 	Assert.equal(JSON.stringify(Stored).includes('private'), false);
 	Assert.deepEqual(await Network.NetworkCandidates(7, 'next'), []);

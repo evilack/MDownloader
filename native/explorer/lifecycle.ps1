@@ -53,8 +53,17 @@ function Assert-ExplorerRegistration([string]$NativeKey,[string]$AppsKey,[string
 }
 function Remove-ExplorerFiles([string]$Directory,[string]$Expected) {
     $Full=Assert-ExplorerDirectory $Directory $Expected
-    $Names=@('host.ps1','host.cmd','dialog.ps1','lifecycle.ps1','uninstall.ps1','uninstall.cmd','host-manifest.json','folder-bindings.json','lifecycle.json')
+    $Names=@('host.ps1','host.cmd','dialog.ps1','lifecycle.ps1','uninstall.ps1','uninstall.cmd','host-manifest.json','folder-bindings.json','lifecycle.json','common-setup.ps1','caption-installer.json','caption-setup-state.json','caption-setup.stdout.log','caption-setup.stderr.log','helper-last-error.json')
     if([IO.Directory]::Exists($Full)){
+        # Only our GUID staging folders and their exact bundled source allowlist are owned.
+        foreach($Stage in Get-ChildItem -LiteralPath $Full -Directory -Force){
+            if($Stage.Name -cnotmatch '^caption-setup-[a-f0-9]{32}$' -or ($Stage.Attributes -band [IO.FileAttributes]::ReparsePoint)){continue}
+            foreach($Name in @('bootstrap.ps1','bootstrap.sh','bootstrap.json','host.py','engine.py','cpp-worker.py','install.py','verify_install.py','requirements.txt')){
+                $Path=Join-Path $Stage.FullName $Name
+                if([IO.File]::Exists($Path)){Remove-Item -LiteralPath $Path -Force}
+            }
+            if([IO.Directory]::GetFileSystemEntries($Stage.FullName).Length -eq 0){[IO.Directory]::Delete($Stage.FullName)}
+        }
         foreach($Name in $Names){$Path=Join-Path $Full $Name;if([IO.File]::Exists($Path)){Remove-Item -LiteralPath $Path -Force}}
         foreach($File in Get-ChildItem -LiteralPath $Full -File -Force){if($File.Name -match '^(?:folder-bindings\.json|lifecycle)\.[a-f0-9-]{32,36}\.tmp$'){Remove-Item -LiteralPath $File.FullName -Force}}
         if([IO.Directory]::GetFileSystemEntries($Full).Length -eq 0){[IO.Directory]::Delete($Full)}

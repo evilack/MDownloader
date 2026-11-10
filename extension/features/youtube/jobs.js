@@ -2,6 +2,7 @@ import {EnsureRunner} from '../../hls-jobs.js';
 import {LocalizedError, ReceivedError} from '../../lib/i18n.js';
 import {IdentifyYoutubeUrl} from '../../lib/youtube-source-policy.js';
 import {CanUseYoutube} from '../../lib/distribution-policy.js';
+import {ReadAuthorizedYoutubePlayer} from './watch-player.js';
 const RuleId = 2146999997;
 let Users = 0;
 let RuleQueue = Promise.resolve();
@@ -34,7 +35,7 @@ export async function DiscoverYoutube(Item)
 {
 	if (!CanUseYoutube()) throw new LocalizedError('youtube_distribution_disabled');
 	await Context(1);
-	try { return await Request('youtubeDiscover', {pageUrl: Item.url}); }
+	try { const WatchPlayer=await ReadAuthorizedYoutubePlayer(Item);return await Request('youtubeDiscover', {pageUrl: Item.url,...(WatchPlayer?{watchPlayer:WatchPlayer}:{})}); }
 	finally { await Context(-1); }
 }
 export async function ResolveYoutubeSelection(Job, Item, Quality)

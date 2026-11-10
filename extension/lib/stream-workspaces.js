@@ -7,6 +7,11 @@ import { DebugLog } from './debug-log.js';
 export function CreateStreamWorkspaces(Name, GetRoot = () => navigator.storage.getDirectory())
 {
 	let Initializing;
+	const Ownership=new Map();
+	async function Collect(RequestId){
+		const Entry=Ownership.get(RequestId);
+		if(Entry&&(!Entry.owner&&!Entry.leases)){Ownership.delete(RequestId);await(await Root()).removeEntry(RequestId,{recursive:true}).catch(()=>{});}
+	}
 	function Root()
 	{
 		if (!Initializing)
@@ -27,6 +32,7 @@ export function CreateStreamWorkspaces(Name, GetRoot = () => navigator.storage.g
 	return {
 		async create(RequestId)
 		{
+			if(!Ownership.has(RequestId))Ownership.set(RequestId,{owner:true,leases:0});
 			if (DebugLog.IsEnabled())
 			{
 				DebugLog.Record('WorkspaceCreated', () => ({ requestId: RequestId }));
@@ -39,9 +45,13 @@ export function CreateStreamWorkspaces(Name, GetRoot = () => navigator.storage.g
 			{
 				DebugLog.Record('WorkspaceReleased', () => ({ requestId: RequestId }));
 			}
-			await (await Root()).removeEntry(RequestId, { recursive: true }).catch(() =>
-			{
-			});
+			const Entry=Ownership.get(RequestId);if(Entry)Entry.owner=false;
+			await Collect(RequestId);
+		},
+		async retain(RequestId){
+			await Root();const Entry=Ownership.get(RequestId);if(!Entry)throw Error('caption_source_missing');
+			Entry.leases++;let Released=false;
+			return async()=>{if(Released)return;Released=true;Entry.leases--;await Collect(RequestId);};
 		},
 	};
 }

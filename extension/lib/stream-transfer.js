@@ -10,7 +10,9 @@ import { ReadPlaylist } from './hls-http.js';
 import {HlsDecryptor, HlsResourceUrls, ReadHlsBytes, CopyHlsResource} from './hls-encryption.js';
 import { HasTransportStreamSync, MPEG_TS_PACKET_BYTES } from './mpeg-ts.js';
 import {ReadCommittedSnapshot} from './committed-snapshot.js';
+import {InitializeHlsLiveStart} from './hls-live-start.js';
 export const InitializationKey = ({ url: Url, range: LocalRange, encryption: Encryption }) => JSON.stringify([Url, LocalRange?.start, LocalRange?.end, Encryption?.id]);
+const CaptureResourceIdentity=Segment=>JSON.stringify({url:Segment.url,range:Segment.range||null,parts:Segment.parts?.map(P=>({url:P.url,range:P.range||null})),encryption:Segment.encryption?.id||null});
 export function LocalPlaylist(Segments)
 {
 	if (!Segments.length)
@@ -56,19 +58,46 @@ function WaitForRefresh(Milliseconds, Signal)
 	});
 }
 
-export async function DownloadTracks(Sources, {
+export async function DownloadTracks(Sources, Options)
+{
+	// Finish has a wall-clock deadline: a trickling response can keep renewing
+	// its idle timeout indefinitely. Abort only input reads, preserving output.
+	const Pending = new AbortController();
+	let Timer;
+	const Finish = () => { Timer = setTimeout(() => Pending.abort(), RuntimePolicy.Transfer.FinishGraceMs); };
+	const {finishSignal: FinishSignal, controller: Controller} = Options;
+	FinishSignal.addEventListener('abort', Finish, {once: true});
+	if (FinishSignal.aborted) Finish();
+	try
+	{
+		return await DownloadTrackResources(Sources, {...Options, transferSignal: AbortSignal.any([Controller.signal, Pending.signal])});
+	}
+	catch(ErrorValue){Options.capture?.fail(ErrorValue);throw ErrorValue;}
+	finally
+	{
+		clearTimeout(Timer);
+		FinishSignal.removeEventListener('abort', Finish);
+	}
+}
+
+async function DownloadTrackResources(Sources, {
 	workspace: Workspace, controller: Controller, finishSignal: FinishSignal, authorize: Authorize, progress: Progress, observedContext: ObservedContext, preview: Preview,
-	snapshot: RegisterSnapshot,
+	snapshot: RegisterSnapshot, audioReady: AudioReady, capture: Capture,
+	liveStart: LiveStart, transferSignal: TransferSignal,
 })
 {
 	const { signal: Signal } = Controller;
-	const Decryptor = new HlsDecryptor((Resource, Limit) => ReadHlsBytes(Resource, Limit, Signal, ObservedContext));
-	const Tracks = Sources.map(Source => ({ ...Source, saved: [], next: undefined }));
-	// 중지 후 저장은 새 조각과 재생목록 요청을 막습니다. 이미 요청한 조각은 닫힌 파일로 확정한 뒤 연속 구간만 저장합니다.
+	const Decryptor = new HlsDecryptor((Resource, Limit) => ReadHlsBytes(Resource, Limit, TransferSignal, ObservedContext));
+	const Tracks = Sources.map((Source,Index) => ({ ...Source, id:'track-'+Index, saved: [], identities:new Map(),next: undefined, captureEnd:0 }));
+	InitializeHlsLiveStart(Tracks, LiveStart, RuntimePolicy.Transfer.LiveStartTargetDurations);
+	Capture?.configure(Tracks.map(T=>({id:T.id,audio:T.audio,presentationTimeOffset:T.playlist.presentationTimeOffset})));
+	// 중지 후 저장은 새 요청을 막고 제한 시간 안에 닫힌 조각의 연속 구간만 저장합니다.
 	const Stop = AbortSignal.any([Signal, FinishSignal]);
 	const Initialization = new Map();
 	const Live = Tracks.some(Track => !Track.playlist.ended);
+	let Dvr = Tracks.some(Track => Track.playlist.dvr === true);
 	let Buffered = 0;
+	let Receiving = 0;
 	let Received = 0;
 	let Finished = 0;
 	let Writes = Promise.resolve();
@@ -77,7 +106,10 @@ export async function DownloadTracks(Sources, {
 	let NextProgressAt = 0;
 	let bSnapshotAvailable = false;
 	const Committed = new Map();
-	RegisterSnapshot?.(() => ReadCommittedSnapshot(Tracks, Committed));
+	let AudioPublished=false;
+	const ReadSnapshot=()=>Capture?Capture.snapshot():ReadCommittedSnapshot(Tracks,Committed);
+	RegisterSnapshot?.(ReadSnapshot);
+	const StopSelectionNotifications=Capture?.observeSelection(()=>{if(RegisterSnapshot&&!bSnapshotAvailable)void PublishProgress().catch(()=>{});});
 	function PublishProgress()
 	{
 		NextProgressAt = performance.now() + RuntimePolicy.Transfer.ProgressReportIntervalMs;
@@ -87,13 +119,15 @@ export async function DownloadTracks(Sources, {
 		// 연속 구간은 이후 줄어들지 않으므로 준비된 뒤에는 재계산하지 않습니다.
 		if (RegisterSnapshot && !bSnapshotAvailable)
 		{
-			bSnapshotAvailable = !!ReadCommittedSnapshot(Tracks, Committed);
+			bSnapshotAvailable = !!ReadSnapshot();
 		}
 		const SnapshotState = RegisterSnapshot ? {snapshotAvailable: bSnapshotAvailable} : {};
-		Writes = Writes.then(() => Progress({ live: Live, count: Count, received: Buffered, finished: Finished, ...SnapshotState }));
+		const State = {live: Live, ...(Dvr ? {dvr: true} : {}), count: Count, received: Buffered + Receiving, finished: Finished, ...SnapshotState};
+		Writes = Writes.then(() => Progress(State));
 		return Writes;
 	}
 
+	try{
 	for (; ; )
 	{
 		const BatchStarted = performance.now();
@@ -101,8 +135,11 @@ export async function DownloadTracks(Sources, {
 		for (const Track of Tracks)
 		{
 			const Queue = [];
+			const Admitted = [];
 			TrackQueues.push(Queue);
 			const { segments: Segments } = Track.playlist;
+			if(Capture)for(const Segment of Segments){const Old=Track.identities.get(Segment.sequence);
+				if(Old&&(Old.resourceIdentity!==CaptureResourceIdentity(Segment)||Old.initIdentity!==(Segment.init?InitializationKey(Segment.init):null)||Old.discontinuitySequence!==(Segment.discontinuitySequence??0)||Old.duration!==Segment.duration))throw Error('stream_capture_identity');}
 			// 파싱한 조각은 연속 시퀀스 번호를 사용합니다.
 			// 새 조각이 시작하는 위치를 바로 계산하여 이전 창과 겹치는 조각을 다시 탐색하지 않습니다.
 			const Start = Segments.length && Track.next !== undefined ? Math.max(0, Track.next - Segments[0].sequence) : 0;
@@ -131,9 +168,17 @@ export async function DownloadTracks(Sources, {
 				}
 				const Path = `segment-${Count++}.${Init ? 'm4s' : Track.audio ? 'aac' : 'ts'}`;
 				Queue.push({ ...Segment, path: Path, isMedia: true, checkTs: !Init && !Track.audio });
-				Track.saved.push({ duration: Segment.duration, discontinuity: Segment.discontinuity, init: Init, path: Path });
+				const ResourceIdentity=CaptureResourceIdentity(Segment);
+				const InitIdentity=Segment.init?InitializationKey(Segment.init):null;
+				const Descriptor={id:JSON.stringify([Track.id,Segment.sequence,ResourceIdentity,InitIdentity]),trackId:Track.id,ordinal:Track.saved.length,
+					sourceSequence:Segment.sequence,discontinuitySequence:Segment.discontinuitySequence??0,resourceIdentity:ResourceIdentity,initIdentity:InitIdentity,
+					programDateTime:Segment.programDateTime??null,playlistStart:Track.captureEnd,duration:Segment.duration,discontinuity:!!Segment.discontinuity,init:Init,initPath:Init,path:Path};
+				Descriptor.range=Segment.range?Object.freeze({...Segment.range}):null;
+				Descriptor.initRange=Segment.init?.range?Object.freeze({...Segment.init.range}):null;
+				Track.saved.push(Descriptor);Track.identities.set(Segment.sequence,Descriptor);Admitted.push(Descriptor);Track.captureEnd+=Segment.duration;
 				Track.next = Segment.sequence + 1;
 			}
+			Capture?.append(Track.id,Admitted);
 		}
 		// 분리 음성이 영상 전체 뒤로 밀리면 중간 저장 시 재생할 음성이 없습니다. 트랙별 요청을 번갈아 배정합니다.
 		const Queue = [];
@@ -158,6 +203,10 @@ export async function DownloadTracks(Sources, {
 			}
 			await Authorize([...new Set(Queue.flatMap(HlsResourceUrls))]);
 			await PublishProgress();
+			// Keep the conservative limit for a single observed server, while
+			// independent CDN hosts can use the normal bounded transfer pool.
+			const Parallelism = ObservedContext && new Set(Queue.map(Resource => new URL(Resource.url).origin)).size < 2
+				? RuntimePolicy.Transfer.ObservedRequestLanes : undefined;
 			await TransferSegments(Queue, Controller, async Resource =>
 			{
 				const { path: Path, isMedia: IsMedia, checkTs: CheckTs } = Resource;
@@ -169,7 +218,7 @@ export async function DownloadTracks(Sources, {
 					// 부분 조각은 시퀀스 순서대로 같은 임시 파일에 씁니다. 실패하면 전체 그룹 쓰기를 되돌려 재시도합니다.
 					for (const Part of Resource.parts ?? [Resource])
 					{
-						await CopyHlsResource(Part, RuntimePolicy.Transfer.MaxSegmentBytes - Written, Signal, async Chunk =>
+						await CopyHlsResource(Part, RuntimePolicy.Transfer.MaxSegmentBytes - Written, TransferSignal, async Chunk =>
 						{
 							if (CheckTs && !HasTransportStreamSync(Chunk, Written))
 							{
@@ -186,14 +235,22 @@ export async function DownloadTracks(Sources, {
 							{
 								await PublishProgress();
 							}
-						}, Decryptor, ObservedContext);
+						}, Decryptor, ObservedContext, async Delta =>
+						{
+							Receiving += Delta;
+							if (Delta > 0 && (performance.now() >= NextProgressAt || !Buffered && Receiving === Delta))
+								await PublishProgress();
+						});
 					}
 					if (CheckTs && Written % MPEG_TS_PACKET_BYTES)
 					{
 						throw new LocalizedError('stream_segment_incomplete');
 					}
 					await Writer.close();
+					const ClosedFile=await Handle.getFile();
+					if(ClosedFile.size!==Written)throw new LocalizedError('stream_segment_incomplete');
 					Committed.set(Path, Written);
+					Capture?.commit(Path, Written);
 					Received += Written;
 					if (IsMedia)
 					{
@@ -206,14 +263,20 @@ export async function DownloadTracks(Sources, {
 					await Writer.abort().catch(() =>
 					{
 					});
+						await PublishProgress().catch(() => {});
 					throw ErrorValue;
 				}
 				if (FirstPreview?.pending.delete(Path) && !FirstPreview.pending.size)
 				{
 					Preview(FirstPreview.playlist);
 				}
+				const AudioTrack=Tracks.find(Track=>Track.audio);
+				const VideoFirst=Tracks[0].saved[0],VideoClockReady=VideoFirst&&Committed.has(VideoFirst.path)&&(!VideoFirst.init||Committed.has(VideoFirst.init));
+				if(AudioReady && !AudioPublished && VideoClockReady && AudioTrack?.playlist.ended && AudioTrack.saved.length && !AudioTrack.saved.some(S=>S.discontinuity) && AudioTrack.saved.every(S=>Committed.has(S.path)&&(!S.init||Committed.has(S.init)))){
+					AudioPublished=true;AudioReady(LocalPlaylist(AudioTrack.saved),LocalPlaylist([VideoFirst]));
+				}
 				await PublishProgress();
-			}, ObservedContext ? RuntimePolicy.Transfer.ObservedRequestLanes : undefined, FinishSignal);
+			}, Parallelism, FinishSignal);
 		}
 
 		Signal.throwIfAborted();
@@ -246,22 +309,31 @@ export async function DownloadTracks(Sources, {
 				}
 			}
 		}));
+		Dvr ||= Tracks.some(Track => Track.playlist.dvr === true);
 		if (FinishSignal.aborted)
 		{
 			break;
 		}
 	}
 
+	const CapturedSnapshot=Capture?await Capture.selectCommitted():null;
+	await Writes;
+	const SelectedSnapshot=FinishSignal.aborted?(Capture?CapturedSnapshot:ReadCommittedSnapshot(Tracks,Committed)):{video:Tracks[0].saved,audio:Tracks[1]?.saved};
+	if(!SelectedSnapshot)throw new LocalizedError('stream_no_segments');
+	const SelectedByTrack=SelectedSnapshot.selectedByTrack||Object.fromEntries(Tracks.map((T,I)=>[T.id,(I===0?SelectedSnapshot.video:SelectedSnapshot.audio).map(S=>S.id)]));
+	const FinalCapture=Capture?.freezeSelection(SelectedByTrack);
+	Capture?.seal({reason:FinishSignal.aborted?'finish':'eof',selectedByTrack:SelectedByTrack});
 	if (FinishSignal.aborted)
 	{
-		const Snapshot = ReadCommittedSnapshot(Tracks, Committed);
+		const Snapshot = SelectedSnapshot;
 		if (!Snapshot)
 		{
 			throw new LocalizedError('stream_no_segments');
 		}
-		return {video: LocalPlaylist(Snapshot.video), audio: Snapshot.audio && LocalPlaylist(Snapshot.audio),
+		return {capture:FinalCapture,reason:'finish',video: LocalPlaylist(Snapshot.video), audio: Snapshot.audio && LocalPlaylist(Snapshot.audio),
 			progress: Snapshot.progress, partial: !Live && Snapshot.progress.finished < Count};
 	}
-	return { video: LocalPlaylist(Tracks[0].saved), audio: Tracks[1] && LocalPlaylist(Tracks[1].saved),
+	return {capture:FinalCapture,reason:'eof',video: LocalPlaylist(Tracks[0].saved), audio: Tracks[1] && LocalPlaylist(Tracks[1].saved),
 		progress: { live: false, count: Count, received: Received, finished: Finished } };
+	}finally{StopSelectionNotifications?.();}
 }

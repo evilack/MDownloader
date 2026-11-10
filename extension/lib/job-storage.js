@@ -3,11 +3,31 @@
  */
 import { LocalizedError } from './i18n.js';
 const JobPrefix = 'job:';
+const Updating = new Map();
 export const JobKey = RequestId => JobPrefix + RequestId;
 export const JobIdFromKey = Key => Key.startsWith(JobPrefix) ? Key.slice(JobPrefix.length) : '';
 export const ReadJob = async Key => (await chrome.storage.local.get(Key))[Key];
-export const WriteJob = (Key, Job) => chrome.storage.local.set({ [Key]: Job });
+export const WriteJob = (Key, Job) => chrome.storage.local.set({ [Key]:
+	['complete', 'interrupted', 'canceled', 'failed'].includes(Job.state)
+	? {...Job, ...(Job.pendingAction ? {pendingAction: undefined} : {}), ...(Job.connecting ? {connecting: false} : {}),
+		...(Job.waiting ? {waiting: false} : {}), ...(Job.saving ? {saving: false} : {})} : Job });
 export const DeleteStoredJob = Key => chrome.storage.local.remove(Key);
+/** Serialize registration/control handoffs while their durable state stays in storage. */
+export async function UpdateStoredJob(Key, Update)
+{
+	const Previous = Updating.get(Key);
+	const Task = (async () =>
+	{
+		try {await Previous;} catch { /* A failed mutation does not lock later controls. */ }
+		const Current = await ReadJob(Key);
+		const Next = Update(Current);
+		if (Next && Next !== Current) await WriteJob(Key, Next);
+		return Next;
+	})();
+	Updating.set(Key, Task);
+	try {return await Task;}
+	finally {if (Updating.get(Key) === Task) Updating.delete(Key);}
+}
 export async function ListStoredJobs(RequestIds)
 {
 	const LocalStorage = chrome.storage.local;

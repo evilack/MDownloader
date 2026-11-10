@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>MDownloader · 자동 자막 보조 프로그램 설치</title>
+ <link rel="stylesheet" href="settings.css"><link rel="stylesheet" href="captions-setup.css">
+ <link rel="stylesheet" href="common-helper-setup.css">
+ <script type="module" src="captions-setup.js"></script>
+</head>
+<body class="settings-page captions-setup">
+<main class="setup-shell">
+ <header class="setup-header">
+  <h1>자동 자막 보조 프로그램 설치</h1>
+  <p>도우미가 자막 기능을 설치하고 확장 프로그램에 연결합니다.</p>
+ </header>
+ <div class="setup-content">
+  <section class="setup-card" aria-labelledby="install-heading">
+   <h2 id="install-heading">도우미 관리</h2>
+   <p>Python을 직접 설치하거나 명령어를 입력할 필요가 없습니다.</p>
+   <button id="setup-install" class="primary" type="button" disabled>자막 기능 설치</button>
+   <p id="setup-status" role="status">처음 설치할 때는 인터넷 연결과 저장 공간이 필요합니다.</p>
+   <p>macOS는 도우미를 PKG로 최초 한 번 설치합니다. 이후 Windows·macOS 모두 자막 설치 파일을 다시 다운로드하지 않습니다.</p>
+   <details class="setup-details">
+    <summary>설치되는 항목</summary>
+    <p>최초 PKG는 맥용 도우미와 설치 자료만 등록합니다. 도우미 탭에서 설치를 누르면 전용 실행 환경과 오디오 변환 도구를 준비합니다. Windows에서는 faster-whisper와 whisper.cpp, macOS에서는 whisper.cpp를 사용합니다.</p>
+    <p>맥용 도우미는 구현 상태이며 macOS에서 실행 검증하지 않았습니다.</p>
+   </details>
+  </section>
+  <section class="setup-card" aria-labelledby="model-heading">
+   <h2 id="model-heading">사용할 모델 다운로드</h2>
+   <p class="setup-model-note"><strong>설치 직후에는 모델이 없습니다.</strong></p>
+   <ol class="setup-steps">
+    <li>자동 자막 설정에서 인식 엔진과 원하는 모델을 고릅니다.</li>
+    <li>모델 옆의 <strong>다운로드</strong>를 누릅니다.</li>
+    <li>사용할 모델을 선택하고 <strong>변경사항 적용</strong>을 누릅니다.</li>
+   </ol>
+   <p>모델을 준비한 뒤에는 이 컴퓨터에서 음성을 인식합니다. SRT/VTT 자막은 영상과 같은 폴더에 저장합니다.</p>
+   <details class="setup-details">
+    <summary>영상과 임시 파일은 어떻게 처리하나요?</summary>
+    <p>자막 생성에 실패해도 저장된 영상은 유지됩니다. 성공한 작업의 임시 미디어는 삭제하며, 실패·취소한 입력은 재시도를 위해 최대 24시간 보관합니다.</p>
+   </details>
+  </section>
+ </div>
+ <footer class="setup-footer"><a class="setup-return" href="options.html?section=captions">자동 자막 설정으로 이동</a></footer>
+</main>
+</body>
+</html>

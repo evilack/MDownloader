@@ -22,9 +22,7 @@ MDownloader runs in your browser. It can save direct media files, supported clea
 
 No build, npm installation, or paid service is required to load the extension. Store installation links have not been configured in the product website.
 
-Distribution packages are generated separately: `node tools/build/package-extension.mjs --flavor development|chrome-store`. Development builds allow Chrome by default; `--block-chrome` is an optional additional build restriction. The development/manual build integrates supported public YouTube VOD downloads into the normal download UI and job manager. The Chrome Store package physically excludes the YouTube provider/vendor and uses a disabled entry. Its fixed source checks also cover generic media, embeds, playback capture, resume, and media requests. This is a permanent package distinction, not a review-time switch. See [development](docs/development.md) and [verification](docs/verification.md).
-
-The development build is the manual/unpacked build; the only other distribution is Chrome Store. Browser-only youtubei.js + SABR + Mediabunny now received, remuxed and saved the complete same-video 623-second VOD in actual development Chrome, without yt-dlp, FFmpeg or an external server. The explicit SABR client uses a verified public WEB response and the official VISIONOS profile. Normal-click best quality (1080p) and Shift-click selected quality (360p) both completed the same-video native UI/save check. See [UI integration evidence](docs/verification.md#youtube-ui-integration--2026-11-09) for scope and limits. See [browser-only verification](docs/verification.md#browser-only-sabr-completion--2026-11-08) and the [YouTube.js update/change record](docs/youtube-upstream-changes.md).
+Distribution packages are generated separately: `node tools/build/package-extension.mjs --flavor development|chrome-store`. Development builds allow Chrome by default; `--block-chrome` is an optional additional build restriction. The development/manual build integrates supported public YouTube VOD downloads into the normal download UI and job manager. The Chrome Store package physically excludes the YouTube provider/vendor and uses a disabled entry. Its fixed source checks also cover generic media, embeds, playback capture, resume, and media requests. This is a permanent package distinction, not a review-time switch. See [Development](docs/development.md).
 
 To update a local copy, finish active downloads first, replace the project files, and reload MDownloader from the browser's extensions page.
 
@@ -75,22 +73,36 @@ If an item is missing, play the media, seek within it, or refresh the page and t
 
 ## Site access
 
-1. Open **Options → Advanced → Network detection permissions**.
+1. Open **Options → Site permissions**.
 2. Choose **Allow all sites**, or enter the page URL under the individual-site form.
 3. If the media uses a different server, enter that server URL as well.
 4. Allow detection, return to the page, and play the media again.
 
 The browser manages these permissions. You can revoke optional site access from the same options page. Source access can still depend on login state, server rules, or expiring links.
 
-## Choosing stream quality
+## Download options
 
-Normally, **Download** starts the supported HLS rendition with the highest bitrate, or the current available WebRTC server profile.
+Normal **Download** starts the best supported HLS/YouTube quality or the current WebRTC server profile. Hold **Shift** while clicking Download to open the shared options editor below the media row. Select a real available quality, subtitle tracks and optional translation, then confirm. A single quality stays fixed. Grant page/media/provider access when requested.
 
-1. Hold **Shift** while clicking an HLS or WebRTC item's **Download** button.
-2. Select a resolution/bitrate from the controls inserted below that item.
-3. Confirm the download. Grant access to a separate media server if requested.
+Subtitle choices include a count, select/clear controls and search for larger catalogs. When a target-language original already exists, it is used directly. Translation settings show only actual configured providers/models and supported reasoning levels. Configure credentials under **Options → Services and authentication** before using a provider.
 
-HLS controls appear when multiple supported renditions are available. WebRTC lists the profiles actually reported by its supported server, including a single available profile. The extension does not invent resolutions or resize video to imitate server quality.
+## Automatic embedded subtitles
+
+Optional local speech recognition generates new captions from audio using the selected engine and model. Once enabled, it automatically saves the selected embedded/SRT/VTT outputs when downloading or Stop and save finishes. Download rows show processing status and results; there is no separate live-caption file picker or interim transcript panel. If a confirmed window boundary cannot be decoded reliably, the extension finishes recognition against the same owned final AV file before saving. This does not require a common-helper reinstall.
+
+Quick downloads include detected subtitle languages by default; Download options can select specific tracks. Selected languages are saved as selectable MP4 timed-text (`tx3g` / `mov_text`) tracks in the MP4. Discovery reads standard media `<track>` elements, readable native text tracks, supported source-owned player/JSON declarations, and HLS/DASH subtitle renditions. Page captions are fetched before the independent transfer can outlive its source tab. The supplied XVideos player declaration is supported through the same discovery pipeline; the feature is not limited to that site.
+
+WebVTT, SRT, TTML, finite segmented HLS WebVTT, and static DASH standalone/segmented text are supported. Video/audio packets are copied without re-encoding when the source codecs can be stored in MP4. Captioned direct files use the offscreen transfer and retain current-save/cancel controls. Partial exports retain the available caption tracks; a language whose cues begin after the partial boundary has an empty selectable track. WebRTC captions require a usable, normal-speed native source clock and are aligned to the independent recorder's start.
+
+A subtitle that cannot be read, translated or embedded produces a separate visible Error count. Successful original tracks are retained, and usable video/audio can still finish saving. A subtitle mux error preserves the original AV output and reports a subtitle error; a video or file-save error fails the download. Current unsupported cases include encrypted or fragmented-MP4 subtitle renditions, live/discontinuous HLS captions, arbitrary obfuscated/private player configuration, and sources with existing embedded non-AV tracks that the installed reader cannot preserve during remuxing. Existing embedded captions remain intact on the ordinary no-external-caption direct-download path. MP4 subtitles use timed text for desktop player compatibility; advanced WebVTT layout and styling become plain text.
+
+## YouTube in the development build
+
+Membership VOD that the signed-in account can already play can use the authorized response from the exact source document. Play the video on YouTube before opening Download options. The extension reads the matching playable response and its successful media request; it does not read or store account cookies. This path is for finite VOD, requires the same video identity and playable source, and preserves the existing refusal of inaccessible and DRM-protected content. It does not add authenticated live, upcoming or automatic recovery support.
+
+The manual/development build supports compatible public VOD, ongoing live and queued upcoming broadcasts. Normal click chooses the best supported quality; Shift-click provides Download options. Available original captions are embedded as selectable MP4 tracks. **Include automatically generated captions** defaults to on; changing it affects new jobs.
+
+Upcoming broadcasts wait and check the same video every 30 seconds, then start reception when available. Live saving begins at the live edge. Keep Chrome running and the computer awake. Snapshot and stop-and-save export the received interval. Full-broadcast automatic natural-end completion and continuous live captions are not established by short capture checks. YouTube is permanently excluded from Store packages.
 
 ## Saving WebRTC streams
 
@@ -136,13 +148,21 @@ Open **Download manager** from the popup to manage active and completed jobs.
 - Pause or resume a direct browser download when the browser reports that it supports the action.
 - Cancel a selected active job independently of other jobs.
 - Use **Show in folder** for a completed browser download.
-- The completed item's folder icon opens the native file manager for browser-managed downloads. Hold **Shift** while clicking it to play the saved file in a browser tab, including files saved directly to a picked folder. Direct picked-folder Explorer reveal requires the optional [Windows bridge](native/explorer/README.md) and one initial folder link; it must be registered on the computer and linked to the selected folder once. The rejected folder-list page has been removed.
+- The completed item's folder icon opens the native file manager for browser-managed downloads. Hold **Shift** while clicking it to play the saved file in a browser tab, including files saved directly to a picked folder. Direct picked-folder Explorer reveal requires the optional [Windows bridge](native/explorer/README.md) and one initial folder link; it must be registered on the computer and linked to the selected folder once.
 - Copy a source link or inspect the full filename/address through the row's tooltip where available.
 - Delete a record to remove it from the list. The downloaded file stays on disk.
 - **Shift-click Delete** to also remove a completed browser-downloaded file when that action is available.
 - Section-clear buttons remove the selected section's records, not saved media files.
 
 Hover over an icon button to see its action name. The same controls expose accessible names for keyboard and assistive-technology use.
+
+## Saved files and notifications
+
+Click a completed row's folder icon to reveal its saved file. **Shift-click** opens it for playback in a browser tab. Windows picked-folder files use the optional [Explorer helper](native/explorer/README.md), installed from download-location settings, plus first-time folder association. Its removal action and Windows Installed Apps entry preserve saved media. macOS opens browser Downloads.
+
+Under **Options → Notifications**, completion and scheduled-start notifications are independent and off by default. Enabling them requests Chrome permission. Completion is suppressed when the job is represented in an open popup or the side panel is open. Scheduled-start alerts require actual received bytes. Banners and sound follow Chrome and operating-system settings.
+
+Click a completion notification to open the saved file's folder with that file selected. Files saved to a picked folder use the same optional Explorer bridge as **Show in folder**. A scheduled-start notification can reveal the file once it has finished saving; an active download has no completed file to select.
 
 ## Settings
 
@@ -161,9 +181,11 @@ With the default page-title and date/time settings:
 
 | Source | Example output |
 |---|---|
-| Original filename available | `Page title_original_2026-11-08_15-04-06.mp4` |
-| No original filename | `Page title_2026-11-08_15-04-06.mp4` |
-| No original filename or page title | `2026-11-08_15-04-06.mp4` |
+| Original filename available | `example_com_Page_title_original_2026-11-08_15-04-06.mp4` |
+| No original filename | `example_com_Page_title_2026-11-08_15-04-06.mp4` |
+| No original filename or page title | `example_com_2026-11-08_15-04-06.mp4` |
+
+New filenames begin with the source page's hostname, with a leading `www.` removed and dots replaced by underscores. Spaces and dots in the filename body are also replaced by underscores; the actual extension remains intact. Characters forbidden in filenames are sanitized as before. For example, `https://www.xvideos2.com/...` and `original name.v1.mp4` produce `xvideos2_com_original_name_v1.mp4` when page-title/date-time naming is disabled.
 
 The name and local start time are fixed when the job is registered. The output uses the actual media extension, including WebM when applicable. The extension does not add `MDownloader-`, `playback`, or generated WebRTC labels to streams without original filenames. Explicit page-title/date-time choices still apply. Partial files receive a separate partial-save suffix.
 
@@ -228,7 +250,7 @@ node tools/build/build-page-policy.mjs --check
 node --expose-internals tools/checks/verify-project.mjs
 ```
 
-See [Development](docs/development.md) for folder responsibilities and tools, and [Verification](docs/verification.md) for what the checks establish and what still requires an installed-browser check.
+See [Development](docs/development.md) for folder responsibilities, architecture, commands and validation boundaries.
 
 ## Third-party components
 
@@ -237,9 +259,3 @@ Mediabunny is bundled under MPL 2.0. See [Third-party notices](THIRD_PARTY_NOTIC
 ## Support
 
 [Support development through Ev-Cabinet](https://evilack.github.io/donate.html).
-
-Development YouTube downloads also acquire available original captions and embed selectable MP4 timed-text tracks. The same VOD was saved with English and Korean automatic captions, with independent saved-file text/timing equality and complete AV verification. See [caption verification](docs/verification.md#youtube-captions--2026-11-09).
-
-The development download settings include **Include automatically generated captions**, enabled by default. Turn it off to retain only creator-provided captions on new YouTube downloads. Existing active jobs retain the setting captured when queued. See [ON/OFF verification](docs/verification.md#automatic-caption-option--2026-11-09).
-
-Development/manual YouTube downloads also support ongoing live broadcasts and queued upcoming broadcasts. Upcoming jobs display a waiting state, check the same video every30seconds and automatically select an available AVC/AAC pair when streaming starts. Live capture starts at the live edge; snapshot/stop-and-save export the received interval. Keep Chrome running; closed Chrome and sleeping computers do not receive future broadcasts. Store builds continue to exclude YouTube execution code. See [live and scheduled verification](docs/verification.md#youtube-live-and-scheduled-broadcasts--2026-11-09).

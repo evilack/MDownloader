@@ -1498,100 +1498,6 @@
   "translation_capture_failed": {
     "message": "가져오기에 실패했습니다. 네이티브 도우미 설치와 팟플레이어 버전·실행 상태를 확인하세요."
   },
-  "caption_unknown": {
-    "message": "자막 확인 전"
-  },
-  "caption_checking": {
-    "message": "자막 확인 중…"
-  },
-  "caption_detected": {
-    "message": "자막 $value$개",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_undetected": {
-    "message": "자막 미검출"
-  },
-  "caption_collecting": {
-    "message": "자막 수집 중 ($value$개)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_ready": {
-    "message": "자막 준비 완료 ($value$개)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_failed": {
-    "message": "자막 확인·수집 실패"
-  },
-  "caption_translation_unknown": {
-    "message": "자동 번역 확인 전"
-  },
-  "caption_translation_off": {
-    "message": "자동 번역 꺼짐"
-  },
-  "caption_translation_no_source": {
-    "message": "자동 번역: 원문 자막 미검출"
-  },
-  "caption_translation_not_needed": {
-    "message": "번역($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_pending": {
-    "message": "번역($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_translating": {
-    "message": "번역($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_complete": {
-    "message": "번역($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_failed": {
-    "message": "번역실패"
-  },
-  "caption_stopped": {
-    "message": "자막 수집 중단"
-  },
-  "caption_translation_stopped": {
-    "message": "자동 번역 중단"
-  },
-  "caption_count": {
-    "message": "자막($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
   "view_youtube_quality_checking": {
     "message": "YouTube 화질을 확인하는 중입니다…"
   },
@@ -1673,14 +1579,20 @@
   "download_options_download": {
     "message": "다운로드"
   },
+  "explorer_setup_download_help": {
+    "message": "다운로드가 차단될 수 있습니다. 다운로드 목록에서 파일을 확인한 뒤, 차단을 해제하고 다운로드해 주세요."
+  },
+  "explorer_setup_download_list": {
+    "message": "다운로드 목록 열기"
+  },
   "explorer_setup_title": {
-    "message": "Windows 도우미 설치"
+    "message": "MDownloader 도우미 설치"
   },
   "explorer_setup_body": {
-    "message": "선택한 폴더를 탐색기에서 열려면 Windows 도우미가 필요합니다."
+    "message": "폴더 직접 선택을 사용하려면 도우미가 필요합니다. 도우미 탭에서 설치해 주세요."
   },
   "explorer_setup_install": {
-    "message": "설치"
+    "message": "설치 파일 다운로드"
   },
   "explorer_setup_installing": {
     "message": "설치 완료를 확인하고 있습니다.\nChrome 또는 Windows 확인창이 나타나면 허용해 주세요."
@@ -1701,13 +1613,13 @@
     "message": "지금 설치할까요?"
   },
   "explorer_setup_cancel": {
-    "message": "취소하면 기존 저장 폴더를 유지합니다."
+    "message": "취소하면 기존 저장 위치를 유지합니다."
   },
   "explorer_setup_downloading": {
-    "message": "설치 파일을 다운로드하고 있습니다.\n완료되면 ‘설치 실행’을 눌러 주세요."
+    "message": "설치 파일을 다운로드하고 있습니다."
   },
   "explorer_setup_downloaded": {
-    "message": "다운로드가 완료되었습니다.\n‘설치 실행’을 눌러 설치를 진행해 주세요."
+    "message": "다운로드했습니다. ‘설치 실행’을 눌러 주세요."
   },
   "explorer_setup_pending": {
     "message": "확인 중…"
@@ -1725,37 +1637,37 @@
     "message": "설치 파일 다운로드가 아직 완료되지 않았습니다. Chrome 다운로드 목록을 확인한 뒤 다시 시도해 주세요."
   },
   "explorer_remove_button": {
-    "message": "Windows 도우미 삭제"
+    "message": "도우미 삭제"
   },
   "explorer_remove_title": {
-    "message": "Windows 도우미를 삭제할까요?"
+    "message": "도우미를 삭제할까요?"
   },
   "explorer_remove_body": {
-    "message": "도우미와 폴더 연결 기록을 삭제합니다.\n다운로드 위치는 브라우저 기본값으로 변경됩니다."
+    "message": "도우미와 폴더 연결 기록을 삭제합니다.\n저장 방식은 브라우저 다운로드 폴더로, 음성 인식 엔진은 None으로 변경됩니다."
   },
   "explorer_remove_keep": {
-    "message": "다운로드한 영상·자막은 삭제하지 않습니다."
+    "message": "영상·자막과 별도로 설치된 자막 엔진·모델은 유지합니다."
   },
   "explorer_remove_confirm": {
     "message": "삭제"
   },
   "explorer_remove_available": {
-    "message": "Windows 도우미가 설치되어 있습니다."
+    "message": "도우미가 설치되어 있습니다."
   },
   "explorer_remove_update_required": {
-    "message": "이전 도우미가 설치되어 있습니다. 삭제 도구를 제공합니다."
+    "message": "이전 도우미가 설치되어 있습니다. 업데이트가 필요할 수 있습니다."
   },
   "explorer_remove_absent": {
-    "message": "Windows 도우미가 설치되어 있지 않습니다."
+    "message": "도우미가 설치되어 있지 않습니다."
   },
   "explorer_remove_pending": {
-    "message": "Windows 도우미를 삭제하고 있습니다…"
+    "message": "도우미를 삭제하고 있습니다…"
   },
   "explorer_remove_done": {
-    "message": "Windows 도우미를 삭제했습니다. 저장 위치를 기본값으로 변경했습니다."
+    "message": "도우미를 삭제했습니다. 저장 방식을 브라우저 다운로드 폴더로, 음성 인식 엔진을 None으로 변경했습니다."
   },
   "explorer_remove_failed": {
-    "message": "삭제 완료를 확인하지 못했습니다. Windows 상태를 확인한 뒤 다시 시도해 주세요."
+    "message": "삭제 완료를 확인하지 못했습니다. 도우미 진단 후 다시 시도해 주세요."
   },
   "explorer_remove_run": {
     "message": "삭제 실행"
@@ -1795,5 +1707,88 @@
   },
   "notification_file_fallback": {
     "message": "다운로드"
+  },
+  "download_options_live_start": {
+    "message": "라이브 시작 위치"
+  },
+  "download_options_live_beginning": {
+    "message": "처음부터 (제공된 구간)"
+  },
+  "download_options_live_current": {
+    "message": "현재부터"
+  },
+  "panel_media_resize": {"message":"검색 결과 영역 높이 조절"},
+  "panel_media_resize_help": {"message":"위아래로 드래그하거나 ↑·↓ 키로 높이를 조절하세요. 두 번 클릭하면 기본 높이로 돌아갑니다."},
+  "opt_show_panel_media_resize": {"message":"검색 영역 높이 조절바 표시"},
+  "opt_show_panel_media_resize_help": {"message":"검색 결과와 다운로드 목록 사이의 높이를 조절합니다. 끄면 이전처럼 내용에 따라 이어서 표시합니다."},
+  "panel_media_size": {"message":"검색 결과 영역 $PERCENT$%", "placeholders":{"percent":{"content":"$1"}}},
+  "download_options_live_help": {
+    "message": "처음부터는 서버에 남아 있는 가장 앞 구간부터 받습니다. 현재부터는 최신 구간부터 받으며 몇 초 차이가 날 수 있습니다. 라이브에만 적용됩니다."
+  },
+  "issue_report_title": {
+    "message": "이슈 신고"
+  },
+  "issue_report_intro": {
+    "message": "URL 탐색이나 다운로드가 정상적으로 동작하지 않는 페이지를 신고해 주세요."
+  },
+  "issue_report_page": {
+    "message": "신고할 페이지"
+  },
+  "issue_report_page_unavailable": {
+    "message": "페이지 주소를 확인할 수 없습니다."
+  },
+  "issue_report_types": {
+    "message": "문제 유형"
+  },
+  "issue_report_multiple": {
+    "message": "해당하는 항목을 모두 선택해 주세요."
+  },
+  "issue_report_detection": {
+    "message": "URL 탐색 실패"
+  },
+  "issue_report_download": {
+    "message": "다운로드 실패"
+  },
+  "issue_report_other": {
+    "message": "기타"
+  },
+  "issue_report_details": {
+    "message": "상세 내용 (선택)"
+  },
+  "issue_report_placeholder": {
+    "message": "어떤 동작에서 문제가 발생했는지 알려주세요."
+  },
+  "issue_report_question": {
+    "message": "이 페이지의 문제를 신고하시겠습니까?"
+  },
+  "issue_report_confirm": {
+    "message": "확인"
+  },
+  "issue_report_select_type": {
+    "message": "문제 유형을 하나 이상 선택해 주세요."
+  },
+  "issue_report_send_notice": {
+    "message": "확인을 누르면 페이지 주소, 선택한 문제 유형과 입력 내용이 FormSubmit을 통해 전송됩니다."
+  },
+  "issue_report_sending": {
+    "message": "신고를 전송 중입니다. 잠시 기다려 주세요."
+  },
+  "issue_report_sent": {
+    "message": "신고가 접수되었습니다."
+  },
+  "issue_report_failed": {
+    "message": "신고 전송에 실패했습니다. 잠시 후 다시 시도해 주세요."
+  },
+  "issue_report_network_error": {
+    "message": "전송 결과를 확인하지 못했습니다. 이미 접수되었을 수 있습니다."
+  },
+  "issue_report_activation": {
+    "message": "신고 수신 설정이 아직 활성화되지 않았습니다."
+  },
+  "issue_report_invalid_page": {
+    "message": "신고할 웹페이지 주소를 확인할 수 없습니다. 페이지를 연 뒤 다시 시도해 주세요."
+  },
+  "issue_report_close": {
+    "message": "닫기"
   }
 }

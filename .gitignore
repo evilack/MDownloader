@@ -1,5 +1,8 @@
 # Local app and editor state
 .codex/
+extension/.local/
+native/kakao/host.cmd
+native/kakao/host-manifest.json
 .idea/
 .vscode/
 
@@ -21,3 +24,7 @@ __pycache__/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Generated source-install cache; rebuilt from native/captions by build-explorer-installer.
+native/explorer/caption-installer.json
+native/common-macos/caption-installer.json

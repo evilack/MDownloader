@@ -1,0 +1,7 @@
+{
+  "tool": "Built-in image_gen",
+  "initial": "Create one small desktop browser-extension toolbar icon for Report an issue. A simple light silver / pale cool gray outlined flag on a short pole, with one clearly visible dark exclamation mark on its flag field. Front-facing, crisp flat graphical silhouette, thick legible strokes and minimal internal detail, slightly rounded corners, matching compact pale silver PNG control icons used on charcoal #191d25 UI. Entire mark centered with 10% transparent margin inside a square. No text, no emoji, no 3D, no shading, no shadows, no glow, no button container. Genuine transparent background. It must be recognizable at 20 px. Output a single isolated flag icon.",
+  "correction": "Precisely correct this existing report-issue flag icon for a dark charcoal toolbar: preserve the exact existing flag outline, pole, canvas and composition. ONLY change the nearly black exclamation mark to the SAME pale silver-gray color as the flag outline, so both exclamation bar and dot are equally visible on a dark #191d25 background. Keep the exclamation mark’s current shape and size. No other alterations. Keep genuine transparency and clean antialiasing. Flat monochrome icon.",
+  "processing": "Full source canvas, Lanczos3 contain at 16/24/32/48; visible RGB channels +6 clamped to 255, alpha unchanged. No crop or silhouette modification.",
+  "sourceCorrection": "Initial exclamation was too dark on charcoal. Generated source correction changes its color; low-resolution retouch is recorded separately."
+}

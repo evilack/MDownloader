@@ -1,0 +1,28 @@
+{
+ "version":1,
+ "packageVersion":10,
+ "processing":{
+  "sampleRate":16000,"chunkSeconds":30,"coreSeconds":26,"contextSeconds":2,
+  "maxQueuedWindows":4,"maxWindowBytes":16777216,"maxPcmWindows":3,
+  "maxRepairAttempts":2,"pollIntervalMs":250,"cancelGraceMs":2000,
+  "resultPageItems":64,"resultPageBytes":262144,"uploadChunkBytes":196608,
+  "maxLedgerBytes":8388608,"maxJobBytes":21474836480,"maxDiskBytes":25769803776,
+  "minFreeBytes":268435456,"maxWindows":20000,"maxWorkerResultBytes":8388608,
+  "workerStartupMs":120000,"workerInferenceMs":1800000,"maxInferenceSessions":2,"retentionMs":86400000
+ },
+ "models":{
+  "tiny":{"label":"Tiny","faster-whisper":"Systran/faster-whisper-tiny","whisper.cpp":"ggerganov/whisper.cpp"},
+  "base":{"label":"Base","faster-whisper":"Systran/faster-whisper-base","whisper.cpp":"ggerganov/whisper.cpp"},
+  "small":{"label":"Small","faster-whisper":"Systran/faster-whisper-small","whisper.cpp":"ggerganov/whisper.cpp"},
+  "medium":{"label":"Medium","faster-whisper":"Systran/faster-whisper-medium","whisper.cpp":"ggerganov/whisper.cpp"},
+  "large-v3":{"label":"Large v3","faster-whisper":"Systran/faster-whisper-large-v3","whisper.cpp":"ggerganov/whisper.cpp"},
+  "large-v3-turbo":{"label":"Large v3 Turbo","faster-whisper":"dropbox-dash/faster-whisper-large-v3-turbo"}
+ },
+ "python":"3.12",
+ "uv":{
+  "win-x64":{"url":"https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-pc-windows-msvc.zip","sha256":"0cdc5b38fe5a8168ed6a25814f5ba43c21d313dd3187314fccb37b7cec46e021"},
+  "win-arm64":{"url":"https://github.com/astral-sh/uv/releases/download/0.13.7/uv-aarch64-pc-windows-msvc.zip","sha256":"505d9e65e7692bac3ddf98c66754aa26c5050c409c184af30a881a0a72cc85e3"},
+  "mac-x64":{"url":"https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-apple-darwin.tar.gz","sha256":"20c47e4c1f630b8abaff8c291fa9b9aa300fef92c4fbff95adf198b55287cda7"},
+  "mac-arm64":{"url":"https://github.com/astral-sh/uv/releases/download/0.13.7/uv-aarch64-apple-darwin.tar.gz","sha256":"81b811b57e4624df7ed3aac148e0359100d9962f3d9dce00aec533dc2e086731"}
+ }
+}

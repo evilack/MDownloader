@@ -1,15 +1,18 @@
 {
   "name": "mdownloader-development-tools",
-  "version": "0.2.37",
+  "version": "0.2.43",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "build:youtube": "node tools/build/build-youtube.mjs"
+    "check": "node --expose-internals tools/checks/verify-project.mjs",
+    "check:locales": "node tools/checks/audit-localization.mjs",
+    "build:youtube": "node tools/build/build-youtube.mjs",
+    "package:development": "node tools/build/package-extension.mjs --flavor development",
+    "package:store": "node tools/build/package-extension.mjs --flavor chrome-store"
   },
   "dependencies": {
     "googlevideo": "5.0.1",
-    "jintr": "3.3.1",
     "youtubei.js": "18.3.0"
   },
   "devDependencies": {

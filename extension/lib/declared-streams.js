@@ -209,7 +209,7 @@ export async function DeclaredStreamPageTask(Options)
 }
 
 /** 선언된 HLS의 성공 응답과 실제 요청 문맥을 문서에 연결하는 공통 조회입니다. */
-export async function ProbeHlsPlaylist(TabId, DocumentId, Page, Url)
+async function ProbeHlsPlaylist(TabId, DocumentId, Page, Url, Options = {})
 {
 	const Origins = [HostPattern(Page), HostPattern(Url)];
 	if (Origins.includes(null) || !await chrome.permissions.contains({origins: [...new Set(Origins)]}))
@@ -220,7 +220,7 @@ export async function ProbeHlsPlaylist(TabId, DocumentId, Page, Url)
 	{
 		const [Frame] = await chrome.scripting.executeScript({target: {tabId: TabId, documentIds: [DocumentId]}, world: 'MAIN',
 			func: DeclaredStreamPageTask, args: [{mode: 'playlist', page: Page, url: Url,
-					maxBytes: RuntimePolicy.Detection.MaxSourceConfigBytes, timeoutMs: RuntimePolicy.Transfer.RequestTimeoutMs}]});
+					maxBytes: RuntimePolicy.Detection.MaxSourceConfigBytes, timeoutMs: Options.timeoutMs ?? RuntimePolicy.Transfer.RequestTimeoutMs}]});
 		return Frame?.documentId === DocumentId ? Frame.result : null;
 	});
 	if (!Playlist)
@@ -232,12 +232,12 @@ export async function ProbeHlsPlaylist(TabId, DocumentId, Page, Url)
 	return NormalizeHlsProtocol(Playlist.text, Playlist.url);
 }
 
-export async function ProbeHlsVariants(TabId, DocumentId, Page, Variants)
+export async function ProbeHlsVariants(TabId, DocumentId, Page, Variants, Options = {})
 {
 	const Lanes = RuntimePolicy.Detection.DeclaredVariantProbeLanes;
 	for (let Index = 0; Index < Variants.length; Index += Lanes)
 	{
-		await Promise.all(Variants.slice(Index, Index + Lanes).map(Variant => ProbeHlsPlaylist(TabId, DocumentId, Page, Variant.url).catch(() => null)));
+		await Promise.all(Variants.slice(Index, Index + Lanes).map(Variant => ProbeHlsPlaylist(TabId, DocumentId, Page, Variant.url, Options).catch(() => null)));
 	}
 }
 

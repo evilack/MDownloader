@@ -29,14 +29,22 @@ export async function GetBrowserDownload(Id)
 /** 영속 작업 기록과 Chrome 다운로드 상태를 합쳐 UI가 읽는 스냅샷을 만듭니다. */
 export function SummarizeJob(Job, Item, Runners = {}, bRegistering = false)
 {
-	const Interrupted = Job.recording && (Job.recordingInterrupted ?? Job.partial === true);
+	const Summary = SummarizeCurrentJob(Job, Item, Runners, bRegistering);
+	return ['complete', 'interrupted', 'canceled', 'failed', 'unknown'].includes(Summary.state)
+	? {...Summary, ...(Summary.pendingAction ? {pendingAction: undefined} : {}), ...(Summary.connecting ? {connecting: false} : {}),
+		...(Summary.waiting ? {waiting: false} : {}), ...(Summary.saving ? {saving: false} : {})} : Summary;
+}
+
+function SummarizeCurrentJob(Job, Item, Runners, bRegistering)
+{
+	const Interrupted = !Job.snapshot && Job.recording && (Job.recordingInterrupted ?? Job.partial === true);
 	if (!Item && Interrupted && Job.state === 'complete')
 		return {...Job, state: 'interrupted', error: MessageRef('webrtc_interrupted_saved')};
 	if (!Item)
 	{
 		if ((Job.hls || Job.recording || Job.youtube || Job.pickedDownloadFolder || Job.subtitleMux) && Job.downloadId === undefined)
 		{
-			const Running = Job.recording ? Runners.recordingIds?.includes(Job.requestId)
+			const Running = Job.recording && !Job.snapshot ? Runners.recordingIds?.includes(Job.requestId)
 			: Job.youtube ? Runners.youtubeIds?.includes(Job.requestId)
 			: Job.hls ? Runners.requestIds?.includes(Job.requestId) || Runners.requestId === Job.requestId
 			: Runners.directIds?.includes(Job.requestId);
@@ -53,12 +61,16 @@ export function SummarizeJob(Job, Item, Runners = {}, bRegistering = false)
 
 	const Filename = Item.filename.split(/[\\/]/).at(-1) || Job.filename;
 	const bWrongType = Item.state === 'complete' && IsHtmlMediaType(Item.mime);
+	const CaptionPending=Job.captionPipeline==='staged'&&Job.localCaptions?.enabled&&!['complete','failed','canceled'].includes(Job.captionStatus?.phase);
 	const State = bWrongType ? 'failed'
+	: Item.state==='complete'&&CaptionPending?'active'
+	: Item.state==='complete'&&Job.captionPipeline==='staged'&&['failed','canceled'].includes(Job.captionStatus?.phase)?Job.captionStatus.phase
 	: Item.state === 'complete' ? Interrupted ? 'interrupted' : 'complete'
 	: Item.state === 'in_progress' ? (Item.paused ? 'paused' : 'active')
 	: Item.error === 'USER_CANCELED' ? 'canceled' : 'failed';
 	return {
 		...Job, filename: Filename, state: State,
+		saving: !!(Job.hls || Job.recording || Job.youtube || Job.subtitleMux) && Item.state === 'in_progress',
 		error: bWrongType ? MessageRef('job_not_video') : State === 'interrupted' ? MessageRef('webrtc_interrupted_saved')
 		: Item.error && MessageRef('job_browser_error', Item.error),
 		hasUrl: /^https?:\/\//i.test(Item.url),

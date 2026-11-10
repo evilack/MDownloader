@@ -1,0 +1,13 @@
+/* Only the browser-demo frame changes; production row and option styles stay intact. */
+:root {min-inline-size:0!important;}
+body.popup,body.panel {inline-size:100%;max-block-size:none;min-block-size:100dvh;}
+body.popup > main {overflow:visible;padding-inline-end:12px;}
+.demo-thumbnail {display:grid;place-items:center;background:linear-gradient(135deg,#284c45,#162b32);}
+.demo-thumbnail[data-tone="1"] {background:linear-gradient(135deg,#453459,#23354f);}
+.demo-thumbnail[data-tone="2"] {background:linear-gradient(135deg,#394158,#273c43);}
+.demo-thumbnail img {inline-size:24px!important;block-size:24px!important;object-fit:contain;}
+.demo-hint,.demo-status {font-size:11px;line-height:1.7;color:var(--muted);}
+.demo-hint {margin-block:20px 8px;}
+.demo-status {min-block-size:38px;margin-block:8px 0;padding-block-start:10px;border-block-start:1px solid var(--line);}
+.demo-inline-options:empty {display:none;}
+body :is(button,select,input,a):focus-visible {outline:2px solid var(--mint);outline-offset:2px;}

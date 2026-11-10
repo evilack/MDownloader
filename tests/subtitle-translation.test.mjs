@@ -33,3 +33,11 @@ Test('rejects a partial response instead of misaligning translated cues', async 
 	Assert.equal(typeof Module.TranslateMissingSubtitle, 'function');
 	await Assert.rejects(Module.TranslateMissingSubtitle([Original], {enabled:true, targetLanguage:'ko'}, async () => ['하나']), /translation/i);
 });
+
+Test('unselected existing target is excluded and a new translation is generated from the selected source',async()=>{
+ const {DescribeSubtitleTracks,SelectSubtitleTracks}=await import('../extension/lib/download-options-selection.js');
+ const Existing={language:'ko',label:'Original Korean',content:Original.content};const Tracks=[Original,Existing];const Ids=await DescribeSubtitleTracks(Tracks);
+ const Options={enabled:true,targetLanguage:'ko'},Selected=await SelectSubtitleTracks(Tracks,[Ids[0].id],Options);let Calls=0;
+ const Result=await Module.TranslateMissingSubtitle(Selected,Options,async Cues=>{Calls++;return Cues.map(()=> '새 번역');});
+ Assert.equal(Calls,1);Assert.equal(Result.length,2);Assert.ok(!Result.includes(Existing));Assert.equal(Result[1].language,'ko');Assert.match(Result[1].label,/translated/);
+});

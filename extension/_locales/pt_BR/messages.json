@@ -1498,100 +1498,6 @@
   "translation_capture_failed": {
     "message": "Import failed. Check native host setup, PotPlayer version and whether it is running."
   },
-  "caption_unknown": {
-    "message": "Subtitles: not checked"
-  },
-  "caption_checking": {
-    "message": "Checking subtitles…"
-  },
-  "caption_detected": {
-    "message": "Subtitles: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_undetected": {
-    "message": "Subtitles: not detected"
-  },
-  "caption_collecting": {
-    "message": "Collecting subtitles ($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_ready": {
-    "message": "Subtitles ready: $value$",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_failed": {
-    "message": "Subtitle check / acquisition failed"
-  },
-  "caption_translation_unknown": {
-    "message": "Auto translation: not checked"
-  },
-  "caption_translation_off": {
-    "message": "Auto translation: off"
-  },
-  "caption_translation_no_source": {
-    "message": "Auto translation: no source detected"
-  },
-  "caption_translation_not_needed": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_pending": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_translating": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_complete": {
-    "message": "Translation($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
-  "caption_translation_failed": {
-    "message": "Translation failed"
-  },
-  "caption_stopped": {
-    "message": "Subtitle acquisition stopped"
-  },
-  "caption_translation_stopped": {
-    "message": "Auto translation stopped"
-  },
-  "caption_count": {
-    "message": "Subtitles($value$)",
-    "placeholders": {
-      "value": {
-        "content": "$1"
-      }
-    }
-  },
   "view_youtube_quality_checking": {
     "message": "Verificando a qualidade do YouTube…"
   },
@@ -1673,14 +1579,20 @@
   "download_options_download": {
     "message": "Baixar"
   },
+  "explorer_setup_download_help": {
+    "message": "Se bloqueado, confira o arquivo em Downloads e baixe-o manualmente."
+  },
+  "explorer_setup_download_list": {
+    "message": "Abrir downloads"
+  },
   "explorer_setup_title": {
     "message": "Install Windows helper"
   },
   "explorer_setup_body": {
-    "message": "A Windows helper is needed to show files in your selected folder."
+    "message": "O assistente do Windows abre a pasta no Explorador."
   },
   "explorer_setup_install": {
-    "message": "Instalar"
+    "message": "Baixar instalador"
   },
   "explorer_setup_installing": {
     "message": "Waiting for installation to finish.\nAllow any Chrome or Windows execution prompt."
@@ -1701,13 +1613,13 @@
     "message": "Install it now?"
   },
   "explorer_setup_cancel": {
-    "message": "Cancel keeps your current saved folder."
+    "message": "Cancelar mantém o local atual."
   },
   "explorer_setup_downloading": {
-    "message": "Downloading the installer.\nWhen it finishes, click “Run installer”."
+    "message": "Baixando o instalador…"
   },
   "explorer_setup_downloaded": {
-    "message": "Download complete.\nClick “Run installer” to begin installation."
+    "message": "Download concluído. Selecione “Executar instalador”."
   },
   "explorer_setup_pending": {
     "message": "Please wait…"
@@ -1795,5 +1707,83 @@
   },
   "notification_file_fallback": {
     "message": "Download"
+  },
+  "download_options_live_start": {
+    "message": "Início da transmissão"
+  },
+  "download_options_live_beginning": {
+    "message": "Desde o início disponível"
+  },
+  "download_options_live_current": {
+    "message": "Desde o momento atual"
+  },
+  "download_options_live_help": {
+    "message": "Início usa o primeiro segmento disponível no servidor. Atual começa perto do momento ao vivo, com alguns segundos de atraso. Aplica-se apenas a transmissões ao vivo."
+  },
+  "issue_report_title": {
+    "message": "Relatar um problema"
+  },
+  "issue_report_intro": {
+    "message": "Relate uma página em que a detecção de URL ou o download não funcione corretamente."
+  },
+  "issue_report_page": {
+    "message": "Página a relatar"
+  },
+  "issue_report_page_unavailable": {
+    "message": "A URL da página não está disponível."
+  },
+  "issue_report_types": {
+    "message": "Tipo de problema"
+  },
+  "issue_report_multiple": {
+    "message": "Selecione todas as opções aplicáveis."
+  },
+  "issue_report_detection": {
+    "message": "Falha na detecção de URL"
+  },
+  "issue_report_download": {
+    "message": "Falha no download"
+  },
+  "issue_report_other": {
+    "message": "Outro"
+  },
+  "issue_report_details": {
+    "message": "Detalhes (opcional)"
+  },
+  "issue_report_placeholder": {
+    "message": "Descreva o que você estava fazendo quando o problema ocorreu."
+  },
+  "issue_report_question": {
+    "message": "Deseja relatar um problema com esta página?"
+  },
+  "issue_report_confirm": {
+    "message": "Confirmar"
+  },
+  "issue_report_select_type": {
+    "message": "Selecione pelo menos um tipo de problema."
+  },
+  "issue_report_send_notice": {
+    "message": "Ao confirmar, a URL, os tipos de problema e os detalhes serão enviados pelo FormSubmit."
+  },
+  "issue_report_sending": {
+    "message": "Enviando o relato. Aguarde."
+  },
+  "issue_report_sent": {
+    "message": "Seu relato foi aceito."
+  },
+  "issue_report_failed": {
+    "message": "Não foi possível enviar o relato. Tente novamente mais tarde."
+  },
+  "issue_report_network_error": {
+    "message": "Não foi possível confirmar o resultado. O relato pode já ter sido aceito."
+  },
+  "issue_report_activation": {
+    "message": "O destinatário dos relatos ainda não foi ativado."
+  },
+  "issue_report_invalid_page": {
+    "message": "Não há uma URL de página válida. Abra a página e tente novamente."
+  },
+  "issue_report_close": {
+    "message": "Fechar"
   }
 }

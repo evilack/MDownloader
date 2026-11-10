@@ -1,11 +1,17 @@
 import {CreateRecordingSink, IsRecordingMessage} from './webrtc-recording.js';
 import {RuntimePolicy} from './runtime-policy.js';
 import {LocalizedError, SerializeError} from './i18n.js';
+import {SealCaptionJournal} from './caption-committed-input.js';
 
 /** 기존 오프스크린 문서에서 WebRTC 수신·저장 수명을 관리합니다. 팝업/관리자 수명과 무관합니다. */
-export function CreateWebRtcTransfers({extensionId, createStore, report, saveFile, release, snapshots, prepareJob})
+export function CreateWebRtcTransfers({extensionId, createStore, report, saveFile, release, snapshots, prepareJob, startCaptions})
 {
 	const Entries = new Map(), Preparing = new Map();
+	function SetMimeType(Id,Mime){
+	 const Entry=Entries.get(Id);
+	 if(!Entry||Entry.phase!=='recording'||Entry.count||typeof Mime!=='string'||Mime.length>192||!/^video\/(?:webm|mp4)(?:;[^\r\n]*)?$/i.test(Mime))return false;
+	 Entry.job.mimeType=Mime;Entry.mimeType=Mime;return true;
+	}
 	function Report(Entry, Action, Fields)
 	{
 		const Next = (Entry.reportTail ?? Promise.resolve()).then(() => report(Entry.requestId, Action, Fields));
@@ -28,15 +34,17 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 				catch (ErrorValue) { if (!Entry.store.bytes) throw ErrorValue; Partial = true; }
 				Signal.throwIfAborted();
 				if (!Entry.store.bytes) throw new LocalizedError('webrtc_empty');
+				SealCaptionJournal(Entry.store.journal,Partial?'source-lost':'finish');
 				const Filename = await Report(Entry, 'recordingFormat', {mimeType: Entry.job.mimeType, partial: Partial, reason: Reason});
 				await Report(Entry, 'progress', {received: Entry.store.bytes, finished: Entry.count, live: true, muxing: true});
 				const File = await Entry.store.file(Entry.job.mimeType);
-				await saveFile({...Entry.job, filename: Filename}, File, Signal);
+				Entry.job.filename=Filename;Entry.job.partial=Partial;
+				await saveFile(Entry.job,File,Signal);
 			}
 			catch (ErrorValue)
 			{
-				await Report(Entry, 'failure', {canceled: Signal.aborted,
-					error: Signal.aborted ? undefined : SerializeError(ErrorValue, 'webrtc_recording_failed')}).catch(() => {});
+				await Report(Entry, 'failure', {canceled: Signal.aborted||ErrorValue?.name==='AbortError',
+					error: Signal.aborted||ErrorValue?.name==='AbortError' ? undefined : SerializeError(ErrorValue, 'webrtc_recording_failed')}).catch(() => {});
 			}
 			finally
 			{
@@ -53,6 +61,8 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 		return Entry.finishing;
 	}
 	return {
+		setMimeType:SetMimeType,
+		signal:Id=>Entries.get(Id)?.controller.signal,
 		ids: () => [...Entries.keys()],
 		prepare(Job)
 		{
@@ -65,10 +75,11 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 				{
 					await prepareJob?.(Job, Pending.controller.signal);
 					Pending.controller.signal.throwIfAborted();
-					const Store = await createStore(Job);
+					const Store = await createStore(Job,Pending.controller.signal);
 					const Entry = {job: Job, ...Job, store: Store, phase: 'recording', count: 0, controller: Pending.controller,
 						sink: CreateRecordingSink(Store, {maxBytes: RuntimePolicy.Transfer.MaxScratchBytes, maxChunkBytes: 192 * 1024})};
 					Entries.set(Job.requestId, Entry);
+					startCaptions?.(Entry.job,Store,Entry.controller.signal);
 					snapshots?.register(Job.requestId, () =>
 					{
 						if (Entry.phase !== 'recording' || !Entry.count || !Store.bytes) return null;
@@ -91,6 +102,7 @@ export function CreateWebRtcTransfers({extensionId, createStore, report, saveFil
 		{
 			const Entry = Entries.get(Message.requestId);
 			if (!Entry || Entry.background || !IsRecordingMessage(Message, Sender, Entry, extensionId, Entry.tabId)) return {ok: false};
+			if(Message.mimeType&&!Entry.count&&!SetMimeType(Entry.requestId,Message.mimeType))return {ok:false};
 			if (Message.heartbeat) return {ok: true};
 			if (Message.end) { void Finish(Message.requestId, Message.count, Message.reason); return {ok: true}; }
 			try

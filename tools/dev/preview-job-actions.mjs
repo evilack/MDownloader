@@ -51,7 +51,7 @@ for (const Value of Jobs)
  Announce: Text => {document.getElementById('status').textContent = Text;}, Refresh: () => {}});
  Active.querySelector('ul').append(Entry.row);
  Entry.previous = {time: 1000, bytes: Math.max(0, Job.bytesReceived - 1100000)};
- UpdateJobRowMetrics(Entry, Job, 2000, CountFormat);
+ UpdateJobRowMetrics(Entry, Job, 2000);
 }
 document.getElementById('status').textContent = 'UI 검사 픽스처 · 설치 확장 아님';
 `;

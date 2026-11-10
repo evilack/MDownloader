@@ -6,9 +6,9 @@ export const SiteCatalog = Object.freeze({
 		edge: Object.freeze({url: '', en: 'Microsoft Edge Add-ons', ko: 'Microsoft Edge 추가 기능'}),
 	}),
 	messages: Object.freeze({
-		en: Object.freeze({play: 'Play', pause: 'Pause', playLabel: 'Play sample playback GIF', pauseLabel: 'Pause sample playback GIF',
+		en: Object.freeze({
 			storePending: 'We’re preparing the {store} listing. This button will open the installation page once the official store link is available.'}),
-		ko: Object.freeze({play: '재생', pause: '일시정지', playLabel: '샘플 화면 GIF 재생', pauseLabel: '샘플 화면 GIF 일시정지',
+		ko: Object.freeze({
 			storePending: '{store} 등록을 준비하고 있습니다. 정식 스토어 주소가 발급되면 이 버튼에서 설치 페이지로 연결됩니다.'}),
 	}),
 });

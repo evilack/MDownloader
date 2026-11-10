@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>MDownloader UI preview</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="media-row.css">
+  <link rel="stylesheet" href="download-options.css">
+  <link rel="stylesheet" href="local-captions.css">
+  <link rel="stylesheet" href="preview.css">
+  <script type="module" src="lib/app.js"></script>
+</head>
+<body class="panel">
+  <header class="brand brand-with-options"><strong>MDownloader</strong><div class="window-actions"><button id="scan" class="icon-button" type="button" aria-label="Reset preview"><img class="button-icon" src="icons/refresh.png" alt="" width="20" height="20"></button></div></header>
+  <main>
+    <p id="demo-label" class="notice" data-candidate-status></p>
+    <section id="candidate-section" aria-label="Media"><ul id="candidates"></ul></section>
+    <div id="job-sections"></div>
+    <p id="demo-hint" class="demo-hint"></p>
+    <p id="demo-status" class="notice demo-status" role="status" aria-live="polite"></p>
+  </main>
+</body>
+</html>

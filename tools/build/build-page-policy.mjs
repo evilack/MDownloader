@@ -2,10 +2,11 @@
  * --check는 파일을 변경하지 않고 소스와 배포 정책이 같은지 확인합니다. */
 import {readFile as ReadFile, writeFile as WriteFile} from 'node:fs/promises';
 import {PagePolicy} from '../../extension/lib/runtime-policy.js';
-const File = new URL('../../extension/data/page-policy.js', import.meta.url);
+// Chrome은 동일 파일을 두 실행 world에 등록하면 한쪽에서 생략할 수 있어 경로를 구분합니다.
+const Files = ['page-policy.js', 'main-page-policy.js'].map(Name => new URL('../../extension/data/' + Name, import.meta.url));
 const Source = '/** 자동 생성: tools/build/build-page-policy.mjs. 원본 정책은 lib/runtime-policy.js입니다. */\n' +
 'globalThis.MDownloaderPagePolicy = Object.freeze(' + JSON.stringify(PagePolicy, null, '\t') + ');\n';
-if (process.argv.includes('--check'))
+for (const File of Files) if (process.argv.includes('--check'))
 {
 	if (await ReadFile(File, 'utf8') !== Source)
 	{

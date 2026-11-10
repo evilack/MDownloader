@@ -21,7 +21,7 @@ export async function WebRtcPageTask(Options)
 	});
 	if (Options.action === 'probe')
 	{
-		const Mime = typeof MediaRecorder === 'function' && ['video/mp4;codecs=avc1.42001f,mp4a.40.2', 'video/webm;codecs=vp8,opus', 'video/webm']
+		const Mime = typeof MediaRecorder === 'function' && (Options.mimeTypes||[])
 			.find(Value => MediaRecorder.isTypeSupported(Value));
 		return {page: location.href, title: document.title, mimeType: Mime || null, busy: Existing && Existing.state !== 'ended',
 			streams: Players.map(Player => ({trackId: Player.srcObject.getVideoTracks().find(Track => Track.readyState === 'live').id,
@@ -39,6 +39,7 @@ export async function WebRtcPageTask(Options)
 		// 화질 변경 전에 문서의 단일 녹화 자리를 확보합니다. 조회와 시작 사이의
 		// 동시 요청이 기존 저장의 수신 화질을 바꾸지 않도록 같은 JS 실행에서 예약합니다.
 		globalThis.MDownloaderWebRtcRecording = {requestId: Options.requestId, token: Options.token,
+			mimeTypes:Options.mimeTypes,
 			reserved: true, state: 'preparing', count: 0, expires: Date.now() + 45000,
 			stop(Reason) { this.reason = Reason; this.state = 'ended'; }};
 		return {reserved: true};
@@ -49,7 +50,7 @@ export async function WebRtcPageTask(Options)
 	{
 		if (Options.qualityLease) dispatchEvent(new CustomEvent('mdownloader-webrtc-quality-' + Action, {detail: Options.qualityLease}));
 	};
-	const Mime = ['video/mp4;codecs=avc1.42001f,mp4a.40.2', 'video/webm;codecs=vp8,opus', 'video/webm']
+	const Mime = ((OwnReservation?Existing.mimeTypes:undefined)||Options.mimeTypes||[])
 		.find(Value => MediaRecorder.isTypeSupported(Value));
 	if (!Mime) return {error: 'webrtc_unsupported'};
 	const Clones = Original.getTracks().filter(Track => Track.readyState === 'live').map(Track => Track.clone());
@@ -66,7 +67,7 @@ export async function WebRtcPageTask(Options)
 		}};
 	async function Send(Fields)
 	{
-		const Reply = await chrome.runtime.sendMessage({type: 'webrtcRecordingData', requestId: Options.requestId, token: Options.token, ...Fields});
+		const Reply = await chrome.runtime.sendMessage({type: 'webrtcRecordingData', requestId: Options.requestId, token: Options.token, mimeType:Recorder.mimeType||Mime, ...Fields});
 		if (!Reply?.ok) throw new Error('webrtc_receiver_lost');
 	}
 	function SourceAlive()
