@@ -4,258 +4,114 @@ English · [한국어](docs/README.ko.md)
 
 <img src="extension/icons/app-media-128.png" alt="MDownloader" width="80" height="80">
 
-Find video and audio on the current page, save supported streams, and manage downloads in a side panel.
+Find video and audio on a web page, save supported streams, and manage your downloads in a side panel.
 
-Chrome · Microsoft Edge · Manifest V3 · System language by default · English fallback · 10 interface languages
+Chrome / Microsoft Edge · Manifest V3 · 10 interface languages
 
-MDownloader runs in your browser. It can save direct media files, supported clear or AES-encrypted HLS, unencrypted DASH, and supported WebRTC streams without a separate desktop downloader.
+MDownloader handles direct media files, supported HLS and unencrypted DASH, and WebRTC streams from supported signaling services. Ordinary downloading runs inside the browser. An optional local helper adds speech recognition and Windows file-manager integration.
 
-[Installation](#installation) · [Downloading media](#downloading-media) · [Live and partial saves](#live-and-partial-saves) · [Settings](#settings) · [Troubleshooting](#troubleshooting)
+## Download and installation
 
-## Installation
+The current installation method is **Load unpacked**. Official Chrome Web Store and Edge Add-ons links have not been configured. Use the supplied project source folder or the [development ZIP](website/downloads/MDownloader-development.zip) generated from this project; keep the extracted files in a permanent location.
 
-1. Obtain this project folder and keep it in a permanent location.
-2. Open `chrome://extensions` in Chrome or `edge://extensions` in Edge.
-3. Enable **Developer mode**.
-4. Choose **Load unpacked** and select the project's **`extension` folder**, which contains `manifest.json`.
-5. Pin MDownloader from the browser's extension menu if you want quick access.
+1. Open `chrome://extensions` in Chrome or `edge://extensions` in Edge.
+2. Enable **Developer mode**.
+3. Choose **Load unpacked** and select the **extension** folder containing `manifest.json`.
+4. Pin MDownloader from the browser's extensions menu.
 
-No build, npm installation, or paid service is required to load the extension. Store installation links have not been configured in the product website.
+No Node.js installation or build is needed to use the supplied extension. Finish all downloads, conversions and speech jobs before replacing files and reloading an update. Removing and reinstalling the extension can discard its settings and history.
 
-Distribution packages are generated separately: `node tools/build/package-extension.mjs --flavor development|chrome-store`. Development builds allow Chrome by default; `--block-chrome` is an optional additional build restriction. The development/manual build integrates supported public YouTube VOD downloads into the normal download UI and job manager. The Chrome Store package physically excludes the YouTube provider/vendor and uses a disabled entry. Its fixed source checks also cover generic media, embeds, playback capture, resume, and media requests. This is a permanent package distinction, not a review-time switch. See [Development](docs/development.md).
-
-To update a local copy, finish active downloads first, replace the project files, and reload MDownloader from the browser's extensions page.
+The source/development build includes the YouTube provider. The Store package permanently excludes it. [Distribution details](docs/development.md#build-and-distribution) explain how maintainers create each package.
 
 ## Screenshots
 
-### Detected media
+Review detected media in the popup, then follow active and completed downloads in the manager.
 
-Review detected items, inspect thumbnails, preview supported media, and start a download.
+![Detected media](website/assets/screenshots/en/media-list.png)
+![Download manager](website/assets/screenshots/en/downloads.png)
 
-![MDownloader media list](website/assets/screenshots/en/media-list.png)
+These are real earlier captures, recorded in the [screenshot catalog](website/assets/screenshots/catalog.json). They do not show every control in the current version.
 
-### Download manager
+## Features and requirements
 
-Track download progress and manage active or completed jobs in the side panel.
+- Detect direct video/audio and supported HLS/DASH sources after playback starts.
+- Preview supported media and select an available quality.
+- Manage independent downloads, supported pause/resume, cancellation, history and saved files.
+- Save a partial file while reception continues, or stop reception and save the playable portion.
+- Include original subtitles, optionally translate selected subtitles, or generate captions locally from audio.
+- Set the download location, filename options, display language and diagnostic logging.
 
-![MDownloader download manager](website/assets/screenshots/en/downloads.png)
+Use **Chrome 116+** or a compatible Chromium-based Edge with the required extension APIs, with enough free disk space and permission to access both the page and its media servers. Local speech recognition supports Windows and macOS; available engines differ by platform. It can use substantial memory. Actual macOS helper/recognition operation still requires platform validation.
 
-These are real captured screens. Capture versions are recorded in the [screenshot catalog](website/assets/screenshots/catalog.json); some current controls are described below even when absent from an older capture.
+Interface languages: English, 한국어, 日本語, 简体中文, Español, Português (Brasil), Français, हिन्दी, العربية, Русский. The browser language is selected by default, with English as fallback.
 
-## Features
+## Quick start
 
-- Detect video, audio, and supported HLS/DASH sources on the active page.
-- Show thumbnails and hover previews where the media and browser permit them.
-- Group confirmed HLS variants under one source and offer quality selection.
-- Run multiple independent stream downloads and continue them after the source tab closes.
-- Receive supported WebRTC streams in the background and save supported live HLS.
-- Save a separate partial file while the original download continues.
-- Manage progress, speed, pause/resume where supported, cancellation, history, and completed files.
-- Customize filenames, download location, interface language, and diagnostics.
+1. Open a page and **start playing** its video or audio.
+2. Click the MDownloader icon and find the item in the media list.
+3. Click **Download** for the best supported quality. **Shift-click Download** to choose quality, subtitles, translation or per-download speech settings.
+4. Grant the requested page/media-server permissions. You can also manage them under **Settings → Site permissions**.
+5. Open **Download manager** and wait for completion.
+6. Click the completed item's **folder** icon to reveal the file. **Shift-click** that icon to play it in a browser tab.
 
-Supported interface languages: English, 한국어, 日本語, 简体中文, Español, Português (Brasil), Français, हिन्दी, العربية, Русский.
+If the list is empty, check site permissions, play or seek the media, then refresh the page. Detection alone does not guarantee that a protected or unsupported source can be saved.
 
-## Requirements
+## Optional helper and speech captions
 
-- Chrome 116 or later, or a compatible current Chromium-based Microsoft Edge with the required extension APIs.
-- Access to the page and media server when network detection or stream downloading requires it.
-- Enough free storage for temporary segments and the completed output.
+Ordinary browser downloads do not need the helper. To generate captions, or use Windows Explorer with files saved directly to a picked folder:
 
-## Downloading media
+1. Open **Settings → Helper** and select **Install helper** or the displayed update action.
+2. Complete any browser/OS installer confirmation. The extension checks the actual connection before reporting readiness.
+3. For speech captions, open **Settings → Speech recognition**, download a model explicitly, and select an engine, model, language and output options. Windows offers faster-whisper and whisper.cpp; macOS offers whisper.cpp.
+4. Choose embedded MP4 captions, SRT/VTT sidecars, or their supported combination. Enable the default or override it for one download through Shift-click Download.
 
-1. Open the page containing the media and start playback.
-2. Click the MDownloader icon.
-3. Find the item in the media list. Use the thumbnail or hover preview when available.
-4. Select **Download**.
-5. Open **Download manager** to follow progress and manage the job.
+Speech captions are generated from audio locally. Models are not downloaded automatically. The download row shows waiting, model loading, recognition and output status. Selected outputs are saved automatically when reception and caption processing finish; no separate live-caption file picker is required. Timestamp adjustments appear as warnings; they do not by themselves fail the download.
 
-If an item is missing, play the media, seek within it, or refresh the page and try again. Some pages reveal a source only after playback starts.
+A completed video can remain usable even if subtitle generation or translation fails. Read the row's separate caption status and error code. [Detailed caption behavior](docs/media-guide.md#subtitles-and-speech-captions) and [helper maintenance](native/captions/README.md) describe limits and recovery boundaries.
 
-## Site access
+## Live downloads and partial files
 
-1. Open **Options → Site permissions**.
-2. Choose **Allow all sites**, or enter the page URL under the individual-site form.
-3. If the media uses a different server, enter that server URL as well.
-4. Allow detection, return to the page, and play the media again.
-
-The browser manages these permissions. You can revoke optional site access from the same options page. Source access can still depend on login state, server rules, or expiring links.
-
-## Download options
-
-Normal **Download** starts the best supported HLS/YouTube quality or the current WebRTC server profile. Hold **Shift** while clicking Download to open the shared options editor below the media row. Select a real available quality, subtitle tracks and optional translation, then confirm. A single quality stays fixed. Grant page/media/provider access when requested.
-
-Subtitle choices include a count, select/clear controls and search for larger catalogs. When a target-language original already exists, it is used directly. Translation settings show only actual configured providers/models and supported reasoning levels. Configure credentials under **Options → Services and authentication** before using a provider.
-
-## Automatic embedded subtitles
-
-Optional local speech recognition generates new captions from audio using the selected engine and model. Once enabled, it automatically saves the selected embedded/SRT/VTT outputs when downloading or Stop and save finishes. Download rows show processing status and results; there is no separate live-caption file picker or interim transcript panel. If a confirmed window boundary cannot be decoded reliably, the extension finishes recognition against the same owned final AV file before saving. This does not require a common-helper reinstall.
-
-Quick downloads include detected subtitle languages by default; Download options can select specific tracks. Selected languages are saved as selectable MP4 timed-text (`tx3g` / `mov_text`) tracks in the MP4. Discovery reads standard media `<track>` elements, readable native text tracks, supported source-owned player/JSON declarations, and HLS/DASH subtitle renditions. Page captions are fetched before the independent transfer can outlive its source tab. The supplied XVideos player declaration is supported through the same discovery pipeline; the feature is not limited to that site.
-
-WebVTT, SRT, TTML, finite segmented HLS WebVTT, and static DASH standalone/segmented text are supported. Video/audio packets are copied without re-encoding when the source codecs can be stored in MP4. Captioned direct files use the offscreen transfer and retain current-save/cancel controls. Partial exports retain the available caption tracks; a language whose cues begin after the partial boundary has an empty selectable track. WebRTC captions require a usable, normal-speed native source clock and are aligned to the independent recorder's start.
-
-A subtitle that cannot be read, translated or embedded produces a separate visible Error count. Successful original tracks are retained, and usable video/audio can still finish saving. A subtitle mux error preserves the original AV output and reports a subtitle error; a video or file-save error fails the download. Current unsupported cases include encrypted or fragmented-MP4 subtitle renditions, live/discontinuous HLS captions, arbitrary obfuscated/private player configuration, and sources with existing embedded non-AV tracks that the installed reader cannot preserve during remuxing. Existing embedded captions remain intact on the ordinary no-external-caption direct-download path. MP4 subtitles use timed text for desktop player compatibility; advanced WebVTT layout and styling become plain text.
-
-## YouTube in the development build
-
-Membership VOD that the signed-in account can already play can use the authorized response from the exact source document. Play the video on YouTube before opening Download options. The extension reads the matching playable response and its successful media request; it does not read or store account cookies. This path is for finite VOD, requires the same video identity and playable source, and preserves the existing refusal of inaccessible and DRM-protected content. It does not add authenticated live, upcoming or automatic recovery support.
-
-The manual/development build supports compatible public VOD, ongoing live and queued upcoming broadcasts. Normal click chooses the best supported quality; Shift-click provides Download options. Available original captions are embedded as selectable MP4 tracks. **Include automatically generated captions** defaults to on; changing it affects new jobs.
-
-Upcoming broadcasts wait and check the same video every 30 seconds, then start reception when available. Live saving begins at the live edge. Keep Chrome running and the computer awake. Snapshot and stop-and-save export the received interval. Full-broadcast automatic natural-end completion and continuous live captions are not established by short capture checks. YouTube is permanently excluded from Store packages.
-
-## Saving WebRTC streams
-
-1. Start playback on a supported page and find the regular media item with the **WebRTC** badge.
-2. Click **Download**, or Shift-click to choose an available server quality.
-3. Wait until the manager shows received bytes increasing. The independent background receiver can then continue after the source page closes or navigates away.
-4. Use **Save received portion**, **Stop and save**, or **Cancel** in the same manager.
-
-Support is limited to the signaling services configured in the project; it does not record every MediaStream on every site. No separate recording tab is required. Valid HLS alternatives can appear alongside WebRTC.
-
-The receiver waits for actual remote video/audio before recording. MP4 is preferred when supported by the browser, with WebM as a fallback. Recording can re-encode media. Connection loss or a stalled stream is shown as interrupted, with a partial file when possible. An intentional **Stop and save** is treated as a normal finish. Closing the browser or reloading/removing the extension ends active receivers; automatic recovery is not implemented.
-
-## Live and partial saves
-
-The active-row buttons are ordered **Cancel → Save received portion → Stop and save** from left to right.
+Keep the browser running and the computer awake. Supported live HLS offers **Beginning** or **Current** starting points in Download options. Supported WebRTC reception becomes independent after actual remote media arrives; closing the source page then does not stop the receiver.
 
 | Action | Result |
 |---|---|
-| **Cancel** | Stops the selected job and discards its unfinished temporary output. |
-| **Save received portion** | Creates a separate partial file and job while the original transfer continues. |
-| **Stop and save** | Ends reception and saves the playable portion in the original job. |
+| Cancel | Stops this job and discards its unfinished temporary output. |
+| Save received portion | Creates a separate partial file and record; the original reception continues. |
+| Stop and save | Ends reception and saves the playable received portion in the original job. |
 
-**Stop and save** is available for supported HLS, DASH, and WebRTC jobs once a playable portion is ready. HLS/DASH stops assigning new segments, lets requests already in progress finish, and exports only the continuous video/audio portion before the first missing segment. An incomplete finite stream receives a partial-file suffix.
+Availability depends on the source and on enough complete media being received. Direct-file partial saves can make additional network requests. Browser shutdown, extension reload and computer sleep interrupt active work; automatic restart recovery is not supported.
 
-**Save received portion** creates a separate partial file and download record while the original job continues. Partial output has its own cancellation and does not replace the original file.
+## Settings, files and removal
 
-- **HLS/DASH:** uses completed contiguous segments and the available audio coverage.
-- **WebRTC:** freezes data already committed to local storage, without requesting media again or interrupting the receiver.
-- **Direct files:** separately reads the reported byte range from the original server, causing additional transfer. The server must support the required access/range behavior, and enough complete packets and metadata must be available.
+**Settings → Download and filename** controls the save location and optional page-title/date-time naming. Pick a folder where supported, or use a subfolder below the browser's normal download directory. New filenames start with the source page's domain. For example: `example_com_Page_title_original_2026-11-11_15-04-06.mp4`.
 
-Partial saving can fail when essential media data is missing or the container/codec cannot be remuxed. Check the partial job's error; the original job remains independent.
+Settings and download records live in the extension's browser profile; selected-folder handles use IndexedDB. Translation credentials are also held in extension-local storage. Downloaded files remain in the chosen destination. [Storage and helper locations](docs/media-guide.md#storage-and-removal) list the separate native directories.
 
-## Download manager
+Deleting a download **record** leaves its file on disk. Shift-click Delete can also remove a completed browser-managed file when supported. Completion and scheduled-start notifications are separate settings and are off by default; banners and sound follow Chrome/OS preferences.
 
-Open **Download manager** from the popup to manage active and completed jobs.
-
-| Display | Meaning |
-|---|---|
-| Received bytes and speed | Two lines inside one rounded box, with the same text size, box size, and colors as the popup. Received bytes are blue; speed is gray. |
-| Progress bar | A thin bar below the row. A known total shows progress; an unknown total remains indeterminate. |
-| Canceled | Mint text inside a rounded status badge in both the popup and manager. |
-
-- Pause or resume a direct browser download when the browser reports that it supports the action.
-- Cancel a selected active job independently of other jobs.
-- Use **Show in folder** for a completed browser download.
-- The completed item's folder icon opens the native file manager for browser-managed downloads. Hold **Shift** while clicking it to play the saved file in a browser tab, including files saved directly to a picked folder. Direct picked-folder Explorer reveal requires the optional [Windows bridge](native/explorer/README.md) and one initial folder link; it must be registered on the computer and linked to the selected folder once.
-- Copy a source link or inspect the full filename/address through the row's tooltip where available.
-- Delete a record to remove it from the list. The downloaded file stays on disk.
-- **Shift-click Delete** to also remove a completed browser-downloaded file when that action is available.
-- Section-clear buttons remove the selected section's records, not saved media files.
-
-Hover over an icon button to see its action name. The same controls expose accessible names for keyboard and assistive-technology use.
-
-## Saved files and notifications
-
-Click a completed row's folder icon to reveal its saved file. **Shift-click** opens it for playback in a browser tab. Windows picked-folder files use the optional [Explorer helper](native/explorer/README.md), installed from download-location settings, plus first-time folder association. Its removal action and Windows Installed Apps entry preserve saved media. macOS opens browser Downloads.
-
-Under **Options → Notifications**, completion and scheduled-start notifications are independent and off by default. Enabling them requests Chrome permission. Completion is suppressed when the job is represented in an open popup or the side panel is open. Scheduled-start alerts require actual received bytes. Banners and sound follow Chrome and operating-system settings.
-
-Click a completion notification to open the saved file's folder with that file selected. Files saved to a picked folder use the same optional Explorer bridge as **Show in folder**. A scheduled-start notification can reveal the file once it has finished saving; an active download has no completed file to select.
-
-## Settings
-
-| Setting | Use |
-|---|---|
-| Display language | Use the system language or select one of ten languages; English is the fallback. |
-| Use page title | Combine the current page title with the original filename; ON by default. |
-| Include date and time | Append the local download start time to the filename; ON by default. |
-| Download location | Set a subfolder under the browser's default download directory, or choose a folder where supported. **Save location** preserves a selected folder; **Use default location** explicitly resets it. |
-| Show detected media in the side panel | Display the active tab's media above the download list. |
-| Debug mode | Open a separate job diagnostics tab. |
-| Record download events | Keep a bounded local result log for troubleshooting. |
-| Enable detailed debug logging | Show safe stage codes, timings, and counts in the extension console; OFF by default. |
-
-With the default page-title and date/time settings:
-
-| Source | Example output |
-|---|---|
-| Original filename available | `example_com_Page_title_original_2026-11-08_15-04-06.mp4` |
-| No original filename | `example_com_Page_title_2026-11-08_15-04-06.mp4` |
-| No original filename or page title | `example_com_2026-11-08_15-04-06.mp4` |
-
-New filenames begin with the source page's hostname, with a leading `www.` removed and dots replaced by underscores. Spaces and dots in the filename body are also replaced by underscores; the actual extension remains intact. Characters forbidden in filenames are sanitized as before. For example, `https://www.xvideos2.com/...` and `original name.v1.mp4` produce `xvideos2_com_original_name_v1.mp4` when page-title/date-time naming is disabled.
-
-The name and local start time are fixed when the job is registered. The output uses the actual media extension, including WebM when applicable. The extension does not add `MDownloader-`, `playback`, or generated WebRTC labels to streams without original filenames. Explicit page-title/date-time choices still apply. Partial files receive a separate partial-save suffix.
-
-## Supported media
-
-| Media | Support |
-|---|---|
-| Direct files | HTTP(S) video/audio files, including MP4, WebM, MOV, MKV, MP3, M4A, WAV, FLAC, and OGG families; saved in their original format. |
-| HLS | Supported clear or full-segment AES-encrypted MPEG-TS/fMP4 video and audio, including H.264/AAC and supported fMP4 AV1; remuxed without re-encoding. |
-| DASH | Supported static single-period fMP4 representations; remuxed without re-encoding. |
-| Live streams | Supported live HLS with complete segment boundaries. |
-| WebRTC | Independent background reception for supported signaling streams, recorded to MP4 or WebM; source-page closure does not stop an established receiver. |
-
-HLS encryption supports `AES-128`, `AES-256` (CBC), `AES-256-CTR`, and `AES-256-GCM` when the playlist supplies a normally accessible `identity` key. Key rotation, explicit IVs, and sequence-number IVs are handled automatically. Encrypted HLS needs no additional setting: use the same Download button. Encrypted low-latency playlists use the complete parent segments.
-
-| Limit | HLS/DASH | WebRTC |
-|---|---|---|
-| Temporary media per job | 16 GiB | 2 GiB |
-| Individual media resource | 32 MiB | Bounded recording chunks |
-| Segments per job | 5,000 across tracks | Recording chunk and buffer limits apply |
-
-Browser storage quota can impose a lower limit. DRM license systems, sample encryption (`SAMPLE-AES` / `SAMPLE-AES-CTR`), encrypted DASH, live DASH, unknown signaling protocols, unsupported codecs/layouts, delivery that requires redirects, and incomplete low-latency groups are outside the supported path. A denied or invalid encryption key cannot be used. See [Development](docs/development.md) for implementation boundaries.
+To remove MDownloader, use the browser's extensions page. Saved media stays on disk. Remove an optional helper from **Settings → Helper** before removing the extension, or use its OS uninstall entry where available. Removing the common helper retains separately installed speech engines/models; see [storage and removal](docs/media-guide.md#storage-and-removal) before deleting those separately.
 
 ## Troubleshooting
 
-**Nothing appears in the media list**
+| Symptom | What to check |
+|---|---|
+| No media found | Start playback; allow the page and media hosts; refresh or seek. |
+| HTTP or permission error | Check login, site access and expiring links; rescan the original page. |
+| Preview unavailable | Cross-origin/protected players can prevent previews while downloads still work. |
+| Partial save unavailable | Wait for complete media packets; some formats need tail metadata or cannot be remuxed safely. |
+| WebRTC does not start | Reload and play the page so initial signaling is observed; only configured services are supported. |
+| Caption/helper error | Run Settings → Helper → Diagnostics, check the selected model and read the caption error code. |
 
-Start playback, seek, refresh the page, and check site/media-server permissions. Auxiliary hover previews and advertisements may be excluded from the main list. Detection does not imply that every source can be downloaded.
+DRM-protected sources, sample-encrypted HLS, encrypted/live DASH, unknown signaling protocols and unsupported codecs/layouts are outside the supported path. [Media support and limits](docs/media-guide.md) gives the precise supported cases, including development-build YouTube.
 
-**A thumbnail or preview fails**
+For diagnostics, enable event or detailed logging under **Settings → Diagnostics and logs**, reproduce once, then disable it. Issue reports send the shown page URL, selected issue types and entered description through FormSubmit only when you confirm submission. Review the contents before sending.
 
-The browser can restrict cross-origin frames, protected sources, or capture APIs. An unavailable preview does not by itself mean the download will fail. Return to the source page and check playback.
+## Development
 
-**A download fails with a permission or HTTP error**
+Maintainers use Node.js 24. Run `node --test tests/*.test.mjs` and `node --expose-internals tools/checks/verify-project.mjs` from the project root. [Development](docs/development.md) covers architecture, builds and packaging; [verification status](docs/verification.md) distinguishes automated checks, existing failures and actual browser validation.
 
-Check access to both the page and media host, your session, and whether the link has expired. Refresh the source rather than assuming a copied link remains valid elsewhere.
+## License and support
 
-**A partial file cannot be saved**
-
-Wait for more data. Direct-file saving may need additional range reads or tail metadata. Some media cannot be safely packaged from the received portion.
-
-**WebRTC is detected but does not start**
-
-Reload the source page and start playback so the connection observer can see its initial signaling. Check page/media-server access. Unsupported signaling or an unavailable server profile cannot be replaced with a made-up quality.
-
-**You need diagnostic details**
-
-Enable result logging or detailed debug logging in Options, reproduce the issue, then turn it off. Detailed logs exclude source URLs, headers, cookies, tokens, IP addresses, file paths, and raw error messages/stacks. Browser/third-party messages displayed elsewhere can still contain their own text.
-
-## Removing MDownloader
-
-Open the browser's extensions page and remove MDownloader. Downloaded media files are not deleted by removing the extension.
-
-## Development and verification
-
-The browser loads `extension/` directly. Core checks run with Node.js 24:
-
-```powershell
-node --test tests/*.test.mjs
-node tools/checks/audit-localization.mjs
-node tools/build/build-page-policy.mjs --check
-node --expose-internals tools/checks/verify-project.mjs
-```
-
-See [Development](docs/development.md) for folder responsibilities, architecture, commands and validation boundaries.
-
-## Third-party components
-
-Mediabunny is bundled under MPL 2.0. See [Third-party notices](THIRD_PARTY_NOTICES.md) and the included license. A license for MDownloader's original source has not been specified separately.
-
-## Support
+A separate license for MDownloader's original source has not been specified. Bundled libraries and their notices retain their own licenses; see [Third-party notices](THIRD_PARTY_NOTICES.md).
 
 [Support development through Ev-Cabinet](https://evilack.github.io/donate.html).

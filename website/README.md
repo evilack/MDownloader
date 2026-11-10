@@ -20,7 +20,7 @@ Both landing pages describe the current 0.2.43 source implementation (content re
 
 Archive CRC and every included file are verified during generation. This verifies a source snapshot, not a fresh extension build or installation/runtime acceptance. Use the dedicated extension distribution checks before calling any package a verified release. Store packaging remains a separate workflow.
 
-Speech captions use the selected automatic final outputs. Separate live-file selection/export and the provisional transcript pane have been removed from the normal flow. Windows integration checks with the existing engine and installed tiny model verify automatic embedded output, SRT/VTT sidecars, stop-and-save and cancellation in an isolated Chrome profile. See `docs/caption-automatic-output-verification-2026-11-10.md` for the actual evidence and limits; these checks do not establish long-running accuracy, every input or macOS acceptance. Screenshot capture versions below remain independent of the current implementation version.
+Speech captions use the selected automatic final outputs. Separate live-file selection/export and the provisional transcript pane have been removed from the normal flow. Earlier Windows integration checks exercised automatic embedded output, SRT/VTT sidecars, stop-and-save and cancellation with the then-installed engine/model. See [current verification status](../docs/verification.md) for evidence and limits; these checks do not establish long-running accuracy, every input or macOS acceptance. Screenshot capture versions below remain independent of the current implementation version.
 
 ## Interactive extension preview
 

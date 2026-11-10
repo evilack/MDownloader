@@ -1,6 +1,6 @@
 # macOS common helper
 
-Updated 2026-11-10: body version 9 accepts generic bounded package manifests. Shared validation and stale cleanup are tested in Node; actual macOS JXA/Foundation, Installer and inference remain unverified on this Windows host. See the [current verification record](../../docs/command-only-helper-verification-2026-11-10.md). The 2026-11-09 implementation was originally source-only.
+Body version 9 accepts bounded generic package manifests. Shared validation/cleanup can be tested in Node; actual macOS JXA/Foundation, Installer and inference require macOS. See [current verification status](../../docs/verification.md).
 
 ## User flow
 

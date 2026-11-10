@@ -1,5 +1,6 @@
 # Local app and editor state
 .codex/
+.superpowers/
 extension/.local/
 native/kakao/host.cmd
 native/kakao/host-manifest.json

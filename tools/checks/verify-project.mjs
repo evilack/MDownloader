@@ -117,11 +117,11 @@ async function VerifyDirectory(Directory)
 	}
 }
 
-for (const Directory of ['extension', 'website', 'tools', 'tests', 'assets', 'docs'])
+for (const Directory of ['extension', 'website', 'tools', 'tests', 'assets', 'docs', 'native'])
 {
 	await VerifyDirectory(Directory);
 }
-for (const File of ['README.md', 'THIRD_PARTY_NOTICES.md'])
+for (const File of ['README.md', 'THIRD_PARTY_NOTICES.md', 'AGENTS.md'])
 {
 	await VerifyFile(File);
 }
@@ -169,7 +169,8 @@ for (const File of Artifacts)
 const Manifest = JSON.parse(await ReadFile(ProjectPath('extension/manifest.json'), 'utf8'));
 try{await AssertExtensionFilenames(ProjectPath('extension'));}catch(ErrorValue){Result.failures.push({file:'extension',reason:ErrorValue.message});}
 for (const File of [Manifest.background.service_worker, Manifest.action.default_popup, Manifest.side_panel.default_path, Manifest.options_page, Manifest.devtools_page,
-	...Object.values(Manifest.icons), ...Object.values(Manifest.action.default_icon)])
+	...Object.values(Manifest.icons), ...Object.values(Manifest.action.default_icon), ...(Manifest.sandbox?.pages || []),
+	...(Manifest.content_scripts || []).flatMap(Script => [...(Script.js || []), ...(Script.css || [])])])
 {
 	try
 	{

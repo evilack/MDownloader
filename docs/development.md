@@ -1,6 +1,6 @@
 # Development
 
-Current source: MDownloader **0.2.43**. This reference describes the maintained implementation and commands. The [English manual](../README.md) and [Korean manual](README.ko.md) cover everyday use. Historical plans, experiments and dated test reports are not build inputs.
+The extension manifest and package.json define the current version. This reference describes maintained implementation and commands; the [English manual](../README.md), [Korean manual](README.ko.md) and [media guide](media-guide.md) cover use. [Verification status](verification.md) distinguishes source checks from browser/OS acceptance.
 
 ## Repository layout
 
@@ -9,11 +9,11 @@ Current source: MDownloader **0.2.43**. This reference describes the maintained 
 | `extension/` | Installable Manifest V3 pages, worker, offscreen runner and page scripts |
 | `extension/features/youtube/` | Development-only provider, isolated evaluator, SABR/live reception and remuxing |
 | `extension/lib/` | Shared detection, transfer, state, permissions, subtitles, translation and UI helpers |
-| `extension/data/` | Provider/protocol catalogs and generated page policy/Windows installer payload |
+| `extension/data/` | Provider/protocol catalogs, generated page policies, helper payloads and caption metadata |
 | `extension/_locales/` | Ten interface language catalogs |
 | `extension/icons/` | Final PNGs shipped to the browser |
 | `extension/vendor/` | Media libraries, generated YouTube bundles, licenses and provenance |
-| `native/` | Optional Explorer, PotPlayer credential-import and local speech-recognition helpers |
+| `native/` | Common Windows/macOS helper, separate speech executor and PotPlayer credential importer |
 | `website/` | English/Korean product pages, screenshots and local sample media |
 | `assets/` | Categorized originals, baselines, prompts, processing/review evidence and hash catalog |
 | `tests/` | Maintained regression tests and shared helpers |
@@ -72,7 +72,7 @@ The signature evaluator runs in an opaque sandbox without extension APIs or netw
 
 `subtitle-discovery.js` owns discovery; `subtitles.js` acquisition/parsing; `subtitle-timing.js` timing; `subtitle-mux.js` and `mp4-timed-text.js` selectable MP4 `tx3g`/`mov_text` output. Supported inputs include WebVTT, SRT, TTML, ended HLS WebVTT and compatible static DASH text. Advanced source styling becomes plain text.
 
-Download options select actual quality/caption identities and per-job translation choices. Matching target-language originals avoid redundant translation. Subtitle/translation errors remain separate from AV transfer state: successful original captions are retained, failed tracks/translation produce an explicit error count, and usable AV can still save. A subtitle mux failure falls back to the original AV with subtitle Error status; actual AV/save failures remain job failures. Encrypted/fragmented MP4 captions, live/discontinuous HLS text and unsafe preservation of existing non-AV tracks are unsupported and reported as subtitle errors. Cancellation still propagates.
+Download options select actual quality/caption identities and per-job translation choices. Matching target-language originals avoid redundant translation. Subtitle status remains separate from AV reception: acquisition errors preserve successful original tracks and report an error count. Ordinary original-subtitle mux failure can fall back to raw AV. Explicit translation or staged generated-caption failures can block final output and use the output-retry/error path; their mux errors are not silently downgraded to successful AV-only output. Actual AV/save failures remain job failures. Encrypted/fragmented MP4 captions, live/discontinuous HLS text and unsafe preservation of existing non-AV tracks are unsupported and reported as subtitle errors. Cancellation still propagates.
 
 `translation-provider-catalog.js` centralizes identity, capabilities and permission scopes for both settings surfaces. Requests belong to `translation-providers.js`; credentials stay in trusted settings storage. Display only actual stored/discovered models and supported reasoning levels. Google uses its fixed NMT choice; Azure/Kakao have no model selector. [Kakao helper](../native/kakao/README.md) documents optional credential import prerequisites.
 
@@ -90,7 +90,22 @@ Completion/scheduled-start notifications default to off. Settings request option
 
 ### Saved-file helpers
 
-The [Explorer helper](../native/explorer/README.md) only reveals picked-folder files. Folder selection can offer its installer; success requires a native ping. First folder association verifies filename, size and bounded fingerprints. Removal requires an authenticated receipt and absent host before resetting location preferences. Media and history remain. macOS uses browser Downloads. The optional PotPlayer importer is independent of this helper.
+The [Windows common helper](../native/explorer/README.md) reveals picked-folder files and executes validated feature-setup packages under the extension’s policy. Folder selection can offer its installer; success requires a native ping. First folder association verifies filename, size and bounded fingerprints. Removal requires an authenticated receipt and absent host before resetting location preferences. Media and history remain. macOS uses browser Downloads. The optional PotPlayer importer is independent of this helper.
+
+
+### Local speech execution boundary
+
+`caption-execution.js` owns preparation/inference order, model catalogs/revisions/options, failure fallback, retention/admission, file names and collision handling, cue merging, timeline mapping and final serialization. `local-captions-service.js` authorizes callers, coordinates persisted jobs, runner handoffs and native results. `concurrent-captions-runner.js` and the committed-input adapters own bounded windows, source identity, coverage and ACKs. These modules retain substantial state machines because their ownership/cancellation invariants span multiple phases; splitting them mechanically would obscure those boundaries.
+
+The caption executor accepts individual authenticated `execute` / `cancelExecution` operations. Native code validates framing, paths, resource bounds, package locks and owned process lifetime; it reports facts and confirms termination. It does not interpret application checkpoints, choose models, retry/fallback workflows or write application-selected output policy. App-owned opaque state files are still written through generic scoped file operations. No arbitrary shell or code string is accepted.
+
+The common helper is protocol 1/body 9 (Windows revision 9.1 minimum); speech is execution protocol 2/current source package 10. `bootstrap.json` and generated `caption-runtime-metadata.js` own the current package metadata. Compatibility intentionally accepts usable staged output from package 4+, while optional streaming capability checks and package updates use the actual probe. Functional package changes do not require reinstalling an unchanged common body. The generic manifest allows 128 safe nested relative files, one MiB decoded source and a two MiB JSON frame, rejects traversal/collisions/hash tampering, and only cleans declared owned files. Preserve unknown files and shared models.
+
+The decoder returns bounded raw PCM with actual PTS/time base and sample counts; EOF, demux completion and successful child close are distinct facts. MediaRecorder input can explicitly request bounded async resampling; the native adapter executes that calculation without choosing the source or caption workflow. Faster-whisper word timestamps are explicitly selected by extension policy. `caption-timing-correction.js` preserves original text/timing provenance while correcting display overlap/reversal as warnings; actual decoder/source/inference failures remain failures. Browser restart cancels active old-session jobs rather than implicitly recovering them.
+
+`caption-wav.js` centralizes the exact 44-byte mono s16le interchange header and validation for window/preview input. The flexible chunk-walking RIFF parser in `caption-audio-preparation.js` remains separate because native decoder output may include metadata/extended fmt chunks. Never relax that distinction to reduce duplication. `LiveCaptionLimits` still bounds active provisional recognition; disconnected UI/live-file writer modules were removed without deleting old browser databases.
+
+Common helper install/removal and caption feature setup are separate stages. Installing or updating native sources, generating payloads, installing them and invoking a real engine are different acceptance claims. See [Windows helper](../native/explorer/README.md), [macOS helper](../native/common-macos/README.md), [caption executor](../native/captions/README.md) and [Kakao importer](../native/kakao/README.md).
 
 ## Maintenance commands
 
@@ -108,13 +123,13 @@ node tools/checks/measure-debug-cost.mjs
 
 Regenerate `extension/data/page-policy.js` after changing `PagePolicy` with `node tools/build/build-page-policy.mjs`. Regenerate `extension/data/explorer-installer.json` after changing helper payload scripts with `node tools/build/build-explorer-installer.mjs`. Packaging regenerates its own installer payload.
 
-Regenerate the caption bootstrap payload with `node tools/build/build-caption-installer.mjs` after changing `native/captions` sources. Both distribution builds regenerate caption, Windows common-helper and Mac common-helper payloads. Caption installation on both platforms calls the registered common helper directly; it never downloads a caption CMD/PKG. macOS uses MDownloader-Common-Setup.pkg once for the lightweight helper. `node tools/build/build-mac-common-installer.mjs` builds its payload and ignored native/common-macos/caption-installer.json cache. These commands were not executed for the implementation-only Mac change because the user requested no tests. See [Mac implementation status](../native/common-macos/README.md) and [earlier Windows verification](common-helper-verification-2026-11-09.md).
+Regenerate the caption bootstrap payload with `node tools/build/build-caption-installer.mjs` after changing `native/captions` sources. Both distribution builds regenerate caption, Windows common-helper and Mac common-helper payloads. Caption installation on both platforms calls the registered common helper directly; it never downloads a caption CMD/PKG. macOS uses MDownloader-Common-Setup.pkg once for the lightweight helper. `node tools/build/build-mac-common-installer.mjs` builds its payload and ignored native/common-macos/caption-installer.json cache. Both payload generation and flavor packaging can run on Windows; neither establishes actual macOS installation/JXA/inference behavior. See [macOS integration](../native/common-macos/README.md) and [verification status](verification.md).
 
 Optional style check: `node --expose-internals tools/maintenance/format-unreal.mjs`; `--write` applies changes. It excludes vendor code and compares syntax trees. Formatting alone is not behavioral verification.
 
 ## Browser tools and website
 
-[Tools](../tools/README.md) lists maintained commands. Browser checks use isolated profiles and existing automation dependencies. Do not reload an installation with active downloads. Checks that install/remove helpers need explicit authorization because they change current-user Windows state. Routine tests use fixtures; external translation requests may consume provider quota.
+[Tools](../tools/README.md) lists maintained commands. Browser checks use isolated profiles and existing automation dependencies. Do not reload an installation with active downloads, conversions or speech work. Checks that install/remove helpers need explicit authorization because they change current-user Windows state. Routine tests use fixtures; external translation requests may consume provider quota.
 
 | Environment variable | Purpose |
 |---|---|
