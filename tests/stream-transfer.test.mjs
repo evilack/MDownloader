@@ -185,7 +185,7 @@ function Workspace()
 	const Files = new Map();
 	return { files: Files, async getFileHandle(Path)
 		{
-			return { async createWritable()
+			return { async getFile(){return new Blob([Files.get(Path)||new Uint8Array()]);}, async createWritable()
 				{
 					let Content = new Uint8Array();
 					return {
@@ -439,7 +439,7 @@ Test('reports partial segment bytes without advancing the finished segment count
 	})));
 	const Target = { async getFileHandle()
 		{
-			return { async createWritable()
+			return { async getFile(){return new Blob([Packet,Packet]);}, async createWritable()
 				{
 					return { async write()
 						{

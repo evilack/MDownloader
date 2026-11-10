@@ -1785,5 +1785,25 @@
   },
   "issue_report_close": {
     "message": "Cerrar"
+  },
+  "panel_media_resize": {
+    "message": "Cambiar el tamaño del panel de resultados"
+  },
+  "panel_media_resize_help": {
+    "message": "Arrastra hacia arriba o abajo, o usa las flechas arriba y abajo para cambiar el tamaño. Haz doble clic para restaurar la altura predeterminada."
+  },
+  "opt_show_panel_media_resize": {
+    "message": "Mostrar la barra para ajustar la altura del panel de búsqueda"
+  },
+  "opt_show_panel_media_resize_help": {
+    "message": "Ajusta el espacio entre los resultados y las descargas. Desactívala para restaurar el diseño original según el contenido."
+  },
+  "panel_media_size": {
+    "message": "Panel de resultados al $PERCENT$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1"
+      }
+    }
   }
 }

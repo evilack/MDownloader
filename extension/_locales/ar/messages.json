@@ -1785,5 +1785,25 @@
   },
   "issue_report_close": {
     "message": "إغلاق"
+  },
+  "panel_media_resize": {
+    "message": "تغيير ارتفاع نتائج البحث"
+  },
+  "panel_media_resize_help": {
+    "message": "اسحب لأعلى أو لأسفل، أو استخدم مفتاحي السهم لأعلى ولأسفل لتغيير الارتفاع. انقر مرتين لاستعادة الارتفاع الافتراضي."
+  },
+  "opt_show_panel_media_resize": {
+    "message": "إظهار شريط تغيير ارتفاع نتائج البحث"
+  },
+  "opt_show_panel_media_resize_help": {
+    "message": "اضبط المساحة بين نتائج البحث والتنزيلات. أوقفه لاستعادة التخطيط الأصلي حسب المحتوى."
+  },
+  "panel_media_size": {
+    "message": "ارتفاع نتائج البحث $PERCENT$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1"
+      }
+    }
   }
 }

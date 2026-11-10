@@ -2,8 +2,9 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {InstallCaptionsWithCommonHelper,ProbeCommonHelper} from '../extension/lib/common-helper.js';
 import {InstallCaptionHelper,DownloadCaptionInstaller} from '../extension/lib/caption-installer.js';
 import {readFile} from 'node:fs/promises';
+import {CaptionPackageVersion} from '../extension/lib/caption-runtime-contract.js';
 const HelperReady=()=>({ok:true,protocol:1,platform:'win',helperVersion:9,helperRevision:1,capabilities:['captionSetup','captionPackageUpdate','genericPackageManifest']});
-const RuntimeReady=()=>({connected:true,executionProtocol:2,engineReady:true,converterReady:true,modelManagement:true,modelDownloadVersion:3,captionTranslationVersion:1,recognitionOptionsVersion:1,captionPackageVersion:4});
+const RuntimeReady=()=>({connected:true,executionProtocol:2,engineReady:true,converterReady:true,modelManagement:true,modelDownloadVersion:3,captionTranslationVersion:1,recognitionOptionsVersion:1,captionPackageVersion:CaptionPackageVersion});
 test('caption installation uses a registered common helper and verifies the actual caption host without any downloads API',async()=>{
  const Bundle=JSON.parse(await readFile(new URL('../extension/data/caption-installer.json',import.meta.url),'utf8')),Calls=[];let Checks=0;const request=async M=>{Calls.push(M);return M.action==='ping'?HelperReady() : M.action==='installCaptions'?{ok:true,jobId:'a'.repeat(32),status:'installing'}:{ok:true,jobId:'a'.repeat(32),status:++Checks===2?'complete':'installing'};};
  const Result=await InstallCaptionsWithCommonHelper(async()=>RuntimeReady(),()=>{},{request,wait:async()=>{},bundle:Bundle});

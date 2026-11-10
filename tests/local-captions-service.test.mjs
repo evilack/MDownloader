@@ -2,9 +2,10 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {CreateCaptionService,CaptionSenderAllowed} from '../extension/lib/local-captions-service.js';
 const Id='12345678-1234-1234-1234-123456789abc',Root='chrome-extension://'+'a'.repeat(32)+'/';
 function Fixture(Phase='waiting',NativeRequest=async()=>({})){let Job={requestId:Id,downloadId:1,state:'complete',filename:'video.mp4',localCaptions:{enabled:true,engine:'faster-whisper',model:'tiny',language:'en',formats:['srt']},captionStatus:{phase:Phase}},ReadHook;const Requests=[];
- const Api={runtime:{id:'a'.repeat(32),getURL:P=>Root+P,getPlatformInfo:async()=>({os:'win'})},downloads:{search:async()=>[{id:1,byExtensionId:'a'.repeat(32),filename:'C:/test/video.mp4',state:'complete',exists:true}]}};
+ const Api={storage:{session:{get:async()=>({captionBrowserSession:true})}},runtime:{id:'a'.repeat(32),getURL:P=>Root+P,getPlatformInfo:async()=>({os:'win'})},downloads:{search:async()=>[{id:1,byExtensionId:'a'.repeat(32),filename:'C:/test/video.mp4',state:'complete',exists:true}]}};
  const Service=CreateCaptionService(Api,{native:{request:async M=>{Requests.push(M);return NativeRequest(M);}},readJob:async()=>{const Copy=structuredClone(Job);if(ReadHook){const Hook=ReadHook;ReadHook=null;await Hook();}return Copy;},updateJob:async(_K,F)=>Job=F(Job),listJobs:async()=>[Job]});
  return {Service,Requests,get job(){return Job;},Api,holdNextRead:Hook=>ReadHook=Hook};}
+async function WaitFor(Ready){const Deadline=Date.now()+1000;while(!Ready()){assert.ok(Date.now()<Deadline,'expected fixture handoff was never reached');await new Promise(R=>setTimeout(R,1));}}
 const Runner={id:'a'.repeat(32),url:Root+'hls-runner.html'},Ui={id:'a'.repeat(32),url:Root+'sidepanel.html'};
 test('subtitle timing correction is a warning and never changes recognition to failed',async()=>{
  const F=Fixture('recognizing');F.Api.storage={session:{get:async()=>({captionBrowserSession:true})}};
@@ -46,7 +47,7 @@ test('failure to connect is separate from the completed video',async()=>{
 test('cancellation during result save cannot become complete',async()=>{
  let Release;const F=Fixture('recognizing',async M=>M.action==='saveResult'?new Promise(R=>Release=()=>R({outputs:['video.generated.srt']})):{});
  const Pending=F.Service.onNativeEvent({event:'state',jobId:Id,phase:'recognized',formats:['srt']});
- while(!Release)await new Promise(R=>setImmediate(R));
+ await WaitFor(()=>Release);
  const Canceling=F.Service.handle({type:'captionControl',action:'cancel',requestId:Id},Ui);Release();await Canceling;await Pending;assert.equal(F.job.captionStatus.phase,'canceled');
 });
 test('a canceled staged upload cannot start over from a late runner message',async()=>{
@@ -58,18 +59,18 @@ test('a failed audio preparation falls back to verified completed media',async()
 });
 test('an old native progress snapshot cannot overwrite a newer cancel',async()=>{
  const F=Fixture('recognizing');let Release;F.holdNextRead(()=>new Promise(R=>Release=R));
- const Pending=F.Service.onNativeEvent({event:'state',jobId:Id,phase:'recognizing'});while(!Release)await new Promise(R=>setImmediate(R));
+ const Pending=F.Service.onNativeEvent({event:'state',jobId:Id,phase:'recognizing'});await WaitFor(()=>Release);
  await F.Service.handle({type:'captionControl',action:'cancel',requestId:Id},Ui);Release();await Pending;assert.equal(F.job.captionStatus.phase,'canceled');
 });
 test('post-save staging failure is retryable and leaves the saved video complete',async()=>{
  const F=Fixture('waiting');F.job.pickedDownloadFolder='folder';await F.Service.handle({type:'captionStage',action:'failure',requestId:Id,code:'caption_helper_missing'},Runner);assert.equal(F.job.state,'complete');assert.equal(F.job.captionStatus.phase,'failed');assert.equal(F.job.captionStatus.error,'caption_helper_missing');
 });
 test('a missing-model retry can adopt the model the user explicitly selected in settings',async()=>{
- const F=Fixture('failed');F.job.localCaptions.model='';F.Api.storage={local:{get:async()=>({localCaptions:{engine:'whisper.cpp',model:'small'}})}};
+ const F=Fixture('failed');F.job.localCaptions.model='';F.Api.storage={...F.Api.storage,local:{get:async()=>({localCaptions:{engine:'whisper.cpp',model:'small'}})}};
  await F.Service.start(Id,true);const Started=F.Requests.find(M=>M.action==='start');assert.equal(Started.options.model,'small');assert.equal(Started.options.engine,'whisper.cpp');
 });
 test('restaging a picked saved video clears the old prepared audio offset',async()=>{
  let Job={requestId:Id,state:'complete',filename:'video.mp4',pickedDownloadFolder:'folder',localCaptions:{enabled:true,engine:'faster-whisper',model:'tiny',language:'en',formats:['srt']},captionStatus:{phase:'failed',prepared:true,offset:3.5}};const Calls=[];
- const Service=CreateCaptionService({runtime:{id:'a'.repeat(32)},downloads:{search:async()=>[]}},{native:{request:async M=>{Calls.push(M);return {};}},readJob:async()=>Job,updateJob:async(_K,F)=>Job=F(Job),listJobs:async()=>[Job],requireFolder:async()=>({getFileHandle:async()=>({getFile:async()=>new Blob(['saved video'])})})});
+ const Service=CreateCaptionService({storage:{session:{get:async()=>({captionBrowserSession:true})}},runtime:{id:'a'.repeat(32)},downloads:{search:async()=>[]}},{native:{request:async M=>{Calls.push(M);return {};}},readJob:async()=>Job,updateJob:async(_K,F)=>Job=F(Job),listJobs:async()=>[Job],requireFolder:async()=>({getFileHandle:async()=>({getFile:async()=>new Blob(['saved video'])})})});
  await Service.start(Id,true);assert.ok(Calls.some(M=>M.action==='append'));assert.equal(Calls.find(M=>M.action==='start').offset,0);
 });

@@ -1785,5 +1785,25 @@
   },
   "issue_report_close": {
     "message": "关闭"
+  },
+  "panel_media_resize": {
+    "message": "调整搜索结果区域大小"
+  },
+  "panel_media_resize_help": {
+    "message": "上下拖动或使用上下方向键调整大小。双击恢复默认高度。"
+  },
+  "opt_show_panel_media_resize": {
+    "message": "显示搜索区域高度调整条"
+  },
+  "opt_show_panel_media_resize_help": {
+    "message": "调整搜索结果与下载列表之间的空间。关闭后恢复原来按内容排列的布局。"
+  },
+  "panel_media_size": {
+    "message": "搜索结果区域 $PERCENT$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1"
+      }
+    }
   }
 }

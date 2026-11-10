@@ -88,7 +88,7 @@ Test('BIGO live refresh rotates seeds, keeps committed bytes and supports stop-a
   return new Response(Url === Address ? Playlist(3142190640, 11) : Fixture(Url.endsWith('10.ts') ? 1 : 3142190640).Encoded);
  });
  const Workspace = {async getFileHandle(Path) {
-  return {async createWritable() {
+  return {async getFile(){return new Blob([Files.get(Path)||new Uint8Array()]);},async createWritable() {
    const Chunks = [];
    return {async write(Bytes) {Chunks.push(Bytes);}, async close() {Files.set(Path, new Uint8Array(Buffer.concat(Chunks)));}, async abort() {}};
   }};

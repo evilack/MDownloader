@@ -1785,5 +1785,25 @@
   },
   "issue_report_close": {
     "message": "閉じる"
+  },
+  "panel_media_resize": {
+    "message": "検索結果ペインのサイズを変更"
+  },
+  "panel_media_resize_help": {
+    "message": "上下にドラッグするか、上・下矢印キーでサイズを変更します。ダブルクリックすると既定の高さに戻ります。"
+  },
+  "opt_show_panel_media_resize": {
+    "message": "検索ペインの高さ調整バーを表示"
+  },
+  "opt_show_panel_media_resize_help": {
+    "message": "検索結果とダウンロードの間の領域を調整します。オフにすると内容に応じた元のレイアウトに戻ります。"
+  },
+  "panel_media_size": {
+    "message": "検索結果ペイン $PERCENT$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1"
+      }
+    }
   }
 }

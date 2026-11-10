@@ -1785,5 +1785,25 @@
   },
   "issue_report_close": {
     "message": "Fermer"
+  },
+  "panel_media_resize": {
+    "message": "Redimensionner le volet des résultats"
+  },
+  "panel_media_resize_help": {
+    "message": "Faites glisser vers le haut ou le bas, ou utilisez les flèches haut et bas. Double-cliquez pour rétablir la hauteur par défaut."
+  },
+  "opt_show_panel_media_resize": {
+    "message": "Afficher la barre de réglage de hauteur du volet de recherche"
+  },
+  "opt_show_panel_media_resize_help": {
+    "message": "Ajustez l’espace entre les résultats et les téléchargements. Désactivez pour rétablir la disposition adaptée au contenu."
+  },
+  "panel_media_size": {
+    "message": "Volet des résultats à $PERCENT$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1"
+      }
+    }
   }
 }

@@ -1785,5 +1785,25 @@
   },
   "issue_report_close": {
     "message": "बंद करें"
+  },
+  "panel_media_resize": {
+    "message": "खोज परिणाम पैनल का आकार बदलें"
+  },
+  "panel_media_resize_help": {
+    "message": "ऊपर या नीचे खींचें, या आकार बदलने के लिए ऊपर और नीचे तीर कुंजियाँ दबाएँ। डिफ़ॉल्ट ऊँचाई बहाल करने के लिए डबल-क्लिक करें।"
+  },
+  "opt_show_panel_media_resize": {
+    "message": "खोज पैनल की ऊँचाई बदलने की पट्टी दिखाएँ"
+  },
+  "opt_show_panel_media_resize_help": {
+    "message": "खोज परिणामों और डाउनलोड के बीच की जगह समायोजित करें। सामग्री के अनुसार मूल लेआउट बहाल करने के लिए बंद करें।"
+  },
+  "panel_media_size": {
+    "message": "खोज परिणाम पैनल $PERCENT$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1"
+      }
+    }
   }
 }
