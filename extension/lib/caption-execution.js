@@ -4,6 +4,7 @@ import {CaptionOutputName} from './local-captions-settings.js';
 import {CaptionTextForFormat} from './generated-caption-translation.js';
 import {ValidateCaptionWindow} from './concurrent-captions-contract.js';
 import {CreateCaptionAudioPreparation} from './caption-audio-preparation.js';
+import {CreateCaptionPreviewExecution} from './caption-preview.js';
 import {CaptionSpans,UnionCaptionSpans,IntersectCaptionSpans,CaptionSpanLength,CaptionCovers,CaptionRationalSeconds} from './caption-timeline.js';
 
 const Encoder=new TextEncoder(),Decoder=new TextDecoder('utf-8',{fatal:true});
@@ -28,6 +29,7 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
  const CheckpointTemps=Entries=>Entries.filter(E=>/^extension-state-[a-f\d-]{36}\.tmp$/i.test(E.name));
  const Run=async(R,Op,Fields={})=>{Check(R);if(Op==='write')await Admission(R,Math.ceil((Fields.data?.length||0)*3/4));Check(R);return Raw(Op,Fields,R.scope);};
  const EncodedPreparation=CreateCaptionAudioPreparation({run:Run,raw:Raw,read:Read,write:Write,file:File,admission:Admission,windowOwners:WindowOwners,decoderOwners:DecoderOwners,sessionOwners:SessionOwners});
+ const PreviewExecution=CreateCaptionPreviewExecution({check:Check,run:Run,read:Read,write:Write,admission:Admission,preparation:EncodedPreparation,infer:Infer,append:AppendLedgerBytes});
  async function Admission(R,Addition=0,Force=false,Scope=R.scope){
   if(!R.id)return;R.diskEstimate=(R.diskEstimate||0)+Addition;
   if(!Force&&R.diskChecked&&R.diskEstimate<8*1024*1024)return;
@@ -211,6 +213,11 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
   if(!R.audio.files?.length)Fail('caption_no_audio');await State(R,{phase:'audio-ready'});
  }
  async function Session(R){
+  if(R.sessionOpening)return R.sessionOpening;
+  const Opening=OpenSession(R);R.sessionOpening=Opening;
+  try{return await Opening;}finally{if(R.sessionOpening===Opening)R.sessionOpening=null;}
+ }
+ async function OpenSession(R){
   if(R.session)return R.session;const O=R.state.options,Id=crypto.randomUUID();
   while(SessionOwners.size>=Policy.maxInferenceSessions){Check(R);await new Promise(Resolve=>setTimeout(Resolve,Policy.pollIntervalMs));}
   Check(R);SessionOwners.add(R.scope);R.sessionSlot=R.scope;
@@ -223,14 +230,14 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
    Check(R);R.session=Id;return Id;
   }catch(E){await CloseSession(R);throw E;}
  }
- async function Infer(R,Audio,Name){
-  const SessionId=await Session(R);await State(R,{phase:'recognizing'});
+ async function Infer(R,Audio,Name,Provisional=false){
+  const SessionId=await Session(R);if(!Provisional)await State(R,{phase:'recognizing'});
   const Result=await Run(R,'sessionInfer',{sessionId:SessionId,audio:Audio,language:R.state.language&&R.state.language!=='auto'?R.state.language:R.state.options.language,output:File(R,Name+'.json')});
   const Value=JSON.parse(Decoder.decode(await Read(Result.path,R.scope,Policy.maxWorkerResultBytes)));Check(R);
   if(!Array.isArray(Value.segments))Fail('caption_result_invalid');
   const Speech=Value.segments.some(S=>typeof S[2]==='string'&&S[2].trim());
-  if(R.state.options.language!=='auto')R.state.language=R.state.options.language;
-  else if(!R.state.language&&Speech&&Value.language&&!['auto','und'].includes(Value.language))R.state.language=Value.language;
+  if(!Provisional){if(R.state.options.language!=='auto')R.state.language=R.state.options.language;
+   else if(!R.state.language&&Speech&&Value.language&&!['auto','und'].includes(Value.language))R.state.language=Value.language;}
   return Value;
  }
  async function CloseSession(R){
@@ -319,7 +326,7 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
   }finally{await CloseSession(R);await Raw('remove',{area:'jobs',path:File(R,'audio')},'cleanup.'+R.id);R.audio=null;R.recognizing=false;}
  }
  function OriginalCoverage(R,Ids=[]){return UnionCaptionSpans([...R.windows.values()].filter(W=>!W.window.repairOf&&(W.phase==='acked'||Ids.includes(W.window.id))).map(W=>({epoch:W.window.epoch,startSample:W.window.coreStartSample,endSample:W.window.coreEndSample})));}
- async function AppendLedgerBytes(R,Upload,Path,M,Maximum){
+ async function AppendLedgerBytes(R,Upload,Path,M,Maximum,Ephemeral=false){
   if(!Integer(M.offset)||typeof M.data!=='string'||M.data.length>Math.ceil(Policy.uploadChunkBytes/3)*4||M.done!==undefined&&typeof M.done!=='boolean')Fail('caption_invalid');
   const Bytes=Decode(M.data);if(Bytes.length>Policy.uploadChunkBytes||M.offset+Bytes.length>Maximum||!Bytes.length&&!M.done)Fail('caption_result_limit');
   const Signature=await Digest(Bytes),Receipt=(Upload.receipts||[]).find(P=>P.offset===M.offset);
@@ -328,7 +335,7 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
   const V=await Run(R,'write',{area:'jobs',path:Path,offset:M.offset,data:M.data,truncate:M.offset===0});if(V.offset!==M.offset+Bytes.length)Fail('caption_upload_order');
   Upload.offset=V.offset;Upload.done=M.done===true;(Upload.receipts??=[]).push({offset:M.offset,bytes:Bytes.length,sha256:Signature,done:M.done===true});
   if(Upload.receipts.length>Policy.resultPageItems)Upload.receipts.shift();
-  await State(R);return {...V,done:Upload.done,attempt:R.state.attempt};
+  if(!Ephemeral)await State(R);return {...V,done:Upload.done,attempt:R.state.attempt};
  }
  async function Finalize(R,M){
   if(!Array.isArray(M.mapping)||!M.mapping.length||M.mapping.length>Policy.maxWindows||!Array.isArray(M.formats)||!M.formats.length||M.formats.some(F=>!['srt','vtt'].includes(F))||!Number.isFinite(M.outputStart)||!Number.isFinite(M.outputEnd)||M.outputEnd<=M.outputStart)Fail('caption_invalid');
@@ -400,7 +407,7 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
  async function Cancel(R){
   if(R.canceling)return R.canceling;
   const Work=(async()=>{R.canceled=true;const Canceled=await Execute({action:'cancelExecution',scope:R.scope});if(Canceled?.canceled!==true)Fail('caption_busy');await Promise.all([...R.tasks,...(R.foregroundTasks||[])]);await CloseDecoders(R);await CloseSession(R);
-   const CleanupScope='cleanup.'+crypto.randomUUID();await EncodedPreparation.release(R,undefined,CleanupScope);await State(R,{phase:'canceled',error:null},CleanupScope);for(const W of R.windows.values())WindowOwners.delete(R.id+':'+W.window.id);return {...R.state};})();R.canceling=Work;
+   const CleanupScope='cleanup.'+crypto.randomUUID();await EncodedPreparation.release(R,undefined,CleanupScope);R.preview=null;await State(R,{phase:'canceled',error:null},CleanupScope);for(const W of R.windows.values())WindowOwners.delete(R.id+':'+W.window.id);return {...R.state};})();R.canceling=Work;
   try{return await Work;}finally{R.canceling=null;}
  }
  async function Reopen(){
@@ -455,7 +462,11 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
    R.state={attempt:M.attempt,phase:'staged',outputs:{}};
   }
   Check(R);
-  if(['prepareEncodedBegin','prepareEncodedAppend','prepareEncodedSeal','prepareEncodedRelease'].includes(M.action))return EncodedPreparation.dispatch(R,M);
+  if(['beginPreview','appendPreview','sealPreview','releasePreview'].includes(M.action))return PreviewExecution.dispatch(R,M);
+  if(['prepareEncodedBegin','prepareEncodedAppend','prepareEncodedSeal','prepareEncodedRelease'].includes(M.action)){
+   if(M.action==='prepareEncodedBegin'&&M.purpose==='preview'&&R.windowTask){await R.windowTask;Check(R);}
+   return EncodedPreparation.dispatch(R,M);
+  }
   if(['decoderOpen','decoderPoll','decoderSupply','decoderAck'].includes(M.action))return DispatchDecoder(R,M);
   if(M.action==='append')return Run(R,'write',{area:'jobs',path:File(R,'input.media'),offset:M.offset,data:M.data});
   if(M.action==='prepare'){if(R.preparing)return {phase:R.state.phase};if(R.state.phase!=='staging')Fail('caption_state');R.preparing=Background(R,()=>Prepare(R),true);return {phase:'preparing'};}

@@ -9,6 +9,7 @@ import {MergeGeneratedSubtitleStatus} from './subtitle-status.js';
 import {CaptionPolicy,CaptionConcurrentReady,ValidateCaptionAttempt,ValidateCaptionWindow} from './concurrent-captions-contract.js';
 import {UnionCaptionSpans,IntersectCaptionSpans,CaptionSpanLength} from './caption-timeline.js';
 import {ValidateLiveCaptionSnapshot} from './live-caption-output.js';
+import {ValidateCaptionPreview} from './caption-preview.js';
 
 const IdPattern=/^[a-f\d-]{36}$/i;
 const ModelOperationPattern=/^[a-f\d]{32}$/;
@@ -332,9 +333,23 @@ export function CreateCaptionService(Api=chrome,{native,readJob=ReadJob,updateJo
     await Update(Id,{phase:'queued',mode:'early-audio',recognitionStarted:true,error:null});
     return SendNative({action:'start',...NativeJob,timelineMode:'deferred',offset:0,options:JobRecognitionOptions(Job)});
    }
-   const ConcurrentActions={openConcurrent:['sourceFingerprint'],prepareEncodedBegin:['bytes','sha256','repairOf','repairAttempt'],prepareEncodedAppend:['prepareToken','offset','data'],prepareEncodedSeal:['prepareToken'],prepareEncodedRelease:['prepareToken'],beginWindow:['window','prepareToken'],appendWindow:['windowId','offset','data'],sealWindow:['windowId','bytes','sha256'],windowResults:['cursor','limit'],readWindowResult:['windowId','offset'],ackWindows:['windowIds','committedSamples','committedSpans'],sealConcurrent:['sourceEndSample','reason','spans','sourceOrigin','sourceOriginRational'],appendFinalCues:['offset','data','done'],finalizeResult:['mapping','outputStart','outputEnd','expectedCoverage','audioBoundOnly','formats']};
+   const PreviewActions={beginPreview:['preview','prepareToken'],appendPreview:['previewId','offset','data'],sealPreview:['previewId','bytes','sha256'],releasePreview:['previewId']};
+   if(Object.hasOwn(PreviewActions,Message.action)){
+    const Current=()=>Read(Id),Valid=J=>J&&Attempt&&J.captionStatus?.attempt===Attempt&&(J.captionStatus.controlRevision||0)===(Message.controlRevision||0)&&['active','starting'].includes(J.state)&&J.pendingAction!=='cancel'&&!J.captionStatus.cancelRequested&&!['failed','canceled','complete'].includes(J.captionStatus.phase)&&J.captionStatus.mode==='windowed';
+    if(!Valid(Job))throw Error('caption_stale_attempt');
+    if(Message.action==='beginPreview')ValidateCaptionPreview(Message.preview);
+    else if(!/^[a-f0-9]{64}$/.test(Message.previewId||''))throw Error('caption_invalid');
+    if(Message.prepareToken!==undefined&&!IdPattern.test(Message.prepareToken))throw Error('caption_invalid');
+    if(Message.action==='appendPreview'&&(typeof Message.data!=='string'||Message.data.length>Math.ceil(CaptionPolicy.uploadChunkBytes/3)*4||!Number.isSafeInteger(Message.offset)||Message.offset<0))throw Error('caption_invalid');
+    const Fields=Object.fromEntries(PreviewActions[Message.action].filter(K=>Message[K]!==undefined).map(K=>[K,Message[K]]));
+    const Result=await SendNative({action:Message.action,...NativeJob,...Fields});
+    if(!Valid(await Current()))throw Error('caption_stale_attempt');return Result;
+   }
+   const ConcurrentActions={openConcurrent:['sourceFingerprint'],prepareEncodedBegin:['bytes','sha256','repairOf','repairAttempt','purpose'],prepareEncodedAppend:['prepareToken','offset','data'],prepareEncodedSeal:['prepareToken'],prepareEncodedRelease:['prepareToken'],beginWindow:['window','prepareToken'],appendWindow:['windowId','offset','data'],sealWindow:['windowId','bytes','sha256'],windowResults:['cursor','limit'],readWindowResult:['windowId','offset'],ackWindows:['windowIds','committedSamples','committedSpans'],sealConcurrent:['sourceEndSample','reason','spans','sourceOrigin','sourceOriginRational'],appendFinalCues:['offset','data','done'],finalizeResult:['mapping','outputStart','outputEnd','expectedCoverage','audioBoundOnly','formats']};
    if(Object.hasOwn(ConcurrentActions,Message.action)){
     if(!Attempt||!['active','starting'].includes(Job.state))throw Error('caption_state');
+    if(Message.action.startsWith('prepareEncoded')&&((Job.captionStatus?.controlRevision||0)!==(Message.controlRevision||0)||Job.pendingAction==='cancel'||Job.captionStatus?.cancelRequested||['failed','canceled','complete'].includes(Job.captionStatus?.phase)))throw Error('caption_stale_attempt');
+    if(Message.purpose!==undefined&&(Message.purpose!=='preview'||(Job.captionStatus?.controlRevision||0)!==(Message.controlRevision||0)||Job.pendingAction==='cancel'||Job.captionStatus?.cancelRequested||['failed','canceled','complete'].includes(Job.captionStatus?.phase)||Job.captionStatus?.mode!=='windowed'))throw Error('caption_stale_attempt');
     if(Message.action==='beginWindow')ValidateCaptionWindow(Message.window);
     if(['appendWindow','appendFinalCues','prepareEncodedAppend'].includes(Message.action)&&(typeof Message.data!=='string'||Message.data.length>Math.ceil(CaptionPolicy.uploadChunkBytes/3)*4))throw Error('caption_invalid');
     if(Message.prepareToken!==undefined&&(typeof Message.prepareToken!=='string'||!/^[a-f\d-]{36}$/i.test(Message.prepareToken)))throw Error('caption_invalid');

@@ -59,15 +59,16 @@ export function CreateCaptionAudioPreparation({run,raw,read,write,file,admission
   async dispatch(R,M){
    if(M.action==='prepareEncodedBegin'){
     if(R.state.mode!=='windowed'||R.state.inputSealed||R.state.resultRevision||!Int(M.bytes)||M.bytes<1||M.bytes>Policy.maxWindowBytes||!/^[a-f0-9]{64}$/.test(M.sha256||''))throw Error('caption_invalid');
-    const Repair=M.repairOf!==undefined;
+    const Repair=M.repairOf!==undefined,Preview=M.purpose==='preview';
+    if(M.purpose!==undefined&&!Preview||Preview&&Repair)throw Error('caption_invalid');
     if(Repair&&(!/^[a-f0-9]{64}$/.test(M.repairOf)||!Int(M.repairAttempt)||M.repairAttempt<1||M.repairAttempt>Policy.maxRepairAttempts||!['recognized','acked'].includes(R.windows.get(M.repairOf)?.phase)))throw Error('caption_window_conflict');
-    const Identity=JSON.stringify([M.bytes,M.sha256,R.state.options,M.repairOf,M.repairAttempt]);
+    const Identity=JSON.stringify([M.bytes,M.sha256,R.state.options,M.repairOf,M.repairAttempt,Preview]);
     if(R.encodedPreparation){const P=R.encodedPreparation;if(P.identity!==Identity)throw Error('caption_session_conflict');return {prepareToken:P.token,offset:P.offset,attempt:P.attempt};}
     const Admit=()=>{if(PcmUse({preparedJob:R,repair:Repair})>Policy.maxPcmWindows||windowOwners.size>=Policy.maxQueuedWindows||!R.session&&sessionOwners.size>=Policy.maxInferenceSessions||!Repair&&[...windowOwners.values()].filter(IsRepair=>!IsRepair).length>=Math.max(1,Policy.maxQueuedWindows-Policy.maxInferenceSessions))throw Error('caption_window_backpressure');};
     if(R.windows.size>=Policy.maxWindows)throw Error('caption_window_limit');Admit();
     await admission(R,M.bytes+MaximumFrames*2,true);
     Admit();
-    const Token=crypto.randomUUID(),P={jobId:R.id,token:Token,attempt:R.state.attempt,scope:R.scope,dir:file(R,'prepared/'+Token),identity:Identity,repairOf:M.repairOf,repairAttempt:M.repairAttempt,sha256:M.sha256,bytes:M.bytes,offset:0,receipts:[]};
+    const Token=crypto.randomUUID(),P={jobId:R.id,token:Token,attempt:R.state.attempt,scope:R.scope,dir:file(R,'prepared/'+Token),identity:Identity,preview:Preview,repairOf:M.repairOf,repairAttempt:M.repairAttempt,sha256:M.sha256,bytes:M.bytes,offset:0,receipts:[]};
     R.encodedPreparation=P;Owners.set(Token,P);Reservations.set(R.id,R.scope);windowOwners.set(R.id+':prepare:'+Token,Repair);
     await write(P.dir+'/input.m4a',new Uint8Array(),R.scope);return {prepareToken:Token,offset:0,attempt:P.attempt};
    }
@@ -93,12 +94,18 @@ export function CreateCaptionAudioPreparation({run,raw,read,write,file,admission
     P.parts=Parts;P.frames=N;P.facts={prepareToken:P.token,attempt:P.attempt,inputSha256:P.sha256,decodedFrames:N,rate:Policy.sampleRate,channels:1,sampleFormat:'s16',factsSha256:await CaptionDigest(JSON.stringify({inputSha256:P.sha256,parts:Parts,attempt:P.attempt,settings:R.state.options}))};return P.facts;
    })();try{return await P.decoding;}finally{P.decoding=null;}
   },
-  validate(R,Token,Window){const P=Get(R,Token),D=Window.decode;
-   if(!P.facts||P.windowId&&P.windowId!==Window.id||P.repairOf!==Window.repairOf||P.repairAttempt!==Window.repairAttempt||Window.codec!=='aac'||Window.descriptorVersion!==2||Window.sha256!==P.sha256||Window.bytes!==P.bytes||D.expectedFrames!==P.frames||Window.preparationFactsSha256!==P.facts.factsSha256||D.trimStartSamples+D.trimEndSamples+(Window.inputEndSample-Window.inputStartSample)!==P.frames)throw Error('caption_window_conflict');return P;
+  validate(R,Token,Window,Preview=false){const P=Get(R,Token),D=Window.decode;
+   if(!!P.preview!==Preview||!P.facts||P.windowId&&P.windowId!==Window.id||P.repairOf!==Window.repairOf||P.repairAttempt!==Window.repairAttempt||Window.codec!=='aac'||Window.descriptorVersion!==2||Window.sha256!==P.sha256||Window.bytes!==P.bytes||D.expectedFrames!==P.frames||Window.preparationFactsSha256!==P.facts.factsSha256||D.trimStartSamples+D.trimEndSamples+(Window.inputEndSample-Window.inputStartSample)!==P.frames)throw Error('caption_window_conflict');return P;
   },
   attach(R,Token,Window){const P=this.validate(R,Token,Window);P.windowId=Window.id;windowOwners.delete(R.id+':prepare:'+Token);R.encodedPreparation=null;return P;},
-  async slice(R,Window,Token){
-   const P=this.validate(R,Token,Window),Frames=Window.inputEndSample-Window.inputStartSample,Before=Window.decode.trimStartSamples,Path=P.dir+'/selected.wav';
+  async reservePreview(R,V){
+   const Admit=()=>{if(R.encodedPreparation||PcmUse({preparedJob:R})>Policy.maxPcmWindows||windowOwners.size>=Policy.maxQueuedWindows||!R.session&&sessionOwners.size>=Policy.maxInferenceSessions)throw Error('caption_window_backpressure');};
+   Admit();await admission(R,V.bytes*2,true);Admit();
+   const Token=crypto.randomUUID(),P={jobId:R.id,token:Token,attempt:R.state.attempt,scope:R.scope,dir:file(R,'prepared/'+Token),preview:true};
+   Owners.set(Token,P);Reservations.set(R.id,R.scope);windowOwners.set(R.id+':prepare:'+Token,false);return P;
+  },
+  async slice(R,Window,Token,Preview=false){
+   const P=this.validate(R,Token,Window,Preview),Frames=Window.inputEndSample-Window.inputStartSample,Before=Window.decode.trimStartSamples,Path=P.dir+'/selected.wav';
    await admission(R,44+Frames*2,true);
    const Header=new Uint8Array(44),V=new DataView(Header.buffer),Text=(At,S)=>Header.set(new TextEncoder().encode(S),At);
    Text(0,'RIFF');V.setUint32(4,36+Frames*2,true);Text(8,'WAVEfmt ');V.setUint32(16,16,true);V.setUint16(20,1,true);V.setUint16(22,1,true);V.setUint32(24,Policy.sampleRate,true);V.setUint32(28,Policy.sampleRate*2,true);V.setUint16(32,2,true);V.setUint16(34,16,true);Text(36,'data');V.setUint32(40,Frames*2,true);

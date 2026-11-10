@@ -2,7 +2,8 @@ import {CaptionPolicy,CaptionModes,SelectConcurrentCaptionMode,CaptionAbortableW
 import {CreateCaptionWindowMerger} from './caption-window-merge.js';
 import {CaptionFinalTimeline,UnionCaptionSpans,CaptionCovers} from './caption-timeline.js';
 import {CaptionOutputSession} from './caption-output-session.js';
-import {BuildLiveCaptionSnapshot} from './live-caption-output.js';
+import {BuildLiveCaptionSnapshot,ComposeLiveCaptionView} from './live-caption-output.js';
+import {ValidateCaptionPreview} from './caption-preview.js';
 
 const TimelineFailures=new Set(['caption_window_clock','caption_window_codec','caption_window_epoch','caption_window_config','caption_window_budget','caption_seam_unresolved']);
 const MayFallback=(E,ErrorValue)=>!E.source?.timeline&&TimelineFailures.has(ErrorValue.message);
@@ -14,13 +15,13 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
   const Abort=()=>{Controller.abort(Signal?.reason||new DOMException('Canceled','AbortError'));if(Value.nativeFailure&&Signal?.reason?.name!=='AbortError')void Fail(Job.requestId,Value.attempt,Value.nativeFailure).catch(()=>{});else void Cancel(Job.requestId).catch(()=>{});};
   Signal?.addEventListener('abort',Abort,{once:true});Value.detach=()=>Signal?.removeEventListener('abort',Abort);Entries.set(Job.requestId,Value);if(Signal?.aborted)Abort();return Value;
  }
- async function Request(E,Action,Fields={}){E.signal.throwIfAborted();const Result=await Stage(E.job,Action,{...(E.attempt?{attempt:E.attempt}:{}),...Fields});E.signal.throwIfAborted();if(Result?.attempt!==undefined&&Result.attempt!==E.attempt)throw Error('caption_stale_attempt');return Result;}
+ async function Request(E,Action,Fields={}){E.signal.throwIfAborted();const Result=await Stage(E.job,Action,{...(E.attempt?{attempt:E.attempt}:{}),controlRevision:E.transport.controlRevision||0,...Fields});E.signal.throwIfAborted();if(Result?.attempt!==undefined&&Result.attempt!==E.attempt)throw Error('caption_stale_attempt');return Result;}
  async function Busy(E,Action,Fields){for(;;){try{return await Request(E,Action,Fields);}catch(ErrorValue){if(ErrorValue.message!=='caption_busy'&&ErrorValue.message!=='caption_window_backpressure')throw ErrorValue;await CaptionAbortableWait(E.signal);}}}
  async function Attempt(E,Reason){
   E.signal.throwIfAborted();E.pendingAttempt=(E.attempt||0)+1;
   try{
    const Result=await Stage(E.job,'beginAttempt',{previousAttempt:E.attempt||0,controlRevision:E.transport.controlRevision||0,...(Reason?{fallbackReason:Reason}:{})});
-   E.signal.throwIfAborted();E.attempt=Result.attempt;E.optionsKey=JSON.stringify(E.job.localCaptions);E.cursor=0;E.liveRevision=0;E.finalResult=null;E.finalization=null;E.recognitionRecovery=null;E.sourceTimeline=null;E.transport.attempt=Result.attempt;E.job.captionAttempt=Result.attempt;
+   E.signal.throwIfAborted();E.attempt=Result.attempt;E.optionsKey=JSON.stringify(E.job.localCaptions);E.cursor=0;E.liveRevision=0;E.preview=null;E.liveState=null;E.finalResult=null;E.finalization=null;E.recognitionRecovery=null;E.sourceTimeline=null;E.transport.attempt=Result.attempt;E.job.captionAttempt=Result.attempt;
    const Session=CaptionOutputSession(E.job);Session.finalMappingReceipt=null;Session.finalMappingDigest=null;Session.finalMappingResultRevision=null;delete E.job.captionFinalMappingReceipt;return Result.attempt;
   }finally{E.pendingAttempt=null;}
  }
@@ -60,15 +61,30 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
  }
  async function Ack(E,Value){if(Value.ackWindowIds?.length){const R=await Request(E,'ackWindows',{windowIds:Value.ackWindowIds,committedSamples:Value.committedSamples,committedSpans:Value.committedSpans});E.credit=R.credit;}}
  async function PublishLive(E,Finished=false){
-  const Snapshot=BuildLiveCaptionSnapshot(E.merger.snapshot(),++E.liveRevision,Finished);
+  if(Finished)E.preview=null;
+  const State=ComposeLiveCaptionView(E.merger.snapshot(),E.preview,Finished?null:E.liveState),Snapshot=BuildLiveCaptionSnapshot(State,++E.liveRevision,Finished);
   await Request(E,'publishLive',{snapshot:Snapshot});
+  E.liveState=structuredClone(State);E.liveFinished=Finished;
+ }
+ async function Preview(E,Value){
+  const V=ValidateCaptionPreview(Value.preview);E.signal.throwIfAborted();
+  if(Value.file.size!==V.bytes||await CaptionDigest(Value.file)!==V.sha256)throw Error('caption_window_checksum');
+  let Begin;
+  try{Begin=await Request(E,'beginPreview',{preview:V,...(Value.prepareToken?{prepareToken:Value.prepareToken}:{})});}
+  catch(ErrorValue){if(ErrorValue.message!=='caption_window_backpressure')throw ErrorValue;Begin={accepted:false};}
+  if(!Begin.accepted){if(Value.prepareToken)await Request(E,'prepareEncodedRelease',{prepareToken:Value.prepareToken});return;}
+  if(Begin.previewId!==V.id||!Number.isSafeInteger(Begin.offset)||Begin.offset<0||Begin.offset>V.bytes)throw Error('caption_upload_order');
+  if(Begin.offset<V.bytes)await UploadCaptionBytes(Value.file.slice(Begin.offset),async Fields=>{const R=await Request(E,'appendPreview',{previewId:V.id,...Fields,offset:Begin.offset+Fields.offset});return {...R,offset:R.offset-Begin.offset};},E.signal);
+  const H=await Request(E,'sealPreview',{previewId:V.id,bytes:V.bytes,sha256:V.sha256});
+  if(H.previewId!==V.id||H.epoch!==V.epoch||H.inputStartSample!==V.inputStartSample||H.inputEndSample!==V.inputEndSample||!Array.isArray(H.cues))throw Error('caption_result_conflict');
+  E.preview=H;await PublishLive(E);
  }
  async function WindowLoop(E){
   try{
    for(;;){
     while((await Status(E)).credit===0)await CaptionAbortableWait(E.signal);
-    E.signal.throwIfAborted();const Value=await E.source.next();if(!Value)break;
-    const H=await Submit(E,Value);let Merge=E.merger.accept(H);await Ack(E,Merge);await PublishLive(E);
+    E.signal.throwIfAborted();const Value=await E.source.next({onPreview:V=>Preview(E,V)});if(!Value)break;
+    E.preview=null;const H=await Submit(E,Value);let Merge=E.merger.accept(H);await Ack(E,Merge);await PublishLive(E);
     for(let Repair=1;Merge.repair&&Repair<=CaptionPolicy.maxRepairAttempts;Repair++){
      const Window=await E.source.repair(Merge.repair.boundary,Merge.repair.parentId,Repair),Result=await Submit(E,Window);
      Merge=E.merger.repair(Result);await Ack(E,Merge);await PublishLive(E);if(Merge.resolved)break;
@@ -87,6 +103,7 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
    for(;;){const S=await Status(E);if(S.phase==='windowed-ready')break;await CaptionAbortableWait(E.signal);}
    E.finalLedger=Final;
   }catch(ErrorValue){
+   E.preview=null;E.liveState=null;
    E.error=E.nativeFailure||ErrorValue;let CloseFailure;
    try{await Quiesce(E);}catch(CloseError){CloseFailure=CloseError;}
    try{await E.source?.release();}catch(CloseError){CloseFailure??=CloseError;}
@@ -97,6 +114,7 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
  async function Fail(Id,AttemptValue,Reason=Error('caption_helper_missing')){
   const E=Entries.get(Id);if(!E||AttemptValue!==undefined&&AttemptValue!==E.attempt&&AttemptValue!==E.pendingAttempt)return {owned:false};
   E.nativeFailure=Reason;
+  E.preview=null;E.liveState=null;
   if(!E.finalized){E.error=Reason;E.transport.error=Reason;E.controller.abort(Reason);}
   await E.source?.release();await E.running;return {owned:true,attempt:E.attempt,finalized:!!E.finalized};
  }
@@ -105,9 +123,10 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
   const E=Entries.get(Id);if(!E)return;
   if(E.canceling)return E.canceling;
   const Canceling=(async()=>{
-  E.controller.abort(new DOMException('Canceled','AbortError'));await E.source?.release();
+  E.preview=null;E.liveState=null;E.controller.abort(new DOMException('Canceled','AbortError'));
   // Cancellation itself is retryable while the native child quiesces.
   for(;;){try{await Stage(E.job,'cancel',E.attempt?{attempt:E.attempt}:{});break;}catch(ErrorValue){if(ErrorValue.message!=='caption_busy')break;await CaptionAbortableWait(undefined);}}
+  await E.source?.release();
   await E.running?.catch(()=>{});E.detach();Entries.delete(Id);
   })();E.canceling=Canceling;return Canceling;
  }
@@ -172,6 +191,7 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
  }
  return {
   bind(Job,Signal){return Entry(Job,Signal);},
+  liveView(Id){const E=Entries.get(Id);return E?.liveState?{job:E.job,state:structuredClone(E.liveState),revision:E.liveRevision||0,attempt:E.attempt,controlRevision:E.transport.controlRevision||0,signal:E.signal,finished:!!E.liveFinished}:null;},
   signal(Job,Signal){return AbortSignal.any([Signal,Entry(Job,Signal).signal].filter(Boolean));},
   ownership(Id){const E=Entries.get(Id);return E?{owned:true,attempt:E.attempt,pendingAttempt:E.pendingAttempt,failed:!!E.error,finalized:!!E.finalized}: {owned:false};},
   markFinalized(Job){const E=Entries.get(Job.requestId);if(E)E.finalized=true;},
@@ -206,7 +226,8 @@ export function CreateConcurrentCaptionRunner({stage:Stage}){
    if(!E.attempt)await Attempt(E);E.mode=CaptionModes.windowed;E.source=Source;E.merger=CreateCaptionWindowMerger();
    CaptionOutputSession(Job).captionSources.add(Source);
    let Open;try{Open=await Busy(E,'openConcurrent',{sourceFingerprint:await CaptionDigest(Fingerprint),limits:CaptionPolicy});}catch(ErrorValue){E.error=ErrorValue;E.transport.error=ErrorValue;throw ErrorValue;}E.credit=Open.credit;
-   Source.bindPreparation?.((Action,Fields)=>Busy(E,Action,Fields));
+   E.liveState=ComposeLiveCaptionView(E.merger.snapshot(),null);E.liveFinished=false;
+   Source.bindPreparation?.((Action,Fields)=>Fields?.purpose==='preview'?Request(E,Action,Fields):Busy(E,Action,Fields));
    Job.captionMode=E.mode;E.running=WindowLoop(E);return true;
   },
   async finalize(Job,Timing,Signal){

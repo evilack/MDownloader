@@ -1,5 +1,6 @@
 import {CaptionPolicy as Policy,CaptionDigest,CaptionAbortableWait,ValidateCaptionWindow} from './concurrent-captions-contract.js';
 import {CaptionRationalSample,CaptionRationalSeconds,UnionCaptionSpans} from './caption-timeline.js';
+import {CaptionPreviewPolicy,ValidateCaptionPreview} from './caption-preview.js';
 
 const PCM_BYTES=2,WAV_BYTES=44;
 const Decode=S=>Uint8Array.from(atob(S),C=>C.charCodeAt(0));
@@ -106,8 +107,8 @@ export function CreateCaptionPcmSource({job:Job,stage:Stage,bytes:Bytes,metadata
   if(Page.error&&!Terminal)throw Error(Page.error);
   if(!Page.events.length)await CaptionAbortableWait(Signal);
  }
- async function MakeWindow(E,CoreStart,CoreEnd,InputStart,InputEnd,Repair={}){
-  Signal.throwIfAborted();if(++WindowCount>Policy.maxWindows)throw Error('caption_window_limit');
+ async function MakeWindow(E,CoreStart,CoreEnd,InputStart,InputEnd,Repair={},Preview=false){
+  Signal.throwIfAborted();if(!Preview&&++WindowCount>Policy.maxWindows)throw Error('caption_window_limit');
   const Frames=InputEnd-InputStart,Size=WAV_BYTES+Frames*PCM_BYTES;
   if(!Safe(Frames)||!Frames||Size>Policy.maxWindowBytes||RingBytes+Size>MaxPcmBytes)throw Error('caption_window_budget');
   const Parts=[WavHeader(Frames)],Evidence=[];let Position=InputStart;
@@ -116,19 +117,20 @@ export function CreateCaptionPcmSource({job:Job,stage:Stage,bytes:Bytes,metadata
    Parts.push(F.data.subarray((A-F.startSample)*PCM_BYTES,(B-F.startSample)*PCM_BYTES));const {data,metadataBytes,...Facts}=F;Evidence.push(Facts);Position=B;
   }
   if(Position!==InputEnd)throw Error('caption_window_clock');
-  const Handle=await Workspace.getFileHandle('caption-pcm-window.wav',{create:true}),Writer=await Handle.createWritable();
+  const Handle=await Workspace.getFileHandle(Preview?'caption-pcm-preview.wav':'caption-pcm-window.wav',{create:true}),Writer=await Handle.createWritable();
   try{for(const P of Parts){Signal.throwIfAborted();await Writer.write(P);}await Writer.close();}catch(E){await Writer.abort().catch(()=>{});throw E;}
   const File=await Handle.getFile();if(File.size!==Size)throw Error('caption_window_checksum');
   const First=Evidence[0],Last=Evidence.at(-1),SourceEvidence=[{kind:'pcm-frame-range',epoch:E.epoch,firstSequence:First.sequence,lastSequence:Last.sequence,frames:Evidence.length,
    samples:Evidence.reduce((N,F)=>N+F.samples,0),bytes:Evidence.reduce((N,F)=>N+F.bytes,0),startSample:First.startSample,endSample:Last.endSample,
    inputStartSample:InputStart,inputEndSample:InputEnd,inputSamples:Frames,firstPts:{ticks:First.pts,timeBaseNum:First.timeBaseNum,timeBaseDen:First.timeBaseDen},lastPts:{ticks:Last.pts,timeBaseNum:Last.timeBaseNum,timeBaseDen:Last.timeBaseDen},factsSha256:await CaptionDigest(JSON.stringify(Evidence))}];
-  const Hash=await CaptionDigest(File),Descriptor={descriptorVersion:2,ordinal:Ordinal++,epoch:E.epoch,codec:'pcm-s16le',container:'wav',profile:'pcm-s16-wav-16000-mono-v1',bytes:File.size,sha256:Hash,
+  const Hash=await CaptionDigest(File),Descriptor={descriptorVersion:2,...(Preview?{purpose:'preview'}:{ordinal:Ordinal++}),epoch:E.epoch,codec:'pcm-s16le',container:'wav',profile:'pcm-s16-wav-16000-mono-v1',bytes:File.size,sha256:Hash,
    coreStartSample:CoreStart,coreEndSample:CoreEnd,inputStartSample:InputStart,inputEndSample:InputEnd,trimStartSamples:0,trimEndSamples:0,
    decode:{expectedFrames:Frames,trimStartSamples:0,trimEndSamples:0},sourceOrigin:{...OriginRational},sourceEvidence:SourceEvidence,...Repair};
   if(new TextEncoder().encode(JSON.stringify(Descriptor)).length>Policy.maxLedgerBytes)throw Error('caption_result_limit');
-  return {window:ValidateCaptionWindow({id:await CaptionDigest(JSON.stringify(Descriptor)),...Descriptor}),file:File};
+  const Value={id:await CaptionDigest(JSON.stringify(Descriptor)),...Descriptor};
+  return Preview?{preview:ValidateCaptionPreview(Value),file:File}:{window:ValidateCaptionWindow(Value),file:File};
  }
- async function Next(){
+ async function Next({onPreview:OnPreview}={}){
   try{
    await Start();
    for(;;){
@@ -136,6 +138,10 @@ export function CreateCaptionPcmSource({job:Job,stage:Stage,bytes:Bytes,metadata
     if(E){
      const End=E.cursor+Policy.coreSeconds*Policy.sampleRate,Context=Policy.contextSeconds*Policy.sampleRate;
      if(E.closed||E.endSample>=End+Context){const ActualEnd=Math.min(End,E.endSample),Value=await MakeWindow(E,E.cursor,ActualEnd,Math.max(E.startSample,E.cursor-Context),Math.min(E.endSample,ActualEnd+Context));E.cursor=ActualEnd;return Value;}
+     if(OnPreview&&E.endSample-Math.max(E.previewEnd??E.startSample,E.cursor)>=CaptionPreviewPolicy.intervalSamples){
+      const Start=Math.max(E.cursor,E.startSample,E.endSample-CaptionPreviewPolicy.maxSamples);E.previewEnd=E.endSample;
+      await OnPreview(await MakeWindow(E,Start,E.endSample,Start,E.endSample,{},true));
+     }
     }
     if(Terminal){if(!FirstSample&&FirstSample!==0)throw Error('caption_no_audio');
      // Logical demux drain is not producer seal. Wait only for the producer;
