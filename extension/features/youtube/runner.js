@@ -6,8 +6,6 @@ import {LocalizedError, SerializeError} from '../../lib/i18n.js';
 import {CreateStreamWorkspaces} from '../../lib/stream-workspaces.js';
 import {ReceiveYoutubeCaptions} from './captions.js';
 import {MuxSubtitles} from '../../lib/subtitle-mux.js';
-import {TranslateMissingSubtitle} from '../../lib/subtitle-translation.js';
-import {TranslateWithProvider} from '../../lib/translation-providers.js';
 import {SubtitleStatus} from '../../lib/subtitle-status.js';
 import {CreateYoutubeTrackStore} from './track-store.js';
 import {CreateTransferSnapshots} from '../../lib/transfer-snapshots.js';

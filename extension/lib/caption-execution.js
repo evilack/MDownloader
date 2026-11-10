@@ -1,12 +1,14 @@
-import {CaptionModelCatalog,CaptionPackageVersion,CaptionProcessingPolicy as Policy} from '../data/caption-runtime-metadata.js';
+import {CaptionModelCatalog,CaptionProcessingPolicy as Policy} from '../data/caption-runtime-metadata.js';
 import {NormalizeRecognitionOptions} from './caption-engine-options.js';
 import {CaptionOutputName,CaptionOptionsKey} from './local-captions-settings.js';
 import {CaptionTextForFormat} from './generated-caption-translation.js';
 import {ValidateCaptionWindow} from './concurrent-captions-contract.js';
 import {CreateCaptionAudioPreparation} from './caption-audio-preparation.js';
 import {CreateCaptionPreviewExecution} from './caption-preview.js';
-import {CaptionSpans,UnionCaptionSpans,IntersectCaptionSpans,CaptionSpanLength,CaptionCovers,CaptionRationalSeconds} from './caption-timeline.js';
+import {UnionCaptionSpans,IntersectCaptionSpans,CaptionSpanLength,CaptionCovers,CaptionRationalSeconds} from './caption-timeline.js';
 import {CaptionCueSource,CorrectCaptionOverlaps} from './caption-timing-correction.js';
+
+import {ValidateCaptionPcmWav} from './caption-wav.js';
 
 const Encoder=new TextEncoder(),Decoder=new TextDecoder('utf-8',{fatal:true});
 const Fail=Code=>{throw Error(Code);};
@@ -533,8 +535,7 @@ export function CreateCaptionExecution({request:Execute,emit=()=>{},now=Date.now
     if(W.offset!==W.window.bytes)Fail('caption_upload_incomplete');
     const Bytes=await Read(Path,R.scope,Policy.maxWindowBytes);if(Bytes.length!==W.window.bytes||await Digest(Bytes)!==M.sha256)Fail('caption_window_checksum');
     if(W.window.codec==='pcm-s16le'){
-     const V=new DataView(Bytes.buffer,Bytes.byteOffset,Bytes.byteLength),Tag=(A,B)=>String.fromCharCode(...Bytes.subarray(A,B));
-     if(Tag(0,4)!=='RIFF'||V.getUint32(4,true)!==Bytes.length-8||Tag(8,12)!=='WAVE'||Tag(12,16)!=='fmt '||V.getUint32(16,true)!==16||V.getUint16(20,true)!==1||V.getUint16(22,true)!==1||V.getUint32(24,true)!==Policy.sampleRate||V.getUint32(28,true)!==Policy.sampleRate*2||V.getUint16(32,true)!==2||V.getUint16(34,true)!==16||Tag(36,40)!=='data'||V.getUint32(40,true)!==Bytes.length-44)Fail('caption_window_clock');
+     ValidateCaptionPcmWav(Bytes,Policy.sampleRate);
     }
     W.phase='queued';await State(R);void WindowLoop(R);
    }

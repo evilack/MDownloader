@@ -1,5 +1,4 @@
 import {RefreshHelperAvailability} from './lib/helper-availability.js';
-import {SendRequest} from './lib/ui.js';
 import {GetLocale} from './lib/i18n.js';
 import {ShowSettingsDialog,ShowSettingsLoading} from './settings-dialog.js';
 import {EnsureCaptionRuntime} from './lib/caption-runtime.js';

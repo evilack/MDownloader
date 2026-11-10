@@ -3,15 +3,13 @@ import {CaptionRationalSample,CaptionRationalSeconds,UnionCaptionSpans} from './
 import {CaptionPreviewPolicy,ValidateCaptionPreview} from './caption-preview.js';
 import {CaptionDecoderError} from './caption-failure.js';
 
+import {CreateCaptionWavHeader} from './caption-wav.js';
+
 const PCM_BYTES=2,WAV_BYTES=44;
 const Decode=S=>Uint8Array.from(atob(S),C=>C.charCodeAt(0));
 const Encode=B=>{let S='';for(let I=0;I<B.length;I+=8192)S+=String.fromCharCode(...B.subarray(I,I+8192));return btoa(S);};
 const Safe=N=>Number.isSafeInteger(N)&&N>=0;
-function WavHeader(Frames){
- const B=new Uint8Array(WAV_BYTES),V=new DataView(B.buffer),Text=(O,S)=>{for(let I=0;I<S.length;I++)B[O+I]=S.charCodeAt(I);};
- Text(0,'RIFF');V.setUint32(4,36+Frames*PCM_BYTES,true);Text(8,'WAVE');Text(12,'fmt ');V.setUint32(16,16,true);V.setUint16(20,1,true);V.setUint16(22,1,true);
- V.setUint32(24,Policy.sampleRate,true);V.setUint32(28,Policy.sampleRate*PCM_BYTES,true);V.setUint16(32,PCM_BYTES,true);V.setUint16(34,16,true);Text(36,'data');V.setUint32(40,Frames*PCM_BYTES,true);return B;
-}
+
 /** One demand-driven decoder and a bounded physical PCM ring. Producer commit
  * callbacks never await this reader; close is independent of a waiting read.
  * workspace is an already leased OPFS DirectoryHandle. metadata.readAt may
@@ -112,7 +110,7 @@ export function CreateCaptionPcmSource({job:Job,stage:Stage,bytes:Bytes,metadata
   Signal.throwIfAborted();if(!Preview&&++WindowCount>Policy.maxWindows)throw Error('caption_window_limit');
   const Frames=InputEnd-InputStart,Size=WAV_BYTES+Frames*PCM_BYTES;
   if(!Safe(Frames)||!Frames||Size>Policy.maxWindowBytes||RingBytes+Size>MaxPcmBytes)throw Error('caption_window_budget');
-  const Parts=[WavHeader(Frames)],Evidence=[];let Position=InputStart;
+  const Parts=[CreateCaptionWavHeader(Frames,Policy.sampleRate)],Evidence=[];let Position=InputStart;
   for(const F of Ring){if(F.epoch!==E.epoch||F.endSample<=InputStart||F.startSample>=InputEnd)continue;
    const A=Math.max(InputStart,F.startSample),B=Math.min(InputEnd,F.endSample);if(A!==Position)throw Error('caption_window_clock');
    Parts.push(F.data.subarray((A-F.startSample)*PCM_BYTES,(B-F.startSample)*PCM_BYTES));const {data,metadataBytes,...Facts}=F;Evidence.push(Facts);Position=B;

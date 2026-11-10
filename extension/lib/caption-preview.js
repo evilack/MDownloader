@@ -1,6 +1,8 @@
 import {CaptionPolicy as Policy,CaptionDigest} from './concurrent-captions-contract.js';
 import {LiveCaptionLimits} from './live-caption-output.js';
 
+import {ValidateCaptionPcmWav} from './caption-wav.js';
+
 // Application cadence and selected PCM bounds, independent of final windows.
 export const CaptionPreviewPolicy=Object.freeze({intervalSamples:2*Policy.sampleRate,maxSamples:8*Policy.sampleRate});
 const Int=N=>Number.isSafeInteger(N)&&N>=0;
@@ -52,8 +54,7 @@ export function CreateCaptionPreviewExecution({check,run,read,write,admission,pr
   else {
    const B=await read(P.dir+'/input.wav',R.scope,Policy.maxWindowBytes);
    if(B.length!==V.bytes||await CaptionDigest(B)!==V.sha256)throw Error('caption_window_checksum');
-   const View=new DataView(B.buffer,B.byteOffset,B.byteLength),Tag=(A,Z)=>String.fromCharCode(...B.subarray(A,Z));
-   if(Tag(0,4)!=='RIFF'||View.getUint32(4,true)!==B.length-8||Tag(8,12)!=='WAVE'||Tag(12,16)!=='fmt '||View.getUint32(16,true)!==16||View.getUint16(20,true)!==1||View.getUint16(22,true)!==1||View.getUint32(24,true)!==Policy.sampleRate||View.getUint32(28,true)!==Policy.sampleRate*2||View.getUint16(32,true)!==2||View.getUint16(34,true)!==16||Tag(36,40)!=='data'||View.getUint32(40,true)!==B.length-44)throw Error('caption_window_clock');
+   ValidateCaptionPcmWav(B,Policy.sampleRate);
    const D=await run(R,'decode',{source:P.dir+'/input.wav',output:P.dir+'/decoded',rate:Policy.sampleRate,chunkSeconds:Policy.chunkSeconds,alignOrigin:false,maxOutputBytes:44+V.decode.expectedFrames*2,minFreeBytes:Policy.minFreeBytes,
     trim:{before:0,frames:V.decode.expectedFrames,expectedFrames:V.decode.expectedFrames}});
    if(D.files?.length!==1||D.files[0].frames!==V.decode.expectedFrames)throw Error('caption_window_clock');Audio=D.files[0].path;

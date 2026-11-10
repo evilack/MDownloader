@@ -1,5 +1,7 @@
 import {CaptionPolicy as Policy,CaptionDigest} from './concurrent-captions-contract.js';
 
+import {CreateCaptionWavHeader} from './caption-wav.js';
+
 const Fail=()=>{throw Error('caption_window_clock');};
 const Bytes64=Bytes=>{let S='';for(let I=0;I<Bytes.length;I+=8192)S+=String.fromCharCode(...Bytes.subarray(I,I+8192));return btoa(S);};
 const Int=N=>Number.isSafeInteger(N)&&N>=0;
@@ -107,8 +109,7 @@ export function CreateCaptionAudioPreparation({run,raw,read,write,file,admission
   async slice(R,Window,Token,Preview=false){
    const P=this.validate(R,Token,Window,Preview),Frames=Window.inputEndSample-Window.inputStartSample,Before=Window.decode.trimStartSamples,Path=P.dir+'/selected.wav';
    await admission(R,44+Frames*2,true);
-   const Header=new Uint8Array(44),V=new DataView(Header.buffer),Text=(At,S)=>Header.set(new TextEncoder().encode(S),At);
-   Text(0,'RIFF');V.setUint32(4,36+Frames*2,true);Text(8,'WAVEfmt ');V.setUint32(16,16,true);V.setUint16(20,1,true);V.setUint16(22,1,true);V.setUint32(24,Policy.sampleRate,true);V.setUint32(28,Policy.sampleRate*2,true);V.setUint16(32,2,true);V.setUint16(34,16,true);Text(36,'data');V.setUint32(40,Frames*2,true);
+   const Header=CreateCaptionWavHeader(Frames,Policy.sampleRate);
    await write(Path,Header,R.scope);let Position=0,Copied=0;
    for(const Part of P.parts){const Start=Math.max(Before,Position),End=Math.min(Before+Frames,Position+Part.frames);
     for(let At=Start;At<End;){const Count=Math.min(End-At,Math.floor(Policy.uploadChunkBytes/2)),B=await ReadAt(R,Part.path,Part.offset+(At-Position)*2,Count*2);

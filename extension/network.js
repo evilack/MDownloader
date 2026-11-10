@@ -4,7 +4,7 @@ import { DebugLog, ReportDebugFailure } from './lib/debug-log.js';
  * 동시에 온 응답은 저장 순서를 맞춰 한 응답이 다른 후보를 덮어쓰지 않게 합니다.
  */
 import { RuntimePolicy } from './lib/runtime-policy.js';
-import { ClassifyMediaUrl, ClassifyResponseMedia, HostPattern, IsHlsFragmentUrl, MediaResourceKey } from './lib/media.js';
+import { ClassifyResponseMedia, HostPattern, IsHlsFragmentUrl, MediaResourceKey } from './lib/media.js';
 import { MatchesHlsVariant, ParseMaster, ReadHlsLiveState, ReadHlsDvrState, ReadHlsMediaResources } from './lib/hls.js';
 import { ValidHlsRequestContext } from './lib/hls-request-context.js';
 import { MediaContextCacheKey, MediaContextCachePrefix, NetworkCacheKey, NetworkCachePrefix, RequestContextCacheKey, RequestContextCachePrefix, SourceMetadataCacheKey, SourceMetadataCachePrefix } from './lib/detection-cache.js';

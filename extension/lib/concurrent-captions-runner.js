@@ -1,4 +1,4 @@
-import {CaptionPolicy,CaptionModes,SelectConcurrentCaptionMode,CaptionAbortableWait,CaptionSample,CaptionDigest,UploadCaptionBytes,ValidateCaptionWindow} from './concurrent-captions-contract.js';
+import {CaptionPolicy,CaptionModes,SelectConcurrentCaptionMode,CaptionAbortableWait,CaptionDigest,UploadCaptionBytes,ValidateCaptionWindow} from './concurrent-captions-contract.js';
 import {CreateCaptionWindowMerger} from './caption-window-merge.js';
 import {CaptionFinalTimeline,UnionCaptionSpans,CaptionCovers} from './caption-timeline.js';
 import {CaptionOutputSession} from './caption-output-session.js';
