@@ -36,3 +36,33 @@ document.querySelectorAll('[data-store]').forEach(Button => Button.addEventListe
 		ShowNotice(Messages.storePending.replace('{store}', Store[Locale]));
 	}
 }));
+
+const ManagerPreview = document.querySelector('iframe[data-fit-preview]');
+if (ManagerPreview)
+{
+	let Observer;
+	function FitManagerPreview()
+	{
+		Observer?.disconnect();
+		const Preview = ManagerPreview.contentDocument;
+		const Header = Preview?.querySelector('body > header');
+		const Main = Preview?.querySelector('body > main');
+		if (!Header || !Main)
+		{
+			return;
+		}
+
+		// The preview body has a viewport-height minimum. Measure its content so the frame can also shrink.
+		Observer = new ResizeObserver(() =>
+		{
+			const ContentHeight = Main.getBoundingClientRect().bottom + Preview.defaultView.scrollY;
+			const BorderHeight = ManagerPreview.offsetHeight - ManagerPreview.clientHeight;
+			ManagerPreview.style.height = Math.ceil(ContentHeight + BorderHeight) + 'px';
+		});
+		Observer.observe(Header, {box: 'border-box'});
+		Observer.observe(Main, {box: 'border-box'});
+	}
+
+	ManagerPreview.addEventListener('load', FitManagerPreview);
+	FitManagerPreview();
+}
