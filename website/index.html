@@ -22,7 +22,7 @@
   <main id="main">
     <section class="hero product-hero" aria-labelledby="hero-title">
       <div class="hero-title"><p class="eyebrow"><span></span> Media downloader · Chrome &amp; Edge</p><h1 id="hero-title">Find your media.<br><em>Save it with ease.</em></h1></div>
-      <div class="hero-copy"><p>From video and audio on the web<br class="desktop-break"> to supported streams and live broadcasts.<br>Choose a quality. Save with subtitles.</p><div class="hero-actions"><button class="button button-primary" data-store="chrome"><span class="browser-symbol" aria-hidden="true">◉</span> Add to Chrome <span aria-hidden="true">↗</span></button><button class="button button-outline" data-store="edge"><span class="browser-symbol" aria-hidden="true">◔</span> Add to Edge <span aria-hidden="true">↗</span></button></div><p class="release-note">Current implementation 0.2.43 · Store listing pending · <a href="#development">Development ZIP</a></p></div>
+      <div class="hero-copy"><p>From video and audio on the web<br class="desktop-break"> to supported streams and live broadcasts.<br>Choose a quality. Save with subtitles.</p><div class="hero-actions"><button class="button button-primary" data-store="chrome"><span class="browser-symbol" aria-hidden="true">◉</span> Add to Chrome <span aria-hidden="true">↗</span></button><button class="button button-outline" data-store="edge"><span class="browser-symbol" aria-hidden="true">◔</span> Add to Edge <span aria-hidden="true">↗</span></button></div><p class="release-note">Current implementation 0.2.43 · Store listing pending</p></div>
     </section>
 
     <section class="showcase" aria-labelledby="preview-title">
@@ -59,17 +59,11 @@
       </div>
     </section>
 
-    <section class="guide-section" id="development" aria-labelledby="development-title">
-      <div><p class="section-kicker">Development build</p><h2 id="development-title">Install the<br>development build.</h2><p class="muted">A manual-install package for development and testing. Available features and installation may differ from store distributions.</p></div>
-      <div class="development-copy"><p class="muted">Extract the archive, enable Developer mode in your browser and load the <code>extension</code> folder. Keep the folder while using the extension.</p><p class="muted">Updates are manual. Finish active jobs before replacing files and reloading the extension. <a href="#guide">Installation instructions</a></p><div class="development-actions"><a class="button button-outline" href="downloads/MDownloader-development.zip" download>Development ZIP</a></div></div>
-    </section>
-
     <section class="guide-section" id="guide" aria-labelledby="guide-title">
-      <div><p class="section-kicker">Getting started</p><h2 id="guide-title">Start with a<br>manual installation.</h2><p class="muted">Requires Chrome 116 or later, or a compatible current Edge. Basic media downloads run in the browser. Speech captions and some file integration features use an optional helper.</p></div>
+      <div><p class="section-kicker">Getting started</p><h2 id="guide-title">How to use MDownloader</h2><p class="muted">Requires Chrome 116 or later, or a compatible current Edge. Basic media downloads run in the browser. Speech captions and some file integration features use an optional helper.</p></div>
       <ol class="steps">
-        <li><span>01</span><div><h3>Install the extension</h3><p>Enable <strong>Developer mode</strong>, choose <strong>Load unpacked</strong> and select the <code>extension</code> folder.</p><p class="setup-addresses"><code>chrome://extensions</code><code>edge://extensions</code></p></div></li>
-        <li><span>02</span><div><h3>Allow access and play</h3><p>Allow access under <strong>Site permissions</strong> in Options, then play the media.</p></div></li>
-        <li><span>03</span><div><h3>Choose options and save</h3><p>Click <strong>Download</strong> to save, or <strong>Shift + Download</strong> to choose quality and subtitles.</p></div></li>
+        <li><span>01</span><div><h3>Allow access and play</h3><p>Allow access under <strong>Site permissions</strong> in Options, then play the media.</p></div></li>
+        <li><span>02</span><div><h3>Choose options and save</h3><p>Click <strong>Download</strong> to save, or <strong>Shift + Download</strong> to choose quality and subtitles.</p></div></li>
       </ol>
     </section>
 
@@ -95,7 +89,6 @@
     <section class="faq-section" id="faq" aria-labelledby="faq-title"><div><p class="section-kicker">Good to know</p><h2 id="faq-title">A few things to know.</h2></div><div class="faq-list">
       <details open><summary>Can I download videos from every site?</summary><p>Availability depends on media delivery, sign-in status, permissions and codecs. DRM-protected content, unsupported encryption and live DASH are not supported. Compatible HLS with accessible identity AES keys can be processed.</p></details>
       <details><summary>Which formats are supported?</summary><p>Direct video files such as MP4 and WebM, audio such as MP3 and M4A, supported HLS and static unencrypted DASH, and WebRTC from configured signaling services. This does not record every playing video on every site.</p></details>
-      <details><summary>How do I install and update the development build?</summary><p>Extract the ZIP, enable Developer mode and load the extension folder. Updates are manual. <a href="#development">Development installation details</a></p></details>
       <details><summary>How do embedded subtitles and speech captions differ?</summary><p>Original subtitle embedding fetches supported captions supplied with the media and adds them to MP4. Speech captions recognize audio using a separately prepared local engine and model. Translation uses your configured external service, whose authentication and pricing terms may apply.</p></details>
       <details><summary>Do I need to install another program?</summary><p>Basic downloads do not need a separate downloader. Local speech captions use an optional helper, engine and model. On Windows, Show in folder for files saved directly to a chosen folder also needs the helper and an initial folder connection. Browser or operating system confirmations may appear during setup.</p></details>
       <details><summary>What if a download fails?</summary><p>Check page and media server access, sign-in status and expired links, then play or refresh the page and retry. The extension’s issue report lets you review and send the page address and issue types. A failed preview alone does not mean the download will fail.</p></details>
