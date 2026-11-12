@@ -14,7 +14,7 @@ export function BrowserFamily(Environment = globalThis.navigator ?? {})
 
 export function CanUseYoutube(Policy = DistributionPolicy, Family = BrowserFamily())
 {
-	if (Policy.flavor !== 'development' || Policy.youtubeEnabled !== true) return false;
+	if (!['development', 'edge-store'].includes(Policy.flavor) || Policy.youtubeEnabled !== true) return false;
 	const Blocked = Policy.blockedBrowserFamilies ?? [];
 	return !Blocked.includes(Family) && !(Blocked.length && Family === 'unknown');
 }

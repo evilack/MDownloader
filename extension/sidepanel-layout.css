@@ -2,17 +2,17 @@
 .panel-resizable > .brand { flex:none; }
 .panel-resizable > main { flex:1 1 0; min-block-size:0; display:flex; flex-direction:column; }
 .panel-resizable > main > :not(.panel-workspace) { flex:none; }
-.panel-resizable .panel-workspace { --panel-divider-size:28px; flex:1 1 0; min-block-size:0; display:flex; flex-direction:column; }
+.panel-resizable .panel-workspace { --panel-divider-size:24px; flex:1 1 0; min-block-size:0; display:flex; flex-direction:column; }
 .panel-resizable .panel-workspace > #panel-media,
 .panel-resizable .panel-workspace > #panel-downloads { min-inline-size:0; min-block-size:min(96px,calc((100% - var(--panel-divider-size)) / 2)); overflow:auto; scrollbar-width:thin; scrollbar-gutter:stable; overscroll-behavior:contain; }
 .panel-resizable .panel-workspace > #panel-media { flex:0 1 auto; max-block-size:60%; }
 .panel-resizable .panel-workspace[data-resized] > #panel-media { flex:0 0 var(--panel-media-height); max-block-size:none; }
 .panel-resizable .panel-workspace > #panel-downloads { flex:1 1 0; }
-.panel-resizable #panel-downloads > #status:empty { display:none; }
-.panel-resizable #panel-downloads > section:not([hidden]) > .job-section-heading { margin-block-start:0; }
-.panel-resizable #panel-downloads > section:not([hidden]) ~ section:not([hidden]) > .job-section-heading { margin-block-start:14px; }
+#panel-downloads > #status:empty { display:none; }
+#panel-downloads > section > .job-section-heading { margin-block-start:0; min-block-size:20px; padding-block-end:4px; }
+#panel-downloads > section:not([hidden]) ~ section:not([hidden]) > .job-section-heading { margin-block-start:6px; }
 .panel-resizable .panel-workspace > #panel-media-divider { flex:none; block-size:var(--panel-divider-size); margin:0; border:0; display:flex; align-items:center; }
-#panel-media-static-divider { margin-block:16px; border:0; border-block-start:1px solid var(--line); }
+#panel-media-static-divider { margin-block:8px; border:0; border-block-start:1px solid var(--line); }
 .panel-resizer { position:relative; align-self:stretch; flex:1 1 0; min-inline-size:40px; cursor:row-resize; touch-action:none; }
 .panel-resizer::before { content:""; position:absolute; inset-inline:0; inset-block-start:50%; border-block-start:1px solid var(--line); }
 .panel-resizer::after { content:""; position:absolute; inset-inline-start:50%; inset-block-start:50%; inline-size:36px; block-size:4px; border-radius:4px; background:var(--muted); transform:translate(-50%,-50%); }

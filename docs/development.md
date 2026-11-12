@@ -7,7 +7,7 @@ The extension manifest and package.json define the current version. This referen
 | Location | Responsibility |
 |---|---|
 | `extension/` | Installable Manifest V3 pages, worker, offscreen runner and page scripts |
-| `extension/features/youtube/` | Development-only provider, isolated evaluator, SABR/live reception and remuxing |
+| `extension/features/youtube/` | Edge/development provider, isolated evaluator, SABR/live reception and remuxing |
 | `extension/lib/` | Shared detection, transfer, state, permissions, subtitles, translation and UI helpers |
 | `extension/data/` | Provider/protocol catalogs, generated page policies, helper payloads and caption metadata |
 | `extension/_locales/` | Ten interface language catalogs |
@@ -24,16 +24,31 @@ The browser loads `extension/` directly. Node dependencies are needed only to re
 
 ## Build and distribution
 
-There are two distributions: **development**, also the manual/unpacked build, and **chrome-store**. A flavor is mandatory:
+There are three independent distributions. Run from the repository root with Node.js and the locked build dependencies installed (`npm ci`; `package-lock.json` is the dependency source of truth):
+
+| Command | Flavor | Provider | Site policy notice |
+|---|---|---|---|
+| `npm run build:chrome` | `chrome-store` | Excluded | Preserved on blocked sites |
+| `npm run build:edge` | `edge-store` | All features | No Chrome store restriction |
+| `npm run build:development` | `development` | All features | No Chrome store restriction |
+| `npm run build:all` | All three, sequentially | As above | As above |
+
+Direct Node entry points (also usable when a package manager is unavailable):
 
 ```powershell
 node tools/build/package-extension.mjs --flavor development
 node tools/build/package-extension.mjs --flavor chrome-store
+node tools/build/package-extension.mjs --flavor edge-store
+node tools/build/build-distributions.mjs
 ```
 
-Output: `artifacts/distributions/<flavor>/extension/`. Packaging preserves the source installation and excludes local configuration. Store physically excludes YouTube provider/vendor files and sandbox, retaining only a disabled provider entry. Source/network guards also cover generic/embed candidates, playback capture, partial reads and resume. Legacy store jobs without trusted source classification require a new scan.
+Each flavor produces `artifacts/distributions/<flavor>/extension/`, `MDownloader-<flavor>-<manifest-version>.zip` and `build.json` (flavor, version, file count, ZIP bytes and SHA-256). `manifest.json` is at the ZIP root for store upload. The directory is available for Load unpacked. These commands prepare packages; they do not publish or reload a browser installation. `build:all` stops if any build fails.
 
-Development allows Chrome by default. `--block-chrome` adds an optional YouTube restriction. Store and this restricted build use `declarativeNetRequest` to block extension-owned requests before optional target host permission is granted. Store includes `tabs` for its active-page policy notice. Header modifications still need host access. Stored preferences cannot enable YouTube in Store.
+Packaging preserves `extension/` and excludes `.local` configuration and generated native-host registration files. It rebuilds the existing bundled installer payloads without installing them. Chrome physically excludes the provider/vendor files, sandbox, brand icon and caption controls; a build-time syntax transform removes provider integrations without shipping a disabled provider entry. Its popup/side-panel policy notice, About explanation, host classification and source/network guards remain. Guards cover generic/embed candidates, playback capture, partial reads and resume. Legacy store jobs without trusted source classification require a new scan. Edge and development retain the provider and its vendor files byte for byte.
+
+Every build validates syntax, local executable references, named imports/exports and manifest entries before replacing the previous output and creating its ZIP. Chrome also fails validation if provider integration, assets or provider locale keys remain, or the policy notice is missing. Tests independently inflate every ZIP entry and compare it to the generated directory.
+
+Development allows Chrome by default. `--block-chrome` is a development-only compatibility option and adds an optional YouTube restriction. Chrome store and this restricted build use `declarativeNetRequest` to block extension-owned requests before optional target host permission is granted. Chrome store includes `tabs` for its active-page policy notice. Header modifications still need host access. Stored preferences cannot enable YouTube in Chrome store. Edge store uses the source manifest's full capabilities and has its own distribution identity in About.
 
 Rebuild the pinned dependencies with:
 
@@ -60,7 +75,7 @@ The service worker owns requests, permissions, source identity and persisted job
 
 ### YouTube
 
-Development uses YouTube.js 18.3.0, GoogleVideo 5.0.1 and Mediabunny 1.65.2. Public watch/short/embed identities lead to real supported selections, separate SABR tracks and AVC/AAC packet copying to MP4. Normal click chooses the best supported quality; Shift-click opens shared Download options. Signed URLs, player configuration and caption URLs stay in bounded offscreen sessions, outside persistent jobs/diagnostics.
+Development and Edge store use YouTube.js 18.3.0, GoogleVideo 5.0.1 and Mediabunny 1.65.2. Public watch/short/embed identities lead to real supported selections, separate SABR tracks and AVC/AAC packet copying to MP4. Normal click chooses the best supported quality; Shift-click opens shared Download options. Signed URLs, player configuration and caption URLs stay in bounded offscreen sessions, outside persistent jobs/diagnostics.
 
 API Origin/Referer rules are temporary and extension-scoped. CDN access is requested before reception. Complete VOD reception validates track endpoints and preserves track tails; partial output uses a usable contiguous interval. No yt-dlp, FFmpeg executable or external downloader is a product dependency.
 

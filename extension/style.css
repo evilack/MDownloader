@@ -31,7 +31,7 @@ body { margin: 0; background: var(--bg); color: var(--text); }
 .playback-hint { margin-block: 12px 0; color: var(--muted); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
 .playback-hint > span { display: block; }
 .playback-hint strong { color: var(--mint); }
-.playback-hint-row { display: flex; align-items: center; gap: 10px; margin-block-start: 12px; }
+.playback-hint-row { display: flex; align-items: center; gap: 10px; }
 .playback-hint-row .playback-hint { flex: 1; min-inline-size: 0; margin: 0; }
 .playback-hint-row .issue-report-button { flex: none; inline-size: 32px; min-block-size: 32px; }
 .popup:has(.issue-report-dialog[open]) { min-block-size: 560px; max-block-size: 560px; }
@@ -70,6 +70,7 @@ body { margin: 0; background: var(--bg); color: var(--text); }
 .brand-with-options { align-items: center; flex-wrap: nowrap; padding-block: 9px; }
 .brand-with-options > #options { margin-inline-start: auto; min-height: 32px; }
 main { padding: 12px 16px 16px; }
+main:has(:is(#popup-media, #panel-media):not([hidden])) { padding-block-start: 6px; }
 .popup main { min-height: 0; overflow: auto; scrollbar-width: thin; scrollbar-gutter: stable; overscroll-behavior: contain; }
 h1 { font-size: 23px; margin: 0 0 8px; }
 h2 { font-size: 17px; margin: 20px 0 0; padding-bottom: 8px; border-bottom: 1px solid var(--line); }

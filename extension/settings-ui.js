@@ -142,7 +142,7 @@ export async function BindSettingsUI()
    UpdateLocation();UpdateFilename();Dirty.delete(Section);SettingsFeedback(T('저장된 설정을 다시 불러왔습니다.','Restored the saved settings.'));
   }catch{SettingsFeedback(T('저장된 설정을 읽지 못했습니다.','Could not read saved settings.'),true);}
  });
- const Store=DistributionPolicy.flavor!=='development';Q('build-badge').textContent=Store?T('스토어판','Store build'):T('개발판','Development');Q('about-build').textContent=Store?T('Chrome 웹 스토어판','Chrome Web Store'):T('개발판 · 수동 설치','Development · Manual install');
- Q('about-policy').textContent=CanUseYoutube()?T('개발판에서는 YouTube 다운로드를 사용할 수 있습니다.','This development build supports YouTube downloads.'):T('이 배포판에서는 YouTube 다운로드를 지원하지 않습니다.','This distribution does not support YouTube downloads.');Q('about-policy').classList.toggle('policy-emphasis',!CanUseYoutube());Q('youtube-caption-settings').hidden=!CanUseYoutube();
+ const Store=DistributionPolicy.flavor!=='development';Q('build-badge').textContent=Store?T('스토어판','Store build'):T('개발판','Development');Q('about-build').textContent=DistributionPolicy.flavor==='edge-store'?'Microsoft Edge Add-ons':Store?T('Chrome 웹 스토어판','Chrome Web Store'):T('개발판 · 수동 설치','Development · Manual install');
+ Q('about-policy').textContent=CanUseYoutube()?T('이 배포판에서는 YouTube 다운로드를 사용할 수 있습니다.','This distribution supports YouTube downloads.'):T('이 배포판에서는 YouTube 다운로드를 지원하지 않습니다.','This distribution does not support YouTube downloads.');Q('about-policy').classList.toggle('policy-emphasis',!CanUseYoutube());Q('youtube-caption-settings').hidden=!CanUseYoutube();
  SetSection(new URL(location.href).searchParams.get('section'));
 }

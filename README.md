@@ -21,7 +21,7 @@ The current installation method is **Load unpacked**. Official Chrome Web Store 
 
 No Node.js installation or build is needed to use the supplied extension. Finish all downloads, conversions and speech jobs before replacing files and reloading an update. Removing and reinstalling the extension can discard its settings and history.
 
-The source/development build includes the YouTube provider. The Store package permanently excludes it. [Distribution details](docs/development.md#build-and-distribution) explain how maintainers create each package.
+The source/development and Edge store builds include the YouTube provider. The Chrome store build excludes it while preserving the site policy notice and download restrictions. [Distribution details](docs/development.md#build-and-distribution) document the three individual build commands and `build:all`.
 
 ## Screenshots
 

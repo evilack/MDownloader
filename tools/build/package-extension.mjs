@@ -1,18 +1,33 @@
-import {cp, mkdir, readFile, writeFile, rm, rename} from 'node:fs/promises';
+import {cp, mkdir, readFile, writeFile, rm, rename, open} from 'node:fs/promises';
 import Path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {WriteExplorerInstaller} from './build-explorer-installer.mjs';
 import {WriteCaptionInstaller} from './build-caption-installer.mjs';
 import {WriteMacCommonInstaller} from './build-mac-common-installer.mjs';
 import {AssertExtensionFilenames} from '../lib/extension-files.mjs';
+import {spawnSync} from 'node:child_process';
+import {WriteDistributionArchive} from '../lib/distribution-archive.mjs';
 const Root = fileURLToPath(new URL('../../', import.meta.url));
 await AssertExtensionFilenames(Path.join(Root,'extension'));
 const Args = process.argv.slice(2);
 const Flavor = Args[Args.indexOf('--flavor') + 1];
-if (!Args.includes('--flavor') || !['development', 'chrome-store'].includes(Flavor) || Args.some((Arg, Index) => Index !== Args.indexOf('--flavor') && Index !== Args.indexOf('--flavor') + 1 && Arg !== '--block-chrome')) throw new Error('Required: --flavor development|chrome-store [--block-chrome]');
+if (!Args.includes('--flavor') || !['development', 'chrome-store', 'edge-store'].includes(Flavor) || Args.some((Arg, Index) => Index !== Args.indexOf('--flavor') && Index !== Args.indexOf('--flavor') + 1 && Arg !== '--block-chrome') || Args.includes('--block-chrome') && Flavor !== 'development') throw new Error('Required: --flavor development|chrome-store|edge-store [--block-chrome (development only)]');
 const Output = Path.join(Root, 'artifacts/distributions', Flavor);
 const Stage = Path.join(Output, 'staging-' + process.pid);
 await mkdir(Output, {recursive: true});
+const LockPath = Path.join(Output,'.build.lock');
+let Lock;
+for (let Attempt = 0; !Lock; Attempt++) {
+	try { Lock = await open(LockPath,'wx'); }
+	catch (ErrorValue) {
+		if (ErrorValue.code !== 'EEXIST') throw ErrorValue;
+		if (Attempt >= 300) throw Error('Build already running or stale lock: ' + LockPath);
+		await new Promise(Resolve => setTimeout(Resolve,100));
+	}
+}
+let ZipStage;
+try {
+await Lock.writeFile(String(process.pid));
 await cp(Path.join(Root, 'extension'), Stage, {recursive: true, filter: Source => Source !== Path.join(Root, 'extension', '.local') && (Flavor !== 'chrome-store' || !['features/youtube', 'vendor/youtube'].some(Excluded => Source === Path.join(Root, 'extension', Excluded)))});
 await cp(Path.join(Root, 'native', 'kakao'), Path.join(Stage, 'native', 'kakao'), {recursive:true,
 	filter: Source => !['host.cmd', 'host-manifest.json', '__pycache__'].includes(Path.basename(Source))});
@@ -35,11 +50,31 @@ if (Flavor === 'chrome-store' || Args.includes('--block-chrome'))
 }
 if (Flavor === 'chrome-store')
 {
-	await mkdir(Path.join(Stage, 'features/youtube'), {recursive: true});
-	await writeFile(Path.join(Stage, 'features/youtube/entry.js'), `import {LocalizedError} from '../../lib/i18n.js';\nexport const YoutubeAvailable = () => false;\nexport async function DiscoverYoutube() { throw new LocalizedError('youtube_distribution_disabled'); }\nexport async function ResolveYoutubeSelection() { throw new LocalizedError('youtube_distribution_disabled'); }\nexport async function SetYoutubeRequestContext() { throw new LocalizedError('youtube_distribution_disabled'); }\nexport async function FinishYoutube() { throw new LocalizedError('youtube_distribution_disabled'); }\nexport async function SavePartialYoutube() { throw new LocalizedError('youtube_distribution_disabled'); }\nexport async function CancelYoutube() { throw new LocalizedError('youtube_distribution_disabled'); }\nexport async function HandleYoutubeRunner() { throw new LocalizedError('youtube_distribution_disabled'); }\n`);
+	const Strip = spawnSync(process.execPath, ['--expose-internals', Path.join(Root,'tools/build/strip-chrome-provider.mjs'), Stage], {cwd:Root,encoding:'utf8'});
+	if (Strip.status !== 0) throw Error(Strip.stderr || String(Strip.error));
 }
+const Verify = spawnSync(process.execPath, ['--expose-internals', Path.join(Root,'tools/checks/verify-distribution.mjs'), '--flavor', Flavor, '--root', Stage], {cwd:Root,encoding:'utf8'});
+if (Verify.status !== 0) throw Error(Verify.stderr || Verify.stdout || String(Verify.error));
+const Manifest = JSON.parse(await readFile(Path.join(Stage,'manifest.json'),'utf8'));
+const ZipName = `MDownloader-${Flavor}-${Manifest.version}${Args.includes('--block-chrome') ? '-restricted' : ''}.zip`;
+ZipStage = Path.join(Output, ZipName + '.tmp');
+const Archive = await WriteDistributionArchive(Stage, ZipStage);
 // 출력 경로는 위의 열거형에서만 결정하며, 사용 중 원본 extension은 수정하지 않습니다.
 const Destination = Path.join(Output, 'extension');
 await rm(Destination, {recursive: true, force: true});
 await rename(Stage, Destination);
-console.log(JSON.stringify({flavor: Flavor, extension: Destination}));
+const Zip = Path.join(Output, ZipName);
+await rename(ZipStage, Zip);
+const Metadata = {flavor:Flavor,version:Manifest.version,extension:Destination,zip:Zip,...Archive};
+await writeFile(Path.join(Output,'build.json'),JSON.stringify(Metadata,null,2)+'\n');
+console.log(JSON.stringify(Metadata));
+} finally {
+	try {
+		const Cleanup = await Promise.allSettled([rm(Stage,{recursive:true,force:true}), ...(ZipStage ? [rm(ZipStage,{force:true})] : [])]);
+		const Errors = Cleanup.filter(Result => Result.status === 'rejected').map(Result => Result.reason);
+		if (Errors.length) throw new AggregateError(Errors,'Distribution cleanup failed');
+	} finally {
+		try { await Lock.close(); }
+		finally { await rm(LockPath,{force:true}); }
+	}
+}

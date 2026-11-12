@@ -21,7 +21,7 @@ Chrome / Microsoft Edge · Manifest V3 · 인터페이스 10개 언어
 
 제공된 확장을 사용하는 데 Node.js 설치나 빌드는 필요하지 않습니다. 업데이트할 때는 진행 중인 다운로드·변환·음성 인식을 마친 뒤 파일을 교체하고 확장을 새로고침하세요. 확장을 삭제하고 다시 설치하면 설정과 작업 기록이 사라질 수 있습니다.
 
-소스·개발판에는 YouTube 공급자가 포함되고, 스토어 패키지에서는 영구적으로 제외됩니다. 패키지 생성 방법은 [개발 문서](development.md#build-and-distribution)에 있습니다.
+소스·개발판과 Edge 스토어판에는 YouTube 공급자가 포함됩니다. Chrome 스토어판에서는 YouTube 다운로드 기능을 제외하되 사이트 정책 안내와 다운로드 차단을 유지합니다. 세 버전의 개별 빌드 명령과 전체 빌드 명령은 [개발 문서](development.md#build-and-distribution)에 있습니다.
 
 ## 실제 화면
 

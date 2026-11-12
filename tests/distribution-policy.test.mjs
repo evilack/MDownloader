@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {CanUseYoutube, BrowserFamily} from '../extension/lib/distribution-policy.js';
 import {IdentifyYoutubeUrl, IsYoutubeSource} from '../extension/lib/youtube-source-policy.js';
 
-test('development allows Chrome and Edge; store is unconditional', () => {
- for (const flavor of ['development', 'chrome-store']) {
+test('development and Edge store enable the full provider; Chrome store is unconditional', () => {
+ for (const flavor of ['development', 'chrome-store', 'edge-store']) {
   for (const family of ['chrome', 'edge', 'unknown']) {
    assert.equal(CanUseYoutube({flavor, youtubeEnabled: true, blockedBrowserFamilies: []}, family), flavor !== 'chrome-store');
   }
