@@ -1,0 +1,10 @@
+.privacy-content {
+  max-inline-size: 760px;
+  padding-block: 42px 56px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+.privacy-content h1 { font-size: clamp(2rem, 5vw, 3rem); }
+.privacy-content h2 { margin-block: 1.6em 0.4em; font-size: 1.3rem; }
+.privacy-content a { color: var(--accent-deep); text-decoration: underline; }
+.privacy-date { color: var(--muted); }
