@@ -1,6 +1,17 @@
 # Product website
 
-This folder is an English/Korean static website. `index.html` is the English entry and `index-ko.html` is Korean. `site-language.js` resolves explicit language choices, saved preference, browser preference, then English. `site-catalog.js` owns dynamic store notices and store-link roles.
+This folder is an English/Korean static website. `index.html` and `index-ko.html` are the shared landing-page templates. `site-language.js` resolves explicit language choices, saved preference, browser preference, then English. `site-catalog.js` owns dynamic store notices and store-link roles.
+
+## Switch the main homepage on GitHub
+
+Edit `defaultVariant` in `website/homepage.json` and commit the change to `main`. GitHub Actions builds and deploys both variants, then serves the selected variant at the main English and Korean URLs.
+
+| Value | Main homepage content | Fixed English and Korean pages |
+| --- | --- | --- |
+| `clean` | Store installation and product information | `index-clean.html?lang=en`, `index-clean-ko.html?lang=ko` |
+| `full` | Also shows Ev-Cabinet and support links, the support FAQ, and the development ZIP and manual installation guide | `index-full.html?lang=en`, `index-full-ko.html?lang=ko` |
+
+The fixed pages are public in both modes. Mark sections exclusive to the full version with `<!-- full-only -->` and `<!-- /full-only -->` in each language template.
 
 Run from the project root:
 
@@ -8,11 +19,11 @@ Run from the project root:
 node website/serve.mjs
 ```
 
-The server prints its loopback URL. `sample/` plays the local MP4 used for detection, preview, capture, and media regression checks. The website and sample are not part of the installable `extension/` folder.
+The server prints its loopback URL and serves the source templates. To preview the deployed structure, run `node tools/build/build-website-pages.mjs artifacts/website-pages` with an empty output directory and serve that directory with a static HTTP server. `sample/` plays the local MP4 used for detection, preview, capture, and media regression checks. The website and sample are not part of the installable `extension/` folder.
 
 ## Product content
 
-Both landing pages describe the current 0.2.43 source implementation (content reviewed 2026-11-10): direct files and supported HLS/DASH/WebRTC, live starting points and partial saves, subtitle embedding/translation, optional local speech captions, and download management. They include manual installation while store links are pending. The development ZIP section describes development/testing, manual installation and manual updates without advertising individual service download capabilities. This wording does not establish store-policy compliance for the package or website.
+Both variants describe the current 0.2.43 source implementation (content reviewed 2026-11-10): direct files and supported HLS/DASH/WebRTC, live starting points and partial saves, subtitle embedding/translation, optional local speech captions, and download management.
 
 ## Development ZIP
 
