@@ -42,6 +42,6 @@ The retained GIF/still files preserve their actual capture ratio. New tool captu
 
 ## External links
 
-The store URL entries are currently empty, so installation buttons show the existing preparation notice. Set actual store URLs in `site-catalog.js` when issued.
+The Chrome installation button opens the published Chrome Web Store listing. The Edge button shows a preparation notice until its URL is set in `site-catalog.js`. Shared support links lead to [Ev-Cabinet](https://evilack.github.io/donate.html).
 
 For tool configuration and verification commands, see [Development](../docs/development.md).

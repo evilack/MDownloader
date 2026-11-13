@@ -2,7 +2,7 @@
  * 각 역할의 url에 입력합니다. 언어별 화면 코드에 URL이나 문구 분기를 복제하지 않습니다. */
 export const SiteCatalog = Object.freeze({
 	stores: Object.freeze({
-		chrome: Object.freeze({url: '', en: 'Chrome Web Store', ko: 'Chrome 웹 스토어'}),
+		chrome: Object.freeze({url: 'https://chromewebstore.google.com/detail/mdownloader/pmidchiiahlieibhppbechhiocmcobfg', en: 'Chrome Web Store', ko: 'Chrome 웹 스토어'}),
 		edge: Object.freeze({url: '', en: 'Microsoft Edge Add-ons', ko: 'Microsoft Edge 추가 기능'}),
 	}),
 	messages: Object.freeze({
