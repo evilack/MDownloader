@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "M Downloader",
   "short_name": "M Downloader",
-  "version": "0.2.44",
+  "version": "0.2.45",
   "default_locale": "en",
   "description": "__MSG_extension_description__",
   "minimum_chrome_version": "116",

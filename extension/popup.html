@@ -13,9 +13,15 @@
   <button id="manage" type="button" class="icon-button" data-i18n-aria-label="html_download_manager" data-i18n-title="html_download_manager"><img class="button-icon" src="icons/app-media-24.png" alt="" width="20" height="20"></button>
 </div></header>
 <main>
+  <div class="site-access-intro" data-site-access-intro hidden>
+    <p class="notice" data-i18n="view_site_access_intro"></p>
+    <a class="site-access-link" href="options.html?section=permissions" target="_blank" rel="noopener" data-i18n="view_site_access_settings"></a>
+    <button type="button" data-site-access-dismiss data-i18n="view_site_access_dismiss"></button>
+  </div>
   <p class="notice" role="status" data-youtube-policy-notice data-i18n="youtube_store_policy_notice" hidden></p>
   <section id="popup-media">
   <p id="status" class="notice" role="status" data-candidate-status data-i18n="html_scanning_page"></p>
+  <a class="site-access-link" href="options.html?section=permissions" target="_blank" rel="noopener" data-candidate-permission-link data-i18n="view_site_access_settings" hidden></a>
   <ul id="candidates" data-i18n-aria-label="html_detected_media"></ul>
   </section>
 </main>

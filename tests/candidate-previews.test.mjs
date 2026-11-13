@@ -119,6 +119,33 @@ Test('keeps the popup and side panel scans usable independently in the same tab'
 	await ClearScan(TabId);
 	Assert.deepEqual(Saved, {});
 });
+Test('an empty scan reports ungranted player and CDN origins without requesting unrelated frames', async T =>
+{
+	const Page = 'https://watch.test/video';
+	const Player = 'https://player.test/embed';
+	const Cdn = 'https://cdn.test';
+	const State = {};
+	const Allowed = new Set(['https://watch.test/*', 'https://player.test/*']);
+	globalThis.chrome = {
+		permissions: { contains: async ({origins}) => origins.every(Origin => Allowed.has(Origin)) },
+		storage: {session: {get: async Key => ({[Key]: State[Key]}), set: async Data => Object.assign(State, Data)}},
+		scripting: {executeScript: async ({target}) => {
+			if (target.allFrames) return [
+				{frameId: 0, result: {page: Page, mediaOrigins: []}},
+				...(Allowed.has('https://player.test/*') ? [{frameId: 1, result: {page: Player, mediaOrigins: [Cdn]}}] : []),
+				{frameId: 2, result: {page: 'https://ads.test/frame', mediaOrigins: ['https://ad-cdn.test']}},
+			];
+			if (target.documentIds) return [{result: {page: Page, active: true}}];
+			return [{documentId:'doc', result:{page: Page, sources: [], playlists: [], observerReady: true, playerFrames: [Player]}}];
+		}},
+	};
+	T.after(() => delete globalThis.chrome);
+	Assert.deepEqual((await Scan(7)).missingOrigins, ['https://cdn.test/*']);
+	Allowed.delete('https://player.test/*');
+	Assert.deepEqual((await Scan(7)).missingOrigins, ['https://player.test/*']);
+	Allowed.add('https://player.test/*').add('https://cdn.test/*');
+	Assert.equal((await Scan(7)).missingOrigins, undefined);
+});
 Test('shows one HLS master while keeping its qualities and unrelated media available', async T =>
 {
 	const Page = 'https://player.test/watch';

@@ -1058,6 +1058,26 @@
   "view_quality_no_resolution": {
     "message": "Résolution inconnue"
   },
+  "view_site_access_settings": {
+    "message": "Autorisations de sites"
+  },
+  "view_site_access_intro": {
+    "message": "Pour trouver des médias, autorisez l’accès à la page de la vidéo dans les autorisations de sites. Les lecteurs intégrés et les serveurs de médias peuvent aussi nécessiter une autorisation."
+  },
+  "view_site_access_dismiss": {
+    "message": "OK"
+  },
+  "view_site_access_needed": {
+    "message": "Autorisez l’accès à $arg1$ dans les autorisations de sites, puis rechargez cette page et relancez la vidéo.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_site_access_unknown": {
+    "message": "Ouvrez les autorisations de sites pour autoriser l’accès à ce site Web. Revenez ensuite à l’onglet de la vidéo et réessayez."
+  },
   "view_scan_empty": {
     "message": "Aucun média téléchargeable trouvé."
   },

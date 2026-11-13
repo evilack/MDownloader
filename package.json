@@ -1,6 +1,6 @@
 {
   "name": "mdownloader-development-tools",
-  "version": "0.2.43",
+  "version": "0.2.45",
   "private": true,
   "type": "module",
   "scripts": {

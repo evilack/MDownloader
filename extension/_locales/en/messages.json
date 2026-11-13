@@ -1058,6 +1058,26 @@
   "view_quality_no_resolution": {
     "message": "Unknown resolution"
   },
+  "view_site_access_settings": {
+    "message": "Site permissions"
+  },
+  "view_site_access_intro": {
+    "message": "To find media, allow access to the video page in Site permissions. Embedded players and media servers may also need access."
+  },
+  "view_site_access_dismiss": {
+    "message": "OK"
+  },
+  "view_site_access_needed": {
+    "message": "Allow access to $arg1$ in Site permissions, then reload this page and play the video again.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_site_access_unknown": {
+    "message": "Open Site permissions to allow this website. Then return to the video tab and try again."
+  },
   "view_scan_empty": {
     "message": "No downloadable media found."
   },

@@ -1058,6 +1058,26 @@
   "view_quality_no_resolution": {
     "message": "रिज़ॉल्यूशन अज्ञात"
   },
+  "view_site_access_settings": {
+    "message": "साइट अनुमतियाँ"
+  },
+  "view_site_access_intro": {
+    "message": "मीडिया खोजने के लिए साइट अनुमतियों में वीडियो पेज का ऐक्सेस दें। एम्बेड किए गए प्लेयर और मीडिया सर्वर को भी अनुमति की ज़रूरत हो सकती है।"
+  },
+  "view_site_access_dismiss": {
+    "message": "ठीक है"
+  },
+  "view_site_access_needed": {
+    "message": "साइट अनुमतियों में $arg1$ का ऐक्सेस दें। फिर यह पेज फिर से लोड करें और वीडियो दोबारा चलाएँ।",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_site_access_unknown": {
+    "message": "इस वेबसाइट का ऐक्सेस देने के लिए साइट अनुमतियाँ खोलें। फिर वीडियो टैब पर वापस जाएँ और दोबारा कोशिश करें।"
+  },
   "view_scan_empty": {
     "message": "डाउनलोड करने लायक मीडिया नहीं मिला।"
   },

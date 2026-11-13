@@ -1058,6 +1058,26 @@
   "view_quality_no_resolution": {
     "message": "해상도 정보 없음"
   },
+  "view_site_access_settings": {
+    "message": "사이트 권한"
+  },
+  "view_site_access_intro": {
+    "message": "영상을 찾으려면 사이트 권한에서 영상 페이지에 대한 접근을 허용하세요. 외부 플레이어와 미디어 서버도 권한이 필요할 수 있습니다."
+  },
+  "view_site_access_dismiss": {
+    "message": "확인"
+  },
+  "view_site_access_needed": {
+    "message": "사이트 권한에서 $arg1$ 접근을 허용한 뒤, 이 페이지를 새로고침하고 영상을 다시 재생하세요.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_site_access_unknown": {
+    "message": "사이트 권한에서 이 웹사이트에 대한 접근을 허용한 뒤, 영상 탭으로 돌아가 다시 시도하세요."
+  },
   "view_scan_empty": {
     "message": "다운로드할 수 있는 영상을 찾지 못했습니다."
   },

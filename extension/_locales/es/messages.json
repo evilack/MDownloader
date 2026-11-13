@@ -1058,6 +1058,26 @@
   "view_quality_no_resolution": {
     "message": "Resolución desconocida"
   },
+  "view_site_access_settings": {
+    "message": "Permisos de sitios"
+  },
+  "view_site_access_intro": {
+    "message": "Para encontrar contenido multimedia, permite el acceso a la página del vídeo en Permisos de sitios. Los reproductores integrados y los servidores multimedia también pueden necesitar permiso."
+  },
+  "view_site_access_dismiss": {
+    "message": "Aceptar"
+  },
+  "view_site_access_needed": {
+    "message": "Permite el acceso a $arg1$ en Permisos de sitios. Después, vuelve a cargar esta página y reproduce el vídeo de nuevo.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_site_access_unknown": {
+    "message": "Abre Permisos de sitios y permite el acceso a este sitio web. Después, vuelve a la pestaña del vídeo e inténtalo de nuevo."
+  },
   "view_scan_empty": {
     "message": "No se encontraron archivos multimedia descargables."
   },

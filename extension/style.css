@@ -77,6 +77,10 @@ h2 { font-size: 17px; margin: 20px 0 0; padding-bottom: 8px; border-bottom: 1px 
 p { margin: 5px 0; }
 .muted, .notice { color: var(--muted); overflow-wrap: anywhere; }
 .notice:not(:empty) { margin: 8px 0; }
+.site-access-intro { margin-block: 8px 12px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.site-access-intro .notice { margin-block: 0 6px; }
+.site-access-intro button { margin-inline-start: 8px; }
+.site-access-link { display: inline-flex; align-items: center; min-block-size: 32px; color: var(--transfer-text); }
 ul { list-style: none; padding: 0; margin: 0; }
 .candidate { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 9px; padding: 3px 8px; padding-inline-start: 4px; margin-top: 6px; }
 .filename { overflow-wrap: anywhere; min-width: 0; }

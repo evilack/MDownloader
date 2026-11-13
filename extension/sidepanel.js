@@ -17,6 +17,7 @@ import { CreateSettingsCache, SettingKeys } from './lib/settings.js';
 import { JobGroup } from './lib/browser-job-state.js';
 import {ObserveYoutubePolicyNotice} from './lib/youtube-policy-notice.js';
 import {BindPanelMediaResize} from './panel-media-resize.js';
+import {MountSiteAccessIntro} from './lib/site-access-intro.js';
 await InitializeLocale();
 LocalizePage();
 WatchLanguage();
@@ -33,6 +34,7 @@ if (DebugJob)
 }
 else
 {
+	void MountSiteAccessIntro();
 	const MediaSection = document.querySelector('#panel-media');
 	const Divider = document.querySelector('#panel-media-divider');
 	const StaticDivider=document.querySelector('#panel-media-static-divider');

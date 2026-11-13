@@ -1058,6 +1058,26 @@
   "view_quality_no_resolution": {
     "message": "الدقة غير معروفة"
   },
+  "view_site_access_settings": {
+    "message": "أذونات المواقع"
+  },
+  "view_site_access_intro": {
+    "message": "للعثور على الوسائط، اسمح بالوصول إلى صفحة الفيديو في أذونات المواقع. قد تحتاج المشغلات المضمّنة وخوادم الوسائط إلى إذن أيضًا."
+  },
+  "view_site_access_dismiss": {
+    "message": "حسنًا"
+  },
+  "view_site_access_needed": {
+    "message": "اسمح بالوصول إلى $arg1$ في أذونات المواقع، ثم أعد تحميل هذه الصفحة وشغّل الفيديو مجددًا.",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_site_access_unknown": {
+    "message": "افتح أذونات المواقع للسماح بالوصول إلى هذا الموقع، ثم ارجع إلى علامة تبويب الفيديو وحاول مجددًا."
+  },
   "view_scan_empty": {
     "message": "لم يُعثر على وسائط قابلة للتنزيل."
   },

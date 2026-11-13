@@ -1058,6 +1058,26 @@
   "view_quality_no_resolution": {
     "message": "分辨率未知"
   },
+  "view_site_access_settings": {
+    "message": "网站权限"
+  },
+  "view_site_access_intro": {
+    "message": "要检测媒体，请在网站权限中允许访问视频页面。嵌入式播放器和媒体服务器也可能需要访问权限。"
+  },
+  "view_site_access_dismiss": {
+    "message": "确定"
+  },
+  "view_site_access_needed": {
+    "message": "在网站权限中允许访问 $arg1$，然后刷新本页并重新播放视频。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_site_access_unknown": {
+    "message": "打开网站权限并允许访问此网站，然后返回视频标签页重试。"
+  },
   "view_scan_empty": {
     "message": "未找到可下载的媒体。"
   },

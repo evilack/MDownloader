@@ -9,9 +9,11 @@ import { CreateCandidateList } from './candidate-list.js';
 import { CreateMediaPreview } from './media-preview.js';
 import {ObserveYoutubePolicyNotice} from './lib/youtube-policy-notice.js';
 import {CreateNotificationView} from './lib/notification-view.js';
+import {MountSiteAccessIntro} from './lib/site-access-intro.js';
 await InitializeLocale();
 LocalizePage();
 WatchLanguage();
+void MountSiteAccessIntro();
 const Candidates = CreateCandidateList({
 	root: document, mediaPreview: CreateMediaPreview(), scrollRoot: document.querySelector('main'),
 	reportShownJobs: CreateNotificationView(),

@@ -1058,6 +1058,26 @@
   "view_quality_no_resolution": {
     "message": "解像度不明"
   },
+  "view_site_access_settings": {
+    "message": "サイト権限"
+  },
+  "view_site_access_intro": {
+    "message": "メディアを検出するには、サイト権限で動画ページへのアクセスを許可してください。埋め込みプレーヤーやメディアサーバーにも権限が必要な場合があります。"
+  },
+  "view_site_access_dismiss": {
+    "message": "確認"
+  },
+  "view_site_access_needed": {
+    "message": "サイト権限で $arg1$ へのアクセスを許可し、このページを再読み込みして動画を再生し直してください。",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "view_site_access_unknown": {
+    "message": "サイト権限を開いて、このウェブサイトへのアクセスを許可してください。その後、動画のタブに戻って再試行してください。"
+  },
   "view_scan_empty": {
     "message": "ダウンロードできるメディアが見つかりませんでした。"
   },

@@ -90,6 +90,8 @@ function CollectVideos(MaxPlaylists, ExcludedSelector, SourcePlayerSelector)
 		...[...Player.querySelectorAll('source[src]')].map(Source => Source.src)].filter(Boolean);
 	return {
 		page: location.href,
+		playerFrames: [...document.querySelectorAll('iframe[src][allowfullscreen], iframe[src][allow*="fullscreen"]')]
+			.slice(0, MaxPlaylists).map(Frame => Frame.src),
 		pageTitle: document.title,
 		timeOrigin: performance.timeOrigin,
 		playlists: Playlists,
@@ -324,7 +326,51 @@ export async function FindMedia(TabId)
 	Master.qualities?.some(Quality => Quality.audioUrl && MediaResourceKey(Quality.audioUrl) === MediaResourceKey(Item.url)))))
 	.filter(Item => !SelectedHls || Item.format !== 'M3U8' || (Item.documentId ?? Frame.documentId) !== Frame.documentId ||
 	MediaResourceKey(Item.url) === SelectedHls.url);
-	return { documentId: Frame.documentId, page: Page, observed: AllowedObserved, items: [...WebRtcItems, ...Roots] };
+	return { documentId: Frame.documentId, page: Page, observed: AllowedObserved, items: [...WebRtcItems, ...Roots],
+		playerFrames: Frame.result.playerFrames };
+}
+
+// These addresses only inform the permission UI. A resource timing entry is
+// not proof that a playlist is valid or that it can be downloaded.
+function ReadMediaOrigins(Limit)
+{
+	const Players = [...document.querySelectorAll('video, audio')];
+	const Sources = Players.flatMap(Player => [Player.currentSrc || Player.src,
+		...[...Player.querySelectorAll('source[src]')].map(Source => Source.src)]);
+	if (Players.some(Player => Player.currentSrc.startsWith('blob:')))
+	{
+		for (const Entry of performance.getEntriesByType('resource').slice(-Limit))
+		{
+			if (/\.(m3u8|mpd)(?:[?#]|$)/i.test(Entry.name)) Sources.push(Entry.name);
+		}
+	}
+	return {page: location.href, mediaOrigins: Sources.slice(0, Limit)};
+}
+
+async function MissingScanOrigins(TabId, DocumentId, Page, PlayerFrames = [])
+{
+	const PageOrigin = HostPattern(Page);
+	if (!PageOrigin || YoutubeSourceBlocked({page: Page})) return [];
+	const FrameOrigins = new Set(PlayerFrames.filter(Url => !YoutubeSourceBlocked({frameUrl: Url})).map(HostPattern).filter(Boolean));
+	const Origins = new Set([PageOrigin, ...FrameOrigins]);
+	if (DocumentId)
+	{
+		const Frames = await chrome.scripting.executeScript({
+			target: {tabId: TabId, allFrames: true}, func: ReadMediaOrigins, args: [MaxObservedMediaPerTab],
+		}).catch(() => []);
+		for (const {frameId, result} of Frames)
+		{
+			if (!result || YoutubeSourceBlocked({frameUrl: result.page}) ||
+				(frameId === 0 ? result.page !== Page : !FrameOrigins.has(HostPattern(result.page)))) continue;
+			for (const Url of result.mediaOrigins)
+			{
+				const Origin = HostPattern(Url);
+				if (Origin && !YoutubeSourceBlocked({url: Url, page: Page})) Origins.add(Origin);
+			}
+		}
+	}
+	return (await Promise.all([...Origins].slice(0, MaxObservedMediaPerTab).map(async Origin =>
+		await chrome.permissions.contains({origins: [Origin]}) ? null : Origin))).filter(Boolean);
 }
 
 async function ProbeWebRtc(TabId, DocumentId, Page)
@@ -343,7 +389,7 @@ export async function Scan(TabId, Scope)
 		{
 			return { restricted: true };
 		}
-		const { documentId: DocumentId, page: Page, items: Items, observed: Observed } = Result;
+		const { documentId: DocumentId, page: Page, items: Items, observed: Observed, playerFrames: PlayerFrames } = Result;
 		// 재사용할 헤더는 같은 문서에서 실제로 관측한 화질 응답에만 연결합니다.
 		const VariantsByDocument = new Map();
 		for (const Entry of Observed)
@@ -378,6 +424,8 @@ export async function Scan(TabId, Scope)
 		await chrome.storage.session.set({
 			[ScanStorageKey(TabId, Scope)]: { scanId: ScanId, documentId: DocumentId, page: Page, candidates: Candidates },
 		});
+		const MissingOrigins = Candidates.some(Item => Item.supported) ? [] :
+			await MissingScanOrigins(TabId, DocumentId, Page, PlayerFrames).catch(() => []);
 		const Current = await CurrentScan(TabId, ScanId, Scope);
 		if (!Current)
 		{
@@ -391,7 +439,8 @@ export async function Scan(TabId, Scope)
 				PlaylistNameCounts.set(Name, (PlaylistNameCounts.get(Name) ?? 0) + 1);
 			}
 		}
-		return { scanId: ScanId, candidates: Candidates.map(({ id: Id, name: Name, format: Format, supported: Supported, live: Live, dvr: Dvr, upcoming: Upcoming,
+		return { scanId: ScanId, ...(MissingOrigins.length ? {missingOrigins: MissingOrigins} : {}),
+			candidates: Candidates.map(({ id: Id, name: Name, format: Format, supported: Supported, live: Live, dvr: Dvr, upcoming: Upcoming,
 			scheduledStartTime: ScheduledStartTime, serverPermission: ServerPermission, url: Url, mediaKey: MediaKey }) => ({
 				id: Id, name: Name, format: Format, supported: Supported, serverPermission: ServerPermission, mediaKey: MediaKey,
 				...(Live !== undefined ? { live: Live } : {}),
@@ -402,7 +451,10 @@ export async function Scan(TabId, Scope)
 	}
 	catch
 	{
-		return { restricted: true };
+		const Tab = await chrome.tabs?.get(TabId).catch(() => undefined);
+		const MissingOrigins = await MissingScanOrigins(TabId, undefined, Tab?.url).catch(() => []);
+		return { restricted: true, ...(MissingOrigins.length ? {missingOrigins: MissingOrigins} : {}),
+			...(!Tab?.url ? {accessUnknown: true} : {}) };
 	}
 }
 

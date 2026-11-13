@@ -1,6 +1,6 @@
 # Chrome Web Store Listing — M Downloader
 
-Last updated: 2026-11-12. Package preparation only. No store submission has been performed.
+Last updated: 2026-11-14. Package preparation only. No store submission has been performed.
 
 ## Store listing
 
@@ -19,6 +19,8 @@ M Downloader detects supported video and audio on the current website and lets y
 Choose available quality and subtitle tracks, manage transfers in a side panel, and save completed files. Supported sources include direct media, compatible HLS, static unencrypted DASH and supported WebRTC sources. Optional subtitle translation uses a service you configure. Optional local speech recognition requires a separately installed local helper.
 
 Open a supported page, grant site access, open M Downloader, and choose Download. Use Download options to select quality, subtitles and translation settings. Protected media and unsupported formats are excluded.
+
+The first-use guide and missing site access messages link directly to Site permissions.
 
 ## Build and distribution
 
@@ -84,6 +86,7 @@ On 2026-11-12, an isolated Chrome for Testing profile loaded the packaged Chrome
 
 | Version | Date | Change | Status |
 |---|---|---|---|
+| 0.2.45 | 2026-11-14 | First-use guidance and a shortcut to Site permissions when site access is missing | Local changes, not submitted |
 | 0.2.43 | 2026-11-11 | Reproducible Chrome, Edge and development packaging; Chrome provider removal with preserved policy notice | Local build, not submitted |
 
 Build verification is separate from browser installation, real-site acceptance and store approval. Edge packages retain the complete feature set but likewise have not been submitted or approved.

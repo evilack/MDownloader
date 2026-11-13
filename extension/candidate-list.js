@@ -17,6 +17,7 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 {
 	const List = Root.querySelector('#candidates');
 	const Status = Root.querySelector('[data-candidate-status]');
+	const PermissionLink = Root.querySelector('[data-candidate-permission-link]');
 	Status.before(CreatePlaybackHint({ getPage: () => Tab }));
 	const ScanButton = Root.querySelector('#scan') ?? document.querySelector('#scan');
 	const CountFormat = new Intl.NumberFormat(GetLocale());
@@ -169,14 +170,18 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 				return Invalidate();
 			}
 			bRestricted = Result.restricted === true;
+			if (PermissionLink) PermissionLink.hidden = !Result.missingOrigins?.length && !Result.accessUnknown;
+			const PermissionMessage = Result.missingOrigins?.length
+				? Translate('view_site_access_needed', Result.missingOrigins.map(Origin => Origin.slice(0, -2)).join(', '))
+				: Result.accessUnknown ? Translate('view_site_access_unknown') : undefined;
 			if (bRestricted)
 			{
 				ClearCandidates();
 				ShowJobStatuses();
-				return Announce(Translate('view_scan_restricted'));
+				return Announce(PermissionMessage ?? Translate('view_scan_restricted'));
 			}
 			const Supported = Result.candidates.filter(Item => Item.supported).length;
-			Announce(Supported ? Translate('view_scan_found', CountFormat.format(Supported)) : Translate('view_scan_empty'));
+			Announce(PermissionMessage ?? (Supported ? Translate('view_scan_found', CountFormat.format(Supported)) : Translate('view_scan_empty')));
 			const Signature = JSON.stringify([Tab.id, Result.candidates.map(Item => [Item.id, Item.mediaKey, Item.name,
 					Item.format, Item.supported, Item.serverPermission, Item.playlistPath, Item.live])]);
 			if (Signature === RenderSignature)
@@ -317,6 +322,7 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 		ClearCandidates();
 		ShowJobStatuses();
 		ScanButton.disabled = false;
+		if (PermissionLink) PermissionLink.hidden = true;
 		Announce(Translate('view_scan_page_changed'));
 	}
 
@@ -353,6 +359,12 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 			QueueRefresh();
 		}
 	});
+	function OnSitePermissionsChanged({origins: Origins})
+	{
+		if (bEnabled && Origins?.length) QueueRefresh();
+	}
+	chrome.permissions?.onAdded?.addListener(OnSitePermissionsChanged);
+	chrome.permissions?.onRemoved?.addListener(OnSitePermissionsChanged);
 	chrome.storage.onChanged.addListener((Changes, Area) =>
 	{
 		if (Area === 'local' && Changes.subtitleTranslation && bEnabled) void LoadSubtitleStatuses(RowContexts, true);
