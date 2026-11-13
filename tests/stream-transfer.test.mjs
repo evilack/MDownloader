@@ -40,6 +40,22 @@ Test('observed multi-CDN transfers start four bounded requests instead of leavin
 	for(let I=0;I<10;I++)await Turn();
 	Assert.equal(Requested.length,4,'four requests may run; the fifth must stay queued');
 });
+Test('live playlist HTTP 403 saves the committed prefix without aborting the output signal', async T =>
+{
+	const Controller = new AbortController();
+	const Bytes = new Uint8Array(376);
+	Bytes[0] = Bytes[188] = 0x47;
+	T.mock.method(globalThis, 'fetch', async Url => Url === Address
+		? new Response(null, {status: 403}) : new Response(Bytes));
+	const Result = await DownloadTracks([{url: Address, playlist: ParseMediaPlaylist(Playlist(0, '0.ts'), Address)}],
+		{workspace: Workspace(), controller: Controller, finishSignal: new AbortController().signal,
+			authorize: async () => {}, progress: async () => {}});
+	Assert.equal(Result.partial, true);
+	Assert.equal(Result.progress.finished, 1);
+	Assert.match(Result.video, /segment-0\.ts\n#EXT-X-ENDLIST/);
+	Assert.equal(Controller.signal.aborted, false);
+});
+
 Test('running live jobs acquire DVR capability when a refreshed window provides history',async T=>
 {
 	const Stop=new AbortController(),Ts=new Uint8Array(376),States=[];Ts[0]=Ts[188]=0x47;

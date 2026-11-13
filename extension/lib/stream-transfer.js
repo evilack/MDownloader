@@ -5,8 +5,8 @@
 import { RuntimePolicy, Units } from './runtime-policy.js';
 import { LocalizedError } from './i18n.js';
 import { ParseMediaPlaylist } from './hls.js';
-import { TransferSegments } from './segment-transfer.js';
-import { ReadPlaylist } from './hls-http.js';
+import { RetryableTransferError, TransferSegments } from './segment-transfer.js';
+import { HlsHttpError, ReadPlaylist } from './hls-http.js';
 import {HlsDecryptor, HlsResourceUrls, ReadHlsBytes, CopyHlsResource} from './hls-encryption.js';
 import { HasTransportStreamSync, MPEG_TS_PACKET_BYTES } from './mpeg-ts.js';
 import {ReadCommittedSnapshot} from './committed-snapshot.js';
@@ -87,7 +87,10 @@ async function DownloadTrackResources(Sources, {
 })
 {
 	const { signal: Signal } = Controller;
-	const Decryptor = new HlsDecryptor((Resource, Limit) => ReadHlsBytes(Resource, Limit, TransferSignal, ObservedContext));
+	// A failed segment stops the input lanes without canceling a possible save.
+	const Input = new AbortController();
+	const ResourceSignal = AbortSignal.any([TransferSignal, Input.signal]);
+	const Decryptor = new HlsDecryptor((Resource, Limit) => ReadHlsBytes(Resource, Limit, ResourceSignal, ObservedContext));
 	const Tracks = Sources.map((Source,Index) => ({ ...Source, id:'track-'+Index, saved: [], identities:new Map(),next: undefined, captureEnd:0 }));
 	InitializeHlsLiveStart(Tracks, LiveStart, RuntimePolicy.Transfer.LiveStartTargetDurations);
 	Capture?.configure(Tracks.map(T=>({id:T.id,audio:T.audio,presentationTimeOffset:T.playlist.presentationTimeOffset})));
@@ -127,7 +130,9 @@ async function DownloadTrackResources(Sources, {
 		return Writes;
 	}
 
+	let Interruption;
 	try{
+	try {
 	for (; ; )
 	{
 		const BatchStarted = performance.now();
@@ -207,7 +212,7 @@ async function DownloadTrackResources(Sources, {
 			// independent CDN hosts can use the normal bounded transfer pool.
 			const Parallelism = ObservedContext && new Set(Queue.map(Resource => new URL(Resource.url).origin)).size < 2
 				? RuntimePolicy.Transfer.ObservedRequestLanes : undefined;
-			await TransferSegments(Queue, Controller, async Resource =>
+			await TransferSegments(Queue, Input, async Resource =>
 			{
 				const { path: Path, isMedia: IsMedia, checkTs: CheckTs } = Resource;
 				const Handle = await Workspace.getFileHandle(Path, { create: true });
@@ -218,7 +223,7 @@ async function DownloadTrackResources(Sources, {
 					// 부분 조각은 시퀀스 순서대로 같은 임시 파일에 씁니다. 실패하면 전체 그룹 쓰기를 되돌려 재시도합니다.
 					for (const Part of Resource.parts ?? [Resource])
 					{
-						await CopyHlsResource(Part, RuntimePolicy.Transfer.MaxSegmentBytes - Written, TransferSignal, async Chunk =>
+						await CopyHlsResource(Part, RuntimePolicy.Transfer.MaxSegmentBytes - Written, ResourceSignal, async Chunk =>
 						{
 							if (CheckTs && !HasTransportStreamSync(Chunk, Written))
 							{
@@ -315,23 +320,29 @@ async function DownloadTrackResources(Sources, {
 			break;
 		}
 	}
+	} catch (ErrorValue) {
+		Signal.throwIfAborted();
+		const RemoteEnded = ErrorValue instanceof RetryableTransferError ||
+			(ErrorValue instanceof HlsHttpError && [403, 404, 410].includes(ErrorValue.status)) ||
+			ErrorValue.key === 'stream_live_segment_expired';
+		if (!Live || !RemoteEnded || !Finished) throw ErrorValue;
+		Interruption = ErrorValue;
+	}
 
 	const CapturedSnapshot=Capture?await Capture.selectCommitted():null;
 	await Writes;
-	const SelectedSnapshot=FinishSignal.aborted?(Capture?CapturedSnapshot:ReadCommittedSnapshot(Tracks,Committed)):{video:Tracks[0].saved,audio:Tracks[1]?.saved};
-	if(!SelectedSnapshot)throw new LocalizedError('stream_no_segments');
+	Signal.throwIfAborted();
+	const Reason = FinishSignal.aborted ? 'finish' : Interruption ? 'interrupted' : 'eof';
+	const SelectedSnapshot=Reason!=='eof'?(Capture?CapturedSnapshot:ReadCommittedSnapshot(Tracks,Committed)):{video:Tracks[0].saved,audio:Tracks[1]?.saved};
+	if(!SelectedSnapshot)throw Interruption ?? new LocalizedError('stream_no_segments');
 	const SelectedByTrack=SelectedSnapshot.selectedByTrack||Object.fromEntries(Tracks.map((T,I)=>[T.id,(I===0?SelectedSnapshot.video:SelectedSnapshot.audio).map(S=>S.id)]));
 	const FinalCapture=Capture?.freezeSelection(SelectedByTrack);
-	Capture?.seal({reason:FinishSignal.aborted?'finish':'eof',selectedByTrack:SelectedByTrack});
-	if (FinishSignal.aborted)
+	Capture?.seal({reason:Reason,selectedByTrack:SelectedByTrack});
+	if (Reason !== 'eof')
 	{
 		const Snapshot = SelectedSnapshot;
-		if (!Snapshot)
-		{
-			throw new LocalizedError('stream_no_segments');
-		}
-		return {capture:FinalCapture,reason:'finish',video: LocalPlaylist(Snapshot.video), audio: Snapshot.audio && LocalPlaylist(Snapshot.audio),
-			progress: Snapshot.progress, partial: !Live && Snapshot.progress.finished < Count};
+		return {capture:FinalCapture,reason:Reason,video: LocalPlaylist(Snapshot.video), audio: Snapshot.audio && LocalPlaylist(Snapshot.audio),
+			progress: Snapshot.progress, partial: !!Interruption || !Live && Snapshot.progress.finished < Count};
 	}
 	return {capture:FinalCapture,reason:'eof',video: LocalPlaylist(Tracks[0].saved), audio: Tracks[1] && LocalPlaylist(Tracks[1].saved),
 		progress: { live: false, count: Count, received: Received, finished: Finished } };

@@ -183,7 +183,7 @@ export function CreateCandidateList({ root: Root, mediaPreview: MediaPreview, sc
 			const Supported = Result.candidates.filter(Item => Item.supported).length;
 			Announce(PermissionMessage ?? (Supported ? Translate('view_scan_found', CountFormat.format(Supported)) : Translate('view_scan_empty')));
 			const Signature = JSON.stringify([Tab.id, Result.candidates.map(Item => [Item.id, Item.mediaKey, Item.name,
-					Item.format, Item.supported, Item.serverPermission, Item.playlistPath, Item.live])]);
+					Item.format, Item.supported, Item.serverPermission, Item.sitePermission, Item.playlistPath, Item.live])]);
 			if (Signature === RenderSignature)
 			{
 				// 워커의 스캔 ID는 매 검사마다 바뀝니다. DOM과 호버 영상은 그대로 두되

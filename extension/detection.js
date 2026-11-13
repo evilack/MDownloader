@@ -409,7 +409,11 @@ export async function Scan(TabId, Scope)
 		{
 			const Variants = VariantsByDocument.get(Item.documentId);
 			const ObservedVariants = Item.variants?.map(Url => Variants?.get(Url)).filter(Boolean);
-			const Origin = (IsStreamFormat(Item.format) || Item.format === 'YOUTUBE') && HostPattern(Item.url);
+			// activeTab can discover a playing WebRTC track, but the quality observer
+			// needs site access before the page starts negotiating the stream.
+			const IsWebRtc = Item.format === 'WEBRTC';
+			const Origin = IsWebRtc ? HostPattern(Item.page) :
+				(IsStreamFormat(Item.format) || Item.format === 'YOUTUBE') && HostPattern(Item.url);
 			if (Origin && !LocalPermissions.has(Origin))
 			{
 				LocalPermissions.set(Origin, chrome.permissions.contains({ origins: [Origin] }));
@@ -417,15 +421,17 @@ export async function Scan(TabId, Scope)
 			const [ServerAllowed, MediaKey] = await Promise.all([
 				LocalPermissions.get(Origin), Item.supported ? MediaJobKey(Page, Item.sourceIdentity ? JSON.stringify(['playback', Item.sourceIdentity]) : Item.url) : undefined,
 			]);
-			const ServerPermission = Origin && !ServerAllowed ? Origin : undefined;
-			return { ...Item, observedVariants: ObservedVariants, serverPermission: ServerPermission, id: Id, mediaKey: MediaKey };
+			const MissingPermission = Origin && !ServerAllowed ? Origin : undefined;
+			return { ...Item, observedVariants: ObservedVariants, ...(IsWebRtc
+				? {sitePermission: MissingPermission} : {serverPermission: MissingPermission}), id: Id, mediaKey: MediaKey };
 		}));
 		const ScanId = crypto.randomUUID();
 		await chrome.storage.session.set({
 			[ScanStorageKey(TabId, Scope)]: { scanId: ScanId, documentId: DocumentId, page: Page, candidates: Candidates },
 		});
-		const MissingOrigins = Candidates.some(Item => Item.supported) ? [] :
-			await MissingScanOrigins(TabId, DocumentId, Page, PlayerFrames).catch(() => []);
+		const MissingOrigins = Candidates.some(Item => Item.supported)
+			? [...new Set(Candidates.map(Item => Item.sitePermission).filter(Boolean))]
+			: await MissingScanOrigins(TabId, DocumentId, Page, PlayerFrames).catch(() => []);
 		const Current = await CurrentScan(TabId, ScanId, Scope);
 		if (!Current)
 		{
@@ -441,8 +447,9 @@ export async function Scan(TabId, Scope)
 		}
 		return { scanId: ScanId, ...(MissingOrigins.length ? {missingOrigins: MissingOrigins} : {}),
 			candidates: Candidates.map(({ id: Id, name: Name, format: Format, supported: Supported, live: Live, dvr: Dvr, upcoming: Upcoming,
-			scheduledStartTime: ScheduledStartTime, serverPermission: ServerPermission, url: Url, mediaKey: MediaKey }) => ({
+			scheduledStartTime: ScheduledStartTime, serverPermission: ServerPermission, sitePermission: SitePermission, url: Url, mediaKey: MediaKey }) => ({
 				id: Id, name: Name, format: Format, supported: Supported, serverPermission: ServerPermission, mediaKey: MediaKey,
+				...(SitePermission ? {sitePermission: SitePermission} : {}),
 				...(Live !== undefined ? { live: Live } : {}),
 				...(Dvr !== undefined ? {dvr: Dvr} : {}),
 				...(Upcoming !== undefined ? {upcoming: Upcoming} : {}), ...(ScheduledStartTime ? {scheduledStartTime: ScheduledStartTime} : {}),

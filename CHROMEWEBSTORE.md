@@ -86,7 +86,8 @@ On 2026-11-12, an isolated Chrome for Testing profile loaded the packaged Chrome
 
 | Version | Date | Change | Status |
 |---|---|---|---|
-| 0.2.45 | 2026-11-14 | First-use guidance and a shortcut to Site permissions when site access is missing | Local changes, not submitted |
+| 0.2.46 | 2026-11-14 | Site access guidance for detected WebRTC streams and partial saves after live HLS interruptions | Prepared for review |
+| 0.2.45 | 2026-11-14 | First-use guidance and a shortcut to Site permissions when site access is missing | Submitted to Chrome and Edge |
 | 0.2.43 | 2026-11-11 | Reproducible Chrome, Edge and development packaging; Chrome provider removal with preserved policy notice | Local build, not submitted |
 
 Build verification is separate from browser installation, real-site acceptance and store approval. Edge packages retain the complete feature set but likewise have not been submitted or approved.

@@ -2,14 +2,15 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {CreateCandidateDownloadActions} from '../extension/candidate-download.js';
 
-function harness(t, selection, wait=async()=>{}, format='M3U8') {
+function harness(t, selection, wait=async()=>{}, format='M3U8', sitePermission) {
  class Node { constructor(){this.events={};this.dataset={};this.classList={add(){},toggle(){}};} addEventListener(n,fn){this.events[n]=fn;} replaceChildren(){} setAttribute(){} }
  globalThis.document={createElement:()=>new Node()};
  const sent=[]; globalThis.chrome={permissions:{request:async()=>true},runtime:{sendMessage:async m=>{sent.push(m);return {ok:true,data:m.type==='youtubeQualities'?[{quality:{videoId:'abcdefghijk',selection:{videoFormatId:'best'}}}]:{state:'started'}};}}};
  t.after(()=>{delete globalThis.document;delete globalThis.chrome;});
  let opened=0,closed=0,disposed=0; const options={open:async()=>{throw Error('Modal must not be used by candidate actions');},openInline:async()=>{opened++;return selection;},close:()=>closed++};
- const actions=CreateCandidateDownloadActions(()=>{},()=>{},wait,()=>options);
- return {actions,sent,button:actions.CreateDownloadButton({format},{tabId:1,scanId:'scan',candidateId:1},()=>true,()=>({container:{},dispose(){disposed++;}})),opened:()=>opened,closed:()=>closed,disposed:()=>disposed};
+ const announcements=[];
+ const actions=CreateCandidateDownloadActions(message=>announcements.push(message),()=>{},wait,()=>options);
+ return {actions,sent,announcements,button:actions.CreateDownloadButton({format,sitePermission},{tabId:1,scanId:'scan',candidateId:1},()=>true,()=>({container:{},dispose(){disposed++;}})),opened:()=>opened,closed:()=>closed,disposed:()=>disposed};
 }
 test('Shift-click opens download options and sends selected quality and subtitles to enqueue',async t=>{
  const selection={quality:{url:'https://cdn.test/low.m3u8'},subtitleOptions:{trackIds:['track'],translation:{enabled:false}}};
@@ -39,6 +40,16 @@ test('waits for a scan before opening options and prevents simultaneous requests
 test('WebRTC sends its server quality without treating it as a variant URL',async t=>{
  const selection={quality:{name:'source',session:'session'},subtitleOptions:{trackIds:[],translation:{enabled:false}}},h=harness(t,selection,undefined,'WEBRTC');
  await h.button.events.click({shiftKey:true});assert.deepEqual(h.sent[0].quality,{name:'source',session:'session'});assert.equal(h.sent[0].variantUrl,undefined);
+});
+test('WebRTC with temporary access redirects the user to the site access guidance before enqueue',async t=>{
+ const h=harness(t,null,undefined,'WEBRTC','https://player.test/*');
+ chrome.permissions.contains=async()=>false;
+ await h.button.events.click({shiftKey:false});
+ await h.button.events.click({shiftKey:true});
+ assert.deepEqual(h.announcements,['view_site_access_needed','view_site_access_needed']);
+ assert.equal(h.opened(),0);
+ assert.equal(h.sent.length,0);
+ assert.equal(h.button.disabled,false);
 });
 test('scheduled YouTube quality preserves the scheduled request without inventing subtitle options',async t=>{
  const quality={scheduled:true,videoId:'abcdefghijk'},h=harness(t,{quality:{scheduled:true,quality}},undefined,'YOUTUBE');

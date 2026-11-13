@@ -146,6 +146,31 @@ Test('an empty scan reports ungranted player and CDN origins without requesting 
 	Allowed.add('https://player.test/*').add('https://cdn.test/*');
 	Assert.equal((await Scan(7)).missingOrigins, undefined);
 });
+Test('reports missing persistent site access even when a WebRTC video was detected', async T =>
+{
+	const Page = 'https://player.test/live';
+	const State = {};
+	let Allowed = false;
+	globalThis.chrome = {
+		permissions: {contains: async () => Allowed},
+		storage: {session: {get: async Key => ({[Key]: State[Key]}), set: async Data => Object.assign(State, Data)}},
+		scripting: {executeScript: async ({target, func}) => {
+			if (func.name === 'WebRtcPageTask') return [{documentId: 'doc', result: {page: Page,
+				mimeType: 'video/mp4', streams: [{trackId: 'track', width: 1280, height: 720}]}}];
+			if (target.documentIds) return [{result: {page: Page, active: true}}];
+			return [{documentId: 'doc', result: {page: Page, sources: [], playlists: [], observerReady: true, liveStream: true}}];
+		}},
+	};
+	T.after(() => delete globalThis.chrome);
+	const Restricted = await Scan(7);
+	Assert.equal(Restricted.candidates[0].format, 'WEBRTC');
+	Assert.deepEqual(Restricted.missingOrigins, ['https://player.test/*']);
+	Assert.equal(Restricted.candidates[0].sitePermission, 'https://player.test/*');
+	Allowed = true;
+	const Granted = await Scan(7);
+	Assert.equal(Granted.candidates[0].sitePermission, undefined);
+	Assert.equal(Granted.missingOrigins, undefined);
+});
 Test('shows one HLS master while keeping its qualities and unrelated media available', async T =>
 {
 	const Page = 'https://player.test/watch';

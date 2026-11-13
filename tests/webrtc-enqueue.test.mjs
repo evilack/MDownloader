@@ -11,14 +11,16 @@ Test('the existing enqueue registers WebRTC before receiving and controls it fro
 		name: 'WebRTC-720x960.mp4', mimeType: 'video/mp4', supported: true, live: true, documentId: Doc, trackId: 'track',
 		url: 'webrtc:track', mediaKey: 'media', page: Page}]}};
 	const Local = {debugDownloads: false}, Controls = [];
-	let Prepared = false, TabsOpened = 0;
+	let Prepared = false, TabsOpened = 0, SiteAllowed = false;
 	const Captions=[{language:'en',label:'English',url:'https://captions.test/en.vtt?token=ephemeral-caption'}];
 	const Storage = Data => ({async get(Keys)
 	{
 		const Wanted = Keys == null ? Object.keys(Data) : Array.isArray(Keys) ? Keys : [Keys];
 		return Object.fromEntries(Wanted.filter(Key => Key in Data).map(Key => [Key, Data[Key]]));
 	}, async set(Values) { Object.assign(Data, Values); }, async remove(Key) { delete Data[Key]; }});
-	globalThis.chrome = {storage: {local: Storage(Local), session: Storage(Session)}, permissions: {contains: async () => true},
+	globalThis.chrome = {storage: {local: Storage(Local), session: Storage(Session)}, permissions: {
+		contains: async ({origins}) => !origins.includes('https://player.test/*') || SiteAllowed,
+	},
 		tabs: {async create() { TabsOpened++; }}, downloads: {search: async () => []},
 		runtime: {id: 'extension', getURL: Path => 'chrome-extension://extension/' + Path, getContexts: async () => [{}],
 			async sendMessage(Message)
@@ -61,6 +63,11 @@ Test('the existing enqueue registers WebRTC before receiving and controls it fro
 			return [{documentId: Doc, result: {page: Page, active: true, pageTitle: '방송 제목'}}];
 		}}};
 	T.after(() => { delete globalThis.chrome; });
+	await Assert.rejects(Enqueue({tabId: 18, scanId: 'scan', candidateId: 0, requestId: Id}),
+		{key: 'view_site_access_needed', args: ['https://player.test']});
+	Assert.equal(Local['job:' + Id], undefined);
+	Assert.equal(Prepared, false);
+	SiteAllowed = true;
 	Assert.equal((await Enqueue({tabId: 18, scanId: 'scan', candidateId: 0, requestId: Id})).state, 'started');
 	const [Job] = await ListJobs([Id]);
 	Assert.equal(Job.state, 'active');

@@ -30,6 +30,11 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 			UpdateCandidateDownloadButton(Button,{pending:true});
 			try
 			{
+				if (Candidate.sitePermission && !await chrome.permissions.contains({origins: [Candidate.sitePermission]}))
+				{
+					Announce(Translate('view_site_access_needed', Candidate.sitePermission.slice(0, -2)));
+					return;
+				}
 				const Origins=Candidate.format==='YOUTUBE' ? ['https://www.youtube.com/*','https://youtubei.googleapis.com/*',...(!WithOptions?['https://*.googlevideo.com/*']:[])] : Candidate.serverPermission ? [Candidate.serverPermission] : [];
 				if (Origins.length && !await chrome.permissions.request({origins:Origins}))
 				{
@@ -60,7 +65,7 @@ export function CreateCandidateDownloadActions(Announce, OnActionFinished, Await
 			catch(ErrorValue) {UpdateCandidateDownloadButton(Button,{queued:false});if(IsCurrent()) Announce(ErrorText(ErrorValue));}
 			finally {Placement?.dispose(); UpdateCandidateDownloadButton(Button,{pending:false}); ActiveActions--; OnActionFinished();}
 		},true);
-		return UpdateCandidateDownloadButton(Button,{permission:!!Candidate.serverPermission});
+		return UpdateCandidateDownloadButton(Button,{permission:!!(Candidate.serverPermission || Candidate.sitePermission)});
 	}
 	return {CreateDownloadButton,IsBusy:()=>ActiveActions>0,CloseQuality:()=>Options?.close()};
 }

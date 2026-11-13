@@ -202,6 +202,14 @@ async function StartJob(Key, { tabId: TabId, scanId: ScanId, candidateId: Candid
 	NormalizeHlsLiveStart(LiveStart);
 	await RecordDownloadLog('started', { requestId: RequestId });
 	const Item = await ResolveCandidate(TabId, ScanId, CandidateId, Scope);
+	if (Item.format === 'WEBRTC')
+	{
+		const Origin = HostPattern(Item.page);
+		if (Origin && !await chrome.permissions.contains({origins: [Origin]}))
+		{
+			throw new LocalizedError('view_site_access_needed', Origin.slice(0, -2));
+		}
+	}
 	const LocalCaptions=await SnapshotCaptionOptions(CaptionOverride || 'inherit',chrome,CaptionSettings);
 	if (SubtitleOptions)
 	{
