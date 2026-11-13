@@ -13,6 +13,8 @@ Edit `defaultVariant` in `website/homepage.json` and commit the change to `main`
 
 The fixed pages are public in both modes. Mark sections exclusive to the full version with `<!-- full-only -->` and `<!-- /full-only -->` in each language template.
 
+The same setting controls `donate.html` (English) and `donate-ko.html` (Korean). With `clean`, these URLs show the dedicated MDownloader support page. With `full`, they open the corresponding shared Ev-Cabinet support page. The dedicated pages are also available at `donate-md.html` and `donate-md-ko.html` in both modes.
+
 Run from the project root:
 
 ```powershell

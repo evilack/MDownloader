@@ -41,4 +41,27 @@ for (const Variant of Variants)
 		}
 	}
 }
-console.log('Built both homepage variants. Main homepage: ' + DefaultVariant);
+
+for (const Suffix of ['', '-ko'])
+{
+	const File = 'donate' + Suffix + '.html';
+	const Language = Suffix ? 'ko' : 'en';
+	const Label = Suffix ? 'Ev-Cabinet 공용 후원 페이지 열기' : 'Open the Ev-Cabinet support page';
+	const SharedUrl = 'https://evilack.github.io/' + File + '?lang=' + Language;
+	const DedicatedPage = await readFile(join(Source, 'donate-md' + Suffix + '.html'), 'utf8');
+	const Page = DefaultVariant === 'clean'
+		? DedicatedPage.replace(/href="donate-md(?=\.html|-ko\.html)/g, 'href="donate')
+		: `<!doctype html>
+<html lang="${Language}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="0; url=${SharedUrl}">
+  <title>${Label}</title>
+</head>
+<body><main><a href="${SharedUrl}">${Label}</a></main></body>
+</html>
+`;
+	await writeFile(join(Output, File), Page);
+}
+console.log('Built both homepage variants. Main homepage and support mode: ' + DefaultVariant);
