@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'website/**'
+      - 'tools/build/build-website-pages.mjs'
       - '.github/workflows/deploy-website.yml'
   workflow_dispatch:
 
@@ -33,10 +34,18 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Build both homepage variants
+        run: node tools/build/build-website-pages.mjs _site
+
       - name: Upload website
         uses: actions/upload-pages-artifact@v4
         with:
-          path: website
+          path: _site
 
       - name: Deploy website
         id: deployment

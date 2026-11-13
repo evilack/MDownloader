@@ -17,12 +17,12 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <a class="brand" href="./"><img src="assets/icon.png" alt="" width="32" height="32"><span>MDownloader</span></a>
-    <nav aria-label="Main navigation"><a href="#features">Features</a><a href="#guide">Get started</a><a href="#faq">FAQ</a><a class="language-link" href="index-ko.html?lang=ko" lang="ko" hreflang="ko">한국어</a></nav>
+    <nav aria-label="Main navigation"><a href="#features">Features</a><a href="#guide">Get started</a><a href="#faq">FAQ</a><!-- full-only --><a class="support-nav" href="https://evilack.github.io/donate.html">Support <span aria-hidden="true">↗</span></a><!-- /full-only --><a class="language-link" href="index-ko.html?lang=ko" lang="ko" hreflang="ko">한국어</a></nav>
   </header>
   <main id="main">
     <section class="hero product-hero" aria-labelledby="hero-title">
       <div class="hero-title"><p class="eyebrow"><span></span> Media downloader · Chrome &amp; Edge</p><h1 id="hero-title">Find your media.<br><em>Save it with ease.</em></h1></div>
-      <div class="hero-copy"><p>From video and audio on the web<br class="desktop-break"> to supported streams and live broadcasts.<br>Choose a quality. Save with subtitles.</p><div class="hero-actions"><button class="button button-primary" data-store="chrome"><span class="browser-symbol" aria-hidden="true">◉</span> Add to Chrome <span aria-hidden="true">↗</span></button><button class="button button-outline" data-store="edge"><span class="browser-symbol" aria-hidden="true">◔</span> Add to Edge <span aria-hidden="true">↗</span></button></div><p class="release-note">Available on the Chrome Web Store</p></div>
+      <div class="hero-copy"><p>From video and audio on the web<br class="desktop-break"> to supported streams and live broadcasts.<br>Choose a quality. Save with subtitles.</p><div class="hero-actions"><button class="button button-primary" data-store="chrome"><span class="browser-symbol" aria-hidden="true">◉</span> Add to Chrome <span aria-hidden="true">↗</span></button><button class="button button-outline" data-store="edge"><span class="browser-symbol" aria-hidden="true">◔</span> Add to Edge <span aria-hidden="true">↗</span></button></div><p class="release-note">Available on the Chrome Web Store<!-- full-only --> · <a href="#development">Development ZIP</a><!-- /full-only --></p></div>
     </section>
 
     <section class="showcase" aria-labelledby="preview-title">
@@ -59,7 +59,12 @@
       </div>
     </section>
 
-    <section class="guide-section" id="guide" aria-labelledby="guide-title">
+<!-- full-only -->    <section class="guide-section" id="development" aria-labelledby="development-title">
+      <div><p class="section-kicker">Development build</p><h2 id="development-title">Install the development build</h2><p class="muted">A manual-install package for development and testing. Available features and installation may differ from store distributions.</p></div>
+      <div class="development-copy"><p class="muted">Extract the archive, enable Developer mode in your browser and load the <code>extension</code> folder. Keep the folder while using the extension.</p><p class="muted">Open <code>chrome://extensions</code> or <code>edge://extensions</code> and select <strong>Load unpacked</strong>. Updates are manual. Finish active jobs before replacing files and reloading the extension.</p><div class="development-actions"><a class="button button-outline" href="downloads/MDownloader-development.zip" download>Development ZIP</a></div></div>
+    </section>
+
+<!-- /full-only -->    <section class="guide-section" id="guide" aria-labelledby="guide-title">
       <div><p class="section-kicker">Getting started</p><h2 id="guide-title">How to use MDownloader</h2><p class="muted">Requires Chrome 116 or later, or a compatible current Edge. Basic media downloads run in the browser. Speech captions and some file integration features use an optional helper.</p></div>
       <ol class="steps">
         <li><span>01</span><div><h3>Allow access and play</h3><p>Allow access under <strong>Site permissions</strong> in Options, then play the media.</p></div></li>
@@ -89,14 +94,17 @@
     <section class="faq-section" id="faq" aria-labelledby="faq-title"><div><p class="section-kicker">Good to know</p><h2 id="faq-title">A few things to know.</h2></div><div class="faq-list">
       <details open><summary>Can I download videos from every site?</summary><p>Availability depends on media delivery, sign-in status, permissions and codecs. DRM-protected content, unsupported encryption and live DASH are not supported. Compatible HLS with accessible identity AES keys can be processed.</p></details>
       <details><summary>Which formats are supported?</summary><p>Direct video files such as MP4 and WebM, audio such as MP3 and M4A, supported HLS and static unencrypted DASH, and WebRTC from configured signaling services. This does not record every playing video on every site.</p></details>
-      <details><summary>How do embedded subtitles and speech captions differ?</summary><p>Original subtitle embedding fetches supported captions supplied with the media and adds them to MP4. Speech captions recognize audio using a separately prepared local engine and model. Translation uses your configured external service, whose authentication and pricing terms may apply.</p></details>
+<!-- full-only -->      <details><summary>How do I install and update the development build?</summary><p>Extract the ZIP, enable Developer mode and load the extension folder. Updates are manual. <a href="#development">Development installation details</a></p></details>
+<!-- /full-only -->      <details><summary>How do embedded subtitles and speech captions differ?</summary><p>Original subtitle embedding fetches supported captions supplied with the media and adds them to MP4. Speech captions recognize audio using a separately prepared local engine and model. Translation uses your configured external service, whose authentication and pricing terms may apply.</p></details>
       <details><summary>Do I need to install another program?</summary><p>Basic downloads do not need a separate downloader. Local speech captions use an optional helper, engine and model. On Windows, Show in folder for files saved directly to a chosen folder also needs the helper and an initial folder connection. Browser or operating system confirmations may appear during setup.</p></details>
       <details><summary>What if a download fails?</summary><p>Check page and media server access, sign-in status and expired links, then play or refresh the page and retry. The extension’s issue report lets you review and send the page address and issue types. A failed preview alone does not mean the download will fail.</p></details>
-    </div></section>
+<!-- full-only -->      <details><summary>Do I need to contribute to use it?</summary><p>No. Contributions are optional and do not change the available features. You are welcome to contribute if you would like to support development.</p></details>
+<!-- /full-only -->    </div></section>
 
-    <p class="usage-note">Use with content you own or have permission to download.</p>
+<!-- full-only -->    <section class="support-banner"><div><p class="section-kicker">Built independently, supported together</p><h2>Finding it useful?</h2><p>A small contribution helps keep improvements coming.</p></div><a class="button button-primary" href="https://evilack.github.io/donate.html">Support development <span aria-hidden="true">↗</span></a></section>
+<!-- /full-only -->    <p class="usage-note">Use with content you own or have permission to download.</p>
   </main>
-  <footer><span>© 2026 MDownloader · Built with care in Seoul.</span><a href="privacy.html">Privacy policy</a></footer>
+  <footer><!-- full-only --><a href="https://evilack.github.io/">EV &nbsp; Ev-Cabinet <span aria-hidden="true">↗</span></a><!-- /full-only --><span>© 2026 MDownloader · Built with care in Seoul.</span><!-- full-only --><a href="https://evilack.github.io/donate.html">Support</a><!-- /full-only --><a href="privacy.html">Privacy policy</a></footer>
   <dialog id="notice-dialog" aria-labelledby="notice-title"><button class="dialog-close" aria-label="Close">×</button><p class="section-kicker">MDownloader</p><h2 id="notice-title">Coming soon.</h2><p id="notice-body"></p><button class="button button-primary dialog-confirm">OK</button></dialog>
 </body>
 </html>

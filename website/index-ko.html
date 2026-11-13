@@ -17,12 +17,12 @@
   <a class="skip-link" href="#main">본문으로 바로가기</a>
   <header class="site-header">
     <a class="brand" href="index-ko.html"><img src="assets/icon.png" alt="" width="32" height="32"><span>MDownloader</span></a>
-    <nav aria-label="주요 메뉴"><a href="#features">기능</a><a href="#guide">사용 방법</a><a href="#faq">FAQ</a><a class="language-link" href="index.html?lang=en" lang="en" hreflang="en">EN</a></nav>
+    <nav aria-label="주요 메뉴"><a href="#features">기능</a><a href="#guide">사용 방법</a><a href="#faq">FAQ</a><!-- full-only --><a class="support-nav" href="https://evilack.github.io/donate.html">개발 후원 <span aria-hidden="true">↗</span></a><!-- /full-only --><a class="language-link" href="index.html?lang=en" lang="en" hreflang="en">EN</a></nav>
   </header>
   <main id="main">
     <section class="hero product-hero" aria-labelledby="hero-title">
       <div class="hero-title"><p class="eyebrow"><span></span> Media downloader · Chrome &amp; Edge</p><h1 id="hero-title">모든 미디어를<br><em>간편하게 저장하세요.</em></h1></div>
-      <div class="hero-copy"><p>웹페이지의 영상과 오디오부터<br class="desktop-break"> 지원되는 스트림과 라이브까지.<br>화질을 고르고, 자막과 함께 저장하세요.</p><div class="hero-actions"><button class="button button-primary" data-store="chrome"><span class="browser-symbol" aria-hidden="true">◉</span> Chrome에 추가 <span aria-hidden="true">↗</span></button><button class="button button-outline" data-store="edge"><span class="browser-symbol" aria-hidden="true">◔</span> Edge에 추가 <span aria-hidden="true">↗</span></button></div><p class="release-note">Chrome 웹 스토어 출시</p></div>
+      <div class="hero-copy"><p>웹페이지의 영상과 오디오부터<br class="desktop-break"> 지원되는 스트림과 라이브까지.<br>화질을 고르고, 자막과 함께 저장하세요.</p><div class="hero-actions"><button class="button button-primary" data-store="chrome"><span class="browser-symbol" aria-hidden="true">◉</span> Chrome에 추가 <span aria-hidden="true">↗</span></button><button class="button button-outline" data-store="edge"><span class="browser-symbol" aria-hidden="true">◔</span> Edge에 추가 <span aria-hidden="true">↗</span></button></div><p class="release-note">Chrome 웹 스토어 출시<!-- full-only --> · <a href="#development">개발판 ZIP</a><!-- /full-only --></p></div>
     </section>
 
     <section class="showcase" aria-labelledby="preview-title">
@@ -59,7 +59,12 @@
       </div>
     </section>
 
-    <section class="guide-section" id="guide" aria-labelledby="guide-title">
+<!-- full-only -->    <section class="guide-section" id="development" aria-labelledby="development-title">
+      <div><p class="section-kicker">Development build</p><h2 id="development-title">개발판 설치 및 업데이트</h2></div>
+      <div class="development-copy"><p class="muted">ZIP을 압축 해제하고 <code>chrome://extensions</code> 또는 <code>edge://extensions</code>에서 <strong>개발자 모드</strong>를 켜세요. <strong>압축해제된 확장 프로그램 로드</strong>를 눌러 <code>extension</code> 폴더를 선택하세요.</p><p class="muted">스토어 버전은 배포 정책에 따라 일부 플랫폼의 기능이 제공되지 않을 수 있습니다. 개발·테스트용 기능을 이용하려면 아래 <strong>홈페이지 전용 개발 패키지(ZIP)</strong>를 받아 수동으로 설치해 주세요.</p><p class="muted">지원 여부는 사이트의 제공 방식과 접근 권한에 따라 달라지며, 개발판 업데이트는 새 패키지를 받아 직접 적용하는 방식입니다.</p><div class="development-actions"><a class="button button-outline" href="downloads/MDownloader-development.zip" download>개발판 ZIP</a></div></div>
+    </section>
+
+<!-- /full-only -->    <section class="guide-section" id="guide" aria-labelledby="guide-title">
       <div><p class="section-kicker">Getting started</p><h2 id="guide-title">MDownloader 사용 방법</h2><p class="muted">Chrome 116 이상 또는 호환되는 최신 Edge가 필요합니다. 기본 미디어 다운로드는 브라우저에서 실행하며, 음성 자막 생성과 일부 파일 연결 기능은 선택적 도우미를 사용합니다.</p></div>
       <ol class="steps">
         <li><span>01</span><div><h3>권한 허용 후 재생</h3><p>설정의 <strong>사이트 권한</strong>에서 접근을 허용한 뒤 영상을 재생하세요.</p></div></li>
@@ -89,14 +94,17 @@
     <section class="faq-section" id="faq" aria-labelledby="faq-title"><div><p class="section-kicker">Good to know</p><h2 id="faq-title">궁금한 점이 있나요?</h2></div><div class="faq-list">
       <details open><summary>모든 사이트의 영상을 저장할 수 있나요?</summary><p>사이트의 제공 방식, 로그인 상태, 접근 권한과 코덱에 따라 달라집니다. DRM 콘텐츠·지원하지 않는 암호화·라이브 DASH는 지원하지 않습니다. 정상 접근 가능한 identity AES 키를 제공하는 지원 HLS는 처리합니다.</p></details>
       <details><summary>어떤 형식을 지원하나요?</summary><p>MP4·WebM 등 영상과 MP3·M4A 등 오디오 직접 파일, 지원 HLS·정적 비암호화 DASH, 등록된 시그널링 서비스의 WebRTC를 처리합니다. 모든 사이트의 재생 화면을 녹화하는 기능은 아닙니다.</p></details>
-      <details><summary>자막 내장과 음성 자막 생성은 어떻게 다른가요?</summary><p>원본 자막 내장은 영상에 제공되는 지원 자막을 받아 MP4에 넣습니다. 음성 자막 생성은 별도로 준비한 로컬 엔진·모델로 음성을 인식합니다. 번역은 설정한 외부 서비스를 사용하며 서비스별 인증·요금 조건이 적용될 수 있습니다.</p></details>
+<!-- full-only -->      <details><summary>개발판은 어떻게 설치하고 업데이트하나요?</summary><p>ZIP을 압축 해제한 뒤 브라우저의 개발자 모드에서 extension 폴더를 불러오세요. 업데이트는 수동으로 진행합니다. <a href="#development">개발판 설치 안내</a></p></details>
+<!-- /full-only -->      <details><summary>자막 내장과 음성 자막 생성은 어떻게 다른가요?</summary><p>원본 자막 내장은 영상에 제공되는 지원 자막을 받아 MP4에 넣습니다. 음성 자막 생성은 별도로 준비한 로컬 엔진·모델로 음성을 인식합니다. 번역은 설정한 외부 서비스를 사용하며 서비스별 인증·요금 조건이 적용될 수 있습니다.</p></details>
       <details><summary>별도 프로그램을 설치해야 하나요?</summary><p>기본 다운로드에는 별도 다운로더가 필요하지 않습니다. 로컬 음성 자막은 선택적 도우미·엔진·모델을 사용합니다. Windows에서 선택 폴더로 직접 저장한 파일의 ‘폴더에서 보기’에도 도우미와 최초 폴더 연결이 필요합니다. 설치 과정에는 브라우저·운영체제 확인이 표시될 수 있습니다.</p></details>
       <details><summary>다운로드가 안 되면 어떻게 하나요?</summary><p>페이지·미디어 서버 권한, 로그인과 링크 만료 여부를 확인하고 재생·새로고침 후 다시 시도하세요. 확장 안의 문제 신고에서 페이지 주소와 문제 유형을 확인해 전송할 수 있습니다. 미리보기 실패만으로 다운로드 실패가 확정되지는 않습니다.</p></details>
-    </div></section>
+<!-- full-only -->      <details><summary>후원해야 사용할 수 있나요?</summary><p>아니요. 후원은 선택 사항이며 후원 여부에 따른 기능 차이는 없습니다. 개발을 응원하고 싶을 때 자유롭게 참여해 주세요.</p></details>
+<!-- /full-only -->    </div></section>
 
-    <p class="usage-note">본인이 소유하거나 다운로드 권한을 가진 콘텐츠에 사용해 주세요.</p>
+<!-- full-only -->    <section class="support-banner"><div><p class="section-kicker">Built independently, supported together</p><h2>유용하게 쓰고 계신가요?</h2><p>작은 후원이 꾸준한 개선을 이어가는 힘이 됩니다.</p></div><a class="button button-primary" href="https://evilack.github.io/donate.html">개발 후원하기 <span aria-hidden="true">↗</span></a></section>
+<!-- /full-only -->    <p class="usage-note">본인이 소유하거나 다운로드 권한을 가진 콘텐츠에 사용해 주세요.</p>
   </main>
-  <footer><span>© 2026 MDownloader · Built with care in Seoul.</span><a href="privacy-ko.html">개인정보처리방침</a></footer>
+  <footer><!-- full-only --><a href="https://evilack.github.io/">EV &nbsp; Ev-Cabinet <span aria-hidden="true">↗</span></a><!-- /full-only --><span>© 2026 MDownloader · Built with care in Seoul.</span><!-- full-only --><a href="https://evilack.github.io/donate.html">개발 후원</a><!-- /full-only --><a href="privacy-ko.html">개인정보처리방침</a></footer>
   <dialog id="notice-dialog" aria-labelledby="notice-title"><button class="dialog-close" aria-label="닫기">×</button><p class="section-kicker">MDownloader</p><h2 id="notice-title">연결 준비 중입니다.</h2><p id="notice-body"></p><button class="button button-primary dialog-confirm">확인</button></dialog>
 </body>
 </html>

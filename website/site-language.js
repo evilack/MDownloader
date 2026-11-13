@@ -4,6 +4,8 @@
 	const StorageKey = 'ev-cabinet-language';
 	const Families = {
 		product: { ko: 'index-ko.html', en: 'index.html' },
+		'product-clean': { ko: 'index-clean-ko.html', en: 'index-clean.html' },
+		'product-full': { ko: 'index-full-ko.html', en: 'index-full.html' },
 		sample: { ko: 'index-ko.html', en: 'index.html' },
 	};
 	const Pages = Families[document.documentElement.dataset.page];
