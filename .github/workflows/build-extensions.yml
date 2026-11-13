@@ -46,8 +46,10 @@ jobs:
         with:
           name: MDownloader-distributions
           path: |
-            artifacts/distributions/*/MDownloader-*.zip
-            artifacts/distributions/*/build.json
+            artifacts/distributions/chrome-store/MDownloader-chrome-store-*.zip
+            artifacts/distributions/chrome-store/build.json
+            artifacts/distributions/development/MDownloader-development-*.zip
+            artifacts/distributions/development/build.json
           if-no-files-found: error
           compression-level: 0
 
@@ -72,7 +74,7 @@ jobs:
         run: |
           version="${GITHUB_REF_NAME#v}"
           packages=()
-          for flavor in chrome-store edge-store development; do
+          for flavor in chrome-store development; do
             package="distributions/$flavor/MDownloader-$flavor-$version.zip"
             if [[ ! -s "$package" ]]; then
               echo "Missing distribution: $package" >&2
