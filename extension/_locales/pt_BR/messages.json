@@ -79,13 +79,13 @@
     "message": "Abra as opções da extensão e conceda acesso à pasta de downloads selecionada."
   },
   "action_title": {
-    "message": "MDownloader · Página atual"
+    "message": "M Downloader · Página atual"
   },
   "candidate_changed": {
     "message": "A página ou a mídia mudou. Verifique novamente."
   },
   "candidate_no_access": {
-    "message": "O MDownloader não tem permissão para detectar o endereço da mídia. Verifique novamente."
+    "message": "O M Downloader não tem permissão para detectar o endereço da mídia. Verifique novamente."
   },
   "extension_description": {
     "message": "Encontre arquivos de vídeo e áudio e transmissões HLS e DASH. Gerencie os downloads no painel lateral."
@@ -142,7 +142,7 @@
     "message": "Opções"
   },
   "html_options_title": {
-    "message": "MDownloader · Opções"
+    "message": "M Downloader · Opções"
   },
   "html_playback_heading": {
     "message": "Salvar dados de reprodução"
@@ -151,10 +151,10 @@
     "message": "Informe o URL do HLS, inicie a captura e reproduza o vídeo desde o início na aba atual. Depois de capturar todos os segmentos, você poderá salvar o vídeo como MP4."
   },
   "html_playback_title": {
-    "message": "MDownloader · Salvar dados de reprodução"
+    "message": "M Downloader · Salvar dados de reprodução"
   },
   "html_popup_title": {
-    "message": "MDownloader · Página atual"
+    "message": "M Downloader · Página atual"
   },
   "html_rescan": {
     "message": "Buscar novamente"
@@ -169,7 +169,7 @@
     "message": "Procurando mídias nesta página…"
   },
   "html_sidepanel_title": {
-    "message": "MDownloader · Gerenciador de downloads"
+    "message": "M Downloader · Gerenciador de downloads"
   },
   "html_start_capture": {
     "message": "Iniciar captura"
@@ -801,7 +801,7 @@
     "message": "Clique para remover a entrada da lista. Mantenha Shift pressionado ao clicar para excluir também o arquivo salvo de um download concluído."
   },
   "view_devtools_panel": {
-    "message": "MDownloader"
+    "message": "M Downloader"
   },
   "view_diagnostics": {
     "message": "Diagnóstico de downloads"
@@ -826,7 +826,7 @@
     }
   },
   "view_diagnostics_title": {
-    "message": "MDownloader · Diagnóstico de downloads"
+    "message": "M Downloader · Diagnóstico de downloads"
   },
   "view_download": {
     "message": "Baixar (Shift+clique: opções)"
@@ -980,10 +980,10 @@
     "message": "Não foi possível abrir a página de opções."
   },
   "view_panel_failed": {
-    "message": "Não foi possível abrir o painel lateral. Selecione MDownloader no menu desse painel."
+    "message": "Não foi possível abrir o painel lateral. Selecione M Downloader no menu desse painel."
   },
   "view_panel_use_menu": {
-    "message": "Selecione MDownloader no menu do painel lateral do navegador."
+    "message": "Selecione M Downloader no menu do painel lateral do navegador."
   },
   "view_permission_denied": {
     "message": "O acesso ao servidor de vídeo não foi concedido."

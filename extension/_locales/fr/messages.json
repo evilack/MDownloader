@@ -79,13 +79,13 @@
     "message": "Ouvrez les options de l’extension et autorisez l’accès au dossier de téléchargement sélectionné."
   },
   "action_title": {
-    "message": "MDownloader · Page actuelle"
+    "message": "M Downloader · Page actuelle"
   },
   "candidate_changed": {
     "message": "La page ou le média a changé. Relancez l’analyse."
   },
   "candidate_no_access": {
-    "message": "MDownloader n’a pas l’autorisation de détecter l’URL du média. Relancez l’analyse."
+    "message": "M Downloader n’a pas l’autorisation de détecter l’URL du média. Relancez l’analyse."
   },
   "extension_description": {
     "message": "Détectez les fichiers vidéo et audio et les flux HLS et DASH. Gérez les téléchargements dans le panneau latéral."
@@ -142,7 +142,7 @@
     "message": "Options"
   },
   "html_options_title": {
-    "message": "MDownloader · Options"
+    "message": "M Downloader · Options"
   },
   "html_playback_heading": {
     "message": "Enregistrer les données de lecture"
@@ -151,10 +151,10 @@
     "message": "Saisissez l’URL HLS, lancez la capture, puis lisez la vidéo depuis le début dans l’onglet actif. Une fois tous les segments capturés, vous pourrez enregistrer la vidéo au format MP4."
   },
   "html_playback_title": {
-    "message": "MDownloader · Enregistrer les données de lecture"
+    "message": "M Downloader · Enregistrer les données de lecture"
   },
   "html_popup_title": {
-    "message": "MDownloader · Page active"
+    "message": "M Downloader · Page active"
   },
   "html_rescan": {
     "message": "Relancer la recherche"
@@ -169,7 +169,7 @@
     "message": "Recherche de contenus multimédias sur cette page…"
   },
   "html_sidepanel_title": {
-    "message": "MDownloader · Gestionnaire de téléchargements"
+    "message": "M Downloader · Gestionnaire de téléchargements"
   },
   "html_start_capture": {
     "message": "Démarrer la capture"
@@ -801,7 +801,7 @@
     "message": "Cliquez pour retirer l’entrée de la liste. Maintenez Maj en cliquant pour supprimer aussi le fichier d’un téléchargement terminé."
   },
   "view_devtools_panel": {
-    "message": "MDownloader"
+    "message": "M Downloader"
   },
   "view_diagnostics": {
     "message": "Diagnostic des téléchargements"
@@ -826,7 +826,7 @@
     }
   },
   "view_diagnostics_title": {
-    "message": "MDownloader · Diagnostic des téléchargements"
+    "message": "M Downloader · Diagnostic des téléchargements"
   },
   "view_download": {
     "message": "Télécharger (Maj+clic : options)"
@@ -980,10 +980,10 @@
     "message": "Impossible d’ouvrir la page des options."
   },
   "view_panel_failed": {
-    "message": "Impossible d’ouvrir le panneau latéral. Sélectionnez MDownloader dans son menu."
+    "message": "Impossible d’ouvrir le panneau latéral. Sélectionnez M Downloader dans son menu."
   },
   "view_panel_use_menu": {
-    "message": "Sélectionnez MDownloader dans le menu du panneau latéral du navigateur."
+    "message": "Sélectionnez M Downloader dans le menu du panneau latéral du navigateur."
   },
   "view_permission_denied": {
     "message": "L’accès au serveur vidéo n’a pas été autorisé."

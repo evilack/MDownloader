@@ -14,7 +14,8 @@ test('flavor is mandatory, independent packages exclude executable YouTube files
  const SourceFiles=await DistributionFiles('extension');
  const SourceHashes=await Promise.all(SourceFiles.map(async Name=>[Name,createHash('sha256').update(await readFile('extension/'+Name)).digest('hex')]));
  assert.notEqual(run('tools/build/package-extension.mjs', '--flavor', 'manual').status, 0);
- for (const flavor of ['development', 'chrome-store', 'edge-store']) {
+ assert.notEqual(run('tools/build/package-extension.mjs', '--flavor', 'edge-store').status, 0);
+ for (const flavor of ['development', 'chrome-store']) {
   const result = run('tools/build/package-extension.mjs', '--flavor', flavor);
   assert.equal(result.status, 0, result.stderr);
   const root = `artifacts/distributions/${flavor}/extension`;

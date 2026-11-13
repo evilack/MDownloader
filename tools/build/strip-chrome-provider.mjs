@@ -61,7 +61,7 @@ for (const File of await DistributionFiles(Root)) {
  if (File === 'options.html') {
   let Source = await readFile(Destination,'utf8');
   Source = Source.replace(/<div class="toggle-row" id="youtube-caption-settings"[\s\S]*?<\/div><p id="youtube-caption-settings-status"[\s\S]*?<\/p><p id="youtube-auto-captions-help"[\s\S]*?<\/p>/,'');
-  Source = Source.replace('개발판에서는 YouTube 다운로드를 사용할 수 있습니다.','이 배포판에서는 YouTube 다운로드를 지원하지 않습니다.').replace('id="about-build">개발판 · 수동 설치','id="about-build">Chrome 웹 스토어판');
+  Source = Source.replace('개발판에서는 YouTube 다운로드를 사용할 수 있습니다.','이 배포판에서는 YouTube 다운로드를 지원하지 않습니다.').replace('id="about-build">개발판 · 수동 설치','id="about-build">공통 스토어판');
   await writeFile(Destination,Source); continue;
  }
  if (File === 'lib/youtube-source-policy.js') {

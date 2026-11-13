@@ -79,13 +79,13 @@
     "message": "एक्सटेंशन के विकल्प खोलें और चुने गए डाउनलोड फ़ोल्डर का ऐक्सेस दें।"
   },
   "action_title": {
-    "message": "MDownloader · मौजूदा पेज"
+    "message": "M Downloader · मौजूदा पेज"
   },
   "candidate_changed": {
     "message": "पेज या मीडिया बदल गया है। फिर से स्कैन करें।"
   },
   "candidate_no_access": {
-    "message": "MDownloader को मीडिया URL की निगरानी की अनुमति नहीं है। फिर से स्कैन करें।"
+    "message": "M Downloader को मीडिया URL की निगरानी की अनुमति नहीं है। फिर से स्कैन करें।"
   },
   "extension_description": {
     "message": "वीडियो और ऑडियो फ़ाइलें तथा HLS और DASH स्ट्रीम ढूँढें। साइड पैनल में डाउनलोड प्रबंधित करें।"
@@ -142,7 +142,7 @@
     "message": "विकल्प"
   },
   "html_options_title": {
-    "message": "MDownloader · विकल्प"
+    "message": "M Downloader · विकल्प"
   },
   "html_playback_heading": {
     "message": "प्लेबैक डेटा सहेजें"
@@ -151,10 +151,10 @@
     "message": "HLS URL डालें, कैप्चर शुरू करें और मौजूदा टैब में वीडियो शुरू से चलाएँ। सभी खंड कैप्चर हो जाने पर वीडियो को MP4 के रूप में सहेज सकते हैं।"
   },
   "html_playback_title": {
-    "message": "MDownloader · प्लेबैक डेटा सहेजें"
+    "message": "M Downloader · प्लेबैक डेटा सहेजें"
   },
   "html_popup_title": {
-    "message": "MDownloader · मौजूदा पेज"
+    "message": "M Downloader · मौजूदा पेज"
   },
   "html_rescan": {
     "message": "फिर से खोजें"
@@ -169,7 +169,7 @@
     "message": "इस पेज पर मीडिया खोजा जा रहा है…"
   },
   "html_sidepanel_title": {
-    "message": "MDownloader · डाउनलोड प्रबंधक"
+    "message": "M Downloader · डाउनलोड प्रबंधक"
   },
   "html_start_capture": {
     "message": "कैप्चर शुरू करें"
@@ -801,7 +801,7 @@
     "message": "सूची से एंट्री हटाने के लिए क्लिक करें। पूरा हो चुके डाउनलोड की सेव की गई फ़ाइल भी हटाने के लिए Shift दबाकर क्लिक करें।"
   },
   "view_devtools_panel": {
-    "message": "MDownloader"
+    "message": "M Downloader"
   },
   "view_diagnostics": {
     "message": "डाउनलोड की जाँच"
@@ -826,7 +826,7 @@
     }
   },
   "view_diagnostics_title": {
-    "message": "MDownloader · डाउनलोड की जाँच"
+    "message": "M Downloader · डाउनलोड की जाँच"
   },
   "view_download": {
     "message": "डाउनलोड (Shift+क्लिक: डाउनलोड विकल्प)"
@@ -980,10 +980,10 @@
     "message": "सेटिंग पेज नहीं खुल सका।"
   },
   "view_panel_failed": {
-    "message": "साइड पैनल नहीं खुल सका। ब्राउज़र के साइड पैनल मेन्यू में MDownloader चुनें।"
+    "message": "साइड पैनल नहीं खुल सका। ब्राउज़र के साइड पैनल मेन्यू में M Downloader चुनें।"
   },
   "view_panel_use_menu": {
-    "message": "ब्राउज़र के साइड पैनल मेन्यू में MDownloader चुनें।"
+    "message": "ब्राउज़र के साइड पैनल मेन्यू में M Downloader चुनें।"
   },
   "view_permission_denied": {
     "message": "वीडियो सर्वर का ऐक्सेस नहीं मिला।"

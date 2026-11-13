@@ -10,7 +10,7 @@ export function ShowCommonHelperSetup({platform='win',update=false,probe=ProbeCo
 {
  return new Promise(Resolve=>{
   const Dialog=CreateElement('dialog','','download-options-dialog explorer-setup-dialog common-helper-setup-dialog'),Form=CreateElement('form');
-  const Header=CreateElement('header'),Title=CreateElement('h2',update?T('MDownloader 도우미 업데이트','Update MDownloader helper'):Translate('explorer_setup_title'));
+  const Header=CreateElement('header'),Title=CreateElement('h2',update?T('M Downloader 도우미 업데이트','Update M Downloader helper'):Translate('explorer_setup_title'));
   Title.id='helper-setup-'+crypto.randomUUID();Dialog.setAttribute('aria-labelledby',Title.id);Header.append(Title);
   const Body=CreateElement('div','','download-options-body explorer-setup-body'),Kind=platform==='mac'?'PKG':'CMD';
   const Guide=CreateElement('p',T('아래 링크를 눌러 '+Kind+' 파일을 다운로드한 뒤 실행해 주세요. 이후 설치확인을 눌러 주세요.','Download the '+Kind+' file from the link below and run it. When installation finishes, choose Verify installation.'));

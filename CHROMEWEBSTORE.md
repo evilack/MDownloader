@@ -1,10 +1,12 @@
-# Chrome Web Store Listing — MDownloader
+# Chrome Web Store Listing — M Downloader
 
-Last updated: 2026-11-11. Package preparation only; no store submission has been performed.
+Last updated: 2026-11-12. Package preparation only. No store submission has been performed.
 
 ## Store listing
 
-- Name: MDownloader (matches manifest).
+- Base name: M Downloader.
+- English package title: M Downloader – Media, MP4, HLS (M3U8) & Live Stream Downloader.
+- Korean package title: M Downloader – Media, MP4, HLS (M3U8) 및 라이브 스트림 다운로드.
 - Short description: Save supported web video and audio, manage downloads, and include subtitles with optional translation.
 - Category: Productivity.
 - Single purpose: Save supported media selected by the user and manage the resulting files and subtitles.
@@ -12,17 +14,17 @@ Last updated: 2026-11-11. Package preparation only; no store submission has been
 
 Detailed description draft:
 
-MDownloader detects supported video and audio on the current website and lets you save the media you are authorized to download.
+M Downloader detects supported video and audio on the current website and lets you save the media you are authorized to download.
 
 Choose available quality and subtitle tracks, manage transfers in a side panel, and save completed files. Supported sources include direct media, compatible HLS, static unencrypted DASH and supported WebRTC sources. Optional subtitle translation uses a service you configure. Optional local speech recognition requires a separately installed local helper.
 
-Open a supported page, grant site access, open MDownloader, and choose Download. Use Download options to select quality, subtitles and translation settings. Protected media and unsupported formats are excluded.
+Open a supported page, grant site access, open M Downloader, and choose Download. Use Download options to select quality, subtitles and translation settings. Protected media and unsupported formats are excluded.
 
 ## Build and distribution
 
 Run `npm run build:chrome` (or `node tools/build/package-extension.mjs --flavor chrome-store`). Upload the generated `artifacts/distributions/chrome-store/MDownloader-chrome-store-<version>.zip`; its root contains manifest.json. The package is verified before output is replaced. Keep `build.json` as the local checksum record.
 
-This flavor physically excludes the restricted provider implementation, vendor bundles, interpreter sandbox, brand icon and caption settings. The existing site policy notice and source/network denial remain. Edge and manual development packages are separate outputs and are not Chrome submission artifacts.
+Use the same store release ZIP for Chrome Web Store and Microsoft Edge Add-ons. It excludes the restricted provider implementation, vendor bundles, interpreter sandbox, brand icon and caption settings, and retains the site policy notice and source/network restrictions. Use the development ZIP for manual installation.
 
 ## Permissions justification
 
@@ -57,10 +59,26 @@ No certification of the dashboard privacy form is made here. Review the current 
 | Requirement | Current status |
 |---|---|
 | 128×128 icon | Existing `extension/icons/app-media-128.png` |
-| Required store screenshot | Existing website captures are available; store dimensions and final selected content need review |
-| Privacy policy URL | Required before submission; not configured by this task |
+| Required store screenshot | Actual Chrome store build, 640×400 PNG. Local outputs: `artifacts/chrome-store-review/downloads-en.png` and `artifacts/chrome-store-review/downloads-ko.png` |
+| Privacy policy URL | Use the English policy URL after the website changes are deployed and verified. English: https://evilack.github.io/MDownloader/privacy.html · Korean: https://evilack.github.io/MDownloader/privacy-ko.html |
 | Publisher/contact information | Required in developer dashboard; not configured by this task |
-| Support/homepage URLs | Choose and verify the public project URLs before submission |
+| Homepage URL | https://evilack.github.io/MDownloader/ |
+
+## Reviewer test instructions
+
+Copy the following into **Test instructions** in the Chrome Web Store Developer Dashboard:
+
+> No test account or local helper is needed for the core download flow. Open https://evilack.github.io/MDownloader/sample/index.html?lang=en and play the sample MP4. Open the MDownloader toolbar popup. If Chrome requests access, allow access for this sample site, then refresh the media list if needed. Click Download on the detected `sample-film.mp4` row. The sample is hosted by this project for testing.
+>
+> Open the download manager using the side panel button in the popup. Wait for the sample to appear under completed downloads. Open the saved file or check it in Chrome Downloads and confirm that it plays. The extension uses Chrome's normal Downloads location by default. Use another profile or the sample site alone if you want to limit site access.
+>
+> For the policy check, open a YouTube page and open the MDownloader popup. The Chrome store build shows a policy notice and does not offer a YouTube download. This check does not require a download attempt.
+>
+> Subtitle translation requires credentials for the reviewer’s selected provider and sends relevant subtitle text to that service. Local speech recognition and some file integration features require separate optional local setup. Neither is required to reproduce the sample MP4 flow. The issue report form sends the reviewed report through FormSubmit only when submitted, so sending a report is not needed for this test.
+
+The basic sequence in Korean is **샘플 페이지에서 영상 재생 → MDownloader 팝업에서 감지된 MP4 다운로드 → 사이드 패널의 완료 목록과 저장한 파일 재생 확인**입니다. 선택적 번역과 로컬 도우미는 이 테스트에 필요하지 않습니다.
+
+On 2026-11-12, an isolated Chrome for Testing profile loaded the packaged Chrome store build. The popup detected the public sample MP4 and completed a real download. Its SHA-256 matched the repository sample. The download manager was captured in English and Korean at 640×400, and the YouTube popup displayed the policy notice with its media area hidden. The local capture record is `artifacts/chrome-store-review/verification.json`. These checks cover the core download and the policy notice. They do not establish approval or verify the optional translation and native-helper flows.
 
 ## Version history and readiness
 

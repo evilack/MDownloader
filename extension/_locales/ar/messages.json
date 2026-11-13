@@ -79,13 +79,13 @@
     "message": "افتح خيارات الإضافة وامنح إذن الوصول إلى مجلد التنزيل المحدد."
   },
   "action_title": {
-    "message": "MDownloader · الصفحة الحالية"
+    "message": "M Downloader · الصفحة الحالية"
   },
   "candidate_changed": {
     "message": "تغيّرت الصفحة أو الوسائط. أعد الفحص."
   },
   "candidate_no_access": {
-    "message": "لا يملك MDownloader إذن رصد عنوان الوسائط. أعد الفحص."
+    "message": "لا يملك M Downloader إذن رصد عنوان الوسائط. أعد الفحص."
   },
   "extension_description": {
     "message": "اعثر على ملفات الفيديو والصوت وبث HLS وDASH وأدر التنزيلات في اللوحة الجانبية."
@@ -142,7 +142,7 @@
     "message": "الخيارات"
   },
   "html_options_title": {
-    "message": "MDownloader · الخيارات"
+    "message": "M Downloader · الخيارات"
   },
   "html_playback_heading": {
     "message": "حفظ بيانات التشغيل"
@@ -151,10 +151,10 @@
     "message": "أدخل عنوان HLS وابدأ الالتقاط، ثم شغّل الفيديو من البداية في علامة التبويب الحالية. بعد التقاط كل المقاطع، يمكنك حفظ الفيديو بصيغة MP4."
   },
   "html_playback_title": {
-    "message": "MDownloader · حفظ بيانات التشغيل"
+    "message": "M Downloader · حفظ بيانات التشغيل"
   },
   "html_popup_title": {
-    "message": "MDownloader · الصفحة الحالية"
+    "message": "M Downloader · الصفحة الحالية"
   },
   "html_rescan": {
     "message": "إعادة البحث"
@@ -169,7 +169,7 @@
     "message": "جارٍ البحث عن الوسائط في هذه الصفحة…"
   },
   "html_sidepanel_title": {
-    "message": "MDownloader · مدير التنزيلات"
+    "message": "M Downloader · مدير التنزيلات"
   },
   "html_start_capture": {
     "message": "بدء الالتقاط"
@@ -801,7 +801,7 @@
     "message": "انقر لإزالة الإدخال من القائمة. اضغط مطوّلًا على Shift أثناء النقر لحذف الملف المحفوظ أيضًا إذا اكتمل تنزيله."
   },
   "view_devtools_panel": {
-    "message": "MDownloader"
+    "message": "M Downloader"
   },
   "view_diagnostics": {
     "message": "تشخيص التنزيلات"
@@ -826,7 +826,7 @@
     }
   },
   "view_diagnostics_title": {
-    "message": "MDownloader · تشخيص التنزيلات"
+    "message": "M Downloader · تشخيص التنزيلات"
   },
   "view_download": {
     "message": "تنزيل (Shift مع النقر: خيارات التنزيل)"
@@ -980,10 +980,10 @@
     "message": "تعذّر فتح صفحة الإعدادات."
   },
   "view_panel_failed": {
-    "message": "تعذّر فتح اللوحة الجانبية. اختر MDownloader من قائمة اللوحة الجانبية في المتصفّح."
+    "message": "تعذّر فتح اللوحة الجانبية. اختر M Downloader من قائمة اللوحة الجانبية في المتصفّح."
   },
   "view_panel_use_menu": {
-    "message": "اختر MDownloader من قائمة اللوحة الجانبية في المتصفّح."
+    "message": "اختر M Downloader من قائمة اللوحة الجانبية في المتصفّح."
   },
   "view_permission_denied": {
     "message": "لم يُمنح إذن الوصول إلى خادم الفيديو."

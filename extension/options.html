@@ -2,7 +2,7 @@
 <html lang="ko">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title data-i18n="html_options_title">MDownloader · 설정</title>
+<title data-i18n="html_options_title">M Downloader · 설정</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="settings.css">
 <link rel="stylesheet" href="local-captions.css">
@@ -11,7 +11,7 @@
 <body class="options settings-page">
 
 <div class="app-shell" id="settings-app">
-  <header class="app-bar"><a class="app-brand" href="options.html"><img src="icons/app-media-24.png" alt="" width="24" height="24"><strong>MDownloader</strong><span>설정</span></a><span class="pill" id="build-badge">개발판</span></header>
+  <header class="app-bar"><a class="app-brand" href="options.html"><img src="icons/app-media-24.png" alt="" width="24" height="24"><strong>M Downloader</strong><span>설정</span></a><span class="pill" id="build-badge">개발판</span></header>
   <div class="workspace">
     <aside class="sidebar"><p class="nav-label">환경설정</p><nav aria-label="설정 카테고리" id="settings-nav">
       <a href="?section=general" data-section="general"><strong>일반</strong><span>언어, 사이드 패널, 알림</span></a>
@@ -21,7 +21,7 @@
       <a href="?section=helper" data-section="helper"><strong>도우미</strong><span>설치, 삭제와 연결 진단</span></a>
       <a href="?section=permissions" data-section="permissions"><strong>사이트 권한</strong><span>사이트와 미디어 서버</span></a>
       <a href="?section=diagnostics" data-section="diagnostics"><strong>진단·로그</strong><span>문제 확인과 기록</span></a>
-      <a href="?section=about" data-section="about"><strong>앱 정보</strong><span>버전과 배포판</span></a>
+      <a href="?section=about" data-section="about"><strong>앱 정보</strong><span>버전, 홈페이지, 후원</span></a>
     </nav><div class="sidebar-note"><span class="status-dot"></span> 설정</div></aside>
     <main class="pane">
       <header class="pane-heading"><p>환경설정 <span>/</span> <span id="breadcrumb">일반</span></p><h1 id="page-title" tabindex="-1">일반</h1><p id="page-description">표시 언어, 사이드 패널과 Chrome 알림을 설정합니다.</p></header>
@@ -70,7 +70,21 @@
         <section class="settings-section" id="section-diagnostics" hidden>
           <form id="diagnostics-form" class="settings-form"><fieldset class="card"><legend>문제 확인</legend><div class="toggle-row"><label for="debug-downloads"><strong data-i18n="opt_debug">다운로드 진단 탭 열기</strong><span>다운로드 문제를 확인할 때 별도의 진단 탭을 엽니다.</span></label><input id="debug-downloads" name="diagnosticTabs" type="checkbox" role="switch" class="switch" disabled></div><div class="toggle-row"><label for="debug-logging"><strong data-i18n="opt_debug_logging">상세 디버그 로그</strong><span>단계 코드, 소요 시간, 수치를 확장 콘솔에 기록합니다.</span></label><input id="debug-logging" name="consoleLogging" type="checkbox" role="switch" class="switch" disabled></div></fieldset><p id="debug-status" class="notice" role="status"></p><p id="debug-help" hidden></p><p id="debug-logging-help" hidden></p><fieldset class="card"><legend id="download-log-label">다운로드 기록</legend><div class="toggle-row"><label for="log-downloads"><strong data-i18n="opt_log_downloads">다운로드 로그 보관</strong><span>문제 해결을 위해 다운로드 작업의 기록을 남깁니다.</span></label><input id="log-downloads" name="downloadLogging" type="checkbox" role="switch" class="switch" checked disabled></div><p id="download-log-help" class="help"></p><p id="download-log-empty" class="help" hidden data-i18n="opt_log_empty">저장된 기록이 없습니다.</p><div class="field"><label for="download-log">최근 기록</label><textarea id="download-log" name="logPreview" rows="5" readonly></textarea></div><div class="actions"><button type="button" id="copy-download-log" data-i18n="opt_log_copy">로그 복사</button><button type="button" id="clear-download-log" class="danger" data-i18n="opt_log_clear">로그 비우기</button></div><p id="download-log-status" class="notice" role="status"></p></fieldset></form>
         </section>
-        <section class="settings-section" id="section-about" hidden><div class="card about-card"><h2>MDownloader</h2><dl><div><dt>버전</dt><dd id="version"></dd></div><div><dt>배포판</dt><dd id="about-build">개발판 · 수동 설치</dd></div></dl><p id="about-policy" class="help">개발판에서는 YouTube 다운로드를 사용할 수 있습니다.</p><div class="actions"><button type="button" id="reload-extension" data-i18n="opt_reload">확장 프로그램 새로고침</button></div></div></section>
+        <section class="settings-section" id="section-about" hidden>
+          <div class="card about-card">
+            <h2>M Downloader</h2>
+            <dl>
+              <div><dt>버전</dt><dd id="version"></dd></div>
+              <div><dt>배포판</dt><dd id="about-build">개발판 · 수동 설치</dd></div>
+            </dl>
+            <p id="about-policy" class="help">개발판에서는 YouTube 다운로드를 사용할 수 있습니다.</p>
+            <div class="actions about-actions">
+              <a id="about-homepage" href="https://evilack.github.io/MDownloader/" target="_blank" rel="noopener noreferrer">홈페이지</a>
+              <a id="about-support" href="https://evilack.github.io/MDownloader/donate.html" target="_blank" rel="noopener noreferrer">후원</a>
+              <button type="button" id="reload-extension" data-i18n="opt_reload">확장 프로그램 새로고침</button>
+            </div>
+          </div>
+        </section>
       </div>
       <footer class="save-bar" id="save-bar"><p id="save-feedback" role="status"><span class="status-dot"></span>변경사항 없음</p><div class="actions"><button type="button" id="reset-settings">되돌리기</button><button type="button" id="apply-settings" class="primary">변경사항 적용</button></div></footer>
     </main>

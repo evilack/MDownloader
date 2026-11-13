@@ -79,7 +79,7 @@
     "message": "확장 옵션에서 선택한 다운로드 폴더에 대한 접근을 허용해 주세요."
   },
   "action_title": {
-    "message": "MDownloader · 현재 페이지"
+    "message": "M Downloader · 현재 페이지"
   },
   "candidate_changed": {
     "message": "페이지 또는 영상이 변경되었습니다. 다시 검사해 주세요."
@@ -142,7 +142,7 @@
     "message": "옵션"
   },
   "html_options_title": {
-    "message": "MDownloader · 옵션"
+    "message": "M Downloader · 옵션"
   },
   "html_playback_heading": {
     "message": "재생 데이터 저장"
@@ -151,10 +151,10 @@
     "message": "HLS 주소를 입력하고 수집을 시작한 뒤 현재 탭에서 영상을 처음부터 재생하세요. 모든 조각을 받은 뒤 MP4로 저장할 수 있습니다."
   },
   "html_playback_title": {
-    "message": "MDownloader · 재생 데이터 저장"
+    "message": "M Downloader · 재생 데이터 저장"
   },
   "html_popup_title": {
-    "message": "MDownloader · 현재 페이지"
+    "message": "M Downloader · 현재 페이지"
   },
   "html_rescan": {
     "message": "다시 검사"
@@ -169,7 +169,7 @@
     "message": "현재 페이지에서 미디어 확인 중…"
   },
   "html_sidepanel_title": {
-    "message": "MDownloader · 다운로드 관리"
+    "message": "M Downloader · 다운로드 관리"
   },
   "html_start_capture": {
     "message": "수집 시작"
@@ -801,7 +801,7 @@
     "message": "클릭하면 목록에서 삭제합니다. Shift를 누른 채 클릭하면 완료된 저장 파일도 삭제합니다."
   },
   "view_devtools_panel": {
-    "message": "MDownloader"
+    "message": "M Downloader"
   },
   "view_diagnostics": {
     "message": "다운로드 진단"
@@ -826,7 +826,7 @@
     }
   },
   "view_diagnostics_title": {
-    "message": "MDownloader · 다운로드 진단"
+    "message": "M Downloader · 다운로드 진단"
   },
   "view_download": {
     "message": "다운로드 (Shift+클릭: 다운로드 옵션)"
@@ -980,10 +980,10 @@
     "message": "옵션 페이지를 열지 못했습니다."
   },
   "view_panel_failed": {
-    "message": "사이드패널을 열지 못했습니다. 브라우저 사이드패널 메뉴에서 MDownloader를 선택해 주세요."
+    "message": "사이드패널을 열지 못했습니다. 브라우저 사이드패널 메뉴에서 M Downloader를 선택해 주세요."
   },
   "view_panel_use_menu": {
-    "message": "브라우저 사이드패널 메뉴에서 MDownloader를 선택해 주세요."
+    "message": "브라우저 사이드패널 메뉴에서 M Downloader를 선택해 주세요."
   },
   "view_permission_denied": {
     "message": "영상 서버 접근을 허용하지 않았습니다."
@@ -1586,7 +1586,7 @@
     "message": "다운로드 목록 열기"
   },
   "explorer_setup_title": {
-    "message": "MDownloader 도우미 설치"
+    "message": "M Downloader 도우미 설치"
   },
   "explorer_setup_body": {
     "message": "폴더 직접 선택을 사용하려면 도우미가 필요합니다. 도우미 탭에서 설치해 주세요."

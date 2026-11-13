@@ -79,7 +79,7 @@
     "message": "请在扩展程序选项中授予对所选下载文件夹的访问权限。"
   },
   "action_title": {
-    "message": "MDownloader · 当前页面"
+    "message": "M Downloader · 当前页面"
   },
   "candidate_changed": {
     "message": "页面或媒体已更改。请重新扫描。"
@@ -142,7 +142,7 @@
     "message": "选项"
   },
   "html_options_title": {
-    "message": "MDownloader · 选项"
+    "message": "M Downloader · 选项"
   },
   "html_playback_heading": {
     "message": "保存播放数据"
@@ -151,10 +151,10 @@
     "message": "输入 HLS 地址并开始采集，然后在当前标签页中从头播放视频。采集所有分片后，即可将视频保存为 MP4。"
   },
   "html_playback_title": {
-    "message": "MDownloader · 保存播放数据"
+    "message": "M Downloader · 保存播放数据"
   },
   "html_popup_title": {
-    "message": "MDownloader · 当前页面"
+    "message": "M Downloader · 当前页面"
   },
   "html_rescan": {
     "message": "重新扫描"
@@ -169,7 +169,7 @@
     "message": "正在检测此页面的媒体…"
   },
   "html_sidepanel_title": {
-    "message": "MDownloader · 下载管理"
+    "message": "M Downloader · 下载管理"
   },
   "html_start_capture": {
     "message": "开始采集"
@@ -801,7 +801,7 @@
     "message": "点击即可从列表中移除记录。按住 Shift 点击还会删除已完成下载的文件。"
   },
   "view_devtools_panel": {
-    "message": "MDownloader"
+    "message": "M Downloader"
   },
   "view_diagnostics": {
     "message": "下载诊断"
@@ -826,7 +826,7 @@
     }
   },
   "view_diagnostics_title": {
-    "message": "MDownloader · 下载诊断"
+    "message": "M Downloader · 下载诊断"
   },
   "view_download": {
     "message": "下载（Shift+点击：下载选项）"
@@ -980,10 +980,10 @@
     "message": "无法打开设置页面。"
   },
   "view_panel_failed": {
-    "message": "无法打开侧边栏。请在浏览器的侧边栏菜单中选择 MDownloader。"
+    "message": "无法打开侧边栏。请在浏览器的侧边栏菜单中选择 M Downloader。"
   },
   "view_panel_use_menu": {
-    "message": "请在浏览器的侧边栏菜单中选择 MDownloader。"
+    "message": "请在浏览器的侧边栏菜单中选择 M Downloader。"
   },
   "view_permission_denied": {
     "message": "未授予视频服务器访问权限。"

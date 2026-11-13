@@ -79,7 +79,7 @@
     "message": "拡張機能のオプションで、選択したダウンロードフォルダーへのアクセスを許可してください。"
   },
   "action_title": {
-    "message": "MDownloader · 現在のページ"
+    "message": "M Downloader · 現在のページ"
   },
   "candidate_changed": {
     "message": "ページまたはメディアが変更されました。再スキャンしてください。"
@@ -142,7 +142,7 @@
     "message": "オプション"
   },
   "html_options_title": {
-    "message": "MDownloader · オプション"
+    "message": "M Downloader · オプション"
   },
   "html_playback_heading": {
     "message": "再生データの保存"
@@ -151,10 +151,10 @@
     "message": "HLS の URL を入力してキャプチャを開始し、現在のタブで動画を最初から再生してください。すべてのセグメントを取得すると MP4 として保存できます。"
   },
   "html_playback_title": {
-    "message": "MDownloader · 再生データの保存"
+    "message": "M Downloader · 再生データの保存"
   },
   "html_popup_title": {
-    "message": "MDownloader · 現在のページ"
+    "message": "M Downloader · 現在のページ"
   },
   "html_rescan": {
     "message": "再スキャン"
@@ -169,7 +169,7 @@
     "message": "このページのメディアを検索中…"
   },
   "html_sidepanel_title": {
-    "message": "MDownloader · ダウンロード管理"
+    "message": "M Downloader · ダウンロード管理"
   },
   "html_start_capture": {
     "message": "キャプチャを開始"
@@ -801,7 +801,7 @@
     "message": "クリックすると一覧から項目を削除します。Shift を押しながらクリックすると、完了したダウンロードの保存ファイルも削除します。"
   },
   "view_devtools_panel": {
-    "message": "MDownloader"
+    "message": "M Downloader"
   },
   "view_diagnostics": {
     "message": "ダウンロード診断"
@@ -826,7 +826,7 @@
     }
   },
   "view_diagnostics_title": {
-    "message": "MDownloader・ダウンロード診断"
+    "message": "M Downloader・ダウンロード診断"
   },
   "view_download": {
     "message": "ダウンロード（Shift+クリック：ダウンロード設定）"
@@ -980,10 +980,10 @@
     "message": "設定ページを開けませんでした。"
   },
   "view_panel_failed": {
-    "message": "サイドパネルを開けませんでした。ブラウザのサイドパネルメニューで MDownloader を選択してください。"
+    "message": "サイドパネルを開けませんでした。ブラウザのサイドパネルメニューで M Downloader を選択してください。"
   },
   "view_panel_use_menu": {
-    "message": "ブラウザのサイドパネルメニューで MDownloader を選択してください。"
+    "message": "ブラウザのサイドパネルメニューで M Downloader を選択してください。"
   },
   "view_permission_denied": {
     "message": "動画サーバーへのアクセスが許可されていません。"

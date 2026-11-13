@@ -11,7 +11,7 @@ const Root = fileURLToPath(new URL('../../', import.meta.url));
 await AssertExtensionFilenames(Path.join(Root,'extension'));
 const Args = process.argv.slice(2);
 const Flavor = Args[Args.indexOf('--flavor') + 1];
-if (!Args.includes('--flavor') || !['development', 'chrome-store', 'edge-store'].includes(Flavor) || Args.some((Arg, Index) => Index !== Args.indexOf('--flavor') && Index !== Args.indexOf('--flavor') + 1 && Arg !== '--block-chrome') || Args.includes('--block-chrome') && Flavor !== 'development') throw new Error('Required: --flavor development|chrome-store|edge-store [--block-chrome (development only)]');
+if (!Args.includes('--flavor') || !['development', 'chrome-store'].includes(Flavor) || Args.some((Arg, Index) => Index !== Args.indexOf('--flavor') && Index !== Args.indexOf('--flavor') + 1 && Arg !== '--block-chrome') || Args.includes('--block-chrome') && Flavor !== 'development') throw new Error('Required: --flavor development|chrome-store [--block-chrome (development only)]');
 const Output = Path.join(Root, 'artifacts/distributions', Flavor);
 const Stage = Path.join(Output, 'staging-' + process.pid);
 await mkdir(Output, {recursive: true});
@@ -45,7 +45,36 @@ if (Flavor === 'chrome-store' || Args.includes('--block-chrome'))
 	Manifest.permissions = Manifest.permissions.map(Value => Value === 'declarativeNetRequestWithHostAccess' ? 'declarativeNetRequest' : Value);
 	// 스토어판은 사이트 접근 권한 없이도 사이드 패널에서 현재 탭의 정책 안내를 표시합니다.
 	if (Flavor === 'chrome-store' && !Manifest.permissions.includes('tabs')) Manifest.permissions.push('tabs');
-	if(Flavor==='chrome-store'){delete Manifest.sandbox;if(Manifest.content_security_policy){delete Manifest.content_security_policy.sandbox;if(!Object.keys(Manifest.content_security_policy).length)delete Manifest.content_security_policy;}}
+	if (Flavor === 'chrome-store')
+	{
+		Manifest.name = '__MSG_chrome_store_name__';
+		const StoreNames = {
+			en: `${Manifest.short_name} – Media, MP4, HLS (M3U8) & Live Stream Downloader`,
+			ko: `${Manifest.short_name} – Media, MP4, HLS (M3U8) 및 라이브 스트림 다운로드`,
+			ar: `${Manifest.short_name} – تنزيل الوسائط وMP4 وHLS (M3U8) والبث المباشر`,
+			es: `${Manifest.short_name} – Descarga vídeos, MP4, HLS (M3U8) y directos`,
+			fr: `${Manifest.short_name} – Téléchargez vidéos, MP4, HLS (M3U8) et directs`,
+			hi: `${Manifest.short_name} – मीडिया, MP4, HLS (M3U8) और लाइव स्ट्रीम डाउनलोड`,
+			ja: `${Manifest.short_name} – メディア・MP4・HLS (M3U8)・ライブ配信のダウンロード`,
+			pt_BR: `${Manifest.short_name} – Baixe vídeos, MP4, HLS (M3U8) e transmissões ao vivo`,
+			ru: `${Manifest.short_name} – Загрузка видео, MP4, HLS (M3U8) и прямых эфиров`,
+			zh_CN: `${Manifest.short_name} – 媒体、MP4、HLS (M3U8) 和直播流下载`
+		};
+		for (const [Locale, Name] of Object.entries(StoreNames))
+		{
+			if (Name.length > 75) throw Error(`Chrome Web Store name exceeds 75 characters: ${Locale}`);
+			const CatalogPath = Path.join(Stage, '_locales', Locale, 'messages.json');
+			const Catalog = JSON.parse(await readFile(CatalogPath, 'utf8'));
+			Catalog.chrome_store_name = {message: Name};
+			await writeFile(CatalogPath, JSON.stringify(Catalog, null, 2) + '\n');
+		}
+		delete Manifest.sandbox;
+		if (Manifest.content_security_policy)
+		{
+			delete Manifest.content_security_policy.sandbox;
+			if (!Object.keys(Manifest.content_security_policy).length) delete Manifest.content_security_policy;
+		}
+	}
 	await writeFile(ManifestPath, JSON.stringify(Manifest, null, 2) + '\n');
 }
 if (Flavor === 'chrome-store')

@@ -12,7 +12,7 @@ const Sections = {
  helper:['도우미','도우미를 설치·삭제하고 연결 상태를 진단합니다.','Helper','Install, remove and diagnose the helper.'],
  permissions:['사이트 권한','영상 페이지와 미디어 서버의 접근 범위를 관리합니다.','Site permissions','Manage access to video pages and media servers.'],
  diagnostics:['진단·로그','다운로드 문제를 확인하고 필요한 기록을 살펴봅니다.','Diagnostics · Logs','Investigate download issues and review recorded events.'],
- about:['앱 정보','설치 버전과 배포판의 기능 범위를 확인합니다.','About','Check your installed version and distribution policy.'],
+ about:['앱 정보','설치 버전과 배포판을 확인하고 홈페이지와 후원 페이지를 엽니다.','About','Check your installed version and distribution, and open the website or support page.'],
 };
 export const ResolveSettingsSection = Value => Object.hasOwn(Sections,Value) ? Value : 'general';
 export {ProviderPresentation} from './lib/translation-provider-catalog.js';
@@ -22,6 +22,7 @@ export const FilenameExample = (Title, IncludeDate, Now = new Date()) => SafeFil
 );
 export const SettingsText = (Korean,English) => GetLocale().startsWith('ko') ? Korean : English;
 const EnglishText = new Map(Object.entries({
+ '버전, 홈페이지, 후원':'Version, website and support','홈페이지':'Website','후원':'Support',
  '설정':'Settings','환경설정':'Preferences','일반':'General','언어, 사이드 패널, 알림':'Language, side panel and notifications','다운로드·파일명':'Download · Filename','저장 위치와 이름 규칙':'Location and naming rules','자막·번역':'Subtitles · Translation','서비스, 인증, 모델':'Service, credentials and models','사이트 권한':'Site permissions','사이트와 미디어 서버':'Sites and media servers','진단·로그':'Diagnostics · Logs','문제 확인과 기록':'Troubleshooting and history','앱 정보':'About','버전과 배포판':'Version and distribution',
  '표시 언어':'Display language','사이드 패널':'Side panel','팝업, 사이드 패널, 설정 화면에 적용합니다.':'Applies to the popup, side panel and settings.','다운로드 목록 위에 현재 페이지의 영상을 함께 표시합니다.':'Show media from the current page above the download list.',
  '저장 위치':'Download location','저장 방식':'Save mode','브라우저 다운로드 폴더 안에 저장':'Save inside the browser download folder','폴더 직접 선택':'Choose a folder directly','브라우저 기본 다운로드 위치를 기준으로 하는 상대 경로입니다.':'A relative path inside the browser’s default download location.','선택한 폴더 없음':'No folder selected','파일 이름':'File names','영상 제목과 원래 파일 이름을 함께 사용합니다.':'Use the page title together with the original file name.','파일 이름 끝에 날짜와 시간을 붙입니다.':'Append the download start date and time.','파일명 예시':'File name example','사이트 도메인을 앞에 붙이고, 공백·점·파일명에 쓸 수 없는 문자는 밑줄로 정리합니다.':'The site domain is prepended. Spaces, dots and unsupported filename characters become underscores.',
@@ -54,6 +55,14 @@ export async function BindSettingsUI()
 {
  const Q=Id=>document.getElementById(Id), T=SettingsText;
  LocalizeSettingsMarkup();
+ const Language = GetLocale().startsWith('ko') ? 'ko' : 'en';
+ const Homepage = new URL(Q('about-homepage').href);
+ Homepage.searchParams.set('lang', Language);
+ Q('about-homepage').href = Homepage.href;
+ if (Language === 'ko')
+ {
+  Q('about-support').href = new URL('donate-ko.html', Homepage).href;
+ }
  Q('helper-command').textContent=`.\\native\\kakao\\install.ps1 -ExtensionId ${chrome.runtime.id} -PythonPath <python.exe>`;
  let Section='general';const Dirty=new Set();
  const SetSection=(Value,Push=false)=>{
@@ -142,7 +151,7 @@ export async function BindSettingsUI()
    UpdateLocation();UpdateFilename();Dirty.delete(Section);SettingsFeedback(T('저장된 설정을 다시 불러왔습니다.','Restored the saved settings.'));
   }catch{SettingsFeedback(T('저장된 설정을 읽지 못했습니다.','Could not read saved settings.'),true);}
  });
- const Store=DistributionPolicy.flavor!=='development';Q('build-badge').textContent=Store?T('스토어판','Store build'):T('개발판','Development');Q('about-build').textContent=DistributionPolicy.flavor==='edge-store'?'Microsoft Edge Add-ons':Store?T('Chrome 웹 스토어판','Chrome Web Store'):T('개발판 · 수동 설치','Development · Manual install');
+ const Store=DistributionPolicy.flavor!=='development';Q('build-badge').textContent=Store?T('스토어판','Store build'):T('개발판','Development');Q('about-build').textContent=Store?T('공통 스토어판','Store release'):T('개발판 · 수동 설치','Development · Manual install');
  Q('about-policy').textContent=CanUseYoutube()?T('이 배포판에서는 YouTube 다운로드를 사용할 수 있습니다.','This distribution supports YouTube downloads.'):T('이 배포판에서는 YouTube 다운로드를 지원하지 않습니다.','This distribution does not support YouTube downloads.');Q('about-policy').classList.toggle('policy-emphasis',!CanUseYoutube());Q('youtube-caption-settings').hidden=!CanUseYoutube();
  SetSection(new URL(location.href).searchParams.get('section'));
 }

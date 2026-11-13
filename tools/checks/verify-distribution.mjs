@@ -6,7 +6,7 @@ import {build} from 'esbuild';
 import {AssertExtensionFilenames} from '../lib/extension-files.mjs';
 const {parse} = createRequire(import.meta.url)('internal/deps/acorn/acorn/dist/acorn');
 const Args = process.argv.slice(2), Flavor = Args[Args.indexOf('--flavor') + 1];
-if (!Args.includes('--flavor') || !['development', 'chrome-store', 'edge-store'].includes(Flavor)) throw new Error('Explicit --flavor required');
+if (!Args.includes('--flavor') || !['development', 'chrome-store'].includes(Flavor)) throw new Error('Explicit --flavor required');
 const Root = Path.resolve(Args.includes('--root') ? Args[Args.indexOf('--root')+1] : fileURLToPath(new URL(`../../artifacts/distributions/${Flavor}/extension/`, import.meta.url))) + Path.sep;
 const Files = [];
 async function Walk(Directory) {

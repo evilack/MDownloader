@@ -79,13 +79,13 @@
     "message": "Open extension options and grant access to the selected download folder."
   },
   "action_title": {
-    "message": "MDownloader · Current page"
+    "message": "M Downloader · Current page"
   },
   "candidate_changed": {
     "message": "The page or media has changed. Scan again."
   },
   "candidate_no_access": {
-    "message": "MDownloader cannot monitor the media URL. Scan again."
+    "message": "M Downloader cannot monitor the media URL. Scan again."
   },
   "extension_description": {
     "message": "Find video and audio files, HLS and DASH streams, and manage downloads in the side panel."
@@ -142,7 +142,7 @@
     "message": "Options"
   },
   "html_options_title": {
-    "message": "MDownloader · Options"
+    "message": "M Downloader · Options"
   },
   "html_playback_heading": {
     "message": "Save playback data"
@@ -151,10 +151,10 @@
     "message": "Enter the HLS URL, start capturing, and then play the video from the beginning in the current tab. Once all segments are captured, you can save the video as an MP4."
   },
   "html_playback_title": {
-    "message": "MDownloader · Save playback data"
+    "message": "M Downloader · Save playback data"
   },
   "html_popup_title": {
-    "message": "MDownloader · Current page"
+    "message": "M Downloader · Current page"
   },
   "html_rescan": {
     "message": "Scan again"
@@ -169,7 +169,7 @@
     "message": "Scanning this page for media…"
   },
   "html_sidepanel_title": {
-    "message": "MDownloader · Download manager"
+    "message": "M Downloader · Download manager"
   },
   "html_start_capture": {
     "message": "Start capture"
@@ -801,7 +801,7 @@
     "message": "Click to remove the entry from the list. Hold Shift while clicking to also delete the saved file for a completed download."
   },
   "view_devtools_panel": {
-    "message": "MDownloader"
+    "message": "M Downloader"
   },
   "view_diagnostics": {
     "message": "Download diagnostics"
@@ -826,7 +826,7 @@
     }
   },
   "view_diagnostics_title": {
-    "message": "MDownloader · Download diagnostics"
+    "message": "M Downloader · Download diagnostics"
   },
   "view_download": {
     "message": "Download (Shift+click: download options)"
@@ -980,10 +980,10 @@
     "message": "Could not open the options page."
   },
   "view_panel_failed": {
-    "message": "Could not open the side panel. Select MDownloader in the browser’s side panel menu."
+    "message": "Could not open the side panel. Select M Downloader in the browser’s side panel menu."
   },
   "view_panel_use_menu": {
-    "message": "Select MDownloader in the browser’s side panel menu."
+    "message": "Select M Downloader in the browser’s side panel menu."
   },
   "view_permission_denied": {
     "message": "Access to the video server was not granted."
@@ -1586,7 +1586,7 @@
     "message": "Open downloads"
   },
   "explorer_setup_title": {
-    "message": "Install MDownloader helper"
+    "message": "Install M Downloader helper"
   },
   "explorer_setup_body": {
     "message": "The Windows helper opens your saved folder in Explorer."

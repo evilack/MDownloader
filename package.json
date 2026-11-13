@@ -11,7 +11,7 @@
     "package:development": "node tools/build/package-extension.mjs --flavor development",
     "package:store": "node tools/build/package-extension.mjs --flavor chrome-store",
     "build:chrome": "node tools/build/package-extension.mjs --flavor chrome-store",
-    "build:edge": "node tools/build/package-extension.mjs --flavor edge-store",
+    "build:edge": "node tools/build/package-extension.mjs --flavor chrome-store",
     "build:development": "node tools/build/package-extension.mjs --flavor development",
     "build:all": "node tools/build/build-distributions.mjs"
   },

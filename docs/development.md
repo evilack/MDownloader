@@ -24,35 +24,33 @@ The browser loads `extension/` directly. Node dependencies are needed only to re
 
 ## Build and distribution
 
-There are three independent distributions. Run from the repository root with Node.js and the locked build dependencies installed (`npm ci`; `package-lock.json` is the dependency source of truth):
+There are two distributions. Run from the repository root with Node.js and the locked build dependencies installed (`npm ci`; `package-lock.json` is the dependency source of truth):
 
 | Command | Flavor | Provider | Site policy notice |
 |---|---|---|---|
-| `npm run build:chrome` | `chrome-store` | Excluded | Preserved on blocked sites |
-| `npm run build:edge` | `edge-store` | All features | No Chrome store restriction |
+| `npm run build:chrome` or `npm run build:edge` | `chrome-store` (same ZIP for both stores) | Excluded | Preserved on blocked sites |
 | `npm run build:development` | `development` | All features | No Chrome store restriction |
-| `npm run build:all` | All three, sequentially | As above | As above |
+| `npm run build:all` | Both, sequentially | As above | As above |
 
 Direct Node entry points (also usable when a package manager is unavailable):
 
 ```powershell
 node tools/build/package-extension.mjs --flavor development
 node tools/build/package-extension.mjs --flavor chrome-store
-node tools/build/package-extension.mjs --flavor edge-store
 node tools/build/build-distributions.mjs
 ```
 
 Each flavor produces `artifacts/distributions/<flavor>/extension/`, `MDownloader-<flavor>-<manifest-version>.zip` and `build.json` (flavor, version, file count, ZIP bytes and SHA-256). `manifest.json` is at the ZIP root for store upload. The directory is available for Load unpacked. These commands prepare packages; they do not publish or reload a browser installation. `build:all` stops if any build fails.
 
-The [Build extension packages workflow](https://github.com/evilack/MDownloader/actions/workflows/build-extensions.yml) runs on pushes and pull requests targeting `main`. To build on demand, open the workflow under **Actions** and select **Run workflow**. Download **MDownloader-distributions** from the completed run's **Artifacts** section to get the three distribution ZIPs and checksum records.
+The [Build extension packages workflow](https://github.com/evilack/MDownloader/actions/workflows/build-extensions.yml) runs on pushes and pull requests targeting `main`. To build on demand, open the workflow under **Actions** and select **Run workflow**. Download **MDownloader-distributions** from the completed run's **Artifacts** section to get both ZIPs and checksum records.
 
-To publish a GitHub release, tag the commit to distribute with `v` followed by the version in `extension/manifest.json`, then push that tag. For version `0.2.43`, run `git tag v0.2.43` and `git push origin v0.2.43`. GitHub Actions validates the tag and builds all three packages before publishing a release with the Chrome store, Edge store, and development ZIPs attached. Branch pushes, pull requests, and manual builds on branches continue to produce Actions artifacts.
+To publish a GitHub release, tag the commit to distribute with `v` followed by the version in `extension/manifest.json`, then push that tag. For version `0.2.43`, run `git tag v0.2.43` and `git push origin v0.2.43`. GitHub Actions validates the tag and builds both packages before publishing a release with the shared store ZIP and the development ZIP attached. Branch pushes, pull requests, and manual builds on branches continue to produce Actions artifacts.
 
-Packaging preserves `extension/` and excludes `.local` configuration and generated native-host registration files. It rebuilds the existing bundled installer payloads without installing them. Chrome physically excludes the provider/vendor files, sandbox, brand icon and caption controls; a build-time syntax transform removes provider integrations without shipping a disabled provider entry. Its popup/side-panel policy notice, About explanation, host classification and source/network guards remain. Guards cover generic/embed candidates, playback capture, partial reads and resume. Legacy store jobs without trusted source classification require a new scan. Edge and development retain the provider and its vendor files byte for byte.
+Packaging preserves `extension/` and excludes `.local` configuration and generated native-host registration files. It rebuilds the existing bundled installer payloads without installing them. Chrome physically excludes the provider/vendor files, sandbox, brand icon and caption controls; a build-time syntax transform removes provider integrations without shipping a disabled provider entry. Its popup/side-panel policy notice, About explanation, host classification and source/network guards remain. Guards cover generic/embed candidates, playback capture, partial reads and resume. Legacy store jobs without trusted source classification require a new scan. The development build retains the provider and its vendor files byte for byte.
 
 Every build validates syntax, local executable references, named imports/exports and manifest entries before replacing the previous output and creating its ZIP. Chrome also fails validation if provider integration, assets or provider locale keys remain, or the policy notice is missing. Tests independently inflate every ZIP entry and compare it to the generated directory.
 
-Development allows Chrome by default. `--block-chrome` is a development-only compatibility option and adds an optional YouTube restriction. Chrome store and this restricted build use `declarativeNetRequest` to block extension-owned requests before optional target host permission is granted. Chrome store includes `tabs` for its active-page policy notice. Header modifications still need host access. Stored preferences cannot enable YouTube in Chrome store. Edge store uses the source manifest's full capabilities and has its own distribution identity in About.
+Development allows Chrome by default. `--block-chrome` is a development-only compatibility option and adds an optional YouTube restriction. Chrome store and this restricted build use `declarativeNetRequest` to block extension-owned requests before optional target host permission is granted. Chrome store includes `tabs` for its active-page policy notice. Header modifications still need host access. Stored preferences cannot enable YouTube in Chrome store.
 
 Rebuild the pinned dependencies with:
 
@@ -79,7 +77,7 @@ The service worker owns requests, permissions, source identity and persisted job
 
 ### YouTube
 
-Development and Edge store use YouTube.js 18.3.0, GoogleVideo 5.0.1 and Mediabunny 1.65.2. Public watch/short/embed identities lead to real supported selections, separate SABR tracks and AVC/AAC packet copying to MP4. Normal click chooses the best supported quality; Shift-click opens shared Download options. Signed URLs, player configuration and caption URLs stay in bounded offscreen sessions, outside persistent jobs/diagnostics.
+The development build uses YouTube.js 18.3.0, GoogleVideo 5.0.1 and Mediabunny 1.65.2. Public watch/short/embed identities lead to real supported selections, separate SABR tracks and AVC/AAC packet copying to MP4. Normal click chooses the best supported quality; Shift-click opens shared Download options. Signed URLs, player configuration and caption URLs stay in bounded offscreen sessions, outside persistent jobs/diagnostics.
 
 API Origin/Referer rules are temporary and extension-scoped. CDN access is requested before reception. Complete VOD reception validates track endpoints and preserves track tails; partial output uses a usable contiguous interval. No yt-dlp, FFmpeg executable or external downloader is a product dependency.
 

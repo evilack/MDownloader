@@ -79,13 +79,13 @@
     "message": "Откройте настройки расширения и разрешите доступ к выбранной папке загрузок."
   },
   "action_title": {
-    "message": "MDownloader · Текущая страница"
+    "message": "M Downloader · Текущая страница"
   },
   "candidate_changed": {
     "message": "Страница или медиа изменились. Запустите проверку заново."
   },
   "candidate_no_access": {
-    "message": "У MDownloader нет разрешения на обнаружение URL медиа. Запустите проверку заново."
+    "message": "У M Downloader нет разрешения на обнаружение URL медиа. Запустите проверку заново."
   },
   "extension_description": {
     "message": "Находите видео, аудио и потоки HLS и DASH. Управляйте загрузками в боковой панели."
@@ -142,7 +142,7 @@
     "message": "Настройки"
   },
   "html_options_title": {
-    "message": "MDownloader · Настройки"
+    "message": "M Downloader · Настройки"
   },
   "html_playback_heading": {
     "message": "Сохранение данных воспроизведения"
@@ -151,10 +151,10 @@
     "message": "Введите URL HLS, начните захват и запустите видео с начала в текущей вкладке. Когда все сегменты будут получены, видео можно сохранить в формате MP4."
   },
   "html_playback_title": {
-    "message": "MDownloader · Сохранение данных воспроизведения"
+    "message": "M Downloader · Сохранение данных воспроизведения"
   },
   "html_popup_title": {
-    "message": "MDownloader · Текущая страница"
+    "message": "M Downloader · Текущая страница"
   },
   "html_rescan": {
     "message": "Искать снова"
@@ -169,7 +169,7 @@
     "message": "Поиск медиа на этой странице…"
   },
   "html_sidepanel_title": {
-    "message": "MDownloader · Менеджер загрузок"
+    "message": "M Downloader · Менеджер загрузок"
   },
   "html_start_capture": {
     "message": "Начать захват"
@@ -801,7 +801,7 @@
     "message": "Щёлкните, чтобы удалить запись из списка. Удерживайте Shift при щелчке, чтобы также удалить сохранённый файл завершённой загрузки."
   },
   "view_devtools_panel": {
-    "message": "MDownloader"
+    "message": "M Downloader"
   },
   "view_diagnostics": {
     "message": "Диагностика загрузок"
@@ -826,7 +826,7 @@
     }
   },
   "view_diagnostics_title": {
-    "message": "MDownloader · Диагностика загрузок"
+    "message": "M Downloader · Диагностика загрузок"
   },
   "view_download": {
     "message": "Скачать (Shift+щелчок: параметры)"
@@ -980,10 +980,10 @@
     "message": "Не удалось открыть страницу настроек."
   },
   "view_panel_failed": {
-    "message": "Не удалось открыть боковую панель. Выберите MDownloader в меню боковой панели браузера."
+    "message": "Не удалось открыть боковую панель. Выберите M Downloader в меню боковой панели браузера."
   },
   "view_panel_use_menu": {
-    "message": "Выберите MDownloader в меню боковой панели браузера."
+    "message": "Выберите M Downloader в меню боковой панели браузера."
   },
   "view_permission_denied": {
     "message": "Доступ к видеосерверу не разрешён."
