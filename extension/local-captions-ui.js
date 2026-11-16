@@ -46,7 +46,7 @@ export function CreateCaptionSettings({platform='win',probe,prepare,cancelModel,
  function ShowProbe(Result){
   if(Result?.commonHelper?.confirmedMissing){ForceNone();return;}
   if(Result?.connected){Installed=new Set((Result.installedModels||[]).filter(X=>CaptionModelsForEngine(Engine.value).includes(X)));ModelKnown=true;}
-  const CommonReady=Result?.commonHelper?!!(Result.commonHelper.connected&&Result.commonHelper.ready):true;
+  const CommonReady=Result?.commonHelper?!!(Result.commonHelper.connected&&Result.commonHelper.captionSetupReady):true;
   HostConnected=CommonReady&&!!(Result?.connected&&Result?.modelManagement);EngineReady=CommonReady&&CaptionRuntimeReady(Result);
   State.textContent=!CommonReady?T('도우미 연결을 확인해 주세요. 도우미 탭에서 설치·진단할 수 있습니다.','Check the helper connection. Install or diagnose it in the Helper tab.'):!EngineReady?T('음성 인식 준비가 필요합니다. 도우미 탭에서 설치를 완료해 주세요.','Complete speech recognition setup from the Helper tab.'):Installed.has(Model.value)?T('선택한 모델을 사용할 수 있습니다.','The selected model is ready.'):T('선택한 모델을 다운로드해 주세요.','Download the selected model.');State.classList.toggle('error',!EngineReady);Render();
  }

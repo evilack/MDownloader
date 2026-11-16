@@ -12,7 +12,7 @@ async function Fixture(Bootstrap){
 }
 test('native common host advertises setup and runs bundled setup without an installer download',{skip:process.platform!=='win32'},async()=>{
  const F=await Fixture('param([string]$ExtensionId)\n[IO.File]::WriteAllText((Join-Path $PSScriptRoot "../worker-marker.txt"),$ExtensionId)\nWrite-Output "bootstrap output must stay outside native stdout"');
- const Ping=F.request({action:'ping'});assert.equal(Ping.helperVersion,9);assert.equal(Ping.helperRevision,1);assert.ok(Ping.capabilities.includes('captionSetup'));assert.ok(Ping.capabilities.includes('genericPackageManifest'));
+ const Ping=F.request({action:'ping'});assert.equal(Ping.helperVersion,9);assert.equal(Ping.helperRevision,2);assert.ok(Ping.capabilities.includes('captionSetup'));assert.ok(Ping.capabilities.includes('genericPackageManifest'));
  assert.equal(F.request({action:'installCaptions',path:'C:/evil.cmd'}).code,'invalid_message');
  assert.equal(F.request({action:'installCaptions'},'chrome-extension://'+'b'.repeat(32)+'/').code,'origin_denied');
  const Started=F.request({action:'installCaptions',package:{version:1,packageVersion:4,files:F.files}});assert.equal(Started.ok,true);assert.match(Started.jobId,/^[a-f0-9]{32}$/);

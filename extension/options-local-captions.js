@@ -25,7 +25,7 @@ export async function BindLocalCaptionSettings()
  Ui.form.addEventListener('settings-reset',()=>void Load().then(()=>Ui.refresh()));
  await Load();void Ui.refresh();
  let LastHelperState='';
- SubscribeHelperAvailability(State=>{const Signature=[State.connected,State.ready,State.confirmedMissing].join(':');if(Signature===LastHelperState)return;LastHelperState=Signature;if(State.confirmedMissing){void Ui.cancelActiveModel().catch(()=>{});Ui.forceNone();}else void Ui.refresh();});
+ SubscribeHelperAvailability(State=>{const Signature=[State.connected,State.captionSetupReady,State.confirmedMissing].join(':');if(Signature===LastHelperState)return;LastHelperState=Signature;if(State.confirmedMissing){void Ui.cancelActiveModel().catch(()=>{});Ui.forceNone();}else void Ui.refresh();});
  chrome.storage.onChanged.addListener((Changes,Area)=>{if(Area==='local'&&Changes[CaptionSettingKey]?.newValue?.engine==='none'){Ui.forceNone();}});
  return Ui;
 }

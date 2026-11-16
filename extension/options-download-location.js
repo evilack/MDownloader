@@ -105,7 +105,9 @@ export async function BindDownloadLocation(DownloadFolder, PickedFolderKey, Befo
 				Status.textContent = Translate('folder_access_required');
 				return;
 			}
-			const Key = await RememberPickedFolder(Directory);
+			// The native Explorer link and existing jobs refer to this saved key.
+			const SameFolder = CurrentPickedKey && PickedFolder && await Directory.isSameEntry(PickedFolder);
+			const Key = SameFolder ? CurrentPickedKey : await RememberPickedFolder(Directory);
 			await SetDownloadLocation('', Key);
 			CurrentPickedKey = Key;
 			PickedFolder = Directory;

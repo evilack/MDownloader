@@ -86,6 +86,7 @@ On 2026-11-12, an isolated Chrome for Testing profile loaded the packaged Chrome
 
 | Version | Date | Change | Status |
 |---|---|---|---|
+| 0.2.48 | 2026-11-16 | Select an already saved file in Windows Explorer on the first click without a second folder picker (helper 9.2) | Store update prepared |
 | 0.2.47 | 2026-11-16 | Prevent repeated HLS detection errors after the extension reloads | Submitted to Chrome and Edge |
 | 0.2.46 | 2026-11-14 | Site access guidance for detected WebRTC streams and partial saves after live HLS interruptions | Released to Chrome and Edge |
 | 0.2.45 | 2026-11-14 | First-use guidance and a shortcut to Site permissions when site access is missing | Submitted to Chrome and Edge |

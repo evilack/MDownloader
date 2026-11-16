@@ -33,6 +33,84 @@ function Resolve-SavedFile([string]$Directory,$Message) {
     if(([IO.FileInfo]$Path).Length -ne [long]$Message.size -or (Get-SampleHash $Path) -ne $Message.sampleHash){throw 'file_mismatch'}
     return $Path
 }
+function Write-NativeReply($Stream,$Reply) {
+    $Bytes=[Text.Encoding]::UTF8.GetBytes(($Reply|ConvertTo-Json -Compress))
+    $Length=[BitConverter]::GetBytes([uint32]$Bytes.Length)
+    $Stream.Write($Length,0,4);$Stream.Write($Bytes,0,$Bytes.Length);$Stream.Flush()
+}
+function Select-ExplorerFile([string]$Path) {
+    Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+
+public static class ExplorerSelection {
+    [DllImport("ole32.dll")]
+    private static extern int CoInitializeEx(IntPtr reserved, uint flags);
+
+    [DllImport("ole32.dll")]
+    private static extern void CoUninitialize();
+
+    [DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+    private static extern int SHParseDisplayName(string path, IntPtr bindContext,
+        out IntPtr item, uint requestedAttributes, out uint attributes);
+
+    [DllImport("shell32.dll", ExactSpelling = true)]
+    private static extern int SHOpenFolderAndSelectItems(IntPtr item, uint count, IntPtr children, uint flags);
+
+    public static void Show(string path) {
+        Marshal.ThrowExceptionForHR(CoInitializeEx(IntPtr.Zero, 2));
+        IntPtr item = IntPtr.Zero;
+        try {
+            uint attributes;
+            Marshal.ThrowExceptionForHR(SHParseDisplayName(path, IntPtr.Zero, out item, 0, out attributes));
+            Marshal.ThrowExceptionForHR(SHOpenFolderAndSelectItems(item, 0, IntPtr.Zero, 0));
+        } finally {
+            Marshal.FreeCoTaskMem(item);
+            CoUninitialize();
+        }
+    }
+}
+'@
+    [ExplorerSelection]::Show($Path)
+}
+function Wait-ForMarkerDirectory([string]$Marker,$OutputStream) {
+    $Watchers=@{}; $Subscriptions=@{}
+    try {
+        foreach($Root in [Environment]::GetLogicalDrives()) {
+            $Id=[Guid]::NewGuid().ToString('N')
+            try {
+                $Watcher=[IO.FileSystemWatcher]::new($Root,$Marker)
+                $Watchers[$Id]=$Watcher
+                $Watcher.NotifyFilter=[IO.NotifyFilters]::FileName
+                $Watcher.InternalBufferSize=65536
+                $Watcher.IncludeSubdirectories=$true
+                $null=Register-ObjectEvent -InputObject $Watcher -EventName Created -SourceIdentifier $Id
+                $Subscriptions[$Id]=$true
+                $Watcher.EnableRaisingEvents=$true
+            } catch {
+                if($Subscriptions.ContainsKey($Id)){Unregister-Event -SourceIdentifier $Id;$Subscriptions.Remove($Id)}
+                if($Watchers.ContainsKey($Id)){$Watchers[$Id].Dispose();$Watchers.Remove($Id)}
+            }
+        }
+        if(-not $Watchers.Count){throw 'marker_not_found'}
+        Write-NativeReply $OutputStream @{ok=$true;stage='watching'}
+        $Wait=[Diagnostics.Stopwatch]::StartNew()
+        while($Wait.ElapsedMilliseconds -lt 6000) {
+            $Event=Wait-Event -Timeout 1
+            if(-not $Event){continue}
+            Remove-Event -EventIdentifier $Event.EventIdentifier
+            if(-not $Watchers.ContainsKey($Event.SourceIdentifier)){continue}
+            $Path=$Event.SourceEventArgs.FullPath
+            if([IO.Path]::GetFileName($Path) -ceq $Marker -and [IO.File]::Exists($Path)) {
+                return [IO.Path]::GetDirectoryName($Path)
+            }
+        }
+        throw 'marker_not_found'
+    } finally {
+        foreach($Id in $Subscriptions.Keys){Unregister-Event -SourceIdentifier $Id}
+        foreach($Watcher in $Watchers.Values){$Watcher.Dispose()}
+    }
+}
 $InputStream=[Console]::OpenStandardInput();$OutputStream=[Console]::OpenStandardOutput()
 $Mutex=$null;$Locked=$false
 try {
@@ -43,15 +121,14 @@ try {
     $Message=[Text.Encoding]::UTF8.GetString((Read-Exact $InputStream ([int]$Size))) | ConvertFrom-Json
     if($Size -gt 16384 -and $Message.action -cne 'installCaptions'){throw 'invalid_message'}
     if($Message.action -ceq 'ping'){
-        $Status=@{ok=$true;protocol=1;platform='win';helperVersion=9;helperRevision=1;capabilities=@('explorer')}
+        $Status=@{ok=$true;protocol=1;platform='win';helperVersion=9;helperRevision=2;capabilities=@('explorer','explorerMarkerReveal')}
         if([IO.File]::Exists((Join-Path $PSScriptRoot 'common-setup.ps1'))){$Status.capabilities+=@('captionSetup','captionPackageUpdate','genericPackageManifest')}
         if(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'lifecycle.ps1')){
             . (Join-Path $PSScriptRoot 'lifecycle.ps1')
             $Identity=Get-ExplorerIdentity $PSScriptRoot
             if($Identity){$Status.installationId=$Identity.installationId;$Status.canUninstall=$true;try{Save-ExplorerClient $PSScriptRoot $CallerOrigin}catch{}}
         }
-        $Payload=[Text.Encoding]::UTF8.GetBytes(($Status|ConvertTo-Json -Compress))
-        $Header=[BitConverter]::GetBytes([uint32]$Payload.Length);$OutputStream.Write($Header,0,4);$OutputStream.Write($Payload,0,$Payload.Length);$OutputStream.Flush()
+        Write-NativeReply $OutputStream $Status
         return
     }
     if($Message.action -cin @('installCaptions','captionSetupStatus')){
@@ -84,21 +161,28 @@ try {
         return
     } else {
     $ParsedGuid=[Guid]::Empty
-    if($Message.action -cne 'reveal' -or -not [Guid]::TryParse([string]$Message.folderKey,[ref]$ParsedGuid)){throw 'invalid_message'}
+    if($Message.action -cnotin @('reveal','revealBound','revealFromMarker') -or -not [Guid]::TryParse([string]$Message.folderKey,[ref]$ParsedGuid)){throw 'invalid_message'}
+    $FromMarker=$Message.action -ceq 'revealFromMarker'
+    $Legacy=$Message.action -ceq 'reveal'
+    if($FromMarker -and [string]$Message.marker -cnotmatch '^\.mdownloader-reveal-[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}\.tmp\z'){throw 'invalid_message'}
     $Name=[string]$Message.filename
     if(-not $Name -or $Name -ne [IO.Path]::GetFileName($Name) -or $Name.IndexOfAny([IO.Path]::GetInvalidFileNameChars()) -ge 0){throw 'invalid_filename'}
     if([string]$Message.sampleHash -cnotmatch '^[a-f0-9]{64}$' -or [long]$Message.size -lt 0){throw 'invalid_message'}
+    if($FromMarker){$Directory=Wait-ForMarkerDirectory $Message.marker $OutputStream}
     $Sid=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
     $Mutex=New-Object Threading.Mutex($false,('Local\MDownloaderExplorerBridge-'+$Sid))
-    try {$Locked=$Mutex.WaitOne(300000)} catch [Threading.AbandonedMutexException] {$Locked=$true}
-    if(-not $Locked){throw 'binding_required'}
+    $LockTimeout=if($Legacy){300000}else{3000}
+    try {$Locked=$Mutex.WaitOne($LockTimeout)} catch [Threading.AbandonedMutexException] {$Locked=$true}
+    if(-not $Locked){throw 'binding_busy'}
     $Bindings=@{}
     if(Test-Path -LiteralPath $BindingsPath){$Stored=Get-Content -LiteralPath $BindingsPath -Encoding UTF8 -Raw | ConvertFrom-Json;foreach($Property in $Stored.PSObject.Properties){$Bindings[$Property.Name]=[string]$Property.Value}}
     $Key=$CallerOrigin+'|'+$ParsedGuid.ToString();$Path=$null
-    if($Bindings.ContainsKey($Key)){try{$Path=Resolve-SavedFile $Bindings[$Key] $Message}catch{$Path=$null}}
+    if(-not $Legacy){$Key+='|verified'}
+    if(-not $FromMarker -and $Bindings.ContainsKey($Key)){try{$Path=Resolve-SavedFile $Bindings[$Key] $Message}catch{if(-not $Legacy -and $_.Exception.Message -cnotin @('folder_missing','folder_mismatch','file_missing','file_mismatch')){throw}}}
     if(-not $Path){
-        if($TestMode){if(-not $TestFolder){throw 'binding_required'};$Directory=$TestFolder}
-        else {
+        if(-not $FromMarker -and -not $Legacy){throw 'binding_required'}
+        if($Legacy -and $TestMode){if(-not $TestFolder){throw 'binding_required'};$Directory=$TestFolder}
+        elseif($Legacy) {
             Add-Type -AssemblyName System.Windows.Forms
             $Picker=New-Object Windows.Forms.FolderBrowserDialog
             try {
@@ -115,27 +199,24 @@ try {
         try {[IO.File]::WriteAllText($Temporary,($Bindings | ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false));Move-Item -LiteralPath $Temporary -Destination $BindingsPath -Force}
         finally {if(Test-Path -LiteralPath $Temporary){Remove-Item -LiteralPath $Temporary}}
     }
-    if(-not $TestMode){
-        $Explorer=Join-Path ([Environment]::GetFolderPath('Windows')) 'explorer.exe'
-        Start-Process -FilePath $Explorer -ArgumentList ('/select,"'+$Path+'"')
-    }
+    $Mutex.ReleaseMutex();$Locked=$false
+    if(-not $TestMode){Select-ExplorerFile $Path}
     $Response=@{ok=$true;testMode=[bool]$TestMode}
     }
 } catch {
     $Failure=$_;$IsSetup=$Message.action -cin @('installCaptions','captionSetupStatus')
-    $Codes=@('origin_denied','invalid_message','invalid_filename','folder_missing','folder_mismatch','file_missing','file_mismatch','binding_required','canceled','common_helper_update_required','invalid_setup_job','invalid_setup_state','invalid_setup_payload','unsafe_setup_path','common_setup_busy','caption_package_write_failed')
+    $Codes=@('origin_denied','invalid_message','invalid_filename','folder_missing','folder_mismatch','file_missing','file_mismatch','binding_required','binding_busy','marker_not_found','canceled','common_helper_update_required','invalid_setup_job','invalid_setup_state','invalid_setup_payload','unsafe_setup_path','common_setup_busy','caption_package_write_failed')
     $Code=$Failure.Exception.Message;if($Code -notin $Codes){$Code=if($IsSetup){'common_setup_failed'}else{'reveal_failed'}}
     if($IsSetup){try{
         if(Get-Command Assert-CommonSetupPath -CommandType Function -ErrorAction SilentlyContinue){
             $DiagnosticPath=Assert-CommonSetupPath (Join-Path $PSScriptRoot 'helper-last-error.json') $PSScriptRoot
             $Cause=$Failure.Exception.GetBaseException();$Detail=[string]$Cause.Message
             if($Detail.Length -gt 1000){$Detail=$Detail.Substring(0,1000)}
-            $Diagnostic=@{code=$Code;action=$Message.action;helperVersion=9;helperRevision=1;exceptionType=$Cause.GetType().FullName;hResult=$Cause.HResult;message=$Detail;script=[IO.Path]::GetFileName($Failure.InvocationInfo.ScriptName);line=$Failure.InvocationInfo.ScriptLineNumber;updated=[DateTime]::UtcNow.ToString('o')}
+            $Diagnostic=@{code=$Code;action=$Message.action;helperVersion=9;helperRevision=2;exceptionType=$Cause.GetType().FullName;hResult=$Cause.HResult;message=$Detail;script=[IO.Path]::GetFileName($Failure.InvocationInfo.ScriptName);line=$Failure.InvocationInfo.ScriptLineNumber;updated=[DateTime]::UtcNow.ToString('o')}
             [IO.File]::WriteAllText($DiagnosticPath,($Diagnostic|ConvertTo-Json -Compress -Depth 3),[Text.UTF8Encoding]::new($false))
         }
     }catch{}}
     $Response=@{ok=$false;code=$Code}
 }
 finally {if($Locked){$Mutex.ReleaseMutex()};if($Mutex){$Mutex.Dispose()}}
-$Payload=[Text.Encoding]::UTF8.GetBytes(($Response | ConvertTo-Json -Compress))
-$Header=[BitConverter]::GetBytes([uint32]$Payload.Length);$OutputStream.Write($Header,0,4);$OutputStream.Write($Payload,0,$Payload.Length);$OutputStream.Flush()
+Write-NativeReply $OutputStream $Response

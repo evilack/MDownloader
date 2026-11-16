@@ -14,7 +14,7 @@ export async function EnsureHelperForFeature({feature='folder',engine,loading=tr
  const Loading=loading?ShowSettingsLoading():undefined;let Ready=false;
  try{
   const State=await RefreshHelperAvailability({force:true});
-  Ready=State.connected&&(feature!=='captions'||State.ready);
+  Ready=State.connected&&(feature!=='captions'||State.captionSetupReady);
   if(Ready&&feature==='captions'){
    try{const Platform=(await chrome.runtime.getPlatformInfo()).os;await EnsureCaptionRuntime(Platform,engine);Ready=true;}catch{Ready=false;}
   }

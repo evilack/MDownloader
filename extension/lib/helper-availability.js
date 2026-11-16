@@ -1,12 +1,12 @@
 import {RequestExplorer} from './explorer-native.js';
-import {CommonHelperConnected,CommonHelperReady} from './common-helper-contract.js';
+import {CommonHelperConnected,CommonHelperReady,CaptionSetupReady} from './common-helper-contract.js';
 
 // This is the common helper's status. A retained captions host never makes it connected.
 const RecordKey='helperAvailability',RemovalKey='explorerHelperRemoval',EvidenceKey='helperMissingEvidence';
 const Listeners=new Set();
-let State={connected:false,ready:false,confirmedMissing:false,checked:false,reason:'unknown'},Pending,Started=false,Timer,Failures=0,LastFailure=0,Revision=0,RemovalPending,LastNotice=0;
+let State={connected:false,ready:false,captionSetupReady:false,confirmedMissing:false,checked:false,reason:'unknown'},Pending,Started=false,Timer,Failures=0,LastFailure=0,Revision=0,RemovalPending,LastNotice=0;
 const Emit=(Name,Detail)=>{if(typeof window!=='undefined')window.dispatchEvent(new CustomEvent(Name,{detail:Detail}));};
-function Publish(Value){State={...State,...Value};for(const Listener of Listeners){try{Listener({...State});}catch{}}Emit('helper-availability-changed',{...State});return {...State};}
+function Publish(Value){State={...State,...Value};if(!State.connected)State.captionSetupReady=false;for(const Listener of Listeners){try{Listener({...State});}catch{}}Emit('helper-availability-changed',{...State});return {...State};}
 export function CurrentHelperAvailability(){return {...State};}
 export function SubscribeHelperAvailability(Listener){Listeners.add(Listener);Listener({...State});return ()=>Listeners.delete(Listener);}
 
@@ -61,7 +61,7 @@ export async function RefreshHelperAvailability({force=false}={}){
     if(Saved[RecordKey]?.connected!==true)await chrome.storage.local.set({[RecordKey]:{connected:true,observedAt:Date.now()}});
    }
    if(Own!==Revision)return {...State};
-   return Publish({connected:Connected,ready:Ready,checked:true,confirmedMissing:false,reason:Connected?Ready?'ready':'update-required':'invalid-response',checkedAt:Date.now(),helperVersion:Result?.helperVersion,helperRevision:Result?.helperRevision,platform:Result?.platform,capabilities:Result?.capabilities||[],canUninstall:Result?.canUninstall===true,installationId:Result?.installationId});
+   return Publish({connected:Connected,ready:Ready,captionSetupReady:CaptionSetupReady(Result),checked:true,confirmedMissing:false,reason:Connected?Ready?'ready':'update-required':'invalid-response',checkedAt:Date.now(),helperVersion:Result?.helperVersion,helperRevision:Result?.helperRevision,platform:Result?.platform,capabilities:Result?.capabilities||[],canUninstall:Result?.canUninstall===true,installationId:Result?.installationId});
   }catch(ErrorValue){
    if(Own!==Revision)return {...State};
    const Now=Date.now(),Missing=ErrorValue?.reason==='missing';

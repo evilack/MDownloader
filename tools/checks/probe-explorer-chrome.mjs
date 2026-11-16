@@ -16,7 +16,7 @@ try{
  const Page=await Context.newPage();await Page.goto('chrome-extension://'+id+'/sidepanel.html');
  Result.connected=await Page.evaluate(async()=>{const{ConnectExplorer}=await import('./lib/explorer-bridge.js');return await ConnectExplorer();});
  // Only this owned fixture's key is prelinked. The native host still validates filename, size and fingerprint.
- BindingKey='chrome-extension://'+id+'/|'+Key;const bindings=await ReadBindings();bindings[BindingKey]=Folder;await writeFile(Bindings,JSON.stringify(bindings));
+ BindingKey='chrome-extension://'+id+'/|'+Key+'|verified';const bindings=await ReadBindings();bindings[BindingKey]=Folder;await writeFile(Bindings,JSON.stringify(bindings));
  await Page.evaluate(()=>{const e=document.createElement('input');e.type='file';e.id='fixture';document.body.append(e);});await Page.locator('#fixture').setInputFiles(Path.join(Folder,Name));
  await Page.evaluate(async({Key,Job,Name})=>{const root=await navigator.storage.getDirectory(),folder=await root.getDirectoryHandle('saved',{create:true}),handle=await folder.getFileHandle(Name,{create:true}),writer=await handle.createWritable(),file=document.querySelector('#fixture').files[0];await file.stream().pipeTo(writer);
  const db=await new Promise((res,rej)=>{const o=indexedDB.open('mdownloader-download-folders',1);o.onupgradeneeded=()=>o.result.createObjectStore('directories');o.onsuccess=()=>res(o.result);o.onerror=()=>rej(o.error);});await new Promise((res,rej)=>{const tx=db.transaction('directories','readwrite');tx.objectStore('directories').put(folder,Key);tx.oncomplete=res;tx.onabort=()=>rej(tx.error);});db.close();

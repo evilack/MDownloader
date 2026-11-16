@@ -81,7 +81,7 @@ export function CreateCaptionDownloadOption({onChange=()=>{}}={})
   }
   const [Helper,...Results]=await Promise.allSettled([ProbeCommonHelper(),...Engines.map(Probe)]);
   if(Own!==Revision)return;
-  HelperReady=Helper.status==='fulfilled'&&Helper.value.ready===true;
+  HelperReady=Helper.status==='fulfilled'&&Helper.value.captionSetupReady===true;
   Results.forEach((Result,Index)=>{
    if(Result.status!=='fulfilled')return;const Value=Result.value;
    const Owned=CaptionModelsForEngine(Engines[Index]).filter(Id=>Value?.installedModels?.includes(Id));

@@ -6,7 +6,7 @@ import Os from 'node:os';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {runInNewContext} from 'node:vm';
-import {CommonHelperReady,MinimumHelperVersion} from '../extension/lib/common-helper-contract.js';
+import {CaptionSetupReady,CommonHelperReady,MinimumHelperVersion} from '../extension/lib/common-helper-contract.js';
 
 const PowerShell=Path.join(process.env.SystemRoot||'C:/Windows','System32/WindowsPowerShell/v1.0/powershell.exe');
 const Source=Path.resolve('native/explorer/common-setup.ps1');
@@ -60,8 +60,8 @@ test('Windows extraction rejects junctions and preserves their target',{skip:pro
 });
 test('readiness requires the generic package capability and helper version nine',()=>{
  assert.equal(MinimumHelperVersion,9);
- const Ready={ok:true,protocol:1,platform:'win',helperVersion:9,helperRevision:1,capabilities:['captionSetup','captionPackageUpdate','genericPackageManifest']};
- assert.equal(CommonHelperReady(Ready),true);assert.equal(CommonHelperReady({...Ready,helperVersion:8}),false);assert.equal(CommonHelperReady({...Ready,capabilities:['captionSetup','captionPackageUpdate']}),false);
+ const Ready={ok:true,protocol:1,platform:'win',helperVersion:9,helperRevision:2,capabilities:['captionSetup','captionPackageUpdate','genericPackageManifest']};
+ assert.equal(CommonHelperReady(Ready),true);assert.equal(CommonHelperReady({...Ready,helperRevision:1}),false);assert.equal(CaptionSetupReady({...Ready,helperRevision:1}),true);assert.equal(CommonHelperReady({...Ready,helperVersion:8}),false);assert.equal(CommonHelperReady({...Ready,capabilities:['captionSetup','captionPackageUpdate']}),false);
 });
 test('Mac common helper has dynamic declared files, nested parents and bounded package validation',async()=>{
  const Mac=await readFile(Path.resolve('native/common-macos/host.js'),'utf8');
