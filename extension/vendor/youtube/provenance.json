@@ -7,7 +7,7 @@
     "fflate": "0.8.3",
     "meriyah": "7.4.2"
   },
-  "lockfileSha256": "0d42a77f728a83444746e79bcae92c8481e8a63d43e6eeeb165bf15e13b882a8",
+  "lockfileSha256": "43129e5eeb922b94e22ac60da28bfc1f39de20c11054d87184588d2f06447696",
   "files": {
     "bufbuild-protobuf-LICENSE-APACHE": "c04b4216f1cd4c5a4f7fb2f2a1b0ae70d847e9e0cac7c9dee9bf8cc03177c449",
     "bufbuild-protobuf-LICENSE-BSD": "182a1bc8985a586e8e0ca3b5a3af1ff3c28bd3475833a07f50b42b53dd7ac889",

@@ -14,7 +14,7 @@
 		return;
 	}
 	const {MaxManifestUrlChars, MaxManifestBytes: MaxManifestTextChars, ManifestMessage} = Policy;
-	window.addEventListener('message', UiEvent =>
+	window.addEventListener('message', function OnManifestMessage(UiEvent)
 	{
 		if (UiEvent.source !== window || UiEvent.origin !== location.origin)
 		{
@@ -43,8 +43,25 @@
 		{
 			return;
 		}
-		void chrome.runtime.sendMessage({ type: Type, url: Url, text: TextValue, page: Page }).catch(() =>
+		try
 		{
-		});
+			const Runtime = globalThis.chrome?.runtime;
+			if (typeof Runtime?.sendMessage === 'function')
+			{
+				void Runtime.sendMessage({ type: Type, url: Url, text: TextValue, page: Page }).catch(() =>
+				{
+				});
+				return;
+			}
+		}
+		catch (ErrorValue)
+		{
+			if (ErrorValue?.message !== 'Extension context invalidated.')
+			{
+				throw ErrorValue;
+			}
+		}
+		// 확장을 다시 로드해도 탭에는 이전 리스너가 남을 수 있습니다.
+		window.removeEventListener('message', OnManifestMessage);
 	});
 })();
